@@ -40,14 +40,14 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
           {/* Director name + meta */}
           <div className="flex items-baseline justify-between mb-3">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-lg font-light text-white/90 group-hover:text-white transition-colors">
+              <h2 className="text-lg font-medium text-[#1A1A1A] group-hover:text-black transition-colors">
                 {director.name}
               </h2>
               {!director.isActive && (
-                <span className="text-xs text-white/30">Off-roster</span>
+                <span className="text-xs text-[#999]">Off-roster</span>
               )}
             </div>
-            <div className="flex items-center gap-4 text-xs text-white/30">
+            <div className="flex items-center gap-4 text-xs text-[#999]">
               <span className="flex items-center gap-1.5">
                 <FolderOpen size={12} />
                 {director._count.projects} spot{director._count.projects !== 1 ? "s" : ""}
@@ -59,35 +59,35 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
             </div>
           </div>
 
-          {/* Thumbnail strip — media-forward */}
+          {/* Thumbnail strip */}
           {director.projects.length > 0 ? (
             <div className="grid grid-cols-4 gap-2">
               {director.projects.map((project) => (
                 <div
                   key={project.id}
-                  className="relative aspect-video bg-white/5 rounded-lg overflow-hidden group/thumb"
+                  className="relative aspect-video bg-[#EEEDEA] rounded-lg overflow-hidden group/thumb"
                 >
                   {project.muxPlaybackId ? (
                     <img
                       src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`}
                       alt={project.title}
-                      className="w-full h-full object-cover opacity-80 group-hover/thumb:opacity-100 transition-opacity"
+                      className="w-full h-full object-cover group-hover/thumb:scale-[1.02] transition-transform duration-300"
                       loading="lazy"
                     />
                   ) : project.thumbnailUrl ? (
                     <img
                       src={project.thumbnailUrl}
                       alt={project.title}
-                      className="w-full h-full object-cover opacity-80 group-hover/thumb:opacity-100 transition-opacity"
+                      className="w-full h-full object-cover group-hover/thumb:scale-[1.02] transition-transform duration-300"
                       loading="lazy"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Film size={20} className="text-white/10" />
+                      <Film size={20} className="text-[#ccc]" />
                     </div>
                   )}
 
-                  {/* Overlay info — only on hover */}
+                  {/* Overlay info */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover/thumb:opacity-100 transition-opacity">
                     <div className="absolute bottom-2 left-2.5 right-2.5">
                       <p className="text-xs font-medium text-white truncate">
@@ -108,17 +108,17 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
                 </div>
               ))}
 
-              {/* Fill remaining slots with empties if < 4 projects */}
+              {/* Fill remaining slots */}
               {Array.from({ length: Math.max(0, 4 - director.projects.length) }).map((_, i) => (
                 <div
                   key={`empty-${i}`}
-                  className="aspect-video bg-white/[0.02] rounded-lg border border-dashed border-white/5"
+                  className="aspect-video bg-[#F0F0EC] rounded-lg border border-dashed border-[#E8E8E3]"
                 />
               ))}
             </div>
           ) : (
-            <div className="h-32 bg-white/[0.02] rounded-lg border border-dashed border-white/5 flex items-center justify-center">
-              <p className="text-xs text-white/20">No spots uploaded yet</p>
+            <div className="h-32 bg-white rounded-lg border border-dashed border-[#E8E8E3] flex items-center justify-center">
+              <p className="text-xs text-[#ccc]">No spots uploaded yet</p>
             </div>
           )}
 
@@ -128,7 +128,7 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
               {director.categories.map((cat) => (
                 <span
                   key={cat}
-                  className="text-[10px] text-white/30 uppercase tracking-wider"
+                  className="text-[10px] text-[#999] uppercase tracking-wider"
                 >
                   {cat}
                 </span>

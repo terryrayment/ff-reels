@@ -20,6 +20,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   reelViews     ReelView[]
+  updates       Update[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -83,6 +84,7 @@ model Director {
   projects       Project[]
   reels          Reel[]
   lookbookItems  LookbookItem[]
+  updates        Update[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
@@ -123,6 +125,7 @@ model Project {
   isPublished     Boolean  @default(false)
   sortOrder       Int      @default(0)
   reelItems       ReelItem[]
+  updates         Update[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -248,6 +251,36 @@ model SpotView {
   skipped        Boolean  @default(false)
 
   startedAt      DateTime @default(now())
+}
+
+// ─── Updates Feed (Activity + Admin Notes) ────────────────
+
+model Update {
+  id          String     @id @default(cuid())
+  type        UpdateType
+  title       String
+  body        String?    @db.Text    // Markdown-friendly text
+  imageUrl    String?                // Optional media attachment
+
+  // For spot/reel-related updates
+  directorId  String?
+  director    Director?  @relation(fields: [directorId], references: [id], onDelete: SetNull)
+  projectId   String?
+  project     Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  // Who posted/triggered it
+  authorId    String?
+  author      User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  isPinned    Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+}
+
+enum UpdateType {
+  SPOT_ADDED       // Auto: new spot uploaded
+  REEL_CREATED     // Auto: new reel built
+  DIRECTOR_ADDED   // Auto: new director added to roster
+  ADMIN_NOTE       // Manual: admin posts a note for the team
 }
 
 // ─── Treatment Samples ─────────────────────────────────

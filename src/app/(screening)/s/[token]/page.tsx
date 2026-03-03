@@ -2,10 +2,6 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { formatDuration } from "@/lib/utils";
 
-/**
- * Public screening page — reels.friendsandfamily.tv/s/{token}
- * What agency producers see. No login required. Viewing is tracked.
- */
 export default async function ScreeningPage({
   params,
 }: {
@@ -28,7 +24,6 @@ export default async function ScreeningPage({
 
   if (!link) return notFound();
 
-  // Check expiry
   if (link.expiresAt && link.expiresAt < new Date()) {
     return (
       <div className="min-h-screen bg-[#0e0e0e] flex items-center justify-center">
@@ -45,7 +40,6 @@ export default async function ScreeningPage({
   const { reel } = link;
   const { director } = reel;
 
-  // Calculate total reel duration
   const totalDuration = reel.items.reduce(
     (sum, item) => sum + (item.project.duration || 0),
     0
@@ -53,7 +47,6 @@ export default async function ScreeningPage({
 
   return (
     <div className="min-h-screen bg-[#0e0e0e] text-white">
-      {/* Header — minimal, editorial */}
       <header className="max-w-4xl mx-auto px-8 pt-12 pb-8">
         <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] mb-6">
           Friends & Family
@@ -71,7 +64,6 @@ export default async function ScreeningPage({
         </div>
       </header>
 
-      {/* Curatorial note */}
       {reel.curatorialNote && (
         <div className="max-w-4xl mx-auto px-8 pb-8">
           <div className="px-5 py-4 bg-white/[0.03] rounded-lg border border-white/5">
@@ -82,16 +74,13 @@ export default async function ScreeningPage({
         </div>
       )}
 
-      {/* Spots — each one gets full width, media-dominant */}
       <main className="max-w-4xl mx-auto px-8 pb-16">
         <div className="space-y-16">
           {reel.items.map((item) => (
             <div key={item.id}>
-              {/* Video player */}
               <div className="aspect-video bg-white/[0.03] rounded-lg overflow-hidden">
                 {item.project.muxPlaybackId ? (
                   <div className="w-full h-full flex items-center justify-center text-white/20 text-sm">
-                    {/* MuxPlayer will go here */}
                     <img
                       src={`https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=960&height=540&fit_mode=smartcrop`}
                       alt={item.project.title}
@@ -105,7 +94,6 @@ export default async function ScreeningPage({
                 )}
               </div>
 
-              {/* Spot info — minimal text below media */}
               <div className="mt-3 flex items-start justify-between">
                 <div>
                   <h3 className="text-sm font-medium text-white/80">
@@ -124,7 +112,6 @@ export default async function ScreeningPage({
                 )}
               </div>
 
-              {/* Context note if present */}
               {item.project.contextNote && (
                 <p className="text-xs text-white/25 mt-2 italic">
                   {item.project.contextNote}
@@ -135,7 +122,6 @@ export default async function ScreeningPage({
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center">
         <p className="text-[10px] text-white/15 uppercase tracking-[0.3em]">
           Friends & Family

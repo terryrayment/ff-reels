@@ -9,12 +9,14 @@ import {
   Users,
   Film,
   BarChart3,
+  Newspaper,
   LogOut,
   Upload,
 } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/updates", label: "Updates", icon: Newspaper },
   { href: "/directors", label: "Directors", icon: Users },
   { href: "/reels", label: "Reels", icon: Film },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
@@ -32,23 +34,18 @@ export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#111] border-r border-white/[0.06] flex flex-col z-40">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-[#E8E8E3] flex flex-col z-40">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-white/[0.06]">
+      <div className="px-5 py-5 border-b border-[#E8E8E3]">
         <Link href="/dashboard" className="flex items-center gap-3">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.svg"
-            alt="F&F"
-            width={28}
-            height={28}
-            className="invert"
-          />
+          <div className="w-7 h-7 bg-[#1A1A1A] rounded-md flex items-center justify-center">
+            <span className="text-[10px] font-semibold text-white tracking-tight">F&F</span>
+          </div>
           <div>
-            <h1 className="text-sm font-light tracking-tight">
+            <h1 className="text-sm font-medium text-[#1A1A1A] tracking-tight">
               Friends & Family
             </h1>
-            <p className="text-[10px] text-white/25 uppercase tracking-[0.15em]">
+            <p className="text-[10px] text-[#999] uppercase tracking-[0.15em]">
               Reels
             </p>
           </div>
@@ -59,7 +56,7 @@ export function Sidebar({ user }: SidebarProps) {
       <div className="px-3 pt-4 pb-2">
         <Link
           href="/directors?upload=true"
-          className="flex items-center gap-2 px-3 py-2 bg-white/[0.06] hover:bg-white/10 rounded-lg text-xs font-medium transition-colors w-full text-white/60 hover:text-white"
+          className="flex items-center gap-2 px-3 py-2 bg-[#1A1A1A] hover:bg-[#333] rounded-lg text-xs font-medium transition-colors w-full text-white"
         >
           <Upload size={14} />
           Upload Spots
@@ -78,11 +75,11 @@ export function Sidebar({ user }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
                 isActive
-                  ? "bg-white/[0.08] text-white"
-                  : "text-white/40 hover:text-white/70 hover:bg-white/[0.04]"
+                  ? "bg-[#F7F6F3] text-[#1A1A1A] font-medium"
+                  : "text-[#666] hover:text-[#1A1A1A] hover:bg-[#FAFAF8]"
               )}
             >
-              <item.icon size={16} className={isActive ? "text-white/80" : "text-white/25"} />
+              <item.icon size={16} className={isActive ? "text-[#1A1A1A]" : "text-[#999]"} />
               {item.label}
             </Link>
           );
@@ -90,19 +87,19 @@ export function Sidebar({ user }: SidebarProps) {
       </nav>
 
       {/* User */}
-      <div className="px-3 py-3 border-t border-white/[0.06]">
+      <div className="px-3 py-3 border-t border-[#E8E8E3]">
         <div className="flex items-center justify-between px-3 py-2">
           <div className="min-w-0">
-            <p className="text-sm text-white/60 truncate">
+            <p className="text-sm text-[#1A1A1A] truncate">
               {user.name ?? user.email}
             </p>
-            <p className="text-[10px] text-white/25 capitalize">
+            <p className="text-[10px] text-[#999] capitalize">
               {user.role?.toLowerCase()}
             </p>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-white/20 hover:text-white/60 transition-colors p-1 rounded"
+            className="text-[#ccc] hover:text-[#666] transition-colors p-1 rounded"
             title="Sign out"
           >
             <LogOut size={14} />

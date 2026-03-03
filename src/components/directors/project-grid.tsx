@@ -27,8 +27,8 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
       {projects.map((project) => (
         <div key={project.id} className="group cursor-pointer">
-          {/* Thumbnail — dominant visual */}
-          <div className="relative aspect-video bg-white/[0.03] rounded-lg overflow-hidden">
+          {/* Thumbnail */}
+          <div className="relative aspect-video bg-[#EEEDEA] rounded-lg overflow-hidden">
             {project.muxPlaybackId ? (
               <img
                 src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`}
@@ -45,46 +45,43 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <Film size={24} className="text-white/10" />
+                <Film size={24} className="text-[#ccc]" />
               </div>
             )}
 
             {/* Status indicator */}
             {project.muxStatus === "preparing" && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-amber-400">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-amber-300">
                 <Clock size={10} />
                 Processing
               </div>
             )}
             {project.muxStatus === "errored" && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-red-400">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-red-300">
                 <AlertCircle size={10} />
                 Error
               </div>
             )}
             {project.muxStatus === "ready" && !project.isPublished && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white/50">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white/60">
                 Draft
               </div>
             )}
 
             {/* Duration badge */}
             {project.duration && (
-              <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 px-1.5 py-0.5 rounded text-white/80">
+              <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 px-1.5 py-0.5 rounded text-white/90">
                 {formatDuration(project.duration)}
               </span>
             )}
-
-            {/* Hover overlay */}
-            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
 
-          {/* Info — minimal, below the media */}
+          {/* Info */}
           <div className="mt-2 px-0.5">
-            <p className="text-sm font-medium text-white/80 group-hover:text-white truncate transition-colors">
+            <p className="text-sm font-medium text-[#1A1A1A] group-hover:text-black truncate transition-colors">
               {project.title}
             </p>
-            <p className="text-xs text-white/30 truncate mt-0.5">
+            <p className="text-xs text-[#999] truncate mt-0.5">
               {[project.brand, project.agency, project.year]
                 .filter(Boolean)
                 .join(" · ") || "No details"}

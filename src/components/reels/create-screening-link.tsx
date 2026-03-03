@@ -79,19 +79,18 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
       >
         {createdUrl ? (
           <div className="space-y-4">
-            {/* URL display */}
             <div className="flex items-center gap-2">
-              <div className="flex-1 p-3 bg-white/5 rounded-lg text-sm text-white/70 truncate font-mono">
+              <div className="flex-1 p-3 bg-[#F7F6F3] rounded-lg text-sm text-[#1A1A1A] truncate font-mono">
                 {createdUrl}
               </div>
               <button
                 onClick={handleCopy}
-                className="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                className="p-3 bg-[#F7F6F3] rounded-lg hover:bg-[#EEEDEA] transition-colors"
               >
                 {copied ? (
-                  <Check size={16} className="text-emerald-400" />
+                  <Check size={16} className="text-emerald-600" />
                 ) : (
-                  <Copy size={16} className="text-white/40" />
+                  <Copy size={16} className="text-[#999]" />
                 )}
               </button>
             </div>

@@ -85,7 +85,6 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     <div className="grid grid-cols-[1fr_380px] gap-8">
       {/* Left — spot selection */}
       <div>
-        {/* Director selector */}
         <Select
           id="director"
           label="Director"
@@ -103,10 +102,9 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
           ]}
         />
 
-        {/* Available spots grid */}
         {selectedDirector && (
           <div className="mt-6">
-            <p className="text-sm text-white/50 mb-3">
+            <p className="text-sm text-[#666] mb-3">
               Click spots to add them to the reel:
             </p>
             {availableProjects.length > 0 ? (
@@ -119,41 +117,40 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                       onClick={() => toggleProject(project.id)}
                       className={`text-left rounded-lg overflow-hidden transition-all ${
                         isSelected
-                          ? "ring-2 ring-white/40 bg-white/[0.06]"
-                          : "bg-white/[0.02] hover:bg-white/[0.04] border border-white/5"
+                          ? "ring-2 ring-[#1A1A1A] bg-white"
+                          : "bg-white hover:shadow-sm border border-[#E8E8E3]"
                       }`}
                     >
-                      {/* Thumbnail */}
-                      <div className="aspect-video bg-white/5 relative">
+                      <div className="aspect-video bg-[#EEEDEA] relative">
                         {project.muxPlaybackId ? (
                           <img
                             src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=320&height=180&fit_mode=smartcrop`}
                             alt={project.title}
-                            className={`w-full h-full object-cover ${isSelected ? "opacity-100" : "opacity-70"}`}
+                            className="w-full h-full object-cover"
                             loading="lazy"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <Film size={16} className="text-white/10" />
+                            <Film size={16} className="text-[#ccc]" />
                           </div>
                         )}
                         {isSelected && (
-                          <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white flex items-center justify-center">
-                            <span className="text-[10px] font-bold text-black">
+                          <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center">
+                            <span className="text-[10px] font-bold text-white">
                               {selectedProjectIds.indexOf(project.id) + 1}
                             </span>
                           </div>
                         )}
                         {project.duration && (
-                          <span className="absolute bottom-1 right-1 text-[9px] bg-black/60 px-1 py-0.5 rounded text-white/70">
+                          <span className="absolute bottom-1 right-1 text-[9px] bg-black/60 px-1 py-0.5 rounded text-white/90">
                             {formatDuration(project.duration)}
                           </span>
                         )}
                       </div>
                       <div className="p-2">
-                        <p className="text-xs font-medium truncate">{project.title}</p>
-                        <p className="text-[10px] text-white/30 truncate">
-                          {project.brand || "—"}
+                        <p className="text-xs font-medium text-[#1A1A1A] truncate">{project.title}</p>
+                        <p className="text-[10px] text-[#999] truncate">
+                          {project.brand || "\u2014"}
                         </p>
                       </div>
                     </button>
@@ -161,7 +158,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                 })}
               </div>
             ) : (
-              <p className="text-sm text-white/30 py-8 text-center">
+              <p className="text-sm text-[#999] py-8 text-center">
                 No ready spots for this director. Upload some first.
               </p>
             )}
@@ -171,8 +168,8 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
 
       {/* Right — reel configuration */}
       <div className="space-y-5 sticky top-8 self-start">
-        <div className="p-5 bg-white/[0.03] border border-white/5 rounded-xl space-y-4">
-          <h3 className="text-sm font-medium">Reel Details</h3>
+        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl space-y-4">
+          <h3 className="text-sm font-medium text-[#1A1A1A]">Reel Details</h3>
 
           <Input
             id="title"
@@ -206,8 +203,8 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         </div>
 
         {/* Selected spots order */}
-        <div className="p-5 bg-white/[0.03] border border-white/5 rounded-xl">
-          <h3 className="text-sm font-medium mb-3">
+        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl">
+          <h3 className="text-sm font-medium text-[#1A1A1A] mb-3">
             Spot Order ({selectedProjects.length})
           </h3>
 
@@ -216,13 +213,13 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               {selectedProjects.map((project, i) => (
                 <div
                   key={project.id}
-                  className="flex items-center gap-2 p-2 rounded bg-white/[0.03] text-sm"
+                  className="flex items-center gap-2 p-2 rounded bg-[#F7F6F3] text-sm"
                 >
-                  <span className="text-xs text-white/20 w-4">{i + 1}</span>
-                  <span className="flex-1 truncate text-white/70">{project.title}</span>
+                  <span className="text-xs text-[#999] w-4">{i + 1}</span>
+                  <span className="flex-1 truncate text-[#1A1A1A]">{project.title}</span>
                   <button
                     onClick={() => removeProject(project.id)}
-                    className="text-white/20 hover:text-white/50 transition-colors"
+                    className="text-[#ccc] hover:text-[#666] transition-colors"
                   >
                     <X size={12} />
                   </button>
@@ -230,13 +227,12 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-white/25 py-4 text-center">
+            <p className="text-xs text-[#999] py-4 text-center">
               Select spots from the left to add them here.
             </p>
           )}
         </div>
 
-        {/* Save button */}
         <Button
           onClick={handleSave}
           loading={saving}

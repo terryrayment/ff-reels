@@ -37,7 +37,7 @@ export default async function ReelDetailPage({
       {/* Back */}
       <Link
         href="/reels"
-        className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-xs text-[#999] hover:text-[#1A1A1A] transition-colors mb-6"
       >
         <ArrowLeft size={12} />
         Reels
@@ -47,7 +47,7 @@ export default async function ReelDetailPage({
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-light tracking-tight">{reel.title}</h1>
+            <h1 className="text-3xl font-medium tracking-tight text-[#1A1A1A]">{reel.title}</h1>
             <Badge
               variant={
                 reel.reelType === "PORTFOLIO"
@@ -60,14 +60,14 @@ export default async function ReelDetailPage({
               {reel.reelType.toLowerCase()}
             </Badge>
           </div>
-          <p className="text-sm text-white/40 mt-1">
-            <Link href={`/directors/${reel.director.id}`} className="hover:text-white/60 transition-colors">
+          <p className="text-sm text-[#999] mt-1">
+            <Link href={`/directors/${reel.director.id}`} className="hover:text-[#1A1A1A] transition-colors">
               {reel.director.name}
             </Link>{" "}
             · {reel.items.length} spot{reel.items.length !== 1 ? "s" : ""}
           </p>
           {reel.curatorialNote && (
-            <p className="text-sm text-white/30 mt-3 italic max-w-xl">
+            <p className="text-sm text-[#999] mt-3 italic max-w-xl">
               &ldquo;{reel.curatorialNote}&rdquo;
             </p>
           )}
@@ -76,22 +76,22 @@ export default async function ReelDetailPage({
 
       {/* Spots in the reel */}
       <div className="mt-8">
-        <h2 className="text-sm font-medium text-white/50 uppercase tracking-wider mb-4">
+        <h2 className="text-sm font-medium text-[#999] uppercase tracking-wider mb-4">
           Spots
         </h2>
-        <div className="space-y-2">
+        <div className="bg-white border border-[#E8E8E3] rounded-xl divide-y divide-[#E8E8E3]">
           {reel.items.map((item, index) => (
             <div
               key={item.id}
-              className="flex items-center gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/5"
+              className="flex items-center gap-4 px-4 py-3"
             >
               {/* Sequence number */}
-              <span className="text-xs text-white/20 w-5 text-center">
+              <span className="text-xs text-[#ccc] w-5 text-center">
                 {index + 1}
               </span>
 
               {/* Thumbnail */}
-              <div className="w-24 h-14 rounded bg-white/5 overflow-hidden flex-shrink-0">
+              <div className="w-24 h-14 rounded bg-[#F0F0EC] overflow-hidden flex-shrink-0">
                 {item.project.muxPlaybackId ? (
                   <img
                     src={`https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=192&height=112&fit_mode=smartcrop`}
@@ -101,15 +101,15 @@ export default async function ReelDetailPage({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Film size={14} className="text-white/10" />
+                    <Film size={14} className="text-[#ccc]" />
                   </div>
                 )}
               </div>
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{item.project.title}</p>
-                <p className="text-xs text-white/30 truncate">
+                <p className="text-sm font-medium truncate text-[#1A1A1A]">{item.project.title}</p>
+                <p className="text-xs text-[#999] truncate">
                   {[item.project.brand, item.project.agency, item.project.year]
                     .filter(Boolean)
                     .join(" · ")}
@@ -117,7 +117,7 @@ export default async function ReelDetailPage({
               </div>
 
               {/* Duration */}
-              <span className="text-xs text-white/20">
+              <span className="text-xs text-[#ccc]">
                 {formatDuration(item.project.duration)}
               </span>
             </div>
@@ -128,31 +128,31 @@ export default async function ReelDetailPage({
       {/* Screening Links */}
       <div className="mt-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-medium text-white/50 uppercase tracking-wider">
+          <h2 className="text-sm font-medium text-[#999] uppercase tracking-wider">
             Screening Links ({reel.screeningLinks.length})
           </h2>
           <CreateScreeningLink reelId={reel.id} />
         </div>
 
         {reel.screeningLinks.length > 0 ? (
-          <div className="space-y-2">
+          <div className="bg-white border border-[#E8E8E3] rounded-xl divide-y divide-[#E8E8E3]">
             {reel.screeningLinks.map((link) => (
               <div
                 key={link.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5"
+                className="flex items-center justify-between px-4 py-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="min-w-0">
-                    <p className="text-sm truncate">
+                    <p className="text-sm truncate text-[#1A1A1A]">
                       {link.recipientName || link.recipientEmail || "Untitled link"}
                     </p>
-                    <p className="text-xs text-white/25 truncate">
-                      {link.recipientCompany || "—"} · {timeAgo(link.createdAt)}
+                    <p className="text-xs text-[#999] truncate">
+                      {link.recipientCompany || "\u2014"} · {timeAgo(link.createdAt)}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 flex-shrink-0">
-                  <span className="flex items-center gap-1 text-xs text-white/30">
+                  <span className="flex items-center gap-1 text-xs text-[#999]">
                     <Eye size={10} />
                     {link._count.views} view{link._count.views !== 1 ? "s" : ""}
                   </span>
@@ -167,7 +167,7 @@ export default async function ReelDetailPage({
                     href={`${appUrl}/s/${link.token}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-white/20 hover:text-white/60 transition-colors"
+                    className="text-[#ccc] hover:text-[#666] transition-colors"
                     title="Open screening link"
                   >
                     <ExternalLink size={12} />
@@ -177,8 +177,8 @@ export default async function ReelDetailPage({
             ))}
           </div>
         ) : (
-          <div className="py-8 text-center bg-white/[0.02] rounded-xl border border-white/5">
-            <p className="text-sm text-white/25">
+          <div className="py-8 text-center bg-white rounded-xl border border-[#E8E8E3]">
+            <p className="text-sm text-[#999]">
               No screening links yet. Create one to share this reel.
             </p>
           </div>

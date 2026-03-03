@@ -58,5 +58,15 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  // Auto-create activity update
+  await prisma.update.create({
+    data: {
+      type: "DIRECTOR_ADDED",
+      title: `${name} added to the roster`,
+      directorId: director.id,
+      authorId: session.user.id,
+    },
+  }).catch(() => {}); // Non-critical
+
   return NextResponse.json(director, { status: 201 });
 }

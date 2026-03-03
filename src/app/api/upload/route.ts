@@ -46,6 +46,21 @@ export async function POST(req: NextRequest) {
       data: { r2Key },
     });
 
+    // Auto-create activity update
+    const director = await prisma.director.findUnique({
+      where: { id: directorId },
+      select: { name: true },
+    });
+    await prisma.update.create({
+      data: {
+        type: "SPOT_ADDED",
+        title: `New spot uploaded for ${director?.name || "a director"}`,
+        body: title,
+        directorId,
+        projectId: project.id,
+      },
+    }).catch(() => {}); // Non-critical
+
     return NextResponse.json({
       projectId: project.id,
       muxUploadUrl: upload.url,

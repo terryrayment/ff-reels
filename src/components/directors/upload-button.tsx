@@ -31,7 +31,6 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
     setProgress(0);
 
     try {
-      // Step 1: Get upload URLs from our API
       const res = await fetch("/api/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,14 +47,12 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
 
       const { muxUploadUrl, r2UploadUrl } = await res.json();
 
-      // Step 2: Upload to Mux (this is the primary video destination)
       setProgress(10);
       const muxUpload = new XMLHttpRequest();
       muxUpload.open("PUT", muxUploadUrl);
 
       muxUpload.upload.addEventListener("progress", (e) => {
         if (e.lengthComputable) {
-          // Mux upload is 10-80% of total progress
           setProgress(10 + Math.round((e.loaded / e.total) * 70));
         }
       });
@@ -66,7 +63,6 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
         muxUpload.send(file);
       });
 
-      // Step 3: Upload to R2 (archival copy, in background)
       setProgress(85);
       try {
         await fetch(r2UploadUrl, {
@@ -75,13 +71,11 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
           body: file,
         });
       } catch {
-        // R2 upload failure is non-critical
-        console.warn("R2 archival upload failed — video still processing via Mux");
+        console.warn("R2 archival upload failed");
       }
 
       setProgress(100);
 
-      // Success — close and refresh
       setTimeout(() => {
         setOpen(false);
         setTitle("");
@@ -128,21 +122,21 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               disabled={uploading}
             />
-            <div className="border-2 border-dashed border-white/10 rounded-lg p-8 text-center hover:border-white/20 transition-colors">
+            <div className="border-2 border-dashed border-[#E8E8E3] rounded-lg p-8 text-center hover:border-[#ccc] transition-colors">
               {file ? (
                 <div>
-                  <p className="text-sm font-medium">{file.name}</p>
-                  <p className="text-xs text-white/40 mt-1">
+                  <p className="text-sm font-medium text-[#1A1A1A]">{file.name}</p>
+                  <p className="text-xs text-[#999] mt-1">
                     {(file.size / 1048576).toFixed(1)} MB
                   </p>
                 </div>
               ) : (
                 <div>
-                  <Upload size={20} className="mx-auto text-white/20 mb-2" />
-                  <p className="text-sm text-white/40">
+                  <Upload size={20} className="mx-auto text-[#ccc] mb-2" />
+                  <p className="text-sm text-[#666]">
                     Drop a video file or click to browse
                   </p>
-                  <p className="text-xs text-white/20 mt-1">
+                  <p className="text-xs text-[#999] mt-1">
                     .MP4, .MOV, .MKV up to 5GB
                   </p>
                 </div>
@@ -191,13 +185,13 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
           {/* Upload progress */}
           {uploading && (
             <div className="space-y-1.5">
-              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-white rounded-full transition-all duration-300"
+                  className="h-full bg-[#1A1A1A] rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <p className="text-xs text-white/40 text-center">
+              <p className="text-xs text-[#999] text-center">
                 {progress < 80
                   ? "Uploading to Mux..."
                   : progress < 100

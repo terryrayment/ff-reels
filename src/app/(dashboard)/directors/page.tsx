@@ -26,32 +26,31 @@ export default async function DirectorsPage() {
 
   return (
     <div>
-      {/* Page header — minimal */}
+      {/* Page header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-light tracking-tight">Directors</h1>
-          <p className="text-sm text-white/40 mt-1">
+          <h1 className="text-2xl font-medium tracking-tight text-[#1A1A1A]">Directors</h1>
+          <p className="text-sm text-[#999] mt-1">
             {directors.length} director{directors.length !== 1 ? "s" : ""} on roster
           </p>
         </div>
         <AddDirectorButton />
       </div>
 
-      {/* Director grid — media-forward */}
+      {/* Director grid */}
       {directors.length > 0 ? (
         <DirectorGrid directors={directors} />
       ) : (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-5">
-            <Users size={24} className="text-white/20" />
+          <div className="w-14 h-14 rounded-2xl bg-[#F0F0EC] flex items-center justify-center mb-5">
+            <Users size={24} className="text-[#999]" />
           </div>
-          <h3 className="text-sm font-medium text-white/60">No directors yet</h3>
-          <p className="text-sm text-white/30 mt-1">Add your first director to get started.</p>
+          <h3 className="text-sm font-medium text-[#1A1A1A]">No directors yet</h3>
+          <p className="text-sm text-[#999] mt-1">Add your first director to get started.</p>
         </div>
       )}
     </div>
   );
 }
 
-// Client component for the add button — imported inline to keep page a server component
 import { AddDirectorButton } from "@/components/directors/add-director-button";

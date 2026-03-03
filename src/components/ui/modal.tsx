@@ -41,26 +41,26 @@ export function Modal({ open, onClose, title, description, children, className }
       }}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
 
       {/* Panel */}
       <div
         className={cn(
-          "relative bg-zinc-900 border border-white/10 rounded-xl shadow-2xl w-full max-w-lg mx-4",
+          "relative bg-white border border-[#E8E8E3] rounded-xl shadow-xl w-full max-w-lg mx-4",
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-start justify-between px-6 py-4 border-b border-white/10">
+        <div className="flex items-start justify-between px-6 py-4 border-b border-[#E8E8E3]">
           <div>
-            <h2 className="text-lg font-semibold">{title}</h2>
+            <h2 className="text-lg font-semibold text-[#1A1A1A]">{title}</h2>
             {description && (
-              <p className="text-sm text-white/50 mt-0.5">{description}</p>
+              <p className="text-sm text-[#999] mt-0.5">{description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-white/40 hover:text-white transition-colors p-1 -mr-1"
+            className="text-[#ccc] hover:text-[#666] transition-colors p-1 -mr-1"
           >
             <X size={18} />
           </button>

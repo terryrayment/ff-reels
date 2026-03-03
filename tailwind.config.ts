@@ -12,10 +12,14 @@ const config: Config = {
         sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
       },
       colors: {
+        cream: {
+          DEFAULT: "#F7F6F3",
+          dark: "#EEEDEA",
+        },
         surface: {
-          DEFAULT: "#0e0e0e",
-          raised: "#161616",
-          overlay: "#1a1a1a",
+          DEFAULT: "#FFFFFF",
+          raised: "#FAFAF8",
+          overlay: "#FFFFFF",
         },
       },
     },

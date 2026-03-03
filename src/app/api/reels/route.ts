@@ -67,5 +67,16 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  // Auto-create activity update
+  await prisma.update.create({
+    data: {
+      type: "REEL_CREATED",
+      title: `New reel: ${title}`,
+      body: `${reel.director.name} — ${reel._count.items} spot${reel._count.items !== 1 ? "s" : ""}`,
+      directorId: reel.director.id,
+      authorId: session.user.id,
+    },
+  }).catch(() => {}); // Non-critical
+
   return NextResponse.json(reel, { status: 201 });
 }

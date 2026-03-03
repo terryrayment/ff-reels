@@ -13,7 +13,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="space-y-1.5">
         {label && (
-          <label htmlFor={id} className="block text-sm text-white/60">
+          <label htmlFor={id} className="block text-sm text-[#666]">
             {label}
           </label>
         )}
@@ -21,15 +21,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           id={id}
           ref={ref}
           className={cn(
-            "w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30",
-            "focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent",
+            "w-full px-4 py-2.5 bg-white border border-[#E8E8E3] rounded-lg text-[#1A1A1A] placeholder:text-[#ccc]",
+            "focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20",
             "transition-colors",
-            error && "border-red-500/50 focus:ring-red-500/30",
+            error && "border-red-300 focus:ring-red-500/20",
             className
           )}
           {...props}
         />
-        {error && <p className="text-xs text-red-400">{error}</p>}
+        {error && <p className="text-xs text-red-500">{error}</p>}
       </div>
     );
   }
@@ -47,7 +47,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="space-y-1.5">
         {label && (
-          <label htmlFor={id} className="block text-sm text-white/60">
+          <label htmlFor={id} className="block text-sm text-[#666]">
             {label}
           </label>
         )}
@@ -55,15 +55,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           id={id}
           ref={ref}
           className={cn(
-            "w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30",
-            "focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent",
+            "w-full px-4 py-2.5 bg-white border border-[#E8E8E3] rounded-lg text-[#1A1A1A] placeholder:text-[#ccc]",
+            "focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20",
             "transition-colors resize-none",
-            error && "border-red-500/50 focus:ring-red-500/30",
+            error && "border-red-300 focus:ring-red-500/20",
             className
           )}
           {...props}
         />
-        {error && <p className="text-xs text-red-400">{error}</p>}
+        {error && <p className="text-xs text-red-500">{error}</p>}
       </div>
     );
   }
@@ -82,7 +82,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="space-y-1.5">
         {label && (
-          <label htmlFor={id} className="block text-sm text-white/60">
+          <label htmlFor={id} className="block text-sm text-[#666]">
             {label}
           </label>
         )}
@@ -90,21 +90,21 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           id={id}
           ref={ref}
           className={cn(
-            "w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white",
-            "focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent",
+            "w-full px-4 py-2.5 bg-white border border-[#E8E8E3] rounded-lg text-[#1A1A1A]",
+            "focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20",
             "transition-colors",
-            error && "border-red-500/50 focus:ring-red-500/30",
+            error && "border-red-300 focus:ring-red-500/20",
             className
           )}
           {...props}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-zinc-900">
+            <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
-        {error && <p className="text-xs text-red-400">{error}</p>}
+        {error && <p className="text-xs text-red-500">{error}</p>}
       </div>
     );
   }
