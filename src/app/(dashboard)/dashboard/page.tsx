@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { timeAgo } from "@/lib/utils";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { ComposeUpdate } from "@/components/dashboard/compose-update";
 
 function updateTypeLabel(type: string): string {
@@ -115,15 +116,24 @@ export default async function DashboardPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-10">
-        <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
-          Dashboard
-        </h1>
-        <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-[#999]">
-          {session.user.name || session.user.email}
-          <span className="mx-2 text-[#E0E0E0]">/</span>
-          {roleLabel}
-        </p>
+      <div className="flex items-start justify-between mb-10">
+        <div>
+          <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
+            Dashboard
+          </h1>
+          <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-[#999]">
+            {session.user.name || session.user.email}
+            <span className="mx-2 text-[#E0E0E0]">/</span>
+            {roleLabel}
+          </p>
+        </div>
+        <Link
+          href="/reels/build"
+          className="group flex items-center gap-3 px-6 py-3 rounded-xl bg-[#1A1A1A] text-white hover:bg-[#333] transition-all duration-300 shadow-sm"
+        >
+          <span className="text-[13px] font-medium tracking-wide">Build Reel</span>
+          <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-200" />
+        </Link>
       </div>
 
       {/* Stats row — card container */}

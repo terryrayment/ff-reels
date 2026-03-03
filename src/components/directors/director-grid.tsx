@@ -25,7 +25,7 @@ interface DirectorGridProps {
 
 export function DirectorGrid({ directors }: DirectorGridProps) {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       {directors.map((director) => {
         const hero = director.projects[0];
         const heroSrc = hero?.muxPlaybackId
@@ -57,7 +57,7 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
             {/* Info */}
             <div className="mt-3">
               <div className="flex items-baseline justify-between">
-                <h2 className="text-lg font-medium tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors">
+                <h2 className="text-[14px] font-medium tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors">
                   {director.name}
                 </h2>
                 {!director.isActive && (

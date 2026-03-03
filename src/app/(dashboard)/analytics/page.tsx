@@ -1,13 +1,13 @@
 import { prisma } from "@/lib/db";
-import { Eye, Smartphone, Monitor, Tablet } from "lucide-react";
+import { Eye, Smartphone, Monitor, Tablet, MapPin, Mail, Building2 } from "lucide-react";
 import { timeAgo, formatDuration } from "@/lib/utils";
 import Link from "next/link";
 
 export default async function AnalyticsPage() {
-  const [totalViews, recentViews, screeningLinks] = await Promise.all([
+  const [totalViews, recentViews, screeningLinks, topLocations, topAgencies] = await Promise.all([
     prisma.reelView.count(),
     prisma.reelView.findMany({
-      take: 20,
+      take: 30,
       orderBy: { startedAt: "desc" },
       include: {
         screeningLink: {
@@ -25,13 +25,29 @@ export default async function AnalyticsPage() {
     prisma.screeningLink.findMany({
       where: { isActive: true },
       orderBy: { createdAt: "desc" },
-      take: 20,
+      take: 30,
       include: {
         reel: {
           include: { director: { select: { name: true } } },
         },
         _count: { select: { views: true } },
       },
+    }),
+    // Top viewing locations
+    prisma.reelView.groupBy({
+      by: ["viewerCity", "viewerCountry"],
+      where: { viewerCity: { not: null } },
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      take: 10,
+    }),
+    // Top agencies/companies
+    prisma.screeningLink.groupBy({
+      by: ["recipientCompany"],
+      where: { recipientCompany: { not: null } },
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      take: 10,
     }),
   ]);
 
@@ -50,61 +66,167 @@ export default async function AnalyticsPage() {
     {} as Record<string, number>
   );
 
+  // Unique recipients by email
+  const uniqueEmails = new Set(
+    screeningLinks
+      .map((l) => l.recipientEmail)
+      .filter(Boolean)
+  );
+
   return (
     <div>
-      <div className="mb-12">
+      <div className="mb-10">
         <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
           Analytics
         </h1>
-        <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
+        <p className="text-[11px] uppercase tracking-[0.15em] text-[#999] mt-1.5">
           Viewing activity across all reels
         </p>
       </div>
 
-      {/* Top stats */}
-      <div className="grid grid-cols-4 gap-12 mb-16">
-        <div>
-          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
-            {totalViews}
-          </p>
-          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
-            Total Views
-          </p>
-        </div>
-        <div>
-          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
-            {avgDuration ? formatDuration(avgDuration) : "\u2014"}
-          </p>
-          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
-            Avg. Watch Time
-          </p>
-        </div>
-        <div>
-          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
-            {screeningLinks.length}
-          </p>
-          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
-            Active Links
-          </p>
-        </div>
-        <div>
-          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
-            {deviceBreakdown["desktop"] || 0} / {deviceBreakdown["mobile"] || 0}
-          </p>
-          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
-            Desktop / Mobile
-          </p>
+      {/* Top stats — card container */}
+      <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-7 mb-6">
+        <div className="flex gap-14">
+          <div>
+            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+              {totalViews}
+            </p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
+              Total Views
+            </p>
+          </div>
+          <div>
+            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+              {avgDuration ? formatDuration(avgDuration) : "\u2014"}
+            </p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
+              Avg. Watch Time
+            </p>
+          </div>
+          <div>
+            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+              {screeningLinks.length}
+            </p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
+              Active Links
+            </p>
+          </div>
+          <div>
+            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+              {uniqueEmails.size}
+            </p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
+              Recipients
+            </p>
+          </div>
+          <div>
+            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+              {deviceBreakdown["desktop"] || 0} / {deviceBreakdown["mobile"] || 0}
+            </p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
+              Desktop / Mobile
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Recent views feed */}
-      <div>
-        <h2 className="text-[10px] text-[#999] uppercase tracking-wider mb-5">
+      {/* Three-column insights */}
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Locations */}
+        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <MapPin size={12} className="text-[#999]" />
+            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
+              Top Locations
+            </h3>
+          </div>
+          {topLocations.length > 0 ? (
+            <div className="space-y-2">
+              {topLocations.map((loc, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <span className="text-[12px] text-[#1A1A1A]">
+                    {loc.viewerCity}{loc.viewerCountry ? `, ${loc.viewerCountry}` : ""}
+                  </span>
+                  <span className="text-[11px] text-[#999] tabular-nums">{loc._count.id}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[11px] text-[#ccc] py-4 text-center">
+              Location data populates as reels are viewed.
+            </p>
+          )}
+        </div>
+
+        {/* Agencies / Companies */}
+        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Building2 size={12} className="text-[#999]" />
+            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
+              Top Agencies
+            </h3>
+          </div>
+          {topAgencies.length > 0 ? (
+            <div className="space-y-2">
+              {topAgencies.map((agency, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <span className="text-[12px] text-[#1A1A1A] truncate">
+                    {agency.recipientCompany}
+                  </span>
+                  <span className="text-[11px] text-[#999] tabular-nums ml-3">{agency._count.id}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[11px] text-[#ccc] py-4 text-center">
+              Add recipient companies when creating screening links.
+            </p>
+          )}
+        </div>
+
+        {/* Recent Recipients */}
+        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Mail size={12} className="text-[#999]" />
+            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
+              Recent Recipients
+            </h3>
+          </div>
+          {screeningLinks.filter((l) => l.recipientEmail || l.recipientName).length > 0 ? (
+            <div className="space-y-2.5">
+              {screeningLinks
+                .filter((l) => l.recipientEmail || l.recipientName)
+                .slice(0, 10)
+                .map((link) => (
+                  <div key={link.id} className="min-w-0">
+                    <p className="text-[12px] text-[#1A1A1A] truncate">
+                      {link.recipientName || link.recipientEmail}
+                    </p>
+                    <p className="text-[10px] text-[#ccc] truncate">
+                      {link.recipientCompany
+                        ? `${link.recipientCompany} · `
+                        : ""}
+                      {link._count.views} view{link._count.views !== 1 ? "s" : ""}
+                    </p>
+                  </div>
+                ))}
+            </div>
+          ) : (
+            <p className="text-[11px] text-[#ccc] py-4 text-center">
+              Add recipient info when sending screening links.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* View Feed — card container */}
+      <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-7 mb-6">
+        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-5">
           View Feed
         </h2>
 
         {recentViews.length > 0 ? (
-          <div className="divide-y divide-[#E8E8E3]/60">
+          <div className="divide-y divide-[#F0F0EC]">
             {recentViews.map((view) => {
               const avgSpotCompletion =
                 view.spotViews.length > 0
@@ -133,9 +255,14 @@ export default async function AnalyticsPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-[13px] truncate">
-                        <span className="text-[#1A1A1A]">
+                        <span className="text-[#1A1A1A] font-medium">
                           {view.screeningLink.recipientName || "Anonymous"}
                         </span>
+                        {view.screeningLink.recipientCompany && (
+                          <span className="text-[#999]">
+                            {" "}({view.screeningLink.recipientCompany})
+                          </span>
+                        )}
                         <span className="text-[#bbb]"> viewed </span>
                         <span className="text-[#666]">
                           {view.screeningLink.reel.director.name}&apos;s{" "}
@@ -143,7 +270,12 @@ export default async function AnalyticsPage() {
                         </span>
                       </p>
                       <div className="flex items-center gap-3 mt-0.5">
-                        {view.totalDuration && (
+                        {view.screeningLink.recipientEmail && (
+                          <span className="text-[10px] text-[#bbb]">
+                            {view.screeningLink.recipientEmail}
+                          </span>
+                        )}
+                        {view.totalDuration != null && view.totalDuration > 0 && (
                           <span className="text-[10px] text-[#bbb]">
                             Watched {formatDuration(view.totalDuration)}
                           </span>
@@ -154,7 +286,8 @@ export default async function AnalyticsPage() {
                           </span>
                         )}
                         {view.viewerCity && (
-                          <span className="text-[10px] text-[#bbb]">
+                          <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
+                            <MapPin size={8} />
                             {view.viewerCity}
                             {view.viewerCountry ? `, ${view.viewerCountry}` : ""}
                           </span>
@@ -183,37 +316,41 @@ export default async function AnalyticsPage() {
         )}
       </div>
 
-      {/* Active Screening Links */}
-      <div className="mt-16">
-        <h2 className="text-[10px] text-[#999] uppercase tracking-wider mb-5">
+      {/* Active Screening Links — card container */}
+      <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-7">
+        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-5">
           Active Screening Links
         </h2>
 
         {screeningLinks.length > 0 ? (
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-1 divide-y-0">
             {screeningLinks.map((link) => (
               <Link
                 key={link.id}
                 href={`/reels/${link.reel.id}`}
-                className="group py-4 block"
+                className="group py-3.5 block border-b border-[#F0F0EC]"
               >
                 <div className="flex items-start justify-between">
                   <div className="min-w-0">
-                    <p className="text-[14px] text-[#1A1A1A] group-hover:text-black transition-colors truncate">
+                    <p className="text-[13px] text-[#1A1A1A] group-hover:text-black transition-colors truncate font-medium">
                       {link.recipientName || link.recipientEmail || "Untitled"}
                     </p>
-                    <p className="text-[12px] text-[#999] truncate mt-0.5">
+                    <p className="text-[11px] text-[#999] truncate mt-0.5">
                       {link.reel.director.name} — {link.reel.title}
                     </p>
+                    {(link.recipientCompany || link.recipientEmail) && (
+                      <p className="text-[10px] text-[#ccc] mt-0.5 truncate">
+                        {[link.recipientCompany, link.recipientEmail]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    )}
                   </div>
                   <span className="text-[11px] text-[#bbb] flex items-center gap-1 flex-shrink-0 ml-3">
                     <Eye size={10} />
                     {link._count.views}
                   </span>
                 </div>
-                {link.recipientCompany && (
-                  <p className="text-[10px] text-[#ccc] mt-1">{link.recipientCompany}</p>
-                )}
               </Link>
             ))}
           </div>

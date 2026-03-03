@@ -7,7 +7,13 @@ export default async function DirectorsPage() {
     orderBy: { name: "asc" },
     include: {
       projects: {
-        where: { muxPlaybackId: { not: null } },
+        where: {
+          isPublished: true,
+          OR: [
+            { muxPlaybackId: { not: null } },
+            { thumbnailUrl: { not: null } },
+          ],
+        },
         orderBy: { createdAt: "desc" },
         take: 1,
         select: {
