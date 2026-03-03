@@ -39,7 +39,7 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
             className="group block"
           >
             {/* Hero thumbnail */}
-            <div className="aspect-[16/10] bg-[#EEEDEA] overflow-hidden">
+            <div className="aspect-[16/10] bg-[#EEEDEA] overflow-hidden rounded-[3px]">
               {heroSrc ? (
                 <img
                   src={heroSrc}

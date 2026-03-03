@@ -421,6 +421,14 @@ async function main() {
       }
     }
 
+    // Get thumbnail URL from Wiredrive (large or small variant)
+    const thumbnailUrl =
+      asset.file?.large?.url ||
+      asset.file?.max?.url ||
+      asset.file?.small?.url ||
+      asset.file?.tiny?.url ||
+      null;
+
     // Create Project record
     const duration = parseFloat(asset.numericDuration || "0") || null;
     const fileSizeMb = asset.size ? asset.size / (1024 * 1024) : null;
@@ -437,6 +445,7 @@ async function main() {
         r2Key: r2Key || null,
         originalFilename: `${safeName}.${ext}`,
         fileSizeMb,
+        thumbnailUrl: thumbnailUrl || null,
         isPublished: true,
       },
     });

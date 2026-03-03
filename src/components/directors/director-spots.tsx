@@ -89,7 +89,7 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {sorted.map((project) => (
           <div key={project.id} className="group">
-            <div className="relative aspect-video bg-[#EEEDEA] overflow-hidden">
+            <div className="relative aspect-video bg-[#EEEDEA] overflow-hidden rounded-[3px]">
               {project.muxPlaybackId ? (
                 <img
                   src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`}
