@@ -8,8 +8,9 @@
   --border: #EBEBEB;
   --border-subtle: #F0F0EE;
   --muted: #999;
-  --transition-slow: 0.35s ease;
-  --transition-base: 0.3s ease;
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.15s ease;
 }
 
 body {
@@ -34,15 +35,25 @@ body {
 a,
 button {
   transition: opacity var(--transition-base), color var(--transition-base),
-    background-color var(--transition-base), border-color var(--transition-base);
+    background-color var(--transition-base), border-color var(--transition-base),
+    box-shadow var(--transition-base), transform var(--transition-fast);
 }
 
 /* ------------------------------------------------
-   Focus ring
+   Selection color
+   ------------------------------------------------ */
+::selection {
+  background: rgba(26, 26, 26, 0.08);
+  color: #1A1A1A;
+}
+
+/* ------------------------------------------------
+   Focus ring — refined
    ------------------------------------------------ */
 *:focus-visible {
-  outline: 1.5px solid rgba(0, 0, 0, 0.12);
+  outline: 1.5px solid rgba(0, 0, 0, 0.1);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* ------------------------------------------------
@@ -58,12 +69,29 @@ button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.07);
+  background: rgba(0, 0, 0, 0.06);
   border-radius: 100px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* ------------------------------------------------
+   Image loading — fade in
+   ------------------------------------------------ */
+img {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+img[loading="lazy"] {
+  opacity: 0;
+}
+
+img[loading="lazy"].loaded,
+img[loading="lazy"][src] {
+  opacity: 1;
 }
 
 /* ------------------------------------------------
@@ -83,21 +111,27 @@ mux-player {
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Frosted glass card */
+  .glass-card {
+    @apply rounded-2xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
 }
 
 /* ------------------------------------------------
-   Page transition
+   Page transition — refined ease
    ------------------------------------------------ */
 @layer components {
   .page-enter {
-    animation: pageIn 0.3s ease-out forwards;
+    animation: pageIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 }
 
 @keyframes pageIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;

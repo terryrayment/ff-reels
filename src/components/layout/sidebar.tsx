@@ -45,21 +45,21 @@ export function Sidebar({ user }: SidebarProps) {
   const visibleNav = navItems.filter((item) => item.roles.includes(role));
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] border-r border-[#EBEBEB] flex flex-col z-40">
+    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white/40 backdrop-blur-xl border-r border-[#E8E7E3]/60 flex flex-col z-40">
       {/* Brand */}
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">
-          <h1 className="text-[20px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none">
+          <h1 className="text-[20px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none group-hover:text-[#000] transition-colors">
             Friends &amp; Family
           </h1>
-          <span className="block mt-1.5 text-[9px] text-[#999] uppercase tracking-[0.2em] font-normal">
+          <span className="block mt-1.5 text-[9px] text-[#bbb] uppercase tracking-[0.2em] font-normal group-hover:text-[#999] transition-colors">
             Reels
           </span>
         </Link>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-7 space-y-1">
+      <nav className="flex-1 px-4 space-y-0.5">
         {visibleNav.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(item.href + "/");
@@ -68,10 +68,10 @@ export function Sidebar({ user }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "block py-1.5 text-[13px] transition-colors duration-300",
+                "block px-3 py-2 text-[13px] rounded-lg transition-all duration-300",
                 isActive
-                  ? "text-[#1A1A1A] font-medium"
-                  : "text-[#999] hover:text-[#1A1A1A]"
+                  ? "text-[#1A1A1A] font-medium bg-[#1A1A1A]/[0.04]"
+                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/[0.02]"
               )}
             >
               {item.label}
@@ -79,25 +79,27 @@ export function Sidebar({ user }: SidebarProps) {
           );
         })}
 
-        {/* Upload Spots -- ADMIN only, subtle text link */}
+        {/* Upload Spots -- ADMIN only */}
         {isAdmin && (
-          <Link
-            href="/directors?upload=true"
-            className="block pt-4 mt-4 border-t border-[#EBEBEB] text-[13px] text-[#999] hover:text-[#1A1A1A] transition-colors duration-300"
-          >
-            Upload Spots
-          </Link>
+          <div className="pt-3 mt-3 border-t border-[#E8E7E3]/60 mx-3">
+            <Link
+              href="/directors?upload=true"
+              className="block py-1.5 text-[13px] text-[#bbb] hover:text-[#1A1A1A] transition-colors duration-300"
+            >
+              Upload Spots
+            </Link>
+          </div>
         )}
       </nav>
 
       {/* User */}
-      <div className="px-7 py-6">
-        <div className="flex items-center justify-between">
+      <div className="px-4 py-5">
+        <div className="flex items-center justify-between px-3 py-2.5 rounded-lg bg-[#1A1A1A]/[0.02]">
           <div className="min-w-0">
-            <p className="text-[13px] text-[#1A1A1A] truncate font-medium leading-tight">
+            <p className="text-[12px] text-[#1A1A1A] truncate font-medium leading-tight">
               {user.name ?? user.email}
             </p>
-            <p className="text-[9px] text-[#999] uppercase tracking-[0.15em] mt-0.5">
+            <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em] mt-0.5">
               {getRoleDisplayName(role)}
             </p>
           </div>
@@ -108,8 +110,8 @@ export function Sidebar({ user }: SidebarProps) {
             aria-label="Sign out"
           >
             <svg
-              width="14"
-              height="14"
+              width="13"
+              height="13"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
