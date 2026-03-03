@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -32,22 +33,35 @@ export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-zinc-900 border-r border-white/10 flex flex-col z-40">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#111] border-r border-white/[0.06] flex flex-col z-40">
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-white/10">
-        <h1 className="text-lg font-semibold tracking-tight">
-          Friends & Family
-        </h1>
-        <p className="text-xs text-white/40 mt-0.5">Reel Platform</p>
+      <div className="px-5 py-5 border-b border-white/[0.06]">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <Image
+            src="/logo.png"
+            alt="F&F"
+            width={28}
+            height={28}
+            className="invert"
+          />
+          <div>
+            <h1 className="text-sm font-light tracking-tight">
+              Friends & Family
+            </h1>
+            <p className="text-[10px] text-white/25 uppercase tracking-[0.15em]">
+              Reels
+            </p>
+          </div>
+        </Link>
       </div>
 
       {/* Quick action */}
       <div className="px-3 pt-4 pb-2">
         <Link
           href="/directors?upload=true"
-          className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/15 rounded-lg text-sm font-medium transition-colors w-full"
+          className="flex items-center gap-2 px-3 py-2 bg-white/[0.06] hover:bg-white/10 rounded-lg text-xs font-medium transition-colors w-full text-white/60 hover:text-white"
         >
-          <Upload size={16} />
+          <Upload size={14} />
           Upload Spots
         </Link>
       </div>
@@ -64,11 +78,11 @@ export function Sidebar({ user }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
                 isActive
-                  ? "bg-white/10 text-white font-medium"
-                  : "text-white/50 hover:text-white hover:bg-white/5"
+                  ? "bg-white/[0.08] text-white"
+                  : "text-white/40 hover:text-white/70 hover:bg-white/[0.04]"
               )}
             >
-              <item.icon size={18} className={isActive ? "text-white" : "text-white/40"} />
+              <item.icon size={16} className={isActive ? "text-white/80" : "text-white/25"} />
               {item.label}
             </Link>
           );
@@ -76,22 +90,22 @@ export function Sidebar({ user }: SidebarProps) {
       </nav>
 
       {/* User */}
-      <div className="px-3 py-3 border-t border-white/10">
+      <div className="px-3 py-3 border-t border-white/[0.06]">
         <div className="flex items-center justify-between px-3 py-2">
           <div className="min-w-0">
-            <p className="text-sm truncate">
+            <p className="text-sm text-white/60 truncate">
               {user.name ?? user.email}
             </p>
-            <p className="text-xs text-white/40 capitalize">
+            <p className="text-[10px] text-white/25 capitalize">
               {user.role?.toLowerCase()}
             </p>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-white/30 hover:text-white transition-colors p-1 rounded"
+            className="text-white/20 hover:text-white/60 transition-colors p-1 rounded"
             title="Sign out"
           >
-            <LogOut size={16} />
+            <LogOut size={14} />
           </button>
         </div>
       </div>

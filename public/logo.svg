@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="currentColor">
+  <!-- Row 1 -->
+  <!-- Top-left: right-pointing arrow -->
+  <polygon points="0,0 50,0 100,50 100,100 50,100 0,50" />
+  <!-- Top-center: down-pointing square notch -->
+  <polygon points="50,0 100,0 100,50 50,50" />
+  <polygon points="100,50 150,50 150,100 100,100" />
+  <!-- Top-right: right-pointing arrow -->
+  <polygon points="100,0 150,0 200,50 200,100 150,100 100,50" />
+
+  <!-- Row 2 -->
+  <!-- Mid-left: right-pointing arrow -->
+  <polygon points="0,50 50,50 50,100 0,100" />
+  <polygon points="50,100 100,100 100,150 50,150" />
+  <!-- Mid-center: square -->
+  <polygon points="50,50 100,50 100,100 50,100" />
+  <!-- Mid-right: left notch -->
+  <polygon points="100,100 150,100 150,150 100,150" />
+  <polygon points="150,50 200,50 200,100 150,100" />
+
+  <!-- Row 3 -->
+  <!-- Bottom-left: right-pointing arrow -->
+  <polygon points="0,100 50,100 100,150 100,200 50,200 0,150" />
+  <!-- Bottom-center: -->
+  <polygon points="100,150 150,150 150,200 100,200" />
+  <polygon points="50,100 100,100 100,150 50,150" />
+  <!-- Bottom-right: right-pointing arrow -->
+  <polygon points="100,100 150,100 200,150 200,200 150,200 100,150" />
+</svg>
