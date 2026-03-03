@@ -46,7 +46,7 @@ export function Modal({ open, onClose, title, description, children, className }
       {/* Panel */}
       <div
         className={cn(
-          "relative bg-white border border-[#E8E8E3] rounded-xl shadow-xl w-full max-w-lg mx-4",
+          "relative bg-white border border-[#E8E8E3] rounded-sm shadow-xl w-full max-w-lg mx-4",
           className
         )}
       >

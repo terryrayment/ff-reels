@@ -325,7 +325,7 @@ async function main() {
 
   if (!jobs.length) {
     console.error(`❌ No video files found in any director subfolder.`);
-    console.error(`   Supported formats: ${[...VIDEO_EXTENSIONS].join(", ")}`);
+    console.error(`   Supported formats: ${Array.from(VIDEO_EXTENSIONS).join(", ")}`);
     process.exit(1);
   }
 
@@ -475,7 +475,7 @@ async function main() {
       if (r2DownloadUrl) {
         // Create asset from R2 URL (single upload, Mux pulls from R2)
         const asset = await mux.video.assets.create({
-          input: [{ url: r2DownloadUrl }],
+          inputs: [{ url: r2DownloadUrl }],
           playback_policy: ["signed"],
           encoding_tier: "baseline",
         });

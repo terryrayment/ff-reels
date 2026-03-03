@@ -41,9 +41,9 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Only ADMIN can post notes
-  if (session.user.role !== "ADMIN") {
-    return NextResponse.json({ error: "Only admins can post updates" }, { status: 403 });
+  // ADMIN and REP can post notes
+  if (session.user.role !== "ADMIN" && session.user.role !== "REP") {
+    return NextResponse.json({ error: "Only team members can post updates" }, { status: 403 });
   }
 
   const body = await req.json();

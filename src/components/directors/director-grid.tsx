@@ -36,7 +36,7 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
           <Link
             key={director.id}
             href={`/directors/${director.id}`}
-            className="group block bg-white border border-[#E8E8E3] rounded-md overflow-hidden hover:shadow-md hover:border-[#ddd] transition-all"
+            className="group block bg-white border border-[#E8E8E3] overflow-hidden hover:shadow-sm hover:border-[#ddd] transition-all"
           >
             {/* Hero thumbnail */}
             <div className="aspect-[16/10] bg-[#EEEDEA] relative overflow-hidden">
@@ -55,13 +55,13 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
             </div>
 
             {/* Info */}
-            <div className="px-4 py-3">
+            <div className="px-3 py-2.5">
               <div className="flex items-center justify-between">
-                <h2 className="text-[15px] font-semibold text-[#1A1A1A] group-hover:text-black transition-colors">
+                <h2 className="text-[13px] font-semibold text-[#1A1A1A] uppercase tracking-wide group-hover:text-black transition-colors">
                   {director.name}
                 </h2>
                 {!director.isActive && (
-                  <span className="text-[10px] text-[#999] bg-[#F0F0EC] px-1.5 py-0.5 rounded">Off-roster</span>
+                  <span className="text-[10px] text-[#999] bg-[#F0F0EC] px-1.5 py-0.5 rounded-sm">Off-roster</span>
                 )}
               </div>
               <p className="text-[12px] text-[#999] mt-0.5">
@@ -73,7 +73,7 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
                   {director.categories.slice(0, 3).map((cat) => (
                     <span
                       key={cat}
-                      className="text-[10px] text-[#999] bg-[#F7F6F3] px-1.5 py-0.5 rounded"
+                      className="text-[10px] text-[#999] bg-[#F7F6F3] px-1.5 py-0.5 rounded-sm"
                     >
                       {cat}
                     </span>

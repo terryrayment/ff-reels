@@ -37,7 +37,7 @@ export default async function DirectorsPage() {
         <DirectorGrid directors={directors} />
       ) : (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-12 h-12 rounded-lg bg-[#F0F0EC] flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-sm bg-[#F0F0EC] flex items-center justify-center mb-4">
             <Users size={20} className="text-[#999]" />
           </div>
           <h3 className="text-sm font-medium text-[#1A1A1A]">No directors yet</h3>

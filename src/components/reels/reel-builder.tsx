@@ -115,7 +115,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                     <button
                       key={project.id}
                       onClick={() => toggleProject(project.id)}
-                      className={`text-left rounded-lg overflow-hidden transition-all ${
+                      className={`text-left overflow-hidden transition-all ${
                         isSelected
                           ? "ring-2 ring-[#1A1A1A] bg-white"
                           : "bg-white hover:shadow-sm border border-[#E8E8E3]"
@@ -135,14 +135,14 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                           </div>
                         )}
                         {isSelected && (
-                          <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-[#1A1A1A] flex items-center justify-center">
+                          <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-sm bg-[#1A1A1A] flex items-center justify-center">
                             <span className="text-[10px] font-bold text-white">
                               {selectedProjectIds.indexOf(project.id) + 1}
                             </span>
                           </div>
                         )}
                         {project.duration && (
-                          <span className="absolute bottom-1 right-1 text-[9px] bg-black/60 px-1 py-0.5 rounded text-white/90">
+                          <span className="absolute bottom-1 right-1 text-[9px] bg-black/60 px-1 py-0.5 rounded-sm text-white/90">
                             {formatDuration(project.duration)}
                           </span>
                         )}
@@ -168,7 +168,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
 
       {/* Right — reel configuration */}
       <div className="space-y-5 sticky top-8 self-start">
-        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl space-y-4">
+        <div className="p-5 bg-white border border-[#E8E8E3] space-y-4">
           <h3 className="text-sm font-medium text-[#1A1A1A]">Reel Details</h3>
 
           <Input
@@ -203,7 +203,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         </div>
 
         {/* Selected spots order */}
-        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl">
+        <div className="p-5 bg-white border border-[#E8E8E3]">
           <h3 className="text-sm font-medium text-[#1A1A1A] mb-3">
             Spot Order ({selectedProjects.length})
           </h3>
@@ -213,7 +213,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               {selectedProjects.map((project, i) => (
                 <div
                   key={project.id}
-                  className="flex items-center gap-2 p-2 rounded bg-[#F7F6F3] text-sm"
+                  className="flex items-center gap-2 p-2 rounded-sm bg-[#F7F6F3] text-sm"
                 >
                   <span className="text-xs text-[#999] w-4">{i + 1}</span>
                   <span className="flex-1 truncate text-[#1A1A1A]">{project.title}</span>

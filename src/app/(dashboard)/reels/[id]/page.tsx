@@ -47,7 +47,7 @@ export default async function ReelDetailPage({
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-medium tracking-tight text-[#1A1A1A]">{reel.title}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#1A1A1A]">{reel.title}</h1>
             <Badge
               variant={
                 reel.reelType === "PORTFOLIO"
@@ -76,10 +76,10 @@ export default async function ReelDetailPage({
 
       {/* Spots in the reel */}
       <div className="mt-8">
-        <h2 className="text-sm font-medium text-[#999] uppercase tracking-wider mb-4">
+        <h2 className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-4">
           Spots
         </h2>
-        <div className="bg-white border border-[#E8E8E3] rounded-xl divide-y divide-[#E8E8E3]">
+        <div className="bg-white border border-[#E8E8E3] divide-y divide-[#E8E8E3]">
           {reel.items.map((item, index) => (
             <div
               key={item.id}
@@ -91,7 +91,7 @@ export default async function ReelDetailPage({
               </span>
 
               {/* Thumbnail */}
-              <div className="w-24 h-14 rounded bg-[#F0F0EC] overflow-hidden flex-shrink-0">
+              <div className="w-24 h-14 rounded-sm bg-[#F0F0EC] overflow-hidden flex-shrink-0">
                 {item.project.muxPlaybackId ? (
                   <img
                     src={`https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=192&height=112&fit_mode=smartcrop`}
@@ -128,14 +128,14 @@ export default async function ReelDetailPage({
       {/* Screening Links */}
       <div className="mt-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-medium text-[#999] uppercase tracking-wider">
+          <h2 className="text-[11px] font-semibold text-[#999] uppercase tracking-wider">
             Screening Links ({reel.screeningLinks.length})
           </h2>
           <CreateScreeningLink reelId={reel.id} />
         </div>
 
         {reel.screeningLinks.length > 0 ? (
-          <div className="bg-white border border-[#E8E8E3] rounded-xl divide-y divide-[#E8E8E3]">
+          <div className="bg-white border border-[#E8E8E3] divide-y divide-[#E8E8E3]">
             {reel.screeningLinks.map((link) => (
               <div
                 key={link.id}
@@ -177,7 +177,7 @@ export default async function ReelDetailPage({
             ))}
           </div>
         ) : (
-          <div className="py-8 text-center bg-white rounded-xl border border-[#E8E8E3]">
+          <div className="py-8 text-center bg-white border border-[#E8E8E3]">
             <p className="text-sm text-[#999]">
               No screening links yet. Create one to share this reel.
             </p>

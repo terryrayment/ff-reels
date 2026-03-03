@@ -52,9 +52,9 @@ export function PostUpdateForm({ directors }: PostUpdateFormProps) {
     return (
       <button
         onClick={() => setExpanded(true)}
-        className="w-full p-4 bg-white border border-[#E8E8E3] rounded-xl text-left hover:border-[#ccc] hover:shadow-sm transition-all flex items-center gap-3"
+        className="w-full p-4 bg-white border border-[#E8E8E3] text-left hover:border-[#ccc] hover:shadow-sm transition-all flex items-center gap-3"
       >
-        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+        <div className="w-9 h-9 rounded-sm bg-blue-50 flex items-center justify-center flex-shrink-0">
           <Megaphone size={16} className="text-blue-600" />
         </div>
         <span className="text-sm text-[#999]">Post an update for the team...</span>
@@ -63,9 +63,9 @@ export function PostUpdateForm({ directors }: PostUpdateFormProps) {
   }
 
   return (
-    <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl">
+    <div className="p-5 bg-white border border-[#E8E8E3]">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-7 h-7 rounded-md bg-blue-50 flex items-center justify-center">
+        <div className="w-7 h-7 rounded-sm bg-blue-50 flex items-center justify-center">
           <Megaphone size={14} className="text-blue-600" />
         </div>
         <h3 className="text-sm font-medium text-[#1A1A1A]">Post an Update</h3>
@@ -77,7 +77,7 @@ export function PostUpdateForm({ directors }: PostUpdateFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Headline — e.g. 'New Caleb Slain work added' or 'Big pitch this week'"
-          className="w-full px-4 py-2.5 bg-white border border-[#E8E8E3] rounded-lg text-sm text-[#1A1A1A] placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-colors"
+          className="w-full px-4 py-2.5 bg-white border border-[#E8E8E3] rounded-sm text-sm text-[#1A1A1A] placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-colors"
           required
           autoFocus
         />
@@ -87,14 +87,14 @@ export function PostUpdateForm({ directors }: PostUpdateFormProps) {
           onChange={(e) => setBody(e.target.value)}
           placeholder="Add more detail (optional) — context for sales reps, what to pitch, etc."
           rows={3}
-          className="w-full px-4 py-2.5 bg-white border border-[#E8E8E3] rounded-lg text-sm text-[#1A1A1A] placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-colors resize-none"
+          className="w-full px-4 py-2.5 bg-white border border-[#E8E8E3] rounded-sm text-sm text-[#1A1A1A] placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-colors resize-none"
         />
 
         <div className="flex items-center gap-3">
           <select
             value={directorId}
             onChange={(e) => setDirectorId(e.target.value)}
-            className="flex-1 px-3 py-2 bg-white border border-[#E8E8E3] rounded-lg text-sm text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10"
+            className="flex-1 px-3 py-2 bg-white border border-[#E8E8E3] rounded-sm text-sm text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10"
           >
             <option value="">No director (general note)</option>
             {directors.map((d) => (
@@ -105,7 +105,7 @@ export function PostUpdateForm({ directors }: PostUpdateFormProps) {
           <button
             type="button"
             onClick={() => setIsPinned(!isPinned)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors border ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-sm text-xs font-medium transition-colors border ${
               isPinned
                 ? "bg-amber-50 border-amber-200 text-amber-700"
                 : "bg-white border-[#E8E8E3] text-[#999] hover:text-[#666]"

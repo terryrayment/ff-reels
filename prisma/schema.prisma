@@ -21,6 +21,7 @@ model User {
   sessions      Session[]
   reelViews     ReelView[]
   updates       Update[]
+  reels         Reel[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -162,6 +163,11 @@ model Reel {
   description    String?    @db.Text
   curatorialNote String?    @db.Text  // Rep's note: "Look at humor in spots 2 and 4"
   reelType       ReelType   @default(CUSTOM)
+
+  // Who built this reel
+  createdById    String?
+  createdBy      User?      @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
   items          ReelItem[]
   screeningLinks ScreeningLink[]
   createdAt      DateTime   @default(now())

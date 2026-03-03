@@ -5,7 +5,8 @@ import { prisma } from "@/lib/db";
 
 /**
  * GET /api/reels
- * List all reels with director info and item counts.
+ * List reels with director info and item counts.
+ * ADMIN sees all reels. REP sees only their own.
  */
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -13,7 +14,13 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const where =
+    session.user.role === "REP"
+      ? { createdById: session.user.id }
+      : {};
+
   const reels = await prisma.reel.findMany({
+    where,
     orderBy: { updatedAt: "desc" },
     include: {
       director: { select: { id: true, name: true, slug: true } },
@@ -26,7 +33,7 @@ export async function GET() {
 
 /**
  * POST /api/reels
- * Create a new reel.
+ * Create a new reel. Always stores createdById.
  */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -51,6 +58,7 @@ export async function POST(req: NextRequest) {
       description: description || null,
       curatorialNote: curatorialNote || null,
       reelType: reelType || "CUSTOM",
+      createdById: session.user.id,
       items: projectIds?.length
         ? {
             create: projectIds.map((pid: string, i: number) => ({

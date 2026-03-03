@@ -25,8 +25,8 @@ export default async function ReelBuildPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-light tracking-tight mb-1">Build Reel</h1>
-      <p className="text-sm text-white/40 mb-8">
+      <h1 className="text-2xl font-semibold tracking-tight mb-1">Build Reel</h1>
+      <p className="text-sm text-[#999] mb-8">
         Select a director and add spots to create a custom reel.
       </p>
 

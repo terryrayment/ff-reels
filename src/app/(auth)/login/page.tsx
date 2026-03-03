@@ -36,10 +36,10 @@ export default function LoginPage() {
       <div className="w-full max-w-xs">
         {/* Logo mark + wordmark */}
         <div className="flex flex-col items-center mb-12">
-          <div className="w-12 h-12 bg-[#1A1A1A] rounded-xl flex items-center justify-center mb-5">
+          <div className="w-12 h-12 bg-[#1A1A1A] rounded-sm flex items-center justify-center mb-5">
             <span className="text-sm font-semibold text-white tracking-tight">F&F</span>
           </div>
-          <h1 className="text-lg font-medium text-[#1A1A1A] tracking-tight">
+          <h1 className="text-lg font-semibold text-[#1A1A1A] tracking-tight">
             Friends & Family
           </h1>
           <p className="text-[10px] text-[#999] mt-1 uppercase tracking-[0.25em]">
@@ -49,7 +49,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block text-[10px] text-[#999] mb-1.5 uppercase tracking-wider">
+            <label htmlFor="email" className="block text-[10px] text-[#999] mb-1.5 uppercase tracking-wider font-semibold">
               Email
             </label>
             <input
@@ -60,11 +60,11 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@friendsandfamily.tv"
               autoComplete="email"
-              className="w-full px-4 py-3 bg-white border border-[#E8E8E3] rounded-lg text-[#1A1A1A] text-sm placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-all"
+              className="w-full px-4 py-3 bg-white border border-[#E8E8E3] rounded-sm text-[#1A1A1A] text-sm placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-all"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-[10px] text-[#999] mb-1.5 uppercase tracking-wider">
+            <label htmlFor="password" className="block text-[10px] text-[#999] mb-1.5 uppercase tracking-wider font-semibold">
               Password
             </label>
             <input
@@ -74,7 +74,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              className="w-full px-4 py-3 bg-white border border-[#E8E8E3] rounded-lg text-[#1A1A1A] text-sm placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-all"
+              className="w-full px-4 py-3 bg-white border border-[#E8E8E3] rounded-sm text-[#1A1A1A] text-sm placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-all"
             />
           </div>
 
@@ -85,7 +85,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[#1A1A1A] text-white text-sm font-medium rounded-lg hover:bg-[#333] transition-all disabled:opacity-40 mt-1"
+            className="w-full py-3 bg-[#1A1A1A] text-white text-sm font-semibold rounded-sm hover:bg-[#333] transition-all disabled:opacity-40 mt-1 uppercase tracking-wider"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>

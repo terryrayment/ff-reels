@@ -35,7 +35,7 @@ body {
 mux-player {
   --media-object-fit: cover;
   --media-object-position: center;
-  border-radius: 8px;
+  border-radius: 2px;
   overflow: hidden;
 }
 

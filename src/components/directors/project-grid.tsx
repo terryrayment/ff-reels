@@ -28,7 +28,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
       {projects.map((project) => (
         <div key={project.id} className="group cursor-pointer">
           {/* Thumbnail */}
-          <div className="relative aspect-video bg-[#EEEDEA] rounded-lg overflow-hidden">
+          <div className="relative aspect-video bg-[#EEEDEA] overflow-hidden">
             {project.muxPlaybackId ? (
               <img
                 src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`}
@@ -51,26 +51,26 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
 
             {/* Status indicator */}
             {project.muxStatus === "preparing" && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-amber-300">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded-sm text-[10px] text-amber-300">
                 <Clock size={10} />
                 Processing
               </div>
             )}
             {project.muxStatus === "errored" && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-red-300">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded-sm text-[10px] text-red-300">
                 <AlertCircle size={10} />
                 Error
               </div>
             )}
             {project.muxStatus === "ready" && !project.isPublished && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white/60">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 px-2 py-0.5 rounded-sm text-[10px] text-white/60">
                 Draft
               </div>
             )}
 
             {/* Duration badge */}
             {project.duration && (
-              <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 px-1.5 py-0.5 rounded text-white/90">
+              <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 px-1.5 py-0.5 rounded-sm text-white/90">
                 {formatDuration(project.duration)}
               </span>
             )}

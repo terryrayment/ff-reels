@@ -122,7 +122,7 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               disabled={uploading}
             />
-            <div className="border-2 border-dashed border-[#E8E8E3] rounded-lg p-8 text-center hover:border-[#ccc] transition-colors">
+            <div className="border-2 border-dashed border-[#E8E8E3] rounded-sm p-8 text-center hover:border-[#ccc] transition-colors">
               {file ? (
                 <div>
                   <p className="text-sm font-medium text-[#1A1A1A]">{file.name}</p>
@@ -185,9 +185,9 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
           {/* Upload progress */}
           {uploading && (
             <div className="space-y-1.5">
-              <div className="h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden">
+              <div className="h-1.5 bg-[#F0F0EC] rounded-sm overflow-hidden">
                 <div
-                  className="h-full bg-[#1A1A1A] rounded-full transition-all duration-300"
+                  className="h-full bg-[#1A1A1A] rounded-sm transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>

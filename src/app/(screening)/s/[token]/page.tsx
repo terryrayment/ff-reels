@@ -66,7 +66,7 @@ export default async function ScreeningPage({
 
       {reel.curatorialNote && (
         <div className="max-w-4xl mx-auto px-8 pb-8">
-          <div className="px-5 py-4 bg-white/[0.03] rounded-lg border border-white/5">
+          <div className="px-5 py-4 bg-white/[0.03] rounded-sm border border-white/5">
             <p className="text-sm text-white/50 italic leading-relaxed">
               {reel.curatorialNote}
             </p>
@@ -78,7 +78,7 @@ export default async function ScreeningPage({
         <div className="space-y-16">
           {reel.items.map((item) => (
             <div key={item.id}>
-              <div className="aspect-video bg-white/[0.03] rounded-lg overflow-hidden">
+              <div className="aspect-video bg-white/[0.03] rounded-sm overflow-hidden">
                 {item.project.muxPlaybackId ? (
                   <div className="w-full h-full flex items-center justify-center text-white/20 text-sm">
                     <img

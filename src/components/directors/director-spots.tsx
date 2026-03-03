@@ -52,7 +52,7 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
 
   if (projects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-md border border-dashed border-[#E8E8E3]">
+      <div className="flex flex-col items-center justify-center py-20 text-center bg-white border border-dashed border-[#E8E8E3]">
         <Upload size={24} className="text-[#ccc] mb-3" />
         <p className="text-[13px] text-[#666]">No spots uploaded yet</p>
         <p className="text-[12px] text-[#999] mt-1">
@@ -71,9 +71,9 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
           <button
             key={opt.key}
             onClick={() => setSortBy(opt.key)}
-            className={`px-2.5 py-1 text-[12px] rounded transition-colors ${
+            className={`px-2.5 py-1 text-[11px] uppercase tracking-wider rounded-sm transition-colors ${
               sortBy === opt.key
-                ? "bg-[#1A1A1A] text-white font-medium"
+                ? "bg-[#1A1A1A] text-white font-semibold"
                 : "text-[#999] hover:text-[#1A1A1A] hover:bg-[#F0F0EC]"
             }`}
           >
@@ -86,7 +86,7 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {sorted.map((project) => (
           <div key={project.id} className="group">
-            <div className="relative aspect-video bg-[#EEEDEA] rounded-md overflow-hidden">
+            <div className="relative aspect-video bg-[#EEEDEA] overflow-hidden">
               {project.muxPlaybackId ? (
                 <img
                   src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`}
@@ -108,18 +108,18 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
               )}
 
               {project.muxStatus === "preparing" && (
-                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded text-[10px] text-amber-300">
+                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded-sm text-[10px] text-amber-300">
                   <Clock size={9} /> Processing
                 </div>
               )}
               {project.muxStatus === "errored" && (
-                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded text-[10px] text-red-300">
+                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded-sm text-[10px] text-red-300">
                   <AlertCircle size={9} /> Error
                 </div>
               )}
 
               {project.duration && (
-                <span className="absolute bottom-1.5 right-1.5 text-[10px] bg-black/70 px-1.5 py-0.5 rounded text-white">
+                <span className="absolute bottom-1.5 right-1.5 text-[10px] bg-black/70 px-1.5 py-0.5 rounded-sm text-white">
                   {formatDuration(project.duration)}
                 </span>
               )}

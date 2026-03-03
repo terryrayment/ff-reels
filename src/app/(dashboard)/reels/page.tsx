@@ -1,4 +1,7 @@
 import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Film, Send, Plus } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
@@ -6,7 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export default async function ReelsPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/login");
+
+  const isRep = session.user.role === "REP";
+
+  const where = isRep ? { createdById: session.user.id } : {};
+
   const reels = await prisma.reel.findMany({
+    where,
     orderBy: { updatedAt: "desc" },
     include: {
       director: { select: { id: true, name: true } },
@@ -32,9 +43,9 @@ export default async function ReelsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-medium tracking-tight text-[#1A1A1A]">Reels</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-[#1A1A1A]">Reels</h1>
           <p className="text-sm text-[#999] mt-1">
-            {reels.length} reel{reels.length !== 1 ? "s" : ""} created
+            {reels.length} reel{reels.length !== 1 ? "s" : ""}{isRep ? " by you" : " created"}
           </p>
         </div>
         <Link href="/reels/build">
@@ -52,14 +63,14 @@ export default async function ReelsPage() {
               <Link
                 key={reel.id}
                 href={`/reels/${reel.id}`}
-                className="flex items-start gap-5 p-4 rounded-xl bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all group"
+                className="flex items-start gap-5 p-4 rounded-sm bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all group"
               >
                 {/* Thumbnail strip */}
                 <div className="flex gap-1 flex-shrink-0">
                   {reel.items.slice(0, 3).map((item) => (
                     <div
                       key={item.id}
-                      className="w-20 h-12 rounded bg-[#F0F0EC] overflow-hidden"
+                      className="w-20 h-12 rounded-sm bg-[#F0F0EC] overflow-hidden"
                     >
                       {item.project.muxPlaybackId ? (
                         <img
@@ -80,7 +91,7 @@ export default async function ReelsPage() {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-medium text-[#1A1A1A] group-hover:text-black transition-colors truncate">
+                    <h3 className="text-sm font-bold text-[#1A1A1A] group-hover:text-black transition-colors truncate">
                       {reel.title}
                     </h3>
                     <Badge
@@ -120,10 +131,10 @@ export default async function ReelsPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-[#F0F0EC] flex items-center justify-center mb-5">
+          <div className="w-14 h-14 rounded-sm bg-[#F0F0EC] flex items-center justify-center mb-5">
             <Film size={24} className="text-[#999]" />
           </div>
-          <h3 className="text-sm font-medium text-[#1A1A1A]">No reels yet</h3>
+          <h3 className="text-sm font-bold text-[#1A1A1A]">No reels yet</h3>
           <p className="text-sm text-[#999] mt-1 max-w-sm">
             Build your first reel by selecting spots from a director&apos;s library.
           </p>

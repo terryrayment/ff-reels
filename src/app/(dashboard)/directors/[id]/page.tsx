@@ -67,7 +67,7 @@ export default async function DirectorDetailPage({
 
       <div className="mt-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-[#666] uppercase tracking-wider">
+          <h2 className="text-[11px] font-semibold text-[#666] uppercase tracking-wider">
             Spots ({director.projects.length})
           </h2>
           <UploadButton directorId={director.id} directorName={director.name} />
@@ -78,7 +78,7 @@ export default async function DirectorDetailPage({
 
       {director.reels.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-sm font-semibold text-[#666] uppercase tracking-wider mb-3">
+          <h2 className="text-[11px] font-semibold text-[#666] uppercase tracking-wider mb-3">
             Reels ({director.reels.length})
           </h2>
           <div className="grid grid-cols-3 gap-3">
@@ -86,7 +86,7 @@ export default async function DirectorDetailPage({
               <a
                 key={reel.id}
                 href={`/reels/${reel.id}`}
-                className="p-3.5 bg-white rounded-md border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all"
+                className="p-3.5 bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all"
               >
                 <p className="text-[13px] font-semibold text-[#1A1A1A]">{reel.title}</p>
                 <p className="text-[12px] text-[#999] mt-0.5">

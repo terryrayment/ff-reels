@@ -38,7 +38,7 @@ export default async function UpdatesPage() {
     <div>
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-medium tracking-tight text-[#1A1A1A]">Updates</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#1A1A1A]">Updates</h1>
           <p className="text-sm text-[#999] mt-1">
             Latest activity and announcements for the team.
           </p>
@@ -47,31 +47,31 @@ export default async function UpdatesPage() {
 
       {/* Quick stats strip */}
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="flex items-center gap-3 p-4 bg-white border border-[#E8E8E3] rounded-xl">
-          <div className="w-10 h-10 rounded-lg bg-[#F7F6F3] flex items-center justify-center">
+        <div className="flex items-center gap-3 p-4 bg-white border border-[#E8E8E3]">
+          <div className="w-10 h-10 rounded-sm bg-[#F7F6F3] flex items-center justify-center">
             <Users size={18} className="text-[#999]" />
           </div>
           <div>
-            <p className="text-2xl font-light text-[#1A1A1A]">{directorCount}</p>
-            <p className="text-xs text-[#999]">Directors on roster</p>
+            <p className="text-2xl font-semibold text-[#1A1A1A]">{directorCount}</p>
+            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Directors on roster</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 p-4 bg-white border border-[#E8E8E3] rounded-xl">
-          <div className="w-10 h-10 rounded-lg bg-[#F7F6F3] flex items-center justify-center">
+        <div className="flex items-center gap-3 p-4 bg-white border border-[#E8E8E3]">
+          <div className="w-10 h-10 rounded-sm bg-[#F7F6F3] flex items-center justify-center">
             <Film size={18} className="text-[#999]" />
           </div>
           <div>
-            <p className="text-2xl font-light text-[#1A1A1A]">{spotCount}</p>
-            <p className="text-xs text-[#999]">Total spots</p>
+            <p className="text-2xl font-semibold text-[#1A1A1A]">{spotCount}</p>
+            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Total spots</p>
           </div>
         </div>
-        <div className="flex items-center gap-3 p-4 bg-white border border-[#E8E8E3] rounded-xl">
-          <div className="w-10 h-10 rounded-lg bg-[#F7F6F3] flex items-center justify-center">
+        <div className="flex items-center gap-3 p-4 bg-white border border-[#E8E8E3]">
+          <div className="w-10 h-10 rounded-sm bg-[#F7F6F3] flex items-center justify-center">
             <Send size={18} className="text-[#999]" />
           </div>
           <div>
-            <p className="text-2xl font-light text-[#1A1A1A]">{reelCount}</p>
-            <p className="text-xs text-[#999]">Reels built</p>
+            <p className="text-2xl font-semibold text-[#1A1A1A]">{reelCount}</p>
+            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Reels built</p>
           </div>
         </div>
       </div>
@@ -81,7 +81,7 @@ export default async function UpdatesPage() {
 
       {/* Updates feed */}
       <div className="mt-8">
-        <h2 className="text-sm font-medium text-[#999] uppercase tracking-wider mb-4">
+        <h2 className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-4">
           Activity Feed
         </h2>
 
@@ -90,7 +90,7 @@ export default async function UpdatesPage() {
             {updates.map((update) => (
               <div
                 key={update.id}
-                className={`p-5 bg-white border rounded-xl ${
+                className={`p-5 bg-white border ${
                   update.isPinned
                     ? "border-amber-200 bg-amber-50/30"
                     : "border-[#E8E8E3]"
@@ -98,7 +98,7 @@ export default async function UpdatesPage() {
               >
                 <div className="flex items-start gap-4">
                   {/* Icon */}
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                  <div className={`w-9 h-9 rounded-sm flex items-center justify-center flex-shrink-0 ${
                     update.type === "ADMIN_NOTE"
                       ? "bg-blue-50"
                       : update.type === "SPOT_ADDED"
@@ -137,7 +137,7 @@ export default async function UpdatesPage() {
 
                     {/* Thumbnail for spots */}
                     {update.project?.muxPlaybackId && (
-                      <div className="mt-3 w-48 aspect-video rounded-lg overflow-hidden bg-[#EEEDEA]">
+                      <div className="mt-3 w-48 aspect-video overflow-hidden bg-[#EEEDEA]">
                         <img
                           src={`https://image.mux.com/${update.project.muxPlaybackId}/thumbnail.jpg?width=384&height=216&fit_mode=smartcrop`}
                           alt={update.project.title}
@@ -149,7 +149,7 @@ export default async function UpdatesPage() {
 
                     {/* Image for admin notes */}
                     {update.imageUrl && (
-                      <div className="mt-3 max-w-md rounded-lg overflow-hidden">
+                      <div className="mt-3 max-w-md overflow-hidden">
                         <img
                           src={update.imageUrl}
                           alt=""
@@ -180,7 +180,7 @@ export default async function UpdatesPage() {
                         </>
                       )}
                       {update.type === "ADMIN_NOTE" && (
-                        <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-medium">
+                        <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded-sm text-[10px] font-medium">
                           Note
                         </span>
                       )}
@@ -191,7 +191,7 @@ export default async function UpdatesPage() {
             ))}
           </div>
         ) : (
-          <div className="py-16 text-center bg-white rounded-xl border border-[#E8E8E3]">
+          <div className="py-16 text-center bg-white border border-[#E8E8E3]">
             <Megaphone size={28} className="mx-auto text-[#ccc] mb-3" />
             <p className="text-sm text-[#666]">No updates yet</p>
             <p className="text-xs text-[#999] mt-1">

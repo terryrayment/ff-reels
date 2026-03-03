@@ -42,7 +42,7 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
               {director.categories.map((cat) => (
                 <span
                   key={cat}
-                  className="text-[11px] text-[#999] bg-[#F0F0EC] px-2 py-0.5 rounded"
+                  className="text-[11px] text-[#999] bg-[#F0F0EC] px-2 py-0.5 rounded-sm"
                 >
                   {cat}
                 </span>
@@ -57,7 +57,7 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
           )}
         </div>
 
-        <button className="p-2 text-[#ccc] hover:text-[#1A1A1A] hover:bg-[#F7F6F3] rounded-md transition-colors">
+        <button className="p-2 text-[#ccc] hover:text-[#1A1A1A] hover:bg-[#F7F6F3] rounded-sm transition-colors">
           <Pencil size={15} />
         </button>
       </div>
@@ -65,11 +65,11 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
       <div className="flex gap-6 mt-4 pt-4 border-t border-[#E8E8E3]">
         <div>
           <p className="text-xl font-semibold text-[#1A1A1A]">{director._count.projects}</p>
-          <p className="text-[11px] text-[#999] mt-0.5">Spots</p>
+          <p className="text-[11px] text-[#999] mt-0.5 uppercase tracking-wider font-semibold">Spots</p>
         </div>
         <div>
           <p className="text-xl font-semibold text-[#1A1A1A]">{director._count.reels}</p>
-          <p className="text-[11px] text-[#999] mt-0.5">Reels</p>
+          <p className="text-[11px] text-[#999] mt-0.5 uppercase tracking-wider font-semibold">Reels</p>
         </div>
       </div>
     </div>

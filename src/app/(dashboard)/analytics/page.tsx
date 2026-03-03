@@ -52,42 +52,42 @@ export default async function AnalyticsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-medium tracking-tight text-[#1A1A1A]">Analytics</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-[#1A1A1A]">Analytics</h1>
       <p className="text-sm text-[#999] mt-1">
         Viewing activity and engagement across all reels.
       </p>
 
       {/* Top stats */}
       <div className="grid grid-cols-4 gap-4 mt-8">
-        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl">
+        <div className="p-5 bg-white border border-[#E8E8E3]">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#999] uppercase tracking-wider">Total Views</p>
+            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Total Views</p>
             <Eye size={14} className="text-[#ccc]" />
           </div>
-          <p className="text-3xl font-light mt-2">{totalViews}</p>
+          <p className="text-2xl font-semibold mt-2">{totalViews}</p>
         </div>
-        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl">
+        <div className="p-5 bg-white border border-[#E8E8E3]">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#999] uppercase tracking-wider">Avg. Watch Time</p>
+            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Avg. Watch Time</p>
             <Clock size={14} className="text-[#ccc]" />
           </div>
-          <p className="text-3xl font-light mt-2">
+          <p className="text-2xl font-semibold mt-2">
             {avgDuration ? formatDuration(avgDuration) : "\u2014"}
           </p>
         </div>
-        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl">
+        <div className="p-5 bg-white border border-[#E8E8E3]">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#999] uppercase tracking-wider">Active Links</p>
+            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Active Links</p>
             <Film size={14} className="text-[#ccc]" />
           </div>
-          <p className="text-3xl font-light mt-2">{screeningLinks.length}</p>
+          <p className="text-2xl font-semibold mt-2">{screeningLinks.length}</p>
         </div>
-        <div className="p-5 bg-white border border-[#E8E8E3] rounded-xl">
+        <div className="p-5 bg-white border border-[#E8E8E3]">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#999] uppercase tracking-wider">Desktop / Mobile</p>
+            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Desktop / Mobile</p>
             <Monitor size={14} className="text-[#ccc]" />
           </div>
-          <p className="text-3xl font-light mt-2">
+          <p className="text-2xl font-semibold mt-2">
             {deviceBreakdown["desktop"] || 0} / {deviceBreakdown["mobile"] || 0}
           </p>
         </div>
@@ -95,12 +95,12 @@ export default async function AnalyticsPage() {
 
       {/* Recent views feed */}
       <div className="mt-10">
-        <h2 className="text-sm font-medium text-[#999] uppercase tracking-wider mb-4">
+        <h2 className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-4">
           View Feed
         </h2>
 
         {recentViews.length > 0 ? (
-          <div className="bg-white border border-[#E8E8E3] rounded-xl divide-y divide-[#E8E8E3]">
+          <div className="bg-white border border-[#E8E8E3] divide-y divide-[#E8E8E3]">
             {recentViews.map((view) => {
               const avgSpotCompletion =
                 view.spotViews.length > 0
@@ -118,7 +118,7 @@ export default async function AnalyticsPage() {
                   className="flex items-center justify-between px-5 py-3"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-[#F7F6F3] flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 rounded-sm bg-[#F7F6F3] flex items-center justify-center flex-shrink-0">
                       {view.device === "mobile" ? (
                         <Smartphone size={12} className="text-[#999]" />
                       ) : view.device === "tablet" ? (
@@ -171,7 +171,7 @@ export default async function AnalyticsPage() {
             })}
           </div>
         ) : (
-          <div className="py-12 text-center bg-white rounded-xl border border-[#E8E8E3]">
+          <div className="py-12 text-center bg-white border border-[#E8E8E3]">
             <p className="text-sm text-[#999]">
               No views recorded yet. Send a reel to start tracking engagement.
             </p>
@@ -181,7 +181,7 @@ export default async function AnalyticsPage() {
 
       {/* Active Screening Links */}
       <div className="mt-10">
-        <h2 className="text-sm font-medium text-[#999] uppercase tracking-wider mb-4">
+        <h2 className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-4">
           Active Screening Links
         </h2>
 
@@ -191,7 +191,7 @@ export default async function AnalyticsPage() {
               <Link
                 key={link.id}
                 href={`/reels/${link.reel.id}`}
-                className="p-4 bg-white border border-[#E8E8E3] rounded-lg hover:border-[#ccc] hover:shadow-sm transition-all"
+                className="p-4 bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all"
               >
                 <div className="flex items-start justify-between">
                   <div className="min-w-0">
@@ -214,7 +214,7 @@ export default async function AnalyticsPage() {
             ))}
           </div>
         ) : (
-          <div className="py-8 text-center bg-white rounded-xl border border-[#E8E8E3]">
+          <div className="py-8 text-center bg-white border border-[#E8E8E3]">
             <p className="text-sm text-[#999]">
               No active screening links.
             </p>
