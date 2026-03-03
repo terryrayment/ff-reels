@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -37,8 +36,9 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/[0.06]">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <Image
-            src="/logo.png"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.svg"
             alt="F&F"
             width={28}
             height={28}

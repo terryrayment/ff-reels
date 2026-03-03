@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -37,8 +36,9 @@ export default function LoginPage() {
       <div className="w-full max-w-xs">
         {/* Logo mark + wordmark */}
         <div className="flex flex-col items-center mb-12">
-          <Image
-            src="/logo.png"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.svg"
             alt="Friends & Family"
             width={48}
             height={48}
