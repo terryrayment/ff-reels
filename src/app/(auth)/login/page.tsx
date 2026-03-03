@@ -32,20 +32,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-      <div className="w-full max-w-sm">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-white tracking-tight">
+    <div className="min-h-screen bg-[#0e0e0e] flex items-center justify-center">
+      <div className="w-full max-w-xs">
+        {/* Logo — matches main site */}
+        <div className="text-center mb-10">
+          <h1 className="text-xl font-light text-white tracking-tight">
             Friends & Family
           </h1>
-          <p className="text-sm text-white/40 mt-1">Reel Platform</p>
+          <p className="text-[11px] text-white/25 mt-1.5 uppercase tracking-[0.2em]">
+            Reel Platform
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block text-sm text-white/60 mb-1.5">
-              Email address
+            <label htmlFor="email" className="block text-[11px] text-white/40 mb-1.5 uppercase tracking-wider">
+              Email
             </label>
             <input
               id="email"
@@ -54,11 +56,12 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@friendsandfamily.tv"
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
+              autoComplete="email"
+              className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.06] rounded-lg text-white text-sm placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-white/15 focus:border-white/15 transition-all"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm text-white/60 mb-1.5">
+            <label htmlFor="password" className="block text-[11px] text-white/40 mb-1.5 uppercase tracking-wider">
               Password
             </label>
             <input
@@ -67,23 +70,28 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20"
+              placeholder=""
+              autoComplete="current-password"
+              className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.06] rounded-lg text-white text-sm placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-white/15 focus:border-white/15 transition-all"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-400">{error}</p>
+            <p className="text-xs text-red-400/80">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-white text-black font-medium rounded-lg hover:bg-white/90 transition-colors disabled:opacity-50"
+            className="w-full py-3 bg-white text-[#0e0e0e] text-sm font-medium rounded-lg hover:bg-white/90 transition-all disabled:opacity-40 mt-2"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
+
+        <p className="text-center text-[10px] text-white/15 mt-10">
+          friendsandfamily.tv
+        </p>
       </div>
     </div>
   );

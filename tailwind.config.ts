@@ -8,9 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        surface: {
+          DEFAULT: "#0e0e0e",
+          raised: "#161616",
+          overlay: "#1a1a1a",
+        },
       },
     },
   },
