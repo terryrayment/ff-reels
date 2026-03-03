@@ -20,32 +20,29 @@ interface DirectorHeaderProps {
 export function DirectorHeader({ director }: DirectorHeaderProps) {
   return (
     <div>
-      {/* Back link */}
       <Link
         href="/directors"
-        className="inline-flex items-center gap-1.5 text-xs text-[#999] hover:text-[#1A1A1A] transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#1A1A1A] transition-colors mb-5"
       >
         <ArrowLeft size={12} />
         Directors
       </Link>
 
-      {/* Name + status */}
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-medium tracking-tight text-[#1A1A1A]">{director.name}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#1A1A1A]">{director.name}</h1>
             {!director.isActive && (
               <Badge variant="warning">Off-roster</Badge>
             )}
           </div>
 
-          {/* Categories */}
           {director.categories.length > 0 && (
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-1.5 mt-2">
               {director.categories.map((cat) => (
                 <span
                   key={cat}
-                  className="text-xs text-[#999] uppercase tracking-wider"
+                  className="text-[11px] text-[#999] bg-[#F0F0EC] px-2 py-0.5 rounded"
                 >
                   {cat}
                 </span>
@@ -53,28 +50,26 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
             </div>
           )}
 
-          {/* Bio */}
           {director.bio && (
-            <p className="text-sm text-[#666] mt-3 max-w-2xl leading-relaxed">
+            <p className="text-[13px] text-[#666] mt-3 max-w-2xl leading-relaxed">
               {director.bio}
             </p>
           )}
         </div>
 
-        <button className="p-2 text-[#ccc] hover:text-[#1A1A1A] hover:bg-[#F7F6F3] rounded-lg transition-colors">
-          <Pencil size={16} />
+        <button className="p-2 text-[#ccc] hover:text-[#1A1A1A] hover:bg-[#F7F6F3] rounded-md transition-colors">
+          <Pencil size={15} />
         </button>
       </div>
 
-      {/* Stats strip */}
-      <div className="flex gap-6 mt-5 pt-5 border-t border-[#E8E8E3]">
+      <div className="flex gap-6 mt-4 pt-4 border-t border-[#E8E8E3]">
         <div>
-          <p className="text-2xl font-light text-[#1A1A1A]">{director._count.projects}</p>
-          <p className="text-xs text-[#999] mt-0.5">Spots</p>
+          <p className="text-xl font-semibold text-[#1A1A1A]">{director._count.projects}</p>
+          <p className="text-[11px] text-[#999] mt-0.5">Spots</p>
         </div>
         <div>
-          <p className="text-2xl font-light text-[#1A1A1A]">{director._count.reels}</p>
-          <p className="text-xs text-[#999] mt-0.5">Reels</p>
+          <p className="text-xl font-semibold text-[#1A1A1A]">{director._count.reels}</p>
+          <p className="text-[11px] text-[#999] mt-0.5">Reels</p>
         </div>
       </div>
     </div>

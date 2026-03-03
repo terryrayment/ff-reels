@@ -25,7 +25,7 @@ export default async function DashboardLayout({
       />
 
       {/* Main content */}
-      <main className="ml-64 min-h-screen">
+      <main className="ml-60 min-h-screen">
         <div className="px-10 py-8">{children}</div>
       </main>
     </div>
