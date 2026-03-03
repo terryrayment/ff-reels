@@ -286,11 +286,11 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN -- Board — card container */}
+        {/* RIGHT COLUMN -- Signal — card container */}
         <div className="flex-shrink-0" style={{ flexBasis: "35%" }}>
           <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-7 sticky top-8">
             <h2 className="text-lg font-medium tracking-tight-2 text-[#1A1A1A] mb-6">
-              Board
+              Signal
             </h2>
 
             {/* Compose */}

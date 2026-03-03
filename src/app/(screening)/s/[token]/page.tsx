@@ -51,8 +51,19 @@ export default async function ScreeningPage({
         <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] mb-6">
           Friends & Family
         </p>
-        <h1 className="text-4xl font-light tracking-tight">{director.name}</h1>
-        <p className="text-sm text-white/40 mt-2">{reel.title}</p>
+        {reel.brand ? (
+          <>
+            <h1 className="text-4xl font-light tracking-tight">{reel.title}</h1>
+            <p className="text-sm text-white/40 mt-2">
+              {[reel.agencyName, reel.campaignName].filter(Boolean).join(" · ") || `Directed by ${director.name}`}
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-4xl font-light tracking-tight">{director.name}</h1>
+            <p className="text-sm text-white/40 mt-2">{reel.title}</p>
+          </>
+        )}
         <div className="flex items-center gap-3 mt-3 text-xs text-white/20">
           <span>{reel.items.length} spot{reel.items.length !== 1 ? "s" : ""}</span>
           {totalDuration > 0 && (

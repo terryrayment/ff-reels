@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Film, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ interface Project {
   muxPlaybackId: string | null;
   thumbnailUrl: string | null;
   duration: number | null;
+  createdAt: string | Date;
 }
 
 interface Director {
@@ -28,6 +29,16 @@ interface Director {
 interface ReelBuilderProps {
   directors: Director[];
 }
+
+type SortMode = "default" | "newest" | "brand" | "category" | "shortest";
+
+const SORT_OPTIONS: { value: SortMode; label: string }[] = [
+  { value: "default", label: "All" },
+  { value: "newest", label: "Newest" },
+  { value: "brand", label: "By Brand" },
+  { value: "category", label: "By Category" },
+  { value: "shortest", label: "Shortest" },
+];
 
 function DirectorDropdown({
   directors,
@@ -58,7 +69,7 @@ function DirectorDropdown({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white border border-[#E8E7E3]/80 text-left hover:border-[#ccc] transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 text-left hover:border-[#ccc] transition-colors ring-1 ring-inset ring-white/50"
       >
         <span className={selected ? "text-[#1A1A1A] text-sm" : "text-[#999] text-sm"}>
           {selected
@@ -72,7 +83,7 @@ function DirectorDropdown({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1.5 w-full rounded-xl bg-white border border-[#E8E7E3] shadow-lg max-h-[320px] overflow-y-auto">
+        <div className="absolute z-50 mt-1.5 w-full rounded-xl bg-white/90 backdrop-blur-lg border border-[#E8E7E3]/60 shadow-lg ring-1 ring-inset ring-white/60 max-h-[320px] overflow-y-auto">
           {directors.map((director) => {
             const hero = director.projects[0];
             const thumbSrc = hero?.muxPlaybackId
@@ -87,18 +98,13 @@ function DirectorDropdown({
                   onSelect(director.id);
                   setOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-[#F7F6F3] transition-colors first:rounded-t-xl last:rounded-b-xl ${
+                className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-[#F7F6F3]/80 transition-colors first:rounded-t-xl last:rounded-b-xl ${
                   selectedId === director.id ? "bg-[#F7F6F3]" : ""
                 }`}
               >
-                {/* Mini thumbnail */}
                 <div className="w-10 h-6 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
                   {thumbSrc ? (
-                    <img
-                      src={thumbSrc}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={thumbSrc} alt="" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <Film size={10} className="text-[#ccc]" />
@@ -126,12 +132,55 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [selectedDirectorId, setSelectedDirectorId] = useState("");
   const [title, setTitle] = useState("");
   const [curatorialNote, setCuratorialNote] = useState("");
+  const [brand, setBrand] = useState("");
+  const [agencyName, setAgencyName] = useState("");
+  const [campaignName, setCampaignName] = useState("");
+  const [producer, setProducer] = useState("");
+  const [titleManuallyEdited, setTitleManuallyEdited] = useState(false);
+  const [sortMode, setSortMode] = useState<SortMode>("default");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
   const availableProjects = selectedDirector?.projects || [];
+
+  // Auto-title: "{Director} for {Brand}"
+  useEffect(() => {
+    if (titleManuallyEdited) return;
+    const director = directors.find((d) => d.id === selectedDirectorId);
+    if (director && brand.trim()) {
+      setTitle(`${director.name} for ${brand.trim()}`);
+    } else if (director && !brand.trim()) {
+      setTitle("");
+    }
+  }, [selectedDirectorId, brand, titleManuallyEdited, directors]);
+
+  // Sorted/filtered projects
+  const sortedProjects = useMemo(() => {
+    const projects = [...availableProjects];
+    switch (sortMode) {
+      case "newest":
+        return projects.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      case "brand":
+        return projects.sort((a, b) =>
+          (a.brand || "zzz").localeCompare(b.brand || "zzz")
+        );
+      case "category":
+        return projects.sort((a, b) =>
+          (a.category || "zzz").localeCompare(b.category || "zzz")
+        );
+      case "shortest":
+        return projects.sort(
+          (a, b) => (a.duration || 999) - (b.duration || 999)
+        );
+      default:
+        return projects;
+    }
+  }, [availableProjects, sortMode]);
+
   const selectedProjects = selectedProjectIds
     .map((id) => availableProjects.find((p) => p.id === id))
     .filter(Boolean) as Project[];
@@ -151,6 +200,8 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const handleSelectDirector = (id: string) => {
     setSelectedDirectorId(id);
     setSelectedProjectIds([]);
+    setTitleManuallyEdited(false);
+    setSortMode("default");
   };
 
   const handleSave = async () => {
@@ -165,6 +216,10 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
           directorId: selectedDirectorId,
           title,
           curatorialNote: curatorialNote || undefined,
+          brand: brand || undefined,
+          agencyName: agencyName || undefined,
+          campaignName: campaignName || undefined,
+          producer: producer || undefined,
           reelType: "CUSTOM",
           projectIds: selectedProjectIds,
         }),
@@ -185,7 +240,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   );
 
   return (
-    <div className="grid grid-cols-[1fr_360px] gap-8">
+    <div className="grid grid-cols-[1fr_340px] gap-6">
       {/* Left — director select + spot grid */}
       <div>
         <DirectorDropdown
@@ -195,13 +250,30 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         />
 
         {selectedDirector && (
-          <div className="mt-6">
-            <p className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-4">
-              Click to add to reel
-            </p>
-            {availableProjects.length > 0 ? (
+          <div className="mt-5">
+            {/* Filter bar */}
+            <div className="flex items-center gap-1.5 mb-4">
+              {SORT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setSortMode(opt.value)}
+                  className={`px-3 py-1 rounded-full text-[11px] transition-all duration-200 ${
+                    sortMode === opt.value
+                      ? "bg-[#1A1A1A] text-white"
+                      : "bg-white/60 text-[#999] hover:text-[#666] hover:bg-white/80 border border-[#E8E7E3]/50"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+              <span className="ml-auto text-[10px] text-[#ccc]">
+                {availableProjects.length} spot{availableProjects.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+
+            {sortedProjects.length > 0 ? (
               <div className="grid grid-cols-3 gap-3">
-                {availableProjects.map((project) => {
+                {sortedProjects.map((project) => {
                   const isSelected = selectedProjectIds.includes(project.id);
                   const thumbSrc = project.muxPlaybackId
                     ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=320&height=180&fit_mode=smartcrop`
@@ -214,7 +286,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                       className={`text-left overflow-hidden rounded-lg transition-all duration-200 ${
                         isSelected
                           ? "ring-2 ring-[#1A1A1A] shadow-sm"
-                          : "border border-[#E8E7E3]/80 hover:border-[#ccc] hover:shadow-sm"
+                          : "border border-[#E8E7E3]/60 hover:border-[#ccc] hover:shadow-sm"
                       }`}
                     >
                       <div className="aspect-video bg-[#EEEDEA] relative rounded-t-[3px] overflow-hidden">
@@ -261,9 +333,6 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                 <p className="text-sm text-[#999]">
                   No published spots for this director.
                 </p>
-                <p className="text-[11px] text-[#ccc] mt-1">
-                  Upload spots first, then come back to build a reel.
-                </p>
               </div>
             )}
           </div>
@@ -271,19 +340,55 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
       </div>
 
       {/* Right — reel details + spot order */}
-      <div className="space-y-5 sticky top-8 self-start">
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 space-y-4">
+      <div className="space-y-4 sticky top-8 self-start">
+        <div className="rounded-2xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-6 space-y-4">
           <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
             Reel Details
           </h3>
 
           <Input
+            id="brand"
+            label="Brand"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+            placeholder="e.g. Cheerios"
+          />
+
+          <Input
             id="title"
             label="Reel Title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Terry Rayment — Comedy Reel"
+            onChange={(e) => {
+              setTitle(e.target.value);
+              setTitleManuallyEdited(true);
+            }}
+            placeholder="Auto-generates from director + brand"
             required
+          />
+
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              id="agencyName"
+              label="Agency"
+              value={agencyName}
+              onChange={(e) => setAgencyName(e.target.value)}
+              placeholder="Optional"
+            />
+            <Input
+              id="campaignName"
+              label="Campaign"
+              value={campaignName}
+              onChange={(e) => setCampaignName(e.target.value)}
+              placeholder="Optional"
+            />
+          </div>
+
+          <Input
+            id="producer"
+            label="Producer"
+            value={producer}
+            onChange={(e) => setProducer(e.target.value)}
+            placeholder="Optional"
           />
 
           <Textarea
@@ -291,14 +396,14 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
             label="Curatorial Note"
             value={curatorialNote}
             onChange={(e) => setCuratorialNote(e.target.value)}
-            placeholder="Note for the recipient (e.g. 'Check the humor in spots 2 and 4')"
-            rows={3}
+            placeholder="Note for the recipient"
+            rows={2}
           />
         </div>
 
         {/* Spot order */}
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="rounded-2xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-6">
+          <div className="flex items-center justify-between mb-3">
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
               Spot Order
             </h3>
@@ -320,12 +425,11 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                 return (
                   <div
                     key={project.id}
-                    className="flex items-center gap-2.5 p-2 rounded-lg bg-[#F7F6F3]/80 group"
+                    className="flex items-center gap-2.5 p-2 rounded-lg bg-[#F7F6F3]/60 group"
                   >
                     <span className="text-[10px] text-[#ccc] w-3 text-right tabular-nums">
                       {i + 1}
                     </span>
-                    {/* Mini thumbnail in order list */}
                     <div className="w-8 h-5 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
                       {thumbSrc ? (
                         <img src={thumbSrc} alt="" className="w-full h-full object-cover" />
@@ -354,7 +458,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               })}
             </div>
           ) : (
-            <p className="text-[11px] text-[#ccc] py-6 text-center">
+            <p className="text-[11px] text-[#ccc] py-5 text-center">
               Select spots from the left to build your reel.
             </p>
           )}

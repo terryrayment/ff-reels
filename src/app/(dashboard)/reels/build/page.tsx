@@ -19,6 +19,7 @@ export default async function ReelBuildPage() {
           muxPlaybackId: true,
           thumbnailUrl: true,
           duration: true,
+          createdAt: true,
         },
       },
     },

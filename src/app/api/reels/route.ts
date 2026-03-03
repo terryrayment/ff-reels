@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { directorId, title, description, curatorialNote, reelType, projectIds } = body;
+  const { directorId, title, description, curatorialNote, reelType, projectIds, brand, agencyName, campaignName, producer } = body;
 
   if (!directorId || !title) {
     return NextResponse.json(
@@ -57,6 +57,10 @@ export async function POST(req: NextRequest) {
       title,
       description: description || null,
       curatorialNote: curatorialNote || null,
+      brand: brand || null,
+      agencyName: agencyName || null,
+      campaignName: campaignName || null,
+      producer: producer || null,
       reelType: reelType || "CUSTOM",
       createdById: session.user.id,
       items: projectIds?.length
