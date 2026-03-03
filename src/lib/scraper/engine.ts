@@ -1,0 +1,170 @@
+import { prisma } from "@/lib/db";
+import { ScrapedCredit, SourceAdapter } from "./types";
+import { ShotsAdapter } from "./sources/shots";
+import { ShootOnlineAdapter } from "./sources/shoot-online";
+import { SourceCreativeAdapter } from "./sources/source-creative";
+import { AdsOfTheWorldAdapter } from "./sources/ads-of-the-world";
+import { ProductionCompanySitesAdapter } from "./sources/production-company-sites";
+import { companyTerritory } from "./production-companies";
+
+/**
+ * All registered source adapters.
+ * Add new sources here to include them in the nightly scrape.
+ */
+const ADAPTERS: SourceAdapter[] = [
+  new ShotsAdapter(),
+  new ShootOnlineAdapter(),
+  new SourceCreativeAdapter(),
+  new AdsOfTheWorldAdapter(),
+  new ProductionCompanySitesAdapter(),
+];
+
+/**
+ * Deduplicate credits by brand + campaign + director combo.
+ * Prefers entries with more complete data.
+ */
+function deduplicateCredits(credits: ScrapedCredit[]): ScrapedCredit[] {
+  const seen = new Map<string, ScrapedCredit>();
+
+  for (const credit of credits) {
+    const key = [
+      (credit.brand || "").toLowerCase().trim(),
+      (credit.campaignName || "").toLowerCase().trim(),
+      (credit.directorName || "").toLowerCase().trim(),
+    ].join("|");
+
+    if (!key || key === "||") continue;
+
+    const existing = seen.get(key);
+    if (!existing) {
+      seen.set(key, credit);
+    } else {
+      // Merge: prefer entry with more fields filled
+      const existingFields = Object.values(existing).filter(Boolean).length;
+      const newFields = Object.values(credit).filter(Boolean).length;
+      if (newFields > existingFields) {
+        seen.set(key, { ...existing, ...credit });
+      } else {
+        // Fill in any missing fields from new entry
+        seen.set(key, { ...credit, ...existing });
+      }
+    }
+  }
+
+  return Array.from(seen.values());
+}
+
+/**
+ * Check if a credit already exists in the database (last 7 days).
+ */
+async function creditExists(credit: ScrapedCredit): Promise<boolean> {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+  const existing = await prisma.industryCredit.findFirst({
+    where: {
+      brand: credit.brand,
+      campaignName: credit.campaignName || undefined,
+      directorName: credit.directorName || undefined,
+      createdAt: { gte: sevenDaysAgo },
+    },
+  });
+
+  return !!existing;
+}
+
+export interface ScrapeResult {
+  totalScraped: number;
+  newCredits: number;
+  duplicatesSkipped: number;
+  errors: string[];
+  sourceBreakdown: Record<string, number>;
+}
+
+/**
+ * Run the full nightly scrape across all sources.
+ * Deduplicates results and inserts new credits into the database.
+ */
+export async function runNightlyScrape(): Promise<ScrapeResult> {
+  const result: ScrapeResult = {
+    totalScraped: 0,
+    newCredits: 0,
+    duplicatesSkipped: 0,
+    errors: [],
+    sourceBreakdown: {},
+  };
+
+  console.log(`[Scraper] Starting nightly scrape at ${new Date().toISOString()}`);
+  console.log(`[Scraper] Running ${ADAPTERS.length} source adapters...`);
+
+  // Run all adapters
+  const allCredits: ScrapedCredit[] = [];
+
+  for (const adapter of ADAPTERS) {
+    try {
+      console.log(`[Scraper] Running ${adapter.name}...`);
+      const credits = await adapter.scrape();
+      console.log(`[Scraper] ${adapter.name}: found ${credits.length} credits`);
+
+      result.sourceBreakdown[adapter.name] = credits.length;
+      allCredits.push(...credits);
+    } catch (err) {
+      const msg = `${adapter.name} failed: ${err}`;
+      console.error(`[Scraper] ${msg}`);
+      result.errors.push(msg);
+    }
+  }
+
+  result.totalScraped = allCredits.length;
+  console.log(`[Scraper] Total raw credits: ${allCredits.length}`);
+
+  // Deduplicate
+  const unique = deduplicateCredits(allCredits);
+  console.log(`[Scraper] After dedup: ${unique.length} unique credits`);
+
+  // Insert new credits (skip existing)
+  for (const credit of unique) {
+    try {
+      // Skip entries that are just dashes or empty
+      if (!credit.brand || credit.brand === "—") continue;
+
+      const exists = await creditExists(credit);
+      if (exists) {
+        result.duplicatesSkipped++;
+        continue;
+      }
+
+      // Resolve territory from production company if not already set
+      let territory = credit.territory;
+      if (!territory && credit.productionCompany) {
+        territory = companyTerritory(credit.productionCompany) ?? undefined;
+      }
+
+      await prisma.industryCredit.create({
+        data: {
+          brand: credit.brand,
+          campaignName: credit.campaignName,
+          agency: credit.agency,
+          productionCompany: credit.productionCompany,
+          directorName: credit.directorName,
+          category: credit.category,
+          territory: territory,
+          sourceUrl: credit.sourceUrl,
+          sourceName: credit.sourceName,
+          thumbnailUrl: credit.thumbnailUrl,
+          publishedAt: credit.publishedAt,
+        },
+      });
+
+      result.newCredits++;
+    } catch (err) {
+      result.errors.push(`Insert failed for ${credit.brand}: ${err}`);
+    }
+  }
+
+  console.log(
+    `[Scraper] Complete: ${result.newCredits} new, ${result.duplicatesSkipped} dupes, ${result.errors.length} errors`
+  );
+
+  return result;
+}

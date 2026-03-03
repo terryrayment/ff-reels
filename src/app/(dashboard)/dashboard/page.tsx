@@ -34,7 +34,7 @@ export default async function DashboardPage() {
     linkCount,
     recentViews,
     updates,
-    newWork,
+    industryFeed,
   ] = await Promise.all([
     isAdmin ? prisma.director.count({ where: { isActive: true } }) : 0,
     isAdmin ? prisma.project.count() : 0,
@@ -90,23 +90,11 @@ export default async function DashboardPage() {
         author: { select: { id: true, name: true, email: true } },
       },
     }),
-    // New Work feed — latest spots across all directors
-    prisma.project.findMany({
-      take: 15,
+    // Industry credits feed — nightly scraped from SHOTS, SHOOT, prod co sites, etc.
+    prisma.industryCredit.findMany({
+      take: 25,
+      where: { isHidden: false },
       orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        brand: true,
-        productionCompany: true,
-        category: true,
-        year: true,
-        muxPlaybackId: true,
-        createdAt: true,
-        director: {
-          select: { id: true, name: true },
-        },
-      },
     }),
   ]);
 
@@ -160,51 +148,69 @@ export default async function DashboardPage() {
             ))}
           </div>
 
-          {/* New Work Feed */}
+          {/* Industry Feed — New Work */}
           <div className="mt-16">
             <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
-              New Work
+              Industry Pulse
             </h2>
 
-            {newWork.length > 0 ? (
+            {industryFeed.length > 0 ? (
               <div>
-                {newWork.map((project, i) => (
-                  <Link
-                    key={project.id}
-                    href={`/directors/${project.director.id}`}
-                    className={`flex items-baseline justify-between py-3 group ${
-                      i < newWork.length - 1
+                {industryFeed.map((credit, i) => (
+                  <div
+                    key={credit.id}
+                    className={`py-3 ${
+                      i < industryFeed.length - 1
                         ? "border-b border-[#F0F0EC]"
                         : ""
                     }`}
                   >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[13px] text-[#1A1A1A] truncate group-hover:text-[#666] transition-colors">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <p className="text-[13px] text-[#1A1A1A] truncate flex-1 min-w-0">
                         {[
-                          project.brand,
-                          project.title,
-                          project.productionCompany,
-                          project.director.name,
+                          credit.brand,
+                          credit.campaignName,
+                          credit.agency,
+                          credit.productionCompany,
+                          credit.directorName,
                         ]
                           .filter(Boolean)
                           .join(" / ")}
                       </p>
-                      {project.category && (
-                        <p className="text-[10px] text-[#ccc] mt-0.5 uppercase tracking-wider">
-                          {project.category}
-                          {project.year ? ` · ${project.year}` : ""}
-                        </p>
-                      )}
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        {credit.territory && (
+                          <span className="text-[9px] font-medium text-[#bbb] uppercase tracking-[0.12em]">
+                            {credit.territory}
+                          </span>
+                        )}
+                        <span className="text-[10px] text-[#ccc] uppercase tracking-[0.1em]">
+                          {timeAgo(credit.createdAt)}
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-[10px] uppercase tracking-[0.1em] text-[#ccc] flex-shrink-0 ml-6">
-                      {timeAgo(project.createdAt)}
-                    </p>
-                  </Link>
+                    {(credit.category || credit.sourceName) && (
+                      <p className="text-[10px] text-[#ccc] mt-0.5">
+                        {credit.category && (
+                          <span className="uppercase tracking-wider">
+                            {credit.category}
+                          </span>
+                        )}
+                        {credit.category && credit.sourceName && (
+                          <span className="mx-1.5">·</span>
+                        )}
+                        {credit.sourceName && (
+                          <span className="tracking-wider">
+                            via {credit.sourceName}
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
                 ))}
               </div>
             ) : (
               <p className="text-[13px] text-[#999] py-8">
-                No work added yet.
+                Industry feed populates nightly. Check back tomorrow.
               </p>
             )}
           </div>

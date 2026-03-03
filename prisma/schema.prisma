@@ -291,6 +291,32 @@ enum UpdateType {
   ADMIN_NOTE       // Manual: admin posts a note for the team
 }
 
+// ─── Industry Credits Feed (Nightly Scrape) ─────────────
+
+model IndustryCredit {
+  id                String    @id @default(cuid())
+  brand             String
+  campaignName      String?
+  agency            String?
+  productionCompany String?
+  directorName      String?
+  category          String?           // e.g. "automotive", "tech", "food"
+  territory         String?           // "EAST", "MIDWEST", "WEST" (derived from prod co HQ)
+  sourceUrl         String?           // Link to original post/article
+  sourceName        String?           // "SHOTS", "Smuggler IG", etc.
+  thumbnailUrl      String?
+  publishedAt       DateTime?         // When the work was published/aired
+  scrapedAt         DateTime          @default(now())
+  isVerified        Boolean           @default(false)
+  isHidden          Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+
+  // Dedup index
+  @@index([brand, campaignName, directorName])
+  @@index([createdAt(sort: Desc)])
+  @@index([territory])
+}
+
 // ─── Treatment Samples ─────────────────────────────────
 
 model TreatmentSample {
