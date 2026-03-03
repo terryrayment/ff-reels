@@ -5,8 +5,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Film, Send, Plus } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 export default async function ReelsPage() {
   const session = await getServerSession(authOptions);
@@ -41,42 +39,45 @@ export default async function ReelsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-end justify-between mb-12">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#1A1A1A]">Reels</h1>
-          <p className="text-sm text-[#999] mt-1">
+          <h1 className="text-3xl font-serif tracking-tight-2 text-[#1A1A1A]">
+            Reels
+          </h1>
+          <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
             {reels.length} reel{reels.length !== 1 ? "s" : ""}{isRep ? " by you" : " created"}
           </p>
         </div>
-        <Link href="/reels/build">
-          <Button size="sm">
-            <Plus size={14} />
-            Build Reel
-          </Button>
+        <Link
+          href="/reels/build"
+          className="inline-flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#1A1A1A] transition-colors"
+        >
+          <Plus size={12} />
+          Build Reel
         </Link>
       </div>
 
       {reels.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-0 divide-y divide-[#E8E8E3]/60">
           {reels.map((reel) => {
             return (
               <Link
                 key={reel.id}
                 href={`/reels/${reel.id}`}
-                className="flex items-start gap-5 p-4 rounded-sm bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all group"
+                className="flex items-start gap-6 py-5 group"
               >
                 {/* Thumbnail strip */}
                 <div className="flex gap-1 flex-shrink-0">
                   {reel.items.slice(0, 3).map((item) => (
                     <div
                       key={item.id}
-                      className="w-20 h-12 rounded-sm bg-[#F0F0EC] overflow-hidden"
+                      className="w-20 h-12 bg-[#EEEDEA] overflow-hidden"
                     >
                       {item.project.muxPlaybackId ? (
                         <img
                           src={`https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=160&height=96&fit_mode=smartcrop`}
                           alt={item.project.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                           loading="lazy"
                         />
                       ) : (
@@ -90,35 +91,27 @@ export default async function ReelsPage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-[#1A1A1A] group-hover:text-black transition-colors truncate">
+                  <div className="flex items-baseline gap-3">
+                    <h3 className="font-serif text-lg tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors truncate">
                       {reel.title}
                     </h3>
-                    <Badge
-                      variant={
-                        reel.reelType === "PORTFOLIO"
-                          ? "info"
-                          : reel.reelType === "CATEGORY"
-                            ? "warning"
-                            : "default"
-                      }
-                    >
+                    <span className="text-[10px] text-[#bbb] uppercase tracking-wider flex-shrink-0">
                       {reel.reelType.toLowerCase()}
-                    </Badge>
+                    </span>
                   </div>
-                  <p className="text-xs text-[#999] mt-0.5">
+                  <p className="text-[12px] text-[#999] mt-0.5">
                     {reel.director.name} · {reel._count.items} spot
                     {reel._count.items !== 1 ? "s" : ""}
                   </p>
                   {reel.curatorialNote && (
-                    <p className="text-xs text-[#ccc] mt-1 truncate italic">
+                    <p className="text-[12px] text-[#bbb] mt-1.5 truncate italic">
                       &ldquo;{reel.curatorialNote}&rdquo;
                     </p>
                   )}
                 </div>
 
                 {/* Right side stats */}
-                <div className="flex items-center gap-4 flex-shrink-0 text-xs text-[#999]">
+                <div className="flex items-center gap-5 flex-shrink-0 text-[11px] text-[#bbb]">
                   <span className="flex items-center gap-1">
                     <Send size={10} />
                     {reel._count.screeningLinks}
@@ -130,19 +123,18 @@ export default async function ReelsPage() {
           })}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-14 h-14 rounded-sm bg-[#F0F0EC] flex items-center justify-center mb-5">
-            <Film size={24} className="text-[#999]" />
-          </div>
-          <h3 className="text-sm font-bold text-[#1A1A1A]">No reels yet</h3>
-          <p className="text-sm text-[#999] mt-1 max-w-sm">
+        <div className="flex flex-col items-center justify-center py-32 text-center">
+          <Film size={20} className="text-[#ccc] mb-4" />
+          <h3 className="font-serif text-lg text-[#1A1A1A]">No reels yet</h3>
+          <p className="text-[12px] text-[#999] mt-1 max-w-sm">
             Build your first reel by selecting spots from a director&apos;s library.
           </p>
-          <Link href="/reels/build" className="mt-5">
-            <Button size="sm">
-              <Plus size={14} />
-              Build Your First Reel
-            </Button>
+          <Link
+            href="/reels/build"
+            className="mt-6 inline-flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#1A1A1A] transition-colors"
+          >
+            <Plus size={12} />
+            Build Your First Reel
           </Link>
         </div>
       )}

@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
       },
       colors: {
         cream: {
@@ -21,6 +22,10 @@ const config: Config = {
           raised: "#FAFAF8",
           overlay: "#FFFFFF",
         },
+      },
+      letterSpacing: {
+        "tight-2": "-0.02em",
+        "tight-3": "-0.03em",
       },
     },
   },

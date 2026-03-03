@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { Eye, Clock, Film, Monitor, Smartphone, Tablet } from "lucide-react";
+import { Eye, Smartphone, Monitor, Tablet } from "lucide-react";
 import { timeAgo, formatDuration } from "@/lib/utils";
 import Link from "next/link";
 
@@ -52,55 +52,59 @@ export default async function AnalyticsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight text-[#1A1A1A]">Analytics</h1>
-      <p className="text-sm text-[#999] mt-1">
-        Viewing activity and engagement across all reels.
-      </p>
+      <div className="mb-12">
+        <h1 className="text-3xl font-serif tracking-tight-2 text-[#1A1A1A]">
+          Analytics
+        </h1>
+        <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
+          Viewing activity across all reels
+        </p>
+      </div>
 
       {/* Top stats */}
-      <div className="grid grid-cols-4 gap-4 mt-8">
-        <div className="p-5 bg-white border border-[#E8E8E3]">
-          <div className="flex items-center justify-between">
-            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Total Views</p>
-            <Eye size={14} className="text-[#ccc]" />
-          </div>
-          <p className="text-2xl font-semibold mt-2">{totalViews}</p>
-        </div>
-        <div className="p-5 bg-white border border-[#E8E8E3]">
-          <div className="flex items-center justify-between">
-            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Avg. Watch Time</p>
-            <Clock size={14} className="text-[#ccc]" />
-          </div>
-          <p className="text-2xl font-semibold mt-2">
-            {avgDuration ? formatDuration(avgDuration) : "\u2014"}
+      <div className="grid grid-cols-4 gap-12 mb-16">
+        <div>
+          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+            {totalViews}
+          </p>
+          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
+            Total Views
           </p>
         </div>
-        <div className="p-5 bg-white border border-[#E8E8E3]">
-          <div className="flex items-center justify-between">
-            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Active Links</p>
-            <Film size={14} className="text-[#ccc]" />
-          </div>
-          <p className="text-2xl font-semibold mt-2">{screeningLinks.length}</p>
+        <div>
+          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+            {avgDuration ? formatDuration(avgDuration) : "\u2014"}
+          </p>
+          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
+            Avg. Watch Time
+          </p>
         </div>
-        <div className="p-5 bg-white border border-[#E8E8E3]">
-          <div className="flex items-center justify-between">
-            <p className="text-[11px] text-[#999] uppercase tracking-wider font-semibold">Desktop / Mobile</p>
-            <Monitor size={14} className="text-[#ccc]" />
-          </div>
-          <p className="text-2xl font-semibold mt-2">
+        <div>
+          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+            {screeningLinks.length}
+          </p>
+          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
+            Active Links
+          </p>
+        </div>
+        <div>
+          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
             {deviceBreakdown["desktop"] || 0} / {deviceBreakdown["mobile"] || 0}
+          </p>
+          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
+            Desktop / Mobile
           </p>
         </div>
       </div>
 
       {/* Recent views feed */}
-      <div className="mt-10">
-        <h2 className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-4">
+      <div>
+        <h2 className="text-[10px] text-[#999] uppercase tracking-wider mb-5">
           View Feed
         </h2>
 
         {recentViews.length > 0 ? (
-          <div className="bg-white border border-[#E8E8E3] divide-y divide-[#E8E8E3]">
+          <div className="divide-y divide-[#E8E8E3]/60">
             {recentViews.map((view) => {
               const avgSpotCompletion =
                 view.spotViews.length > 0
@@ -115,24 +119,24 @@ export default async function AnalyticsPage() {
               return (
                 <div
                   key={view.id}
-                  className="flex items-center justify-between px-5 py-3"
+                  className="flex items-center justify-between py-3.5"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-sm bg-[#F7F6F3] flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 flex items-center justify-center flex-shrink-0 text-[#bbb]">
                       {view.device === "mobile" ? (
-                        <Smartphone size={12} className="text-[#999]" />
+                        <Smartphone size={12} />
                       ) : view.device === "tablet" ? (
-                        <Tablet size={12} className="text-[#999]" />
+                        <Tablet size={12} />
                       ) : (
-                        <Monitor size={12} className="text-[#999]" />
+                        <Monitor size={12} />
                       )}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm truncate">
-                        <span className="text-[#1A1A1A] font-medium">
+                      <p className="text-[13px] truncate">
+                        <span className="text-[#1A1A1A]">
                           {view.screeningLink.recipientName || "Anonymous"}
                         </span>
-                        <span className="text-[#999]"> viewed </span>
+                        <span className="text-[#bbb]"> viewed </span>
                         <span className="text-[#666]">
                           {view.screeningLink.reel.director.name}&apos;s{" "}
                           {view.screeningLink.reel.title}
@@ -140,17 +144,17 @@ export default async function AnalyticsPage() {
                       </p>
                       <div className="flex items-center gap-3 mt-0.5">
                         {view.totalDuration && (
-                          <span className="text-[10px] text-[#999]">
+                          <span className="text-[10px] text-[#bbb]">
                             Watched {formatDuration(view.totalDuration)}
                           </span>
                         )}
                         {avgSpotCompletion !== null && (
-                          <span className="text-[10px] text-[#999]">
+                          <span className="text-[10px] text-[#bbb]">
                             {avgSpotCompletion}% avg completion
                           </span>
                         )}
                         {view.viewerCity && (
-                          <span className="text-[10px] text-[#999]">
+                          <span className="text-[10px] text-[#bbb]">
                             {view.viewerCity}
                             {view.viewerCountry ? `, ${view.viewerCountry}` : ""}
                           </span>
@@ -163,7 +167,7 @@ export default async function AnalyticsPage() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-xs text-[#ccc] flex-shrink-0 ml-4">
+                  <p className="text-[11px] text-[#ccc] flex-shrink-0 ml-6">
                     {timeAgo(view.startedAt)}
                   </p>
                 </div>
@@ -171,8 +175,8 @@ export default async function AnalyticsPage() {
             })}
           </div>
         ) : (
-          <div className="py-12 text-center bg-white border border-[#E8E8E3]">
-            <p className="text-sm text-[#999]">
+          <div className="py-16 text-center">
+            <p className="text-[13px] text-[#999]">
               No views recorded yet. Send a reel to start tracking engagement.
             </p>
           </div>
@@ -180,29 +184,29 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Active Screening Links */}
-      <div className="mt-10">
-        <h2 className="text-[11px] font-semibold text-[#999] uppercase tracking-wider mb-4">
+      <div className="mt-16">
+        <h2 className="text-[10px] text-[#999] uppercase tracking-wider mb-5">
           Active Screening Links
         </h2>
 
         {screeningLinks.length > 0 ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-6">
             {screeningLinks.map((link) => (
               <Link
                 key={link.id}
                 href={`/reels/${link.reel.id}`}
-                className="p-4 bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all"
+                className="group py-4 block"
               >
                 <div className="flex items-start justify-between">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">
+                    <p className="text-[14px] text-[#1A1A1A] group-hover:text-black transition-colors truncate">
                       {link.recipientName || link.recipientEmail || "Untitled"}
                     </p>
-                    <p className="text-xs text-[#999] truncate mt-0.5">
-                      {link.reel.director.name} \u2014 {link.reel.title}
+                    <p className="text-[12px] text-[#999] truncate mt-0.5">
+                      {link.reel.director.name} — {link.reel.title}
                     </p>
                   </div>
-                  <span className="text-xs text-[#999] flex items-center gap-1 flex-shrink-0 ml-2">
+                  <span className="text-[11px] text-[#bbb] flex items-center gap-1 flex-shrink-0 ml-3">
                     <Eye size={10} />
                     {link._count.views}
                   </span>
@@ -214,8 +218,8 @@ export default async function AnalyticsPage() {
             ))}
           </div>
         ) : (
-          <div className="py-8 text-center bg-white border border-[#E8E8E3]">
-            <p className="text-sm text-[#999]">
+          <div className="py-12 text-center">
+            <p className="text-[13px] text-[#999]">
               No active screening links.
             </p>
           </div>

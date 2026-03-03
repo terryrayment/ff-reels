@@ -32,24 +32,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center">
-      <div className="w-full max-w-xs">
-        {/* Logo mark + wordmark */}
-        <div className="flex flex-col items-center mb-12">
-          <div className="w-12 h-12 bg-[#1A1A1A] rounded-sm flex items-center justify-center mb-5">
-            <span className="text-sm font-semibold text-white tracking-tight">F&F</span>
-          </div>
-          <h1 className="text-lg font-semibold text-[#1A1A1A] tracking-tight">
-            Friends & Family
+    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center px-6">
+      <div className="w-full max-w-[320px]">
+        {/* Brand */}
+        <div className="text-center mb-16">
+          <h1 className="font-serif text-[32px] tracking-tight-2 text-[#1A1A1A] leading-none">
+            Friends &amp; Family
           </h1>
-          <p className="text-[10px] text-[#999] mt-1 uppercase tracking-[0.25em]">
-            Reel Platform
-          </p>
+          <span className="block mt-2 text-[9px] text-[#999] uppercase tracking-[0.25em]">
+            Reels
+          </span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-[10px] text-[#999] mb-1.5 uppercase tracking-wider font-semibold">
+            <label
+              htmlFor="email"
+              className="block text-[10px] text-[#999] mb-2 uppercase tracking-[0.12em]"
+            >
               Email
             </label>
             <input
@@ -60,11 +60,15 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@friendsandfamily.tv"
               autoComplete="email"
-              className="w-full px-4 py-3 bg-white border border-[#E8E8E3] rounded-sm text-[#1A1A1A] text-sm placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-all"
+              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#DDDDD8] text-[#1A1A1A] text-[14px] placeholder:text-[#C8C8C4] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
             />
           </div>
+
           <div>
-            <label htmlFor="password" className="block text-[10px] text-[#999] mb-1.5 uppercase tracking-wider font-semibold">
+            <label
+              htmlFor="password"
+              className="block text-[10px] text-[#999] mb-2 uppercase tracking-[0.12em]"
+            >
               Password
             </label>
             <input
@@ -74,24 +78,24 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              className="w-full px-4 py-3 bg-white border border-[#E8E8E3] rounded-sm text-[#1A1A1A] text-sm placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#1A1A1A]/20 transition-all"
+              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#DDDDD8] text-[#1A1A1A] text-[14px] placeholder:text-[#C8C8C4] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
             />
           </div>
 
           {error && (
-            <p className="text-xs text-red-500">{error}</p>
+            <p className="text-[13px] text-[#C44]">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[#1A1A1A] text-white text-sm font-semibold rounded-sm hover:bg-[#333] transition-all disabled:opacity-40 mt-1 uppercase tracking-wider"
+            className="w-full py-3.5 mt-2 bg-[#1A1A1A] text-white text-[13px] font-medium tracking-tight-2 hover:bg-[#333] transition-colors duration-300 disabled:opacity-30"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
-        <p className="text-center text-[10px] text-[#ccc] mt-12">
+        <p className="text-center text-[10px] text-[#C8C8C4] mt-20 tracking-[0.05em]">
           friendsandfamily.tv
         </p>
       </div>

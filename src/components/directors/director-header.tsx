@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowLeft, Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface DirectorHeaderProps {
   director: {
@@ -22,55 +21,54 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
     <div>
       <Link
         href="/directors"
-        className="inline-flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#1A1A1A] transition-colors mb-5"
+        className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#999] hover:text-[#1A1A1A] transition-colors mb-8 block"
       >
-        <ArrowLeft size={12} />
+        <ArrowLeft size={11} />
         Directors
       </Link>
 
       <div className="flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-[#1A1A1A]">{director.name}</h1>
+        <div className="max-w-2xl">
+          <div className="flex items-baseline gap-4">
+            <h1 className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+              {director.name}
+            </h1>
             {!director.isActive && (
-              <Badge variant="warning">Off-roster</Badge>
+              <span className="text-[10px] uppercase tracking-wider text-[#999]">
+                Off-roster
+              </span>
             )}
           </div>
 
-          {director.categories.length > 0 && (
-            <div className="flex gap-1.5 mt-2">
-              {director.categories.map((cat) => (
-                <span
-                  key={cat}
-                  className="text-[11px] text-[#999] bg-[#F0F0EC] px-2 py-0.5 rounded-sm"
-                >
-                  {cat}
-                </span>
-              ))}
-            </div>
-          )}
-
           {director.bio && (
-            <p className="text-[13px] text-[#666] mt-3 max-w-2xl leading-relaxed">
+            <p className="text-[14px] text-[#666] mt-4 leading-relaxed max-w-2xl">
               {director.bio}
             </p>
           )}
+
+          <div className="flex gap-8 mt-6">
+            <div>
+              <p className="text-2xl font-serif tracking-tight-2 text-[#1A1A1A]">
+                {director._count.projects}
+              </p>
+              <p className="text-[10px] text-[#999] mt-0.5 uppercase tracking-wider">
+                Spots
+              </p>
+            </div>
+            <div>
+              <p className="text-2xl font-serif tracking-tight-2 text-[#1A1A1A]">
+                {director._count.reels}
+              </p>
+              <p className="text-[10px] text-[#999] mt-0.5 uppercase tracking-wider">
+                Reels
+              </p>
+            </div>
+          </div>
         </div>
 
-        <button className="p-2 text-[#ccc] hover:text-[#1A1A1A] hover:bg-[#F7F6F3] rounded-sm transition-colors">
-          <Pencil size={15} />
+        <button className="p-2 text-[#ccc] hover:text-[#1A1A1A] transition-colors">
+          <Pencil size={14} />
         </button>
-      </div>
-
-      <div className="flex gap-6 mt-4 pt-4 border-t border-[#E8E8E3]">
-        <div>
-          <p className="text-xl font-semibold text-[#1A1A1A]">{director._count.projects}</p>
-          <p className="text-[11px] text-[#999] mt-0.5 uppercase tracking-wider font-semibold">Spots</p>
-        </div>
-        <div>
-          <p className="text-xl font-semibold text-[#1A1A1A]">{director._count.reels}</p>
-          <p className="text-[11px] text-[#999] mt-0.5 uppercase tracking-wider font-semibold">Reels</p>
-        </div>
       </div>
     </div>
   );

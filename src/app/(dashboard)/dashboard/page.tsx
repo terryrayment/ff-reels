@@ -27,7 +27,6 @@ export default async function DashboardPage() {
   const isAdmin = session.user.role === "ADMIN";
   const userId = session.user.id;
 
-  // Fetch data based on role
   const [
     directorCount,
     projectCount,
@@ -36,14 +35,11 @@ export default async function DashboardPage() {
     recentViews,
     updates,
   ] = await Promise.all([
-    // Admin-only stats
     isAdmin ? prisma.director.count({ where: { isActive: true } }) : 0,
     isAdmin ? prisma.project.count() : 0,
-    // Reel count: admin sees all, rep sees theirs
     isAdmin
       ? prisma.reel.count()
       : prisma.reel.count({ where: { createdById: userId } }),
-    // Active links: admin sees all, rep sees links on their reels
     isAdmin
       ? prisma.screeningLink.count({ where: { isActive: true } })
       : prisma.screeningLink.count({
@@ -52,7 +48,6 @@ export default async function DashboardPage() {
             reel: { createdById: userId },
           },
         }),
-    // Recent views: admin sees all, rep sees views on their reels
     isAdmin
       ? prisma.reelView.findMany({
           take: 8,
@@ -85,7 +80,6 @@ export default async function DashboardPage() {
             },
           },
         }),
-    // Updates feed — everyone sees all
     prisma.update.findMany({
       take: 30,
       orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
@@ -97,7 +91,6 @@ export default async function DashboardPage() {
     }),
   ]);
 
-  // Build stats array based on role
   const stats = isAdmin
     ? [
         { label: "Directors", value: directorCount, href: "/directors" },
@@ -115,197 +108,151 @@ export default async function DashboardPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-baseline justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[#1A1A1A]">
-            Dashboard
-          </h1>
-          <p className="text-[13px] text-[#999] mt-0.5">
-            {session.user.name || session.user.email}{" "}
-            <span className="text-[11px] text-[#ccc] uppercase tracking-wider font-medium ml-1">
-              {roleLabel}
-            </span>
-          </p>
-        </div>
+      <div className="mb-12">
+        <h1 className="font-serif text-3xl tracking-tight-2 text-[#1A1A1A]">
+          Dashboard
+        </h1>
+        <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-[#999]">
+          {session.user.name || session.user.email}
+          <span className="mx-2 text-[#E0E0E0]">/</span>
+          {roleLabel}
+        </p>
       </div>
 
       {/* Two-column layout */}
-      <div className="mt-6 flex gap-6">
-        {/* LEFT COLUMN — Main content */}
-        <div className="flex-1 min-w-0" style={{ flexBasis: "65%" }}>
-          {/* Stats grid */}
-          <div
-            className={`grid gap-3 ${
-              isAdmin ? "grid-cols-4" : "grid-cols-2"
-            }`}
-          >
+      <div className="flex gap-16">
+        {/* LEFT COLUMN */}
+        <div className="flex-1 min-w-0" style={{ flexBasis: "62%" }}>
+          {/* Stats row */}
+          <div className="flex gap-14">
             {stats.map((stat) => (
               <Link
                 key={stat.label}
                 href={stat.href}
-                className="group p-4 bg-white border border-[#E8E8E3] rounded-sm hover:border-[#ccc] hover:shadow-sm transition-all"
+                className="group"
               >
-                <p className="text-[11px] text-[#999] uppercase tracking-wider font-medium">
-                  {stat.label}
-                </p>
-                <p className="text-2xl font-semibold mt-1.5 text-[#1A1A1A]">
+                <p className="font-serif text-5xl tracking-tight-3 text-[#1A1A1A] group-hover:text-[#666] transition-colors">
                   {stat.value}
+                </p>
+                <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999] group-hover:text-[#666] transition-colors">
+                  {stat.label}
                 </p>
               </Link>
             ))}
           </div>
 
           {/* Recent Views */}
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[11px] font-bold text-[#999] uppercase tracking-wider">
+          <div className="mt-16">
+            <div className="flex items-baseline justify-between mb-6">
+              <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
                 Recent Views
               </h2>
               <Link
                 href="/analytics"
-                className="text-[11px] text-[#999] hover:text-[#1A1A1A] uppercase tracking-wider font-medium transition-colors"
+                className="text-[10px] uppercase tracking-[0.15em] text-[#ccc] hover:text-[#999] transition-colors"
               >
-                View All
+                All
               </Link>
             </div>
 
             {recentViews.length > 0 ? (
-              <div className="bg-white border border-[#E8E8E3] rounded-sm divide-y divide-[#F0F0EC]">
-                {recentViews.map((view) => (
+              <div>
+                {recentViews.map((view, i) => (
                   <div
                     key={view.id}
-                    className="flex items-center justify-between px-4 py-2.5"
+                    className={`flex items-center justify-between py-3 ${
+                      i < recentViews.length - 1
+                        ? "border-b border-[#F0F0EC]"
+                        : ""
+                    }`}
                   >
                     <div className="min-w-0">
-                      <p className="text-[13px] truncate text-[#1A1A1A]">
+                      <p className="text-[13px] text-[#1A1A1A] truncate">
                         <span className="font-medium">
                           {view.screeningLink.recipientName || "Anonymous"}
-                        </span>{" "}
-                        <span className="text-[#999]">viewed</span>{" "}
+                        </span>
+                        <span className="text-[#999]"> viewed </span>
                         <span className="font-medium">
                           {view.screeningLink.reel.director.name}
                         </span>
-                        &apos;s reel
                       </p>
-                      <p className="text-[11px] text-[#ccc] truncate">
+                      <p className="text-[11px] text-[#ccc] mt-0.5 truncate">
                         {view.screeningLink.recipientCompany ||
                           view.screeningLink.recipientEmail ||
                           "\u2014"}
                       </p>
                     </div>
-                    <p className="text-[11px] text-[#999] flex-shrink-0 ml-4 font-medium">
+                    <p className="text-[10px] uppercase tracking-[0.1em] text-[#ccc] flex-shrink-0 ml-6">
                       {timeAgo(view.startedAt)}
                     </p>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="py-10 text-center bg-white rounded-sm border border-[#E8E8E3]">
-                <p className="text-[13px] text-[#999]">
-                  No views yet.{" "}
-                  {isAdmin
-                    ? "Create and send a reel to start tracking."
-                    : "Send a screening link to start tracking views."}
-                </p>
-              </div>
+              <p className="text-[13px] text-[#999] py-8">
+                No views yet.{" "}
+                {isAdmin
+                  ? "Create and send a reel to start tracking."
+                  : "Send a screening link to start tracking views."}
+              </p>
             )}
-          </div>
-
-          {/* Quick Links */}
-          <div className="mt-8">
-            <h2 className="text-[11px] font-bold text-[#999] uppercase tracking-wider mb-3">
-              Quick Links
-            </h2>
-            <div className="grid grid-cols-3 gap-3">
-              {isAdmin && (
-                <Link
-                  href="/directors"
-                  className="p-4 bg-white border border-[#E8E8E3] rounded-sm hover:border-[#ccc] hover:shadow-sm transition-all"
-                >
-                  <p className="text-[13px] font-medium text-[#1A1A1A]">
-                    Directors
-                  </p>
-                  <p className="text-[11px] text-[#999] mt-0.5">
-                    Manage roster
-                  </p>
-                </Link>
-              )}
-              <Link
-                href="/reels"
-                className="p-4 bg-white border border-[#E8E8E3] rounded-sm hover:border-[#ccc] hover:shadow-sm transition-all"
-              >
-                <p className="text-[13px] font-medium text-[#1A1A1A]">
-                  Reels
-                </p>
-                <p className="text-[11px] text-[#999] mt-0.5">
-                  Build &amp; manage
-                </p>
-              </Link>
-              <Link
-                href="/analytics"
-                className="p-4 bg-white border border-[#E8E8E3] rounded-sm hover:border-[#ccc] hover:shadow-sm transition-all"
-              >
-                <p className="text-[13px] font-medium text-[#1A1A1A]">
-                  Analytics
-                </p>
-                <p className="text-[11px] text-[#999] mt-0.5">
-                  View engagement
-                </p>
-              </Link>
-            </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN — Team Board */}
+        {/* RIGHT COLUMN -- Board */}
         <div className="flex-shrink-0" style={{ flexBasis: "35%" }}>
-          <h2 className="text-[11px] font-bold text-[#999] uppercase tracking-wider mb-3">
-            Team Board
+          <h2 className="font-serif text-xl tracking-tight-2 text-[#1A1A1A] mb-8">
+            Board
           </h2>
 
-          {/* Compose box */}
+          {/* Compose */}
           <ComposeUpdate />
 
           {/* Updates feed */}
-          <div className="mt-4 space-y-0">
+          <div className="mt-10">
             {updates.length > 0 ? (
-              <div className="bg-white border border-[#E8E8E3] rounded-sm divide-y divide-[#F0F0EC]">
-                {updates.map((update) => (
-                  <div key={update.id} className="px-4 py-3">
-                    {/* Meta line */}
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#999] bg-[#F7F6F3] px-1.5 py-0.5 rounded-sm">
+              <div>
+                {updates.map((update, i) => (
+                  <div
+                    key={update.id}
+                    className={`py-4 ${
+                      i < updates.length - 1
+                        ? "border-b border-[#F0F0EC]"
+                        : ""
+                    }`}
+                  >
+                    {/* Type + pin + time */}
+                    <div className="flex items-center gap-3 mb-1.5">
+                      <span className="text-[10px] uppercase tracking-[0.12em] text-[#999]">
                         {updateTypeLabel(update.type)}
                       </span>
                       {update.isPinned && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                        <span className="text-[10px] uppercase tracking-[0.12em] text-[#1A1A1A] font-medium">
                           Pinned
                         </span>
                       )}
-                      <span className="text-[10px] text-[#ccc] ml-auto flex-shrink-0">
-                        {timeAgo(update.createdAt)}
-                      </span>
                     </div>
 
                     {/* Title */}
-                    <p className="text-[13px] font-medium text-[#1A1A1A] leading-snug">
+                    <p className="text-[13px] text-[#1A1A1A] leading-snug">
                       {update.title}
                     </p>
 
                     {/* Body */}
                     {update.body && (
-                      <p className="text-[12px] text-[#666] mt-1 leading-relaxed">
+                      <p className="text-[12px] text-[#888] mt-1 leading-relaxed">
                         {update.body}
                       </p>
                     )}
 
-                    {/* Director / Project tag */}
+                    {/* Director / Project */}
                     {(update.director || update.project) && (
-                      <p className="text-[11px] text-[#999] mt-1.5">
+                      <p className="text-[11px] text-[#999] mt-2">
                         {update.director && (
                           <span>{update.director.name}</span>
                         )}
                         {update.director && update.project && (
-                          <span className="text-[#ccc]"> / </span>
+                          <span className="text-[#ddd]"> / </span>
                         )}
                         {update.project && (
                           <span>
@@ -317,19 +264,19 @@ export default async function DashboardPage() {
                       </p>
                     )}
 
-                    {/* Author */}
-                    <p className="text-[10px] text-[#ccc] mt-1.5 uppercase tracking-wider">
+                    {/* Author + time */}
+                    <p className="text-[10px] uppercase tracking-[0.15em] text-[#ccc] mt-2">
                       {update.author?.name || update.author?.email || "System"}
+                      <span className="mx-2 text-[#E8E8E3]">/</span>
+                      {timeAgo(update.createdAt)}
                     </p>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="py-8 text-center bg-white rounded-sm border border-[#E8E8E3]">
-                <p className="text-[13px] text-[#999]">
-                  No updates yet. Post the first one.
-                </p>
-              </div>
+              <p className="text-[13px] text-[#999] py-8">
+                No updates yet. Post the first one.
+              </p>
             )}
           </div>
         </div>

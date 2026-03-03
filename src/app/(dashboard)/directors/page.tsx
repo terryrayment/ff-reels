@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/db";
 import { DirectorGrid } from "@/components/directors/director-grid";
 import { Users } from "lucide-react";
-import { AddDirectorButton } from "@/components/directors/add-director-button";
 
 export default async function DirectorsPage() {
   const directors = await prisma.director.findMany({
@@ -23,25 +22,24 @@ export default async function DirectorsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-[#1A1A1A]">Directors</h1>
-          <p className="text-[13px] text-[#999] mt-0.5">
-            {directors.length} on roster
-          </p>
-        </div>
-        <AddDirectorButton />
+      <div className="mb-12">
+        <h1 className="text-3xl font-serif tracking-tight-2 text-[#1A1A1A]">
+          Directors
+        </h1>
+        <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
+          {directors.length} on roster
+        </p>
       </div>
 
       {directors.length > 0 ? (
         <DirectorGrid directors={directors} />
       ) : (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-12 h-12 rounded-sm bg-[#F0F0EC] flex items-center justify-center mb-4">
-            <Users size={20} className="text-[#999]" />
-          </div>
-          <h3 className="text-sm font-medium text-[#1A1A1A]">No directors yet</h3>
-          <p className="text-[13px] text-[#999] mt-1">Add your first director to get started.</p>
+        <div className="flex flex-col items-center justify-center py-32 text-center">
+          <Users size={20} className="text-[#ccc] mb-4" />
+          <h3 className="font-serif text-lg text-[#1A1A1A]">No directors yet</h3>
+          <p className="text-[12px] text-[#999] mt-1">
+            Add your first director to get started.
+          </p>
         </div>
       )}
     </div>

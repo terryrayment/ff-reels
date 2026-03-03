@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Film, Clock, AlertCircle, ArrowUpDown, Upload } from "lucide-react";
+import { Film, Clock, AlertCircle, Upload } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 
 interface ProjectWithStats {
@@ -25,10 +25,10 @@ interface ProjectWithStats {
 type SortKey = "alpha" | "newest" | "rep" | "views";
 
 const sortOptions: { key: SortKey; label: string }[] = [
-  { key: "alpha", label: "A–Z" },
+  { key: "alpha", label: "A\u2013Z" },
   { key: "newest", label: "Newest" },
-  { key: "rep", label: "Most used" },
-  { key: "views", label: "Most viewed" },
+  { key: "rep", label: "Most Used" },
+  { key: "views", label: "Most Viewed" },
 ];
 
 export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
@@ -52,8 +52,8 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
 
   if (projects.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center bg-white border border-dashed border-[#E8E8E3]">
-        <Upload size={24} className="text-[#ccc] mb-3" />
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <Upload size={20} className="text-[#ccc] mb-4" />
         <p className="text-[13px] text-[#666]">No spots uploaded yet</p>
         <p className="text-[12px] text-[#999] mt-1">
           Upload video files to start building this director&apos;s library.
@@ -65,25 +65,28 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
   return (
     <div>
       {/* Sort bar */}
-      <div className="flex items-center gap-1 mb-4">
-        <ArrowUpDown size={12} className="text-[#999] mr-1" />
-        {sortOptions.map((opt) => (
-          <button
-            key={opt.key}
-            onClick={() => setSortBy(opt.key)}
-            className={`px-2.5 py-1 text-[11px] uppercase tracking-wider rounded-sm transition-colors ${
-              sortBy === opt.key
-                ? "bg-[#1A1A1A] text-white font-semibold"
-                : "text-[#999] hover:text-[#1A1A1A] hover:bg-[#F0F0EC]"
-            }`}
-          >
-            {opt.label}
-          </button>
+      <div className="flex items-center gap-4 mb-6">
+        {sortOptions.map((opt, i) => (
+          <span key={opt.key} className="flex items-center gap-4">
+            <button
+              onClick={() => setSortBy(opt.key)}
+              className={`text-[12px] transition-colors ${
+                sortBy === opt.key
+                  ? "text-[#1A1A1A] font-medium"
+                  : "text-[#999] hover:text-[#666]"
+              }`}
+            >
+              {opt.label}
+            </button>
+            {i < sortOptions.length - 1 && (
+              <span className="text-[#E0E0E0] text-[11px] select-none">|</span>
+            )}
+          </span>
         ))}
       </div>
 
       {/* Spots grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {sorted.map((project) => (
           <div key={project.id} className="group">
             <div className="relative aspect-video bg-[#EEEDEA] overflow-hidden">
@@ -91,14 +94,14 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
                 <img
                   src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`}
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  className="w-full h-full object-cover opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-300 ease-out"
                   loading="lazy"
                 />
               ) : project.thumbnailUrl ? (
                 <img
                   src={project.thumbnailUrl}
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  className="w-full h-full object-cover opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-300 ease-out"
                   loading="lazy"
                 />
               ) : (
@@ -108,34 +111,34 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
               )}
 
               {project.muxStatus === "preparing" && (
-                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded-sm text-[10px] text-amber-300">
+                <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 text-[10px] text-amber-300">
                   <Clock size={9} /> Processing
                 </div>
               )}
               {project.muxStatus === "errored" && (
-                <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded-sm text-[10px] text-red-300">
+                <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 text-[10px] text-red-300">
                   <AlertCircle size={9} /> Error
                 </div>
               )}
 
               {project.duration && (
-                <span className="absolute bottom-1.5 right-1.5 text-[10px] bg-black/70 px-1.5 py-0.5 rounded-sm text-white">
+                <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 px-1.5 py-0.5 text-white/90">
                   {formatDuration(project.duration)}
                 </span>
               )}
             </div>
 
-            <div className="mt-1.5">
-              <p className="text-[13px] font-medium text-[#1A1A1A] truncate">
+            <div className="mt-2">
+              <p className="text-[13px] text-[#1A1A1A] truncate">
                 {project.title}
               </p>
               <p className="text-[11px] text-[#999] truncate">
                 {[project.brand, project.agency, project.year]
                   .filter(Boolean)
-                  .join(" · ") || "\u00A0"}
+                  .join(" \u00b7 ") || "\u00A0"}
               </p>
               {(project.reelUsageCount > 0 || project.viewCount > 0) && (
-                <div className="flex gap-2 mt-1 text-[10px] text-[#bbb]">
+                <div className="flex gap-3 mt-1 text-[10px] text-[#bbb]">
                   {project.reelUsageCount > 0 && (
                     <span>{project.reelUsageCount} reel use{project.reelUsageCount !== 1 ? "s" : ""}</span>
                   )}

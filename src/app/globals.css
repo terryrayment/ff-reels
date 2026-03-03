@@ -5,17 +5,52 @@
 :root {
   --background: #F7F6F3;
   --foreground: #1A1A1A;
+  --border: #EBEBEB;
+  --border-subtle: #F0F0EE;
+  --muted: #999;
+  --transition-slow: 0.35s ease;
+  --transition-base: 0.3s ease;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar — subtle */
+/* ------------------------------------------------
+   Global border softening
+   ------------------------------------------------ */
+*,
+*::before,
+*::after {
+  border-color: var(--border);
+}
+
+/* ------------------------------------------------
+   Smooth transitions on interactive elements
+   ------------------------------------------------ */
+a,
+button {
+  transition: opacity var(--transition-base), color var(--transition-base),
+    background-color var(--transition-base), border-color var(--transition-base);
+}
+
+/* ------------------------------------------------
+   Focus ring
+   ------------------------------------------------ */
+*:focus-visible {
+  outline: 1.5px solid rgba(0, 0, 0, 0.12);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------
+   Scrollbar  ultra-subtle
+   ------------------------------------------------ */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -23,35 +58,42 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 100px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.14);
 }
 
-/* Mux player overrides */
+/* ------------------------------------------------
+   Mux player overrides
+   ------------------------------------------------ */
 mux-player {
   --media-object-fit: cover;
   --media-object-position: center;
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
 }
 
-/* Smooth global transitions */
-a, button {
-  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
-}
-
-/* Focus style */
-*:focus-visible {
-  outline: 2px solid rgba(0, 0, 0, 0.15);
-  outline-offset: 2px;
-}
-
+/* ------------------------------------------------
+   Utility layer
+   ------------------------------------------------ */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* ------------------------------------------------
+   Serif display heading utility
+   Use: <h1 class="display-serif">
+   ------------------------------------------------ */
+@layer components {
+  .display-serif {
+    font-family: var(--font-serif), Georgia, serif;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    line-height: 1.1;
   }
 }
