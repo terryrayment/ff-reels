@@ -34,6 +34,7 @@ export default async function DashboardPage() {
     linkCount,
     recentViews,
     updates,
+    newWork,
   ] = await Promise.all([
     isAdmin ? prisma.director.count({ where: { isActive: true } }) : 0,
     isAdmin ? prisma.project.count() : 0,
@@ -89,6 +90,24 @@ export default async function DashboardPage() {
         author: { select: { id: true, name: true, email: true } },
       },
     }),
+    // New Work feed — latest spots across all directors
+    prisma.project.findMany({
+      take: 15,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        brand: true,
+        productionCompany: true,
+        category: true,
+        year: true,
+        muxPlaybackId: true,
+        createdAt: true,
+        director: {
+          select: { id: true, name: true },
+        },
+      },
+    }),
   ]);
 
   const stats = isAdmin
@@ -109,7 +128,7 @@ export default async function DashboardPage() {
     <div>
       {/* Header */}
       <div className="mb-12">
-        <h1 className="font-serif text-3xl tracking-tight-2 text-[#1A1A1A]">
+        <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
           Dashboard
         </h1>
         <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-[#999]">
@@ -131,7 +150,7 @@ export default async function DashboardPage() {
                 href={stat.href}
                 className="group"
               >
-                <p className="font-serif text-5xl tracking-tight-3 text-[#1A1A1A] group-hover:text-[#666] transition-colors">
+                <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A] group-hover:text-[#666] transition-colors">
                   {stat.value}
                 </p>
                 <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999] group-hover:text-[#666] transition-colors">
@@ -139,6 +158,55 @@ export default async function DashboardPage() {
                 </p>
               </Link>
             ))}
+          </div>
+
+          {/* New Work Feed */}
+          <div className="mt-16">
+            <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
+              New Work
+            </h2>
+
+            {newWork.length > 0 ? (
+              <div>
+                {newWork.map((project, i) => (
+                  <Link
+                    key={project.id}
+                    href={`/directors/${project.director.id}`}
+                    className={`flex items-baseline justify-between py-3 group ${
+                      i < newWork.length - 1
+                        ? "border-b border-[#F0F0EC]"
+                        : ""
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] text-[#1A1A1A] truncate group-hover:text-[#666] transition-colors">
+                        {[
+                          project.brand,
+                          project.title,
+                          project.productionCompany,
+                          project.director.name,
+                        ]
+                          .filter(Boolean)
+                          .join(" / ")}
+                      </p>
+                      {project.category && (
+                        <p className="text-[10px] text-[#ccc] mt-0.5 uppercase tracking-wider">
+                          {project.category}
+                          {project.year ? ` · ${project.year}` : ""}
+                        </p>
+                      )}
+                    </div>
+                    <p className="text-[10px] uppercase tracking-[0.1em] text-[#ccc] flex-shrink-0 ml-6">
+                      {timeAgo(project.createdAt)}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[13px] text-[#999] py-8">
+                No work added yet.
+              </p>
+            )}
           </div>
 
           {/* Recent Views */}
@@ -201,7 +269,7 @@ export default async function DashboardPage() {
 
         {/* RIGHT COLUMN -- Board */}
         <div className="flex-shrink-0" style={{ flexBasis: "35%" }}>
-          <h2 className="font-serif text-xl tracking-tight-2 text-[#1A1A1A] mb-8">
+          <h2 className="text-xl font-medium tracking-tight-2 text-[#1A1A1A] mb-8">
             Board
           </h2>
 

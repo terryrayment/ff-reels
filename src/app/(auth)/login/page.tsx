@@ -36,7 +36,7 @@ export default function LoginPage() {
       <div className="w-full max-w-[320px]">
         {/* Brand */}
         <div className="text-center mb-16">
-          <h1 className="font-serif text-[32px] tracking-tight-2 text-[#1A1A1A] leading-none">
+          <h1 className="text-[28px] font-light tracking-tight-2 text-[#1A1A1A] leading-none">
             Friends &amp; Family
           </h1>
           <span className="block mt-2 text-[9px] text-[#999] uppercase tracking-[0.25em]">

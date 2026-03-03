@@ -53,7 +53,7 @@ export default async function AnalyticsPage() {
   return (
     <div>
       <div className="mb-12">
-        <h1 className="text-3xl font-serif tracking-tight-2 text-[#1A1A1A]">
+        <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
           Analytics
         </h1>
         <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
@@ -64,7 +64,7 @@ export default async function AnalyticsPage() {
       {/* Top stats */}
       <div className="grid grid-cols-4 gap-12 mb-16">
         <div>
-          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
             {totalViews}
           </p>
           <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
@@ -72,7 +72,7 @@ export default async function AnalyticsPage() {
           </p>
         </div>
         <div>
-          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
             {avgDuration ? formatDuration(avgDuration) : "\u2014"}
           </p>
           <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
@@ -80,7 +80,7 @@ export default async function AnalyticsPage() {
           </p>
         </div>
         <div>
-          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
             {screeningLinks.length}
           </p>
           <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">
@@ -88,7 +88,7 @@ export default async function AnalyticsPage() {
           </p>
         </div>
         <div>
-          <p className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+          <p className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
             {deviceBreakdown["desktop"] || 0} / {deviceBreakdown["mobile"] || 0}
           </p>
           <p className="text-[10px] text-[#999] mt-1 uppercase tracking-wider">

@@ -23,7 +23,7 @@ export default async function DirectorsPage() {
   return (
     <div>
       <div className="mb-12">
-        <h1 className="text-3xl font-serif tracking-tight-2 text-[#1A1A1A]">
+        <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
           Directors
         </h1>
         <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
@@ -36,7 +36,7 @@ export default async function DirectorsPage() {
       ) : (
         <div className="flex flex-col items-center justify-center py-32 text-center">
           <Users size={20} className="text-[#ccc] mb-4" />
-          <h3 className="font-serif text-lg text-[#1A1A1A]">No directors yet</h3>
+          <h3 className="text-lg font-medium text-[#1A1A1A]">No directors yet</h3>
           <p className="text-[12px] text-[#999] mt-1">
             Add your first director to get started.
           </p>

@@ -46,7 +46,7 @@ export default async function ReelDetailPage({
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-baseline gap-3">
-            <h1 className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+            <h1 className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
               {reel.title}
             </h1>
             <span className="text-[10px] text-[#bbb] uppercase tracking-wider">

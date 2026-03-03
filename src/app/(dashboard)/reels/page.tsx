@@ -41,7 +41,7 @@ export default async function ReelsPage() {
       {/* Header */}
       <div className="flex items-end justify-between mb-12">
         <div>
-          <h1 className="text-3xl font-serif tracking-tight-2 text-[#1A1A1A]">
+          <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
             Reels
           </h1>
           <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
@@ -92,7 +92,7 @@ export default async function ReelsPage() {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-3">
-                    <h3 className="font-serif text-lg tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors truncate">
+                    <h3 className="text-lg font-medium tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors truncate">
                       {reel.title}
                     </h3>
                     <span className="text-[10px] text-[#bbb] uppercase tracking-wider flex-shrink-0">
@@ -125,7 +125,7 @@ export default async function ReelsPage() {
       ) : (
         <div className="flex flex-col items-center justify-center py-32 text-center">
           <Film size={20} className="text-[#ccc] mb-4" />
-          <h3 className="font-serif text-lg text-[#1A1A1A]">No reels yet</h3>
+          <h3 className="text-lg font-medium text-[#1A1A1A]">No reels yet</h3>
           <p className="text-[12px] text-[#999] mt-1 max-w-sm">
             Build your first reel by selecting spots from a director&apos;s library.
           </p>

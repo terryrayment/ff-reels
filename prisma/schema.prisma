@@ -84,9 +84,10 @@ model Director {
   sortOrder      Int      @default(0)
   projects       Project[]
   reels          Reel[]
-  lookbookItems  LookbookItem[]
-  updates        Update[]
-  createdAt      DateTime @default(now())
+  lookbookItems      LookbookItem[]
+  treatmentSamples   TreatmentSample[]
+  updates            Update[]
+  createdAt          DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
 
@@ -99,6 +100,7 @@ model Project {
   title           String
   brand           String?
   agency          String?
+  productionCompany String?           // e.g. "Friends & Family", "Biscuit Filmworks"
   category        String?             // e.g. "comedy", "automotive"
   year            Int?
   description     String?  @db.Text
@@ -294,6 +296,7 @@ enum UpdateType {
 model TreatmentSample {
   id          String   @id @default(cuid())
   directorId  String
+  director    Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
   title       String
   brand       String?
   previewUrl  String

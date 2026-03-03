@@ -86,14 +86,21 @@ mux-player {
 }
 
 /* ------------------------------------------------
-   Serif display heading utility
-   Use: <h1 class="display-serif">
+   Page transition
    ------------------------------------------------ */
 @layer components {
-  .display-serif {
-    font-family: var(--font-serif), Georgia, serif;
-    letter-spacing: -0.02em;
-    font-weight: 400;
-    line-height: 1.1;
+  .page-enter {
+    animation: pageIn 0.3s ease-out forwards;
+  }
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

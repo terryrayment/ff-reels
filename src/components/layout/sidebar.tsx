@@ -15,6 +15,7 @@ const navItems: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", roles: ["ADMIN", "REP"] },
   { href: "/directors", label: "Directors", roles: ["ADMIN"] },
   { href: "/reels", label: "Reels", roles: ["ADMIN", "REP"] },
+  { href: "/treatments", label: "Treatments", roles: ["ADMIN", "REP"] },
   { href: "/analytics", label: "Analytics", roles: ["ADMIN", "REP"] },
 ];
 
@@ -48,7 +49,7 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Brand */}
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">
-          <h1 className="font-serif text-[22px] tracking-tight-2 text-[#1A1A1A] leading-none">
+          <h1 className="text-[20px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none">
             Friends &amp; Family
           </h1>
           <span className="block mt-1.5 text-[9px] text-[#999] uppercase tracking-[0.2em] font-normal">

@@ -30,7 +30,7 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
       <div className="flex items-start justify-between">
         <div className="max-w-2xl">
           <div className="flex items-baseline gap-4">
-            <h1 className="text-4xl font-serif tracking-tight-2 text-[#1A1A1A]">
+            <h1 className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
               {director.name}
             </h1>
             {!director.isActive && (
@@ -48,7 +48,7 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
 
           <div className="flex gap-8 mt-6">
             <div>
-              <p className="text-2xl font-serif tracking-tight-2 text-[#1A1A1A]">
+              <p className="text-2xl font-light tracking-tight-2 text-[#1A1A1A]">
                 {director._count.projects}
               </p>
               <p className="text-[10px] text-[#999] mt-0.5 uppercase tracking-wider">
@@ -56,7 +56,7 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
               </p>
             </div>
             <div>
-              <p className="text-2xl font-serif tracking-tight-2 text-[#1A1A1A]">
+              <p className="text-2xl font-light tracking-tight-2 text-[#1A1A1A]">
                 {director._count.reels}
               </p>
               <p className="text-[10px] text-[#999] mt-0.5 uppercase tracking-wider">

@@ -57,7 +57,7 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
             {/* Info */}
             <div className="mt-3">
               <div className="flex items-baseline justify-between">
-                <h2 className="font-serif text-lg tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors">
+                <h2 className="text-lg font-medium tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors">
                   {director.name}
                 </h2>
                 {!director.isActive && (
