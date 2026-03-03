@@ -1,0 +1,263 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth ──────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(VIEWER)
+  accounts      Account[]
+  sessions      Session[]
+  reelViews     ReelView[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  ADMIN       // F&F team — full access
+  REP         // Sales reps — can build & send reels
+  VIEWER      // Agency contacts — view-only via screening links
+}
+
+// ─── Directors ─────────────────────────────────────────
+
+model Director {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  bio            String?  @db.Text
+  statement      String?  @db.Text   // Director's artistic philosophy
+  videoIntroUrl  String?             // Optional 60s video intro (Mux playback ID)
+  headshotUrl    String?
+  categories     String[]            // e.g. ["comedy", "automotive", "food"]
+  awards         Json?               // Structured awards data
+  pressLinks     Json?               // Links to press features
+  clientLogos    String[]            // URLs to client logo images
+  isActive       Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  projects       Project[]
+  reels          Reel[]
+  lookbookItems  LookbookItem[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── Projects (Individual Spots/Work) ──────────────────
+
+model Project {
+  id              String   @id @default(cuid())
+  directorId      String
+  director        Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  title           String
+  brand           String?
+  agency          String?
+  category        String?             // e.g. "comedy", "automotive"
+  year            Int?
+  description     String?  @db.Text
+  contextNote     String?  @db.Text   // "Achieved on a 2-day shoot with practical effects"
+
+  // Mux video
+  muxAssetId      String?  @unique
+  muxPlaybackId   String?
+  muxStatus       String?  @default("waiting") // waiting, preparing, ready, errored
+  duration        Float?              // seconds
+  aspectRatio     String?             // "16:9", "4:3", etc.
+
+  // R2 original file
+  r2Key           String?             // Key in R2 bucket for original file
+  originalFilename String?
+  fileSizeMb      Float?
+
+  // Stills / frame grabs
+  thumbnailUrl    String?
+  frameGrabs      FrameGrab[]
+
+  // Awards per project
+  projectAwards   Json?
+
+  isPublished     Boolean  @default(false)
+  sortOrder       Int      @default(0)
+  reelItems       ReelItem[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model FrameGrab {
+  id         String  @id @default(cuid())
+  projectId  String
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  imageUrl   String
+  caption    String?
+  sortOrder  Int     @default(0)
+}
+
+// ─── Lookbook (Director's visual world) ────────────────
+
+model LookbookItem {
+  id          String   @id @default(cuid())
+  directorId  String
+  director    Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  imageUrl    String
+  caption     String?
+  source      String?  // "Film: Blade Runner 2049" or "Photography: Gregory Crewdson"
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// ─── Reels (Curated playlists of projects) ─────────────
+
+model Reel {
+  id             String     @id @default(cuid())
+  directorId     String
+  director       Director   @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  title          String
+  description    String?    @db.Text
+  curatorialNote String?    @db.Text  // Rep's note: "Look at humor in spots 2 and 4"
+  reelType       ReelType   @default(CUSTOM)
+  items          ReelItem[]
+  screeningLinks ScreeningLink[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model ReelItem {
+  id        String  @id @default(cuid())
+  reelId    String
+  reel      Reel    @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sortOrder Int     @default(0)
+
+  @@unique([reelId, projectId])
+}
+
+enum ReelType {
+  PORTFOLIO   // General "best of" for a director
+  CUSTOM      // Built for a specific opportunity
+  CATEGORY    // Category-specific (e.g. "food reel")
+}
+
+// ─── Screening Links (Shareable tracking links) ────────
+
+model ScreeningLink {
+  id               String     @id @default(cuid())
+  reelId           String
+  reel             Reel       @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  token            String     @unique @default(cuid())
+
+  // Recipient info
+  recipientName    String?
+  recipientEmail   String?
+  recipientCompany String?    // Agency name
+
+  // Link settings
+  expiresAt        DateTime?
+  isActive         Boolean    @default(true)
+  password         String?
+
+  // Tracking
+  views            ReelView[]
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+// ─── Analytics ─────────────────────────────────────────
+
+model ReelView {
+  id               String        @id @default(cuid())
+  screeningLinkId  String
+  screeningLink    ScreeningLink @relation(fields: [screeningLinkId], references: [id], onDelete: Cascade)
+
+  // Viewer info
+  userId           String?
+  user             User?         @relation(fields: [userId], references: [id])
+  viewerIp         String?
+  viewerCity       String?
+  viewerCountry    String?
+  userAgent        String?
+  device           String?       // "desktop", "mobile", "tablet"
+
+  // Session data
+  startedAt        DateTime      @default(now())
+  endedAt          DateTime?
+  totalDuration    Float?
+
+  // Per-spot engagement
+  spotViews        SpotView[]
+
+  // Forwarding detection
+  isForwarded      Boolean       @default(false)
+}
+
+model SpotView {
+  id             String   @id @default(cuid())
+  reelViewId     String
+  reelView       ReelView @relation(fields: [reelViewId], references: [id], onDelete: Cascade)
+  projectId      String
+
+  // Engagement
+  watchDuration  Float?
+  totalDuration  Float?
+  percentWatched Float?
+  rewatched      Boolean  @default(false)
+  skipped        Boolean  @default(false)
+
+  startedAt      DateTime @default(now())
+}
+
+// ─── Treatment Samples ─────────────────────────────────
+
+model TreatmentSample {
+  id          String   @id @default(cuid())
+  directorId  String
+  title       String
+  brand       String?
+  previewUrl  String
+  pageCount   Int?
+  isRedacted  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
