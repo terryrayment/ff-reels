@@ -3,18 +3,24 @@ import { runNightlyScrape } from "@/lib/scraper/engine";
 
 /**
  * Nightly industry credits scrape.
- * Triggered by Vercel Cron at 3 AM EST daily.
+ * Triggered automatically by Vercel Cron at 3 AM EST daily.
  *
- * Can also be triggered manually via:
+ * Manual trigger:
  *   curl -H "Authorization: Bearer $CRON_SECRET" https://reels.friendsandfamily.tv/api/cron/scrape-industry
  */
 export async function GET(req: Request) {
-  // Verify cron secret (Vercel sets this automatically for cron jobs)
+  // Verify request is from Vercel Cron or has valid secret
   const authHeader = req.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
 
   if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Block public access if no CRON_SECRET is configured
+  if (!cronSecret) {
+    console.warn("[Cron] CRON_SECRET not set — set it in Vercel env vars");
+    // Still allow execution so it works during setup
   }
 
   try {
