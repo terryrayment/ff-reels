@@ -69,19 +69,19 @@ export default async function ReelsPage() {
       </div>
 
       {reels.length > 0 ? (
-        <div className="space-y-0 divide-y divide-[#E8E8E3]/60">
+        <div className="space-y-2.5 md:space-y-3">
           {reels.map((reel) => (
             <Link
               key={reel.id}
               href={`/reels/${reel.id}`}
-              className="flex items-center gap-3 md:gap-6 py-4 md:py-5 group"
+              className="content-card flex items-center gap-3 md:gap-5 p-3 md:p-4 group"
             >
               {/* Thumbnail strip — 2 on mobile, 3 on desktop */}
               <div className="flex gap-0.5 md:gap-1 flex-shrink-0">
                 {reel.items.slice(0, 3).map((item, i) => (
                   <div
                     key={item.id}
-                    className={`w-14 h-9 md:w-20 md:h-12 bg-[#EEEDEA] overflow-hidden rounded-sm ${
+                    className={`w-14 h-9 md:w-20 md:h-12 bg-[#EEEDEA]/60 overflow-hidden rounded-lg ${
                       i >= 2 ? "hidden md:block" : ""
                     }`}
                   >

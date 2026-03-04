@@ -17,9 +17,11 @@ body {
   color: var(--foreground);
   background: var(--background);
   background-image:
-    radial-gradient(ellipse 90% 50% at 50% -5%, rgba(255,255,255,0.8) 0%, transparent 45%),
-    radial-gradient(ellipse 60% 50% at 0% 100%, rgba(232,231,227,0.3) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 30% at 100% 80%, rgba(240,238,234,0.25) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 45% at 50% -8%, rgba(195,205,218,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(210,205,218,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 35% at 100% 75%, rgba(200,208,216,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 90% 50% at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 60%);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -116,10 +118,13 @@ mux-player {
     text-wrap: balance;
   }
 
-  /* Frosted glass card */
+  /* Frosted glass card — iPad-inspired translucent surface */
   .glass-card {
-    @apply rounded-2xl bg-white/50 backdrop-blur-xl border border-white/70;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 8px 24px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    @apply rounded-[20px] bg-white/55 backdrop-blur-2xl border border-white/40;
+    box-shadow:
+      0 0.5px 0 rgba(255, 255, 255, 0.5) inset,
+      0 1px 4px rgba(0, 0, 0, 0.02),
+      0 8px 28px rgba(0, 0, 0, 0.025);
   }
 
   /* Safe area bottom padding for iPhone home indicator */
@@ -136,14 +141,32 @@ mux-player {
     display: none;
   }
 
-  /* Data card — barely-there frosted surface, iPad-style float */
+  /* Data card — frosted surface, iPad-style float */
   .data-card {
-    @apply rounded-[20px] bg-white/60 backdrop-blur-xl border border-transparent;
+    @apply rounded-[22px] bg-white/55 backdrop-blur-2xl border border-white/30;
     box-shadow:
-      0 0 0 0.5px rgba(0, 0, 0, 0.02),
-      0 1px 3px rgba(0, 0, 0, 0.015),
-      0 6px 20px rgba(0, 0, 0, 0.025);
+      0 0.5px 0 rgba(255, 255, 255, 0.4) inset,
+      0 1px 4px rgba(0, 0, 0, 0.015),
+      0 8px 28px rgba(0, 0, 0, 0.025),
+      0 20px 60px rgba(0, 0, 0, 0.015);
     transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Content card — lighter version for list items */
+  .content-card {
+    @apply rounded-2xl bg-white/45 backdrop-blur-xl;
+    box-shadow:
+      0 0.5px 0 rgba(255, 255, 255, 0.35) inset,
+      0 1px 3px rgba(0, 0, 0, 0.012),
+      0 6px 20px rgba(0, 0, 0, 0.018);
+    transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+  }
+  .content-card:hover {
+    @apply bg-white/60;
+    box-shadow:
+      0 0.5px 0 rgba(255, 255, 255, 0.5) inset,
+      0 2px 6px rgba(0, 0, 0, 0.02),
+      0 10px 28px rgba(0, 0, 0, 0.025);
   }
 }
 

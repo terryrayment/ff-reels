@@ -4,6 +4,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "image.mux.com" },
       { protocol: "https", hostname: "**.r2.dev" },
+      { protocol: "https", hostname: "cdn.prod.website-files.com" },
     ],
   },
 };

@@ -396,13 +396,13 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
                 <button
                   key={project.id}
                   onClick={() => toggleSpot(project.id)}
-                  className={`text-left rounded-xl overflow-hidden transition-all ${
+                  className={`text-left rounded-2xl overflow-hidden transition-all ${
                     isSelected
-                      ? "ring-2 ring-[#1A1A1A] shadow-md scale-[0.98]"
-                      : "border border-[#E8E7E3]/60 active:scale-[0.97]"
+                      ? "ring-2 ring-[#1A1A1A] shadow-lg scale-[0.98]"
+                      : "bg-white/40 backdrop-blur-lg shadow-[0_1px_4px_rgba(0,0,0,0.02),0_6px_20px_rgba(0,0,0,0.018)] active:scale-[0.97]"
                   }`}
                 >
-                  <div className="aspect-video bg-[#EEEDEA] relative overflow-hidden">
+                  <div className="aspect-video bg-[#EEEDEA]/50 relative overflow-hidden">
                     {thumbSrc ? (
                       <img
                         src={thumbSrc}
@@ -430,7 +430,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
                       </span>
                     )}
                   </div>
-                  <div className="p-2.5 bg-white">
+                  <div className="p-2.5 bg-white/60 backdrop-blur-lg">
                     <p className="text-[12px] font-medium text-[#1A1A1A] truncate">
                       {project.title}
                     </p>
@@ -446,7 +446,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
 
         {/* Bottom action bar — fixed */}
         {selectedIds.length > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-lg border-t border-[#E8E7E3] px-5 py-4 safe-area-bottom">
+          <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/70 backdrop-blur-2xl border-t border-white/30 px-5 py-4 safe-area-bottom" style={{ boxShadow: '0 -4px 20px rgba(0,0,0,0.03), 0 -0.5px 0 rgba(255,255,255,0.4) inset' }}>
             {/* Selected spots strip */}
             <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-1 scrollbar-none">
               {selectedProjects.map((p, i) => {
@@ -522,7 +522,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
 
         <div className="flex-1 px-5 pt-6 pb-28">
           {/* Summary card */}
-          <div className="rounded-2xl bg-white/70 border border-[#E8E7E3]/60 p-5 mb-6">
+          <div className="glass-card p-5 mb-6">
             <p className="text-[15px] font-medium text-[#1A1A1A]">
               {selectedDirector?.name}
             </p>
@@ -566,7 +566,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
                 placeholder="e.g. Cheerios, Nike, Apple..."
-                className="w-full px-4 py-3.5 text-[15px] bg-white/70 rounded-xl border border-[#E8E7E3]/60 text-[#1A1A1A] placeholder-[#bbb] focus:outline-none focus:border-[#ccc] transition-colors"
+                className="w-full px-4 py-3.5 text-[15px] bg-white/50 backdrop-blur-lg rounded-2xl border border-white/40 text-[#1A1A1A] placeholder-[#bbb] focus:outline-none focus:bg-white/65 focus:border-white/50 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.015)]"
                 autoFocus
               />
             </div>
@@ -580,14 +580,14 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
                 value={agencyName}
                 onChange={(e) => setAgencyName(e.target.value)}
                 placeholder="Optional — Wieden+Kennedy, BBDO..."
-                className="w-full px-4 py-3.5 text-[15px] bg-white/70 rounded-xl border border-[#E8E7E3]/60 text-[#1A1A1A] placeholder-[#bbb] focus:outline-none focus:border-[#ccc] transition-colors"
+                className="w-full px-4 py-3.5 text-[15px] bg-white/50 backdrop-blur-lg rounded-2xl border border-white/40 text-[#1A1A1A] placeholder-[#bbb] focus:outline-none focus:bg-white/65 focus:border-white/50 transition-all shadow-[0_1px_3px_rgba(0,0,0,0.015)]"
               />
             </div>
           </div>
 
           {/* Auto-title preview */}
           {brand.trim() && selectedDirector && (
-            <div className="mt-6 px-4 py-3 rounded-xl bg-[#EEEDEA]/50">
+            <div className="mt-6 px-4 py-3 rounded-2xl bg-white/35 backdrop-blur-lg">
               <p className="text-[10px] text-[#bbb] uppercase tracking-[0.1em] mb-1">
                 Reel title
               </p>
@@ -599,11 +599,11 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
         </div>
 
         {/* Bottom action */}
-        <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-lg border-t border-[#E8E7E3] px-5 py-4 safe-area-bottom">
+        <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/70 backdrop-blur-2xl border-t border-white/30 px-5 py-4 safe-area-bottom" style={{ boxShadow: '0 -4px 20px rgba(0,0,0,0.03)' }}>
           <button
             onClick={handleCreate}
             disabled={saving || !brand.trim()}
-            className="w-full py-3.5 rounded-xl bg-[#1A1A1A] text-white text-[14px] font-medium disabled:opacity-40 disabled:cursor-not-allowed active:bg-[#333] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-2xl bg-[#1A1A1A] text-white text-[14px] font-medium disabled:opacity-40 disabled:cursor-not-allowed active:bg-[#333] transition-colors flex items-center justify-center gap-2"
           >
             {saving ? (
               <>

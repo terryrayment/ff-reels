@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
   { href: "/treatments", label: "Treatments", roles: ["ADMIN", "REP"] },
   { href: "/industry", label: "Industry", roles: ["ADMIN", "REP"] },
   { href: "/analytics", label: "Analytics", roles: ["ADMIN", "REP"] },
+  { href: "/about", label: "About", roles: ["ADMIN", "REP"] },
 ];
 
 function getRoleDisplayName(role: string): string {
@@ -96,8 +97,8 @@ export function Sidebar({ user }: SidebarProps) {
               className={cn(
                 "block px-3 py-2.5 text-[13px] rounded-xl transition-all duration-300",
                 isActive
-                  ? "text-[#1A1A1A] font-medium bg-white/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-white/40"
+                  ? "text-[#1A1A1A] font-medium bg-white/60 backdrop-blur-lg shadow-[0_1px_4px_rgba(0,0,0,0.03),0_0.5px_0_rgba(255,255,255,0.5)_inset]"
+                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-white/35"
               )}
             >
               {item.label}
@@ -131,7 +132,7 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* User */}
       <div className="px-4 py-5">
-        <div className="flex items-center justify-between px-3 py-3 rounded-xl bg-white/50">
+        <div className="flex items-center justify-between px-3 py-3 rounded-2xl bg-white/40 backdrop-blur-lg">
           <div className="min-w-0">
             <p className="text-[12px] text-[#1A1A1A] truncate font-medium leading-tight">
               {user.name ?? user.email}
@@ -178,7 +179,7 @@ export function Sidebar({ user }: SidebarProps) {
       </button>
 
       {/* Desktop sidebar — hidden on mobile */}
-      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[220px] bg-white/40 backdrop-blur-2xl border-r border-transparent flex-col z-40" style={{ boxShadow: '1px 0 8px rgba(0,0,0,0.02)' }}>
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[220px] bg-white/35 backdrop-blur-3xl border-r border-white/20 flex-col z-40" style={{ boxShadow: '1px 0 12px rgba(0,0,0,0.015), 0 0.5px 0 rgba(255,255,255,0.3) inset' }}>
         {sidebarContent}
       </aside>
 
