@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { ScrapedCredit, SourceAdapter } from "./types";
 import { MuseByClio } from "./sources/rss-muse";
+import { ProdCoNews } from "./sources/prodco-news";
 import { companyTerritory } from "./production-companies";
 
 /**
@@ -22,15 +23,16 @@ function decodeEntities(s: string): string {
 /**
  * All registered source adapters.
  *
- * APPROACH: RSS feeds from real industry publications.
- * - Muse by Clio: Best structured data — brand + agency in <category> tags,
- *   real publish dates, and US-only filtering.
+ * Two complementary streams:
+ * 1. Muse by Clio RSS — Brand + Agency from structured <category> tags
+ * 2. Production Company News — Director + Prod Co from WordPress APIs/RSS
  *
- * SHOOT Online RSS tested but produces mostly industry news (personnel moves,
- * reviews, tech) — not structured commercial credits. Disabled for now.
+ * Together they provide brand, agency, director, and production company.
+ * The nightly dedup merges credits that share brand + campaign across sources.
  */
 const ADAPTERS: SourceAdapter[] = [
   new MuseByClio(),
+  new ProdCoNews(),
 ];
 
 /**
