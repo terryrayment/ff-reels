@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Film, ExternalLink, Eye } from "lucide-react";
 import { formatDuration, timeAgo } from "@/lib/utils";
 import { CreateScreeningLink } from "@/components/reels/create-screening-link";
+import { GalleryControls } from "@/components/reels/gallery-controls";
 
 export default async function ReelDetailPage({
   params,
@@ -129,6 +130,11 @@ export default async function ReelDetailPage({
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Gallery */}
+      <div className="mt-16">
+        <GalleryControls reelId={reel.id} initialStatus={reel.galleryStatus} />
       </div>
 
       {/* Screening Links */}
