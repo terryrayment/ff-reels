@@ -55,9 +55,6 @@ export default async function ReelBuildPage() {
         <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
           Build Reel
         </h1>
-        <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-[#999]">
-          Select a director and add spots to create a custom reel
-        </p>
       </div>
 
       <ReelBuilder directors={directorsWithCounts} />

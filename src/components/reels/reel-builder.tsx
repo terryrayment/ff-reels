@@ -303,9 +303,17 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     }
   }, [availableProjects, sortMode]);
 
-  const selectedProjects = selectedProjectIds
-    .map((id) => availableProjects.find((p) => p.id === id))
-    .filter(Boolean) as Project[];
+  // Slate always first — sort selected projects so "slate" titles come first
+  const selectedProjects = useMemo(() => {
+    const projects = selectedProjectIds
+      .map((id) => availableProjects.find((p) => p.id === id))
+      .filter(Boolean) as Project[];
+    return projects.sort((a, b) => {
+      const aSlate = a.title.toLowerCase().includes("slate") ? 0 : 1;
+      const bSlate = b.title.toLowerCase().includes("slate") ? 0 : 1;
+      return aSlate - bSlate;
+    });
+  }, [selectedProjectIds, availableProjects]);
 
   const toggleProject = (projectId: string) => {
     setSelectedProjectIds((prev) =>
@@ -330,6 +338,9 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     if (!selectedDirectorId || !title || selectedProjectIds.length === 0) return;
     setSaving(true);
 
+    // Send project IDs in display order (slate first)
+    const orderedIds = selectedProjects.map((p) => p.id);
+
     try {
       const res = await fetch("/api/reels", {
         method: "POST",
@@ -343,7 +354,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
           campaignName: campaignName || undefined,
           producer: producer || undefined,
           reelType: "CUSTOM",
-          projectIds: selectedProjectIds,
+          projectIds: orderedIds,
         }),
       });
 
@@ -579,9 +590,22 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
             placeholder="Note for the recipient"
             rows={2}
           />
+
+          {/* Create Reel — under curatorial note */}
+          <div className="pt-2">
+            <Button
+              onClick={handleSave}
+              loading={saving}
+              disabled={!selectedDirectorId || !title || selectedProjectIds.length === 0}
+              className="w-full"
+              size="lg"
+            >
+              Create Reel ({selectedProjects.length} spot{selectedProjects.length !== 1 ? "s" : ""})
+            </Button>
+          </div>
         </div>
 
-        {/* Spot order + Create Reel button inside */}
+        {/* Spot order */}
         <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
@@ -642,19 +666,6 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               Select spots from the left to build your reel.
             </p>
           )}
-
-          {/* Create Reel — inside the card */}
-          <div className="mt-4 pt-3 border-t border-[#E8E7E3]/40">
-            <Button
-              onClick={handleSave}
-              loading={saving}
-              disabled={!selectedDirectorId || !title || selectedProjectIds.length === 0}
-              className="w-full"
-              size="lg"
-            >
-              Create Reel ({selectedProjects.length} spot{selectedProjects.length !== 1 ? "s" : ""})
-            </Button>
-          </div>
         </div>
       </div>
     </div>
