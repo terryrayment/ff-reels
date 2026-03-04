@@ -549,13 +549,15 @@ export function ScreeningCarousel({
             isTransitioning ? "opacity-0" : "opacity-100"
           }`}
         >
-          <div className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
+          <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
             {currentProject.muxPlaybackId ? (
               <MuxPlayer
                 key={currentProject.id}
                 playbackId={currentProject.muxPlaybackId}
                 streamType="on-demand"
                 autoPlay={currentIndex > 0 ? ("any" as const) : undefined}
+                minResolution="1080p"
+                renditionOrder="desc"
                 metadata={{
                   video_id: currentProject.id,
                   video_title: currentProject.title,
