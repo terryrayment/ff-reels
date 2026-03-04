@@ -22,9 +22,10 @@ interface ProjectWithStats {
   createdAt: string;
 }
 
-type SortKey = "alpha" | "newest" | "rep" | "views";
+type SortKey = "brand" | "alpha" | "newest" | "rep" | "views";
 
 const sortOptions: { key: SortKey; label: string }[] = [
+  { key: "brand", label: "Brand" },
   { key: "alpha", label: "A\u2013Z" },
   { key: "newest", label: "Newest" },
   { key: "rep", label: "Most Used" },
@@ -32,11 +33,13 @@ const sortOptions: { key: SortKey; label: string }[] = [
 ];
 
 export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
-  const [sortBy, setSortBy] = useState<SortKey>("newest");
+  const [sortBy, setSortBy] = useState<SortKey>("brand");
 
   const sorted = useMemo(() => {
     const arr = [...projects];
     switch (sortBy) {
+      case "brand":
+        return arr.sort((a, b) => (a.brand || "zzz").localeCompare(b.brand || "zzz"));
       case "alpha":
         return arr.sort((a, b) => a.title.localeCompare(b.title));
       case "newest":
@@ -129,14 +132,21 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
             </div>
 
             <div className="mt-2">
-              <p className="text-[13px] text-[#1A1A1A] truncate">
+              {project.brand && (
+                <p className="text-[13px] font-medium text-[#1A1A1A] truncate">
+                  {project.brand}
+                </p>
+              )}
+              <p className={`text-[12px] text-[#777] truncate ${project.brand ? "mt-0.5" : ""}`}>
                 {project.title}
               </p>
-              <p className="text-[11px] text-[#999] truncate">
-                {[project.brand, project.agency, project.year]
-                  .filter(Boolean)
-                  .join(" \u00b7 ") || "\u00A0"}
-              </p>
+              {(project.agency || project.year) && (
+                <p className="text-[11px] text-[#aaa] truncate mt-0.5">
+                  {[project.agency, project.year]
+                    .filter(Boolean)
+                    .join(" \u00b7 ")}
+                </p>
+              )}
               {(project.reelUsageCount > 0 || project.viewCount > 0) && (
                 <div className="flex gap-3 mt-1 text-[10px] text-[#bbb]">
                   {project.reelUsageCount > 0 && (

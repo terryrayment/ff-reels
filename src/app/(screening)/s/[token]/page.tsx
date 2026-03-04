@@ -164,13 +164,17 @@ export default async function ScreeningPage({
       })
     : [];
 
-  // Case study projects for the director (director commentary videos)
+  // Case study / Director Commentary projects
+  // Match by contentType OR by title containing "Director Commentary"
   const caseStudies = link
     ? await prisma.project.findMany({
         where: {
           directorId: link.reel.director.id,
-          contentType: "CASE_STUDY",
           isPublished: true,
+          OR: [
+            { contentType: "CASE_STUDY" },
+            { title: { contains: "Director Commentary", mode: "insensitive" } },
+          ],
         },
         select: {
           id: true,
@@ -186,13 +190,17 @@ export default async function ScreeningPage({
       })
     : [];
 
-  // Short film projects for the director
+  // Short film projects — match by contentType OR by category/title containing "Short Film"
   const shortFilms = link
     ? await prisma.project.findMany({
         where: {
           directorId: link.reel.director.id,
-          contentType: "SHORT_FILM",
           isPublished: true,
+          OR: [
+            { contentType: "SHORT_FILM" },
+            { category: { contains: "Short Film", mode: "insensitive" } },
+            { title: { contains: "Short Film", mode: "insensitive" } },
+          ],
         },
         select: {
           id: true,

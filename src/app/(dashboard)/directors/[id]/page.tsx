@@ -13,7 +13,7 @@ export default async function DirectorDetailPage({
     where: { id: params.id },
     include: {
       projects: {
-        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        orderBy: [{ brand: "asc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
         include: {
           reelItems: { select: { id: true } },
           _count: { select: { reelItems: true } },
