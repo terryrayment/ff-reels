@@ -34,10 +34,12 @@ export function SignalFeed({
   updates: initialUpdates,
   currentUserId,
   isAdmin,
+  compact = false,
 }: {
   updates: Update[];
   currentUserId: string;
   isAdmin: boolean;
+  compact?: boolean;
 }) {
   const [updates, setUpdates] = useState(initialUpdates);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -106,6 +108,96 @@ export function SignalFeed({
     }
   };
 
+  // Compact 3-column pill layout
+  if (compact) {
+    const displayUpdates = updates.slice(0, 9);
+
+    return (
+      <div>
+        {displayUpdates.length > 0 ? (
+          <div className="grid grid-cols-3 gap-3">
+            {displayUpdates.map((update) => (
+              <div
+                key={update.id}
+                className="group/item relative rounded-xl bg-[#F7F6F3]/50 px-4 py-3 hover:bg-[#F0F0EC]/50 transition-all duration-300"
+              >
+                {update.isPinned && (
+                  <span className="text-[8px] uppercase tracking-[0.12em] text-amber-600 font-semibold">
+                    Pinned
+                  </span>
+                )}
+
+                {editingId === update.id ? (
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      ref={editRef}
+                      type="text"
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(e, update.id)}
+                      className="flex-1 text-[12px] text-[#1A1A1A] bg-white rounded px-2 py-1 border border-[#E0E0E0] focus:outline-none focus:border-[#999]"
+                    />
+                    <button
+                      onClick={() => handleSaveEdit(update.id)}
+                      className="text-emerald-500 hover:text-emerald-700 transition-colors p-0.5"
+                    >
+                      <Check size={10} />
+                    </button>
+                    <button
+                      onClick={() => setEditingId(null)}
+                      className="text-[#ccc] hover:text-[#999] transition-colors p-0.5"
+                    >
+                      <X size={10} />
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-[12px] text-[#1A1A1A] leading-snug line-clamp-2">
+                    {update.title}
+                  </p>
+                )}
+
+                {(update.director || update.project) && (
+                  <p className="text-[10px] text-[#999] mt-1 truncate">
+                    {update.director?.name}
+                    {update.director && update.project && " / "}
+                    {update.project?.title}
+                  </p>
+                )}
+
+                <p className="text-[9px] uppercase tracking-[0.12em] text-[#ccc] mt-1.5">
+                  {update.author?.name || "System"} · {timeAgoClient(update.createdAt)}
+                </p>
+
+                {/* Edit/Delete — hover */}
+                {canModify(update) && editingId !== update.id && (
+                  <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => handleEdit(update)}
+                      className="text-[#ccc] hover:text-[#999] transition-colors p-1 rounded hover:bg-white/60"
+                    >
+                      <Pencil size={9} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(update.id)}
+                      className="text-[#ccc] hover:text-red-400 transition-colors p-1 rounded hover:bg-red-50/60"
+                    >
+                      <Trash2 size={9} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-[13px] text-[#999] py-4">
+            No updates yet. Post the first one.
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Original list layout
   return (
     <div className="mt-8 max-h-[600px] overflow-y-auto pr-1">
       {updates.length > 0 ? (

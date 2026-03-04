@@ -350,9 +350,9 @@ export default async function DashboardPage({
 
       {/* Unified Stats Card — weekly metrics | roster counts */}
       <div className="data-card px-10 py-8 mb-10">
-        <div className="flex items-center">
+        <div className="flex items-stretch">
           {/* Weekly pulse — left group */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#aaa] font-medium mb-4">
               This Week
             </p>
@@ -383,35 +383,35 @@ export default async function DashboardPage({
                   New Reels
                 </p>
               </div>
-              {weeklyBestReel && (
-                <div className="pl-6">
-                  <p className="text-[13px] font-medium text-[#1A1A1A]">
-                    {weeklyBestReel.director}
-                  </p>
-                  <p className="text-[11px] text-[#bbb] mt-0.5">
-                    {weeklyBestReel.title} &middot; {weeklyBestReel.count} view
-                    {weeklyBestReel.count !== 1 ? "s" : ""}
-                  </p>
-                </div>
-              )}
             </div>
+            {weeklyBestReel && (
+              <p className="mt-4 text-[11px] text-[#bbb]">
+                <span className="text-[#999] font-medium">{weeklyBestReel.director}</span>
+                {" "}leading with {weeklyBestReel.count} view{weeklyBestReel.count !== 1 ? "s" : ""}
+              </p>
+            )}
           </div>
 
           {/* Vertical divider */}
-          <div className="w-px h-14 bg-[#E8E7E3]/40 mx-8 flex-shrink-0" />
+          <div className="w-px bg-[#E8E7E3]/40 mx-10 flex-shrink-0" />
 
           {/* Roster counts — right group */}
-          <div className="flex items-end gap-8 flex-shrink-0">
-            {rosterStats.map((stat) => (
-              <Link key={stat.label} href={stat.href} className="group">
-                <p className="text-[22px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors leading-none">
-                  {stat.value}
-                </p>
-                <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb] group-hover:text-[#999] transition-colors">
-                  {stat.label}
-                </p>
-              </Link>
-            ))}
+          <div className="flex-shrink-0">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#aaa] font-medium mb-4">
+              Roster
+            </p>
+            <div className="flex items-end gap-8">
+              {rosterStats.map((stat) => (
+                <Link key={stat.label} href={stat.href} className="group">
+                  <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors leading-none">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb] group-hover:text-[#999] transition-colors">
+                    {stat.label}
+                  </p>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -451,6 +451,38 @@ export default async function DashboardPage({
           </div>
         </div>
       )}
+
+      {/* Signal — full-width, compact 3-column pills */}
+      <div className="data-card p-9 mb-10">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
+            Signal
+          </h2>
+          <ComposeUpdate />
+        </div>
+
+        <SignalFeed
+          updates={updates.map((u) => ({
+            ...u,
+            createdAt: u.createdAt.toISOString(),
+            body: u.body || null,
+            director: u.director,
+            project: u.project
+              ? { ...u.project, brand: u.project.brand || null }
+              : null,
+            author: u.author
+              ? {
+                  ...u.author,
+                  name: u.author.name || null,
+                  email: u.author.email || "",
+                }
+              : null,
+          }))}
+          currentUserId={userId}
+          isAdmin={isAdmin}
+          compact
+        />
+      </div>
 
       {/* Two-column layout — 58/42 split */}
       <div className="flex gap-10">
@@ -573,10 +605,10 @@ export default async function DashboardPage({
           </div>
         </div>
 
-        {/* RIGHT COLUMN — Directors + Leaderboard + Signal */}
+        {/* RIGHT COLUMN — Directors + Leaderboard */}
         <div className="flex-shrink-0" style={{ flexBasis: "38%" }}>
           <div className="flex flex-col gap-10">
-            {/* Director Scorecards — moved to right column */}
+            {/* Director Scorecards */}
             {scorecards.length > 0 && (
               <div className="data-card p-9">
                 <div className="flex items-baseline justify-between mb-6">
@@ -595,7 +627,7 @@ export default async function DashboardPage({
                   {scorecards.map((d, i) => (
                     <Link
                       key={d.id}
-                      href={`/directors/${d.slug}`}
+                      href={`/directors/${d.id}`}
                       className="group flex items-center gap-3 rounded-xl bg-[#F7F6F3]/50 px-4 py-3 hover:bg-[#F0F0EC]/50 transition-all duration-300"
                     >
                       <div className="relative flex-shrink-0">
@@ -685,36 +717,6 @@ export default async function DashboardPage({
                 </div>
               </div>
             )}
-
-            {/* Signal */}
-            <div className="data-card p-9 sticky top-8">
-              <h2 className="text-[15px] font-medium tracking-tight-2 text-[#1A1A1A] mb-6">
-                Signal
-              </h2>
-
-              <ComposeUpdate />
-
-              <SignalFeed
-                updates={updates.map((u) => ({
-                  ...u,
-                  createdAt: u.createdAt.toISOString(),
-                  body: u.body || null,
-                  director: u.director,
-                  project: u.project
-                    ? { ...u.project, brand: u.project.brand || null }
-                    : null,
-                  author: u.author
-                    ? {
-                        ...u.author,
-                        name: u.author.name || null,
-                        email: u.author.email || "",
-                      }
-                    : null,
-                }))}
-                currentUserId={userId}
-                isAdmin={isAdmin}
-              />
-            </div>
           </div>
         </div>
       </div>
