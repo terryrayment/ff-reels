@@ -122,6 +122,20 @@ mux-player {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 8px 24px rgba(0, 0, 0, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.6);
   }
 
+  /* Safe area bottom padding for iPhone home indicator */
+  .safe-area-bottom {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Data card — barely-there frosted surface, iPad-style float */
   .data-card {
     @apply rounded-[20px] bg-white/60 backdrop-blur-xl border border-transparent;

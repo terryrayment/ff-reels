@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -44,14 +46,29 @@ export function Sidebar({ user }: SidebarProps) {
   const role = user.role || "VIEWER";
   const isAdmin = role === "ADMIN";
   const visibleNav = navItems.filter((item) => item.roles.includes(role));
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white/40 backdrop-blur-2xl border-r border-transparent flex flex-col z-40" style={{ boxShadow: '1px 0 8px rgba(0,0,0,0.02)' }}>
+  // Close mobile sidebar on navigation
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when mobile sidebar open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
+  const sidebarContent = (
+    <>
       {/* Brand */}
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">
           <div className="flex items-center gap-3">
-            {/* F&F monogram */}
             <div className="w-[26px] h-[26px] rounded-md bg-[#1A1A1A] group-hover:bg-[#000] transition-colors flex items-center justify-center flex-shrink-0">
               <span className="text-[11px] font-bold text-white tracking-tight leading-none">FF</span>
             </div>
@@ -87,6 +104,17 @@ export function Sidebar({ user }: SidebarProps) {
             </Link>
           );
         })}
+
+        {/* Quick Reel — mobile-only shortcut */}
+        <div className="pt-3 mt-3 border-t border-[#E8E7E3]/30 mx-3 md:hidden">
+          <Link
+            href="/reels/quick"
+            className="flex items-center gap-2 py-2 text-[13px] text-[#1A1A1A] font-medium transition-colors duration-300"
+          >
+            <span className="text-base">⚡</span>
+            Quick Reel
+          </Link>
+        </div>
 
         {/* Upload Spots -- ADMIN only */}
         {isAdmin && (
@@ -135,6 +163,44 @@ export function Sidebar({ user }: SidebarProps) {
           </button>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile hamburger — fixed top-left */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="fixed top-4 left-4 z-50 md:hidden p-2.5 rounded-xl bg-white/80 backdrop-blur-lg border border-[#E8E7E3]/60 shadow-sm"
+        aria-label="Open menu"
+      >
+        <Menu size={18} className="text-[#1A1A1A]" />
+      </button>
+
+      {/* Desktop sidebar — hidden on mobile */}
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[220px] bg-white/40 backdrop-blur-2xl border-r border-transparent flex-col z-40" style={{ boxShadow: '1px 0 8px rgba(0,0,0,0.02)' }}>
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 md:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+          <aside className="fixed left-0 top-0 bottom-0 w-[280px] bg-[#F7F6F3] backdrop-blur-2xl shadow-2xl flex flex-col z-50 md:hidden">
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="absolute top-4 right-4 p-2 text-[#999] hover:text-[#1A1A1A] transition-colors"
+              aria-label="Close menu"
+            >
+              <X size={18} />
+            </button>
+            {sidebarContent}
+          </aside>
+        </>
+      )}
+    </>
   );
 }
