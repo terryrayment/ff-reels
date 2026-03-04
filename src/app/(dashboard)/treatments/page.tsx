@@ -13,6 +13,7 @@ export default async function TreatmentsPage() {
     include: {
       treatmentSamples: {
         orderBy: { createdAt: "desc" },
+        take: 50,
       },
     },
   });

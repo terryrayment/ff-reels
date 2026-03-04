@@ -179,6 +179,7 @@ export default async function DashboardPage({
   const weeklyBestReel = await (async () => {
     const weeklyViews = await prisma.reelView.findMany({
       where: { startedAt: { gte: startOfWeek }, ...viewOwnerFilter },
+      take: 500,
       select: {
         screeningLink: {
           select: {

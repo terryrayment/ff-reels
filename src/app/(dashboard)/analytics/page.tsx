@@ -112,9 +112,11 @@ export default async function AnalyticsPage({
               totalDuration: true,
               spotViews: {
                 select: { percentWatched: true },
+                take: 10,
               },
             },
             orderBy: { startedAt: "desc" },
+            take: 25,
           },
           _count: { select: { views: true } },
         },
