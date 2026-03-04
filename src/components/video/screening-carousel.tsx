@@ -518,10 +518,7 @@ export function ScreeningCarousel({
           }`}
         >
           <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-8 pb-6 pt-24">
-            <div className="max-w-4xl mx-auto">
-              <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] mb-4">
-                Friends &amp; Family
-              </p>
+            <div className="max-w-3xl mx-auto">
               <h1 className="text-3xl md:text-4xl font-light tracking-tight">
                 {titleDisplay}
               </h1>
@@ -639,7 +636,7 @@ export function ScreeningCarousel({
           {/* Thumbnail strip */}
           <div
             ref={thumbStripRef}
-            className="flex-1 flex items-center gap-2 overflow-x-auto py-0.5"
+            className="flex-1 flex items-center gap-2 overflow-x-auto py-1 pl-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {items.map((item, i) => {
@@ -1163,17 +1160,24 @@ export function ScreeningCarousel({
                 <h3 className="text-[42px] font-extralight text-white/90 tracking-tight leading-[1.1]">
                   Friends &amp; Family
                 </h3>
-                <p className="text-[13px] text-white/25 mt-3 tracking-wide">
-                  Directors&apos; Representation
-                </p>
               </div>
 
               {/* ─── About — narrative, generous spacing ─── */}
               <div className="pb-16">
                 <p className="text-[15px] text-white/40 leading-[2] font-light">
-                  A boutique directors&apos; representation company built on close relationships,
-                  creative vision, and an obsessive commitment to craft. We represent a curated
-                  roster of directors across commercial, branded content, and music video.
+                  Friends &amp; Family is a creative production company developing and producing
+                  work across commercial, branded content, music, and entertainment. Founded by
+                  industry veteran Scott Kaplan &mdash; the producer behind Old Spice&apos;s
+                  Emmy-winning, Cannes Grand Prix &amp; D&amp;AD Black Pencil &ldquo;The Man Your
+                  Man Could Smell Like,&rdquo; Apple&apos;s iconic iPod campaigns, and
+                  collaborations with directors including Tom Kuntz, Mark Romanek, and Gus Van
+                  Sant &mdash; the company represents a curated roster of visionary directors
+                  who bring intelligence, craft, and distinctive voice to every project.
+                </p>
+                <p className="text-[15px] text-white/40 leading-[2] font-light mt-6">
+                  With offices in New York and Los Angeles, Friends &amp; Family partners
+                  with the world&apos;s top agencies and brands to create work that is smart,
+                  honest, and unforgettable.
                 </p>
               </div>
 
@@ -1188,8 +1192,13 @@ export function ScreeningCarousel({
                     <p className="text-[17px] text-white/70 font-light tracking-tight">Scott Kaplan</p>
                     <p className="text-[12px] text-white/25 mt-1">Managing Director / EP</p>
                     <p className="text-[13px] text-white/30 leading-[1.9] mt-3 font-light">
-                      25+ years in production. Campaigns for Tom Kuntz, Mark Romanek,
-                      Gus Van Sant, Malcolm Venville.
+                      A 25-year advertising production veteran and the creative engine behind
+                      Friends &amp; Family. Scott has produced landmark campaigns for Tom Kuntz,
+                      Mark Romanek, Gus Van Sant, Noam Murro, and Malcolm Venville. His
+                      credits include Old Spice&apos;s &ldquo;The Man Your Man Could Smell
+                      Like&rdquo; (Emmy, Cannes Grand Prix, D&amp;AD Black Pencil), Apple&apos;s
+                      iPod series featuring Paul McCartney, Eminem, and Bob Dylan, and work
+                      for Nike, Google, and Coca-Cola.
                     </p>
                     <a href="mailto:scott@friendsandfamily.tv" className="text-[12px] text-white/20 hover:text-white/50 transition-colors mt-2 inline-block">
                       scott@friendsandfamily.tv
@@ -1200,8 +1209,11 @@ export function ScreeningCarousel({
                     <p className="text-[17px] text-white/70 font-light tracking-tight">Jed Herold</p>
                     <p className="text-[12px] text-white/25 mt-1">Executive Producer</p>
                     <p className="text-[13px] text-white/30 leading-[1.9] mt-3 font-light">
-                      20+ years in the commercial industry. Extensive collaborator
-                      networks through diverse production.
+                      An integrated executive producer and project management leader with
+                      20+ years across video, digital, social, and print production. Jed has
+                      held senior roles at BBDO, McCann, Grey, and Johannes Leonardo, bringing
+                      deep agency-side insight to every production. He leads client partnerships
+                      and draws on one of the widest collaborator networks in the business.
                     </p>
                     <a href="mailto:jed@friendsandfamily.tv" className="text-[12px] text-white/20 hover:text-white/50 transition-colors mt-2 inline-block">
                       jed@friendsandfamily.tv
@@ -1212,8 +1224,12 @@ export function ScreeningCarousel({
                     <p className="text-[17px] text-white/70 font-light tracking-tight">Alana Hearn</p>
                     <p className="text-[12px] text-white/25 mt-1">Executive Producer</p>
                     <p className="text-[13px] text-white/30 leading-[1.9] mt-3 font-light">
-                      Started at Lighthouse with Peter Lindbergh. Clients include
-                      Nike, Pepsi, Samsung, L&apos;Or&eacute;al, Maybelline.
+                      Alana began her production career at Lighthouse alongside legendary
+                      photographer Peter Lindbergh before rising to EP at Identity and
+                      Triptent, where she led content production for major brand campaigns.
+                      Her client roster spans Nike, Pepsi, Samsung, L&apos;Or&eacute;al,
+                      and Maybelline, with expertise across commercial, fashion, and
+                      branded entertainment.
                     </p>
                     <a href="mailto:alana@friendsandfamily.tv" className="text-[12px] text-white/20 hover:text-white/50 transition-colors mt-2 inline-block">
                       alana@friendsandfamily.tv
@@ -1310,12 +1326,6 @@ export function ScreeningCarousel({
                   className="text-[13px] text-white/40 hover:text-white/70 transition-colors font-light underline underline-offset-4 decoration-white/10 hover:decoration-white/30"
                 >
                   friendsandfamily.tv
-                </a>
-                <a
-                  href="mailto:info@friendsandfamily.tv"
-                  className="text-[13px] text-white/40 hover:text-white/70 transition-colors font-light underline underline-offset-4 decoration-white/10 hover:decoration-white/30"
-                >
-                  info@friendsandfamily.tv
                 </a>
               </div>
             </div>
