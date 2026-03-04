@@ -173,6 +173,7 @@ export function ScreeningCarousel({
   const [previewTreatment, setPreviewTreatment] = useState<TreatmentSampleInfo | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [hoveredThumb, setHoveredThumb] = useState<{ text: string; x: number; y: number } | null>(null);
+  const [playingPanelVideo, setPlayingPanelVideo] = useState<DirectorVideoItem | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const playerRef = useRef<any>(null);
@@ -535,9 +536,12 @@ export function ScreeningCarousel({
   const closePanel = () => {
     setActivePanel(null);
     setPreviewTreatment(null);
+    setPlayingPanelVideo(null);
   };
-  const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | "casestudies" | "shortfilms" | "gallery") =>
+  const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | "casestudies" | "shortfilms" | "gallery") => {
+    setPlayingPanelVideo(null);
     setActivePanel((prev) => (prev === panel ? null : panel));
+  };
 
   return (
     <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
@@ -1913,10 +1917,10 @@ export function ScreeningCarousel({
         {/* ─── CASE STUDIES PANEL ────────────────────────── */}
         {caseStudies.length > 0 && (
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-all duration-500 ease-out ${
             activePanel === "casestudies" ? "translate-y-0" : "translate-y-full"
           }`}
-          style={{ maxHeight: "85vh" }}
+          style={{ height: playingPanelVideo && activePanel === "casestudies" ? "75vh" : "auto", maxHeight: "85vh" }}
         >
           <div
             className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
@@ -1927,60 +1931,110 @@ export function ScreeningCarousel({
               <div className="w-10 h-1 rounded-full bg-white/10" />
             </div>
 
-            {/* Close */}
+            {/* Close — PROMINENT */}
             <button
-              onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+              onClick={() => {
+                if (playingPanelVideo) {
+                  setPlayingPanelVideo(null);
+                } else {
+                  closePanel();
+                }
+              }}
+              className="absolute top-4 right-6 z-10 p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors border border-white/10"
             >
-              <X size={16} className="text-white/30" />
+              <X size={20} className="text-white/70" />
             </button>
 
-            <div className="mb-8">
-              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
-                {director.name}
-              </p>
-              <h3 className="text-xl font-light text-white/80 tracking-tight">
-                Case Studies
-              </h3>
-              <p className="text-[12px] text-white/25 mt-1.5 max-w-lg">
-                Director commentary and behind-the-scenes breakdowns
-              </p>
-            </div>
-
-            {/* Video grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {caseStudies.map((cs) => (
-                <div key={cs.id} className="group">
-                  {cs.muxPlaybackId ? (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
-                      <MuxPlayer
-                        playbackId={cs.muxPlaybackId}
-                        streamType="on-demand"
-                        autoPlay={false}
-                        muted={false}
-                        style={{ width: "100%", height: "100%", "--controls": "none" }}
-                        className="w-full h-full"
-                      />
-                    </div>
-                  ) : cs.thumbnailUrl ? (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={cs.thumbnailUrl} alt={cs.title} className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                      <Play size={24} className="text-white/15" />
-                    </div>
+            {playingPanelVideo && activePanel === "casestudies" ? (
+              /* ─── EXPANDED PLAYER ─── */
+              <div>
+                <button
+                  onClick={() => setPlayingPanelVideo(null)}
+                  className="text-[10px] text-white/30 uppercase tracking-[0.15em] hover:text-white/50 transition-colors mb-4"
+                >
+                  ← Back to Case Studies
+                </button>
+                <div className="w-full aspect-video rounded-lg overflow-hidden bg-black shadow-2xl">
+                  {playingPanelVideo.muxPlaybackId && (
+                    <MuxPlayer
+                      key={playingPanelVideo.id}
+                      playbackId={playingPanelVideo.muxPlaybackId}
+                      streamType="on-demand"
+                      autoPlay={"any" as const}
+                      muted={false}
+                      style={{ width: "100%", height: "100%" }}
+                      className="w-full h-full"
+                    />
                   )}
-                  <div className="mt-2">
-                    <p className="text-[12px] text-white/60 leading-tight">{cs.title}</p>
-                    {cs.brand && (
-                      <p className="text-[10px] text-white/25 mt-0.5">{cs.brand}</p>
-                    )}
-                  </div>
                 </div>
-              ))}
-            </div>
+                <div className="mt-4">
+                  <p className="text-[14px] text-white/70 font-medium">{playingPanelVideo.title}</p>
+                  <p className="text-[11px] text-white/30 mt-1">
+                    {[playingPanelVideo.brand, playingPanelVideo.year, playingPanelVideo.duration ? formatDuration(playingPanelVideo.duration) : null].filter(Boolean).join(" · ")}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              /* ─── BROWSE GRID ─── */
+              <>
+                <div className="mb-8">
+                  <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                    {director.name}
+                  </p>
+                  <h3 className="text-xl font-light text-white/80 tracking-tight">
+                    Case Studies
+                  </h3>
+                  <p className="text-[12px] text-white/25 mt-1.5 max-w-lg">
+                    Director commentary and behind-the-scenes breakdowns
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {caseStudies.map((cs) => (
+                    <button
+                      key={cs.id}
+                      onClick={() => cs.muxPlaybackId ? setPlayingPanelVideo(cs) : null}
+                      className="group text-left"
+                    >
+                      <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06] group-hover:border-white/20 transition-all">
+                        {cs.muxPlaybackId ? (
+                          <img
+                            src={`https://image.mux.com/${cs.muxPlaybackId}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop`}
+                            alt={cs.title}
+                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                          />
+                        ) : cs.thumbnailUrl ? (
+                          <img src={cs.thumbnailUrl} alt={cs.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Play size={24} className="text-white/15" />
+                          </div>
+                        )}
+                        {/* Play overlay */}
+                        {cs.muxPlaybackId && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+                            <div className="w-12 h-12 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20 group-hover:bg-white/25 group-hover:scale-110 transition-all">
+                              <Play size={18} fill="white" className="text-white ml-0.5" />
+                            </div>
+                          </div>
+                        )}
+                        {cs.duration && (
+                          <span className="absolute bottom-2 right-2 text-[9px] bg-black/70 px-1.5 py-0.5 text-white/70 rounded">
+                            {formatDuration(cs.duration)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-[12px] text-white/60 leading-tight group-hover:text-white/80 transition-colors">{cs.title}</p>
+                        {cs.brand && (
+                          <p className="text-[10px] text-white/25 mt-0.5">{cs.brand}</p>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
         )}
@@ -1988,10 +2042,10 @@ export function ScreeningCarousel({
         {/* ─── SHORT FILMS PANEL ─────────────────────────── */}
         {shortFilms.length > 0 && (
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-all duration-500 ease-out ${
             activePanel === "shortfilms" ? "translate-y-0" : "translate-y-full"
           }`}
-          style={{ maxHeight: "85vh" }}
+          style={{ height: playingPanelVideo && activePanel === "shortfilms" ? "75vh" : "auto", maxHeight: "85vh" }}
         >
           <div
             className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
@@ -2002,65 +2056,115 @@ export function ScreeningCarousel({
               <div className="w-10 h-1 rounded-full bg-white/10" />
             </div>
 
-            {/* Close */}
+            {/* Close — PROMINENT */}
             <button
-              onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+              onClick={() => {
+                if (playingPanelVideo) {
+                  setPlayingPanelVideo(null);
+                } else {
+                  closePanel();
+                }
+              }}
+              className="absolute top-4 right-6 z-10 p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors border border-white/10"
             >
-              <X size={16} className="text-white/30" />
+              <X size={20} className="text-white/70" />
             </button>
 
-            <div className="mb-8">
-              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
-                {director.name}
-              </p>
-              <h3 className="text-xl font-light text-white/80 tracking-tight">
-                Short Films
-              </h3>
-              <p className="text-[12px] text-white/25 mt-1.5 max-w-lg">
-                Narrative and personal filmmaking
-              </p>
-            </div>
-
-            {/* Video grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {shortFilms.map((sf) => (
-                <div key={sf.id} className="group">
-                  {sf.muxPlaybackId ? (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
-                      <MuxPlayer
-                        playbackId={sf.muxPlaybackId}
-                        streamType="on-demand"
-                        autoPlay={false}
-                        muted={false}
-                        style={{ width: "100%", height: "100%", "--controls": "none" }}
-                        className="w-full h-full"
-                      />
-                    </div>
-                  ) : sf.thumbnailUrl ? (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={sf.thumbnailUrl} alt={sf.title} className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                      <Film size={24} className="text-white/15" />
-                    </div>
+            {playingPanelVideo && activePanel === "shortfilms" ? (
+              /* ─── EXPANDED PLAYER ─── */
+              <div>
+                <button
+                  onClick={() => setPlayingPanelVideo(null)}
+                  className="text-[10px] text-white/30 uppercase tracking-[0.15em] hover:text-white/50 transition-colors mb-4"
+                >
+                  ← Back to Short Films
+                </button>
+                <div className="w-full aspect-video rounded-lg overflow-hidden bg-black shadow-2xl">
+                  {playingPanelVideo.muxPlaybackId && (
+                    <MuxPlayer
+                      key={playingPanelVideo.id}
+                      playbackId={playingPanelVideo.muxPlaybackId}
+                      streamType="on-demand"
+                      autoPlay={"any" as const}
+                      muted={false}
+                      style={{ width: "100%", height: "100%" }}
+                      className="w-full h-full"
+                    />
                   )}
-                  <div className="mt-2">
-                    <p className="text-[12px] text-white/60 leading-tight">{sf.title}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      {sf.year && (
-                        <p className="text-[10px] text-white/25">{sf.year}</p>
-                      )}
-                      {sf.duration && (
-                        <p className="text-[10px] text-white/25">{formatDuration(sf.duration)}</p>
-                      )}
-                    </div>
-                  </div>
                 </div>
-              ))}
-            </div>
+                <div className="mt-4">
+                  <p className="text-[14px] text-white/70 font-medium">{playingPanelVideo.title}</p>
+                  <p className="text-[11px] text-white/30 mt-1">
+                    {[playingPanelVideo.brand, playingPanelVideo.year, playingPanelVideo.duration ? formatDuration(playingPanelVideo.duration) : null].filter(Boolean).join(" · ")}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              /* ─── BROWSE GRID ─── */
+              <>
+                <div className="mb-8">
+                  <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                    {director.name}
+                  </p>
+                  <h3 className="text-xl font-light text-white/80 tracking-tight">
+                    Short Films
+                  </h3>
+                  <p className="text-[12px] text-white/25 mt-1.5 max-w-lg">
+                    Narrative and personal filmmaking
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {shortFilms.map((sf) => (
+                    <button
+                      key={sf.id}
+                      onClick={() => sf.muxPlaybackId ? setPlayingPanelVideo(sf) : null}
+                      className="group text-left"
+                    >
+                      <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06] group-hover:border-white/20 transition-all">
+                        {sf.muxPlaybackId ? (
+                          <img
+                            src={`https://image.mux.com/${sf.muxPlaybackId}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop`}
+                            alt={sf.title}
+                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                          />
+                        ) : sf.thumbnailUrl ? (
+                          <img src={sf.thumbnailUrl} alt={sf.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Film size={24} className="text-white/15" />
+                          </div>
+                        )}
+                        {/* Play overlay */}
+                        {sf.muxPlaybackId && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+                            <div className="w-12 h-12 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20 group-hover:bg-white/25 group-hover:scale-110 transition-all">
+                              <Play size={18} fill="white" className="text-white ml-0.5" />
+                            </div>
+                          </div>
+                        )}
+                        {sf.duration && (
+                          <span className="absolute bottom-2 right-2 text-[9px] bg-black/70 px-1.5 py-0.5 text-white/70 rounded">
+                            {formatDuration(sf.duration)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-[12px] text-white/60 leading-tight group-hover:text-white/80 transition-colors">{sf.title}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {sf.year && (
+                            <p className="text-[10px] text-white/25">{sf.year}</p>
+                          )}
+                          {sf.duration && (
+                            <p className="text-[10px] text-white/25">{formatDuration(sf.duration)}</p>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
         )}
