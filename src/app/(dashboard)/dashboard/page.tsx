@@ -69,6 +69,9 @@ export default async function DashboardPage() {
           },
         }),
     prisma.update.findMany({
+      where: {
+        type: { not: "REEL_VIEWED" }, // Don't show auto-generated view notifications
+      },
       take: 30,
       orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
       include: {

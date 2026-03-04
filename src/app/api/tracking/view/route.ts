@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { detectDevice } from "@/lib/analytics/device";
 import { extractGeo } from "@/lib/analytics/geo";
-import { createViewSignal } from "@/lib/analytics/signal";
 
 /**
  * POST /api/tracking/view
@@ -96,19 +95,6 @@ export async function POST(req: NextRequest) {
         device,
         isForwarded,
       },
-    });
-
-    // Fire-and-forget: post to Signal feed
-    createViewSignal({
-      recipientName: link.recipientName,
-      recipientCompany: link.recipientCompany,
-      directorName: link.reel.director.name,
-      directorId: link.reel.director.id,
-      reelTitle: link.reel.title,
-      reelOwnerId: link.reel.createdById,
-      viewerCity: geo.city,
-    }).catch(() => {
-      // Silently fail — don't break tracking if signal creation errors
     });
 
     return NextResponse.json({ viewId: view.id });

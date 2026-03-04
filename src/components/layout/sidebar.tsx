@@ -50,23 +50,10 @@ export function Sidebar({ user }: SidebarProps) {
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">
           <div className="flex items-center gap-3">
-            {/* F&F houndstooth mark */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 48 56"
-              fill="currentColor"
-              className="w-[22px] h-auto text-[#1A1A1A] group-hover:text-[#000] transition-colors flex-shrink-0"
-            >
-              <path d="M8,8 L16,0 L32,0 L32,8 L20,8 L20,16 L8,16Z"/>
-              <path d="M32,0 L32,8 L36,8 L36,16 L48,16 L48,8 L40,0Z"/>
-              <path d="M20,16 L28,16 L28,20 L32,16 L36,16 L36,28 L32,28 L32,24 L20,24Z"/>
-              <path d="M36,16 L48,16 L48,28 L40,28 L40,36 L48,36 L48,28"/>
-              <path d="M0,20 L8,16 L8,28 L20,28 L20,40 L12,40 L12,48 L20,48 L20,40"/>
-              <path d="M0,20 L0,40 L8,48 L12,48 L12,40 L8,40 L8,28 L0,28Z"/>
-              <path d="M20,28 L32,28 L32,40 L20,40Z"/>
-              <path d="M32,28 L40,28 L40,36 L48,36 L48,48 L40,56 L32,56 L32,40 L20,40 L20,48 L32,48 L32,56"/>
-              <path d="M32,40 L48,40 L48,48 L40,56 L32,56Z"/>
-            </svg>
+            {/* F&F monogram */}
+            <div className="w-[26px] h-[26px] rounded-md bg-[#1A1A1A] group-hover:bg-[#000] transition-colors flex items-center justify-center flex-shrink-0">
+              <span className="text-[11px] font-bold text-white tracking-tight leading-none">FF</span>
+            </div>
             <div>
               <h1 className="text-[15px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none group-hover:text-[#000] transition-colors">
                 Friends &amp; Family

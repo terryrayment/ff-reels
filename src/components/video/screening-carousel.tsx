@@ -14,6 +14,9 @@ import {
   Share2,
   ExternalLink,
   Download,
+  FileText,
+  Award,
+  Users,
 } from "lucide-react";
 
 interface SpotItem {
@@ -52,6 +55,15 @@ interface RosterHighlight {
   categories: string[];
 }
 
+interface TreatmentSampleInfo {
+  id: string;
+  title: string;
+  brand: string | null;
+  previewUrl: string;
+  pageCount: number | null;
+  isRedacted: boolean;
+}
+
 interface ScreeningCarouselProps {
   items: SpotItem[];
   director: DirectorInfo;
@@ -62,6 +74,7 @@ interface ScreeningCarouselProps {
   curatorialNote: string | null;
   portfolioStills?: PortfolioStill[];
   rosterHighlights?: RosterHighlight[];
+  treatmentSamples?: TreatmentSampleInfo[];
 }
 
 /**
@@ -85,16 +98,18 @@ export function ScreeningCarousel({
   curatorialNote,
   portfolioStills = [],
   rosterHighlights = [],
+  treatmentSamples = [],
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [activePanel, setActivePanel] = useState<
-    "bio" | "share" | "company" | "download" | null
+    "bio" | "share" | "company" | "download" | "treatments" | null
   >(null);
   const [showInfo, setShowInfo] = useState(true);
   const [bgStillIndex, setBgStillIndex] = useState(0);
   const [shareCopied, setShareCopied] = useState<string | null>(null);
+  const [previewTreatment, setPreviewTreatment] = useState<TreatmentSampleInfo | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
 
   // Tracking state per spot
@@ -423,7 +438,6 @@ export function ScreeningCarousel({
 
   if (!currentProject) return null;
 
-  const hasBio = director.bio || director.statement;
   const subtitle = brand
     ? [agencyName, campaignName].filter(Boolean).join(" \u00B7 ") ||
       `Directed by ${director.name}`
@@ -437,14 +451,12 @@ export function ScreeningCarousel({
       ?.thumbnailUrl;
 
   // Close any panel
-  const closePanel = () => setActivePanel(null);
-  const openPanel = (panel: "bio" | "share" | "company" | "download") =>
+  const closePanel = () => {
+    setActivePanel(null);
+    setPreviewTreatment(null);
+  };
+  const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments") =>
     setActivePanel((prev) => (prev === panel ? null : panel));
-
-  // Notable brands from roster highlights
-  const rosterCategories = Array.from(
-    new Set(rosterHighlights.flatMap((d) => d.categories))
-  ).slice(0, 6);
 
   return (
     <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
@@ -667,32 +679,43 @@ export function ScreeningCarousel({
               Share
             </button>
 
-            {/* Bio button */}
-            {hasBio && (
-              <button
-                onClick={() => openPanel("bio")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
-                  activePanel === "bio"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
-                }`}
-              >
-                <ChevronUp size={10} />
-                Bio
-              </button>
-            )}
+            {/* Bio button — always visible */}
+            <button
+              onClick={() => openPanel("bio")}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                activePanel === "bio"
+                  ? "bg-white/10 border-white/20 text-white/60"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+              }`}
+            >
+              <ChevronUp size={10} />
+              Bio
+            </button>
 
             {/* Download button */}
-            {items.some((i) => i.project.muxPlaybackId) && (
+            <button
+              onClick={() => openPanel("download")}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                activePanel === "download"
+                  ? "bg-white/10 border-white/20 text-white/60"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+              }`}
+            >
+              <Download size={10} />
+            </button>
+
+            {/* Treatment Examples button */}
+            {treatmentSamples.length > 0 && (
               <button
-                onClick={() => openPanel("download")}
+                onClick={() => openPanel("treatments")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
-                  activePanel === "download"
+                  activePanel === "treatments"
                     ? "bg-white/10 border-white/20 text-white/60"
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
                 }`}
               >
-                <Download size={10} />
+                <FileText size={10} />
+                Treatments
               </button>
             )}
 
@@ -991,16 +1014,16 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* ─── ABOUT F&F PANEL ──────────────────────────── */}
+        {/* ─── ABOUT F&F PANEL — People-focused ────────── */}
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+          className={`absolute bottom-0 left-0 right-0 bg-[#0e0e0e] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
             activePanel === "company" ? "translate-y-0" : "translate-y-full"
           }`}
-          style={{ maxHeight: "75vh" }}
+          style={{ maxHeight: "80vh" }}
         >
           <div
-            className="max-w-2xl mx-auto px-8 py-8 overflow-y-auto"
-            style={{ maxHeight: "75vh" }}
+            className="max-w-3xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "80vh" }}
           >
             {/* Drag handle */}
             <div className="flex justify-center mb-6">
@@ -1015,39 +1038,153 @@ export function ScreeningCarousel({
               <X size={16} className="text-white/30" />
             </button>
 
-            {/* F&F Logo/Name */}
-            <div className="mb-8">
-              <h3 className="text-2xl font-light text-white/90 tracking-tight">
+            {/* Company header — editorial style matching friendsandfamily.tv */}
+            <div className="mb-10">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.3em] mb-3">
+                About
+              </p>
+              <h3 className="text-3xl font-light text-white/90 tracking-tight leading-tight">
                 Friends &amp; Family
               </h3>
-              <p className="text-[10px] text-white/20 uppercase tracking-[0.25em] mt-1.5">
-                Directors&apos; Representation
+              <p className="text-[13px] text-white/35 mt-3 leading-[1.8] max-w-xl">
+                A boutique directors&apos; representation company built on
+                relationships, creative vision, and craft. Every reel is
+                hand-built for the opportunity.
               </p>
             </div>
 
-            {/* About */}
-            <div className="mb-8">
-              <p className="text-[13px] text-white/50 leading-[1.9]">
-                Friends &amp; Family is a boutique directors&apos;
-                representation company built on close relationships, creative
-                vision, and an obsessive commitment to craft. We represent a
-                curated roster of directors across commercial, branded content,
-                and music video work.
+            {/* ─── The Team ─── */}
+            <div className="mb-10">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-6">
+                The Team
               </p>
-              <p className="text-[13px] text-white/40 leading-[1.9] mt-4">
-                Every reel we send is hand-built for the opportunity &mdash;
-                because generic reels waste everyone&apos;s time. Our approach is
-                simple: understand the brief, know the director, make the
-                match.
-              </p>
+
+              {/* Scott Kaplan */}
+              <div className="flex gap-5 mb-8 group">
+                <div className="w-16 h-16 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0 ring-1 ring-white/[0.08]">
+                  <span className="text-lg text-white/25 font-light">SK</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-3">
+                    <h4 className="text-[15px] text-white/80 font-medium">Scott Kaplan</h4>
+                    <span className="text-[10px] text-white/20 uppercase tracking-wider">MD / EP</span>
+                  </div>
+                  <p className="text-[12px] text-white/40 leading-[1.8] mt-1.5">
+                    25+ years in production. Has led campaigns for Tom Kuntz, Mark Romanek, Gus Van Sant,
+                    and Malcolm Venville.
+                  </p>
+                  <div className="flex items-center gap-3 mt-2.5">
+                    <div className="flex items-center gap-1.5">
+                      <Award size={10} className="text-amber-500/60" />
+                      <span className="text-[10px] text-white/25">Emmy</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Award size={10} className="text-amber-500/60" />
+                      <span className="text-[10px] text-white/25">Cannes Grand Prix</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Award size={10} className="text-amber-500/60" />
+                      <span className="text-[10px] text-white/25">D&amp;AD Black Pencil</span>
+                    </div>
+                  </div>
+                  <a
+                    href="mailto:scott@friendsandfamily.tv"
+                    className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-colors mt-2"
+                  >
+                    <Mail size={9} />
+                    scott@friendsandfamily.tv
+                  </a>
+                </div>
+              </div>
+
+              {/* Jed Herold */}
+              <div className="flex gap-5 mb-8 group">
+                <div className="w-16 h-16 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0 ring-1 ring-white/[0.08]">
+                  <span className="text-lg text-white/25 font-light">JH</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-3">
+                    <h4 className="text-[15px] text-white/80 font-medium">Jed Herold</h4>
+                    <span className="text-[10px] text-white/20 uppercase tracking-wider">EP</span>
+                  </div>
+                  <p className="text-[12px] text-white/40 leading-[1.8] mt-1.5">
+                    20+ years as a working professional in the commercial industry. Extensive
+                    collaborator networks built through diverse production experience.
+                  </p>
+                  <a
+                    href="mailto:jed@friendsandfamily.tv"
+                    className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-colors mt-2"
+                  >
+                    <Mail size={9} />
+                    jed@friendsandfamily.tv
+                  </a>
+                </div>
+              </div>
+
+              {/* Alana Hearn */}
+              <div className="flex gap-5 mb-8 group">
+                <div className="w-16 h-16 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0 ring-1 ring-white/[0.08]">
+                  <span className="text-lg text-white/25 font-light">AH</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-3">
+                    <h4 className="text-[15px] text-white/80 font-medium">Alana Hearn</h4>
+                    <span className="text-[10px] text-white/20 uppercase tracking-wider">EP</span>
+                  </div>
+                  <p className="text-[12px] text-white/40 leading-[1.8] mt-1.5">
+                    Career began at Lighthouse with Peter Lindbergh. Has collaborated with
+                    L&apos;Or&eacute;al, Maybelline, Nike, Pepsi, and Samsung.
+                  </p>
+                  <a
+                    href="mailto:alana@friendsandfamily.tv"
+                    className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-colors mt-2"
+                  >
+                    <Mail size={9} />
+                    alana@friendsandfamily.tv
+                  </a>
+                </div>
+              </div>
             </div>
 
-            {/* Roster Highlights */}
+            {/* ─── Sales Representation ─── */}
+            <div className="border-t border-white/[0.06] pt-8 mb-10">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-5">
+                Sales Representation
+              </p>
+              <div className="grid grid-cols-3 gap-6">
+                <div>
+                  <p className="text-[11px] text-white/50 font-medium mb-1">West Coast</p>
+                  <p className="text-[11px] text-white/25">Uncle Lefty</p>
+                  <a href="mailto:james@unclelefty.com" className="text-[10px] text-white/15 hover:text-white/30 transition-colors block">
+                    james@unclelefty.com
+                  </a>
+                </div>
+                <div>
+                  <p className="text-[11px] text-white/50 font-medium mb-1">Midwest</p>
+                  <p className="text-[11px] text-white/25">CCCo</p>
+                  <a href="mailto:chiara@chiarachung.com" className="text-[10px] text-white/15 hover:text-white/30 transition-colors block">
+                    chiara@chiarachung.com
+                  </a>
+                </div>
+                <div>
+                  <p className="text-[11px] text-white/50 font-medium mb-1">East Coast</p>
+                  <p className="text-[11px] text-white/25">Talk Shop</p>
+                  <a href="mailto:katie.northy@talk-shop.tv" className="text-[10px] text-white/15 hover:text-white/30 transition-colors block">
+                    katie.northy@talk-shop.tv
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* ─── Our Directors ─── */}
             {rosterHighlights.length > 0 && (
-              <div className="border-t border-white/5 pt-6 mb-8">
-                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-5">
-                  Our Directors
-                </p>
+              <div className="border-t border-white/[0.06] pt-8 mb-10">
+                <div className="flex items-center gap-2 mb-5">
+                  <Users size={11} className="text-white/15" />
+                  <p className="text-[10px] text-white/15 uppercase tracking-[0.25em]">
+                    Our Directors
+                  </p>
+                </div>
                 <div className="grid grid-cols-4 gap-4">
                   {rosterHighlights.map((d) => (
                     <div key={d.id} className="text-center group">
@@ -1055,16 +1192,16 @@ export function ScreeningCarousel({
                         <img
                           src={d.headshotUrl}
                           alt={d.name}
-                          className="w-14 h-14 rounded-full object-cover mx-auto ring-1 ring-white/10 group-hover:ring-white/25 transition-all"
+                          className="w-16 h-16 rounded-full object-cover mx-auto ring-1 ring-white/[0.08] group-hover:ring-white/25 transition-all"
                         />
                       ) : (
-                        <div className="w-14 h-14 rounded-full bg-white/5 mx-auto flex items-center justify-center">
-                          <span className="text-[14px] text-white/20">
+                        <div className="w-16 h-16 rounded-full bg-white/[0.04] mx-auto flex items-center justify-center ring-1 ring-white/[0.06]">
+                          <span className="text-[14px] text-white/20 font-light">
                             {d.name.charAt(0)}
                           </span>
                         </div>
                       )}
-                      <p className="text-[11px] text-white/40 mt-2 group-hover:text-white/60 transition-colors">
+                      <p className="text-[11px] text-white/35 mt-2 group-hover:text-white/55 transition-colors">
                         {d.name}
                       </p>
                     </div>
@@ -1073,43 +1210,21 @@ export function ScreeningCarousel({
               </div>
             )}
 
-            {/* Capabilities / Categories */}
-            {rosterCategories.length > 0 && (
-              <div className="border-t border-white/5 pt-6 mb-8">
-                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                  Expertise
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {rosterCategories.map((cat) => (
-                    <span
-                      key={cat}
-                      className="px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-[11px] text-white/30 capitalize"
-                    >
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Contact / CTA */}
-            <div className="border-t border-white/5 pt-6">
-              <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                Get in touch
-              </p>
+            {/* ─── Contact CTA ─── */}
+            <div className="border-t border-white/[0.06] pt-8">
               <div className="flex items-center gap-4">
                 <a
                   href="https://www.friendsandfamily.tv"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                  className="flex items-center gap-2 px-5 py-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.15] transition-all text-[11px] text-white/40 hover:text-white/60"
                 >
                   <ExternalLink size={12} />
                   friendsandfamily.tv
                 </a>
                 <a
                   href="mailto:info@friendsandfamily.tv"
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                  className="flex items-center gap-2 px-5 py-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.15] transition-all text-[11px] text-white/40 hover:text-white/60"
                 >
                   <Mail size={12} />
                   info@friendsandfamily.tv
@@ -1147,25 +1262,24 @@ export function ScreeningCarousel({
               Download
             </h3>
 
-            {/* Download all */}
-            {items.filter((i) => i.project.muxPlaybackId).length > 1 && (
-              <button
-                onClick={handleDownloadAll}
-                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] hover:border-white/[0.15] transition-all group mb-6"
-              >
-                <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
-                  <Download size={16} className="text-white/50 group-hover:text-white/70 transition-colors" />
-                </div>
-                <div className="text-left">
-                  <p className="text-[13px] text-white/70 group-hover:text-white/90 transition-colors font-medium">
-                    Download All Spots
-                  </p>
-                  <p className="text-[11px] text-white/25">
-                    {items.filter((i) => i.project.muxPlaybackId).length} videos as MP4
-                  </p>
-                </div>
-              </button>
-            )}
+            {/* Download All Spots — always visible */}
+            <button
+              onClick={handleDownloadAll}
+              disabled={!items.some((i) => i.project.muxPlaybackId)}
+              className="w-full flex items-center gap-4 px-5 py-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] hover:border-white/[0.15] transition-all group mb-6 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
+                <Download size={16} className="text-white/50 group-hover:text-white/70 transition-colors" />
+              </div>
+              <div className="text-left">
+                <p className="text-[14px] text-white/70 group-hover:text-white/90 transition-colors font-medium">
+                  Download All Spots
+                </p>
+                <p className="text-[11px] text-white/25">
+                  {items.filter((i) => i.project.muxPlaybackId).length} of {items.length} videos as MP4
+                </p>
+              </div>
+            </button>
 
             {/* Individual spots */}
             <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-3">
@@ -1206,6 +1320,119 @@ export function ScreeningCarousel({
                 </button>
               ))}
             </div>
+          </div>
+        </div>
+
+        {/* ─── TREATMENT EXAMPLES PANEL ─────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#0e0e0e] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "treatments" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "70vh" }}
+        >
+          <div
+            className="max-w-2xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "70vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={() => {
+                setPreviewTreatment(null);
+                closePanel();
+              }}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <div className="mb-6">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                {director.name}
+              </p>
+              <h3 className="text-xl font-light text-white/80 tracking-tight">
+                Treatment Examples
+              </h3>
+              <p className="text-[12px] text-white/25 mt-1.5">
+                Get a feel for how {director.name} approaches creative briefs
+              </p>
+            </div>
+
+            {/* Treatment list */}
+            <div className="space-y-3">
+              {treatmentSamples.map((t) => (
+                <div key={t.id}>
+                  <button
+                    onClick={() => setPreviewTreatment(previewTreatment?.id === t.id ? null : t)}
+                    className={`w-full flex items-center gap-4 px-5 py-4 rounded-xl border transition-all group text-left ${
+                      previewTreatment?.id === t.id
+                        ? "bg-white/[0.08] border-white/[0.15]"
+                        : "bg-white/[0.03] hover:bg-white/[0.06] border-white/[0.05] hover:border-white/[0.10]"
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0">
+                      <FileText size={16} className="text-white/30" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] text-white/60 group-hover:text-white/80 transition-colors truncate">
+                        {t.title}
+                      </p>
+                      <p className="text-[10px] text-white/20 truncate">
+                        {t.brand || "Creative Treatment"}
+                        {t.pageCount ? ` \u00B7 ${t.pageCount} pages` : ""}
+                        {t.isRedacted ? " \u00B7 Redacted" : ""}
+                      </p>
+                    </div>
+                    <ChevronUp
+                      size={12}
+                      className={`text-white/20 transition-transform flex-shrink-0 ${
+                        previewTreatment?.id === t.id ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {/* Preview peek — slides open */}
+                  {previewTreatment?.id === t.id && (
+                    <div className="mt-2 rounded-xl overflow-hidden border border-white/[0.08] bg-black">
+                      <div className="relative" style={{ maxHeight: "40vh" }}>
+                        <iframe
+                          src={t.previewUrl}
+                          className="w-full border-0"
+                          style={{ height: "40vh" }}
+                          title={`Treatment preview: ${t.title}`}
+                        />
+                        {/* Fade overlay at bottom to hint there's more */}
+                        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black to-transparent pointer-events-none" />
+                      </div>
+                      <div className="px-4 py-3 flex items-center justify-between bg-black/80">
+                        <p className="text-[10px] text-white/25">
+                          {t.isRedacted ? "Client details redacted" : "Treatment preview"}
+                        </p>
+                        <a
+                          href={t.previewUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-white/30 hover:text-white/50 transition-colors flex items-center gap-1"
+                        >
+                          <ExternalLink size={9} />
+                          Full treatment
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {treatmentSamples.length === 0 && (
+              <p className="text-[13px] text-white/20 text-center py-12">
+                No treatment examples available for this director yet.
+              </p>
+            )}
           </div>
         </div>
       </div>

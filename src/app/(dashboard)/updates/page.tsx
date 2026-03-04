@@ -10,6 +10,9 @@ export default async function UpdatesPage() {
   const isAdmin = session?.user?.role === "ADMIN";
 
   const updates = await prisma.update.findMany({
+    where: {
+      type: { not: "REEL_VIEWED" }, // Don't show auto-generated view notifications
+    },
     take: 50,
     orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     include: {

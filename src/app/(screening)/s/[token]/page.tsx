@@ -90,6 +90,23 @@ export default async function ScreeningPage({
       })
     : [];
 
+  // Treatment samples for the director (for "Treatment Examples" panel)
+  const treatmentSamples = link
+    ? await prisma.treatmentSample.findMany({
+        where: { directorId: link.reel.director.id },
+        select: {
+          id: true,
+          title: true,
+          brand: true,
+          previewUrl: true,
+          pageCount: true,
+          isRedacted: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+      })
+    : [];
+
   if (!link) return notFound();
 
   if (link.expiresAt && link.expiresAt < new Date()) {
@@ -120,6 +137,7 @@ export default async function ScreeningPage({
         curatorialNote={reel.curatorialNote}
         portfolioStills={portfolioStills}
         rosterHighlights={rosterHighlights}
+        treatmentSamples={treatmentSamples}
       />
     </ScreeningTracker>
   );
