@@ -90,6 +90,22 @@ export default async function ScreeningPage({
       })
     : [];
 
+  // Unique client/brand list across ALL director's projects (for Bio panel)
+  const allDirectorProjects = link
+    ? await prisma.project.findMany({
+        where: {
+          directorId: link.reel.director.id,
+          brand: { not: null },
+        },
+        select: { brand: true },
+        distinct: ["brand"],
+        orderBy: { brand: "asc" },
+      })
+    : [];
+  const clientBrands = allDirectorProjects
+    .map((p) => p.brand)
+    .filter((b): b is string => b !== null);
+
   // Treatment samples for the director (for "Treatment Examples" panel)
   const treatmentSamples = link
     ? await prisma.treatmentSample.findMany({
@@ -138,6 +154,7 @@ export default async function ScreeningPage({
         portfolioStills={portfolioStills}
         rosterHighlights={rosterHighlights}
         treatmentSamples={treatmentSamples}
+        clientBrands={clientBrands}
       />
     </ScreeningTracker>
   );

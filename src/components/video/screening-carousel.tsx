@@ -16,7 +16,6 @@ import {
   Download,
   FileText,
   Award,
-  Users,
 } from "lucide-react";
 
 interface SpotItem {
@@ -75,6 +74,7 @@ interface ScreeningCarouselProps {
   portfolioStills?: PortfolioStill[];
   rosterHighlights?: RosterHighlight[];
   treatmentSamples?: TreatmentSampleInfo[];
+  clientBrands?: string[];
 }
 
 /**
@@ -99,6 +99,7 @@ export function ScreeningCarousel({
   portfolioStills = [],
   rosterHighlights = [],
   treatmentSamples = [],
+  clientBrands = [],
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -975,34 +976,28 @@ export function ScreeningCarousel({
               </div>
             )}
 
-            {/* Portfolio stills grid */}
-            {portfolioStills.length > 0 && (
+            {/* Client List */}
+            {clientBrands.length > 0 && (
               <div className="border-t border-white/5 pt-6 mb-8">
                 <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                  Selected Work
+                  Client List
                 </p>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {portfolioStills.slice(0, 8).map((still) =>
-                    still.thumbnailUrl ? (
-                      <div
-                        key={still.id}
-                        className="aspect-video rounded-sm overflow-hidden"
-                      >
-                        <img
-                          src={still.thumbnailUrl}
-                          alt={still.title}
-                          className="w-full h-full object-cover opacity-60 hover:opacity-90 transition-opacity"
-                        />
-                      </div>
-                    ) : null
-                  )}
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                  {clientBrands.map((brand) => (
+                    <span
+                      key={brand}
+                      className="text-[12px] text-white/30"
+                    >
+                      {brand}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
 
             {/* Statement */}
             {director.statement && (
-              <div className="border-t border-white/5 pt-6">
+              <div className="border-t border-white/5 pt-6 mb-8">
                 <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
                   Statement
                 </p>
@@ -1011,222 +1006,350 @@ export function ScreeningCarousel({
                 </p>
               </div>
             )}
+
+            {/* Downloadable reel gallery */}
+            <div className="border-t border-white/5 pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em]">
+                  This Reel
+                </p>
+                <button
+                  onClick={handleDownloadAll}
+                  disabled={!items.some((i) => i.project.muxPlaybackId)}
+                  className="flex items-center gap-1.5 text-[10px] text-white/25 hover:text-white/50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <Download size={10} />
+                  Download All
+                </button>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {items.map((item, i) => {
+                  const thumb = getThumbUrl(item, "large");
+                  const canDownload = !!item.project.muxPlaybackId;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => canDownload ? handleDownloadSpot(item) : goToSpot(i)}
+                      className="group relative aspect-video rounded-md overflow-hidden bg-white/[0.04]"
+                    >
+                      {thumb ? (
+                        <img
+                          src={thumb}
+                          alt={item.project.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-[10px] text-white/15">{i + 1}</span>
+                        </div>
+                      )}
+                      {/* Hover overlay with download cue */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-200 flex items-center justify-center">
+                        {canDownload && (
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <Download size={18} className="text-white/80" />
+                          </div>
+                        )}
+                      </div>
+                      {/* Title bar at bottom */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 pb-1.5 pt-4">
+                        <p className="text-[10px] text-white/70 truncate leading-tight">
+                          {item.project.title}
+                        </p>
+                        <p className="text-[8px] text-white/30 truncate">
+                          {item.project.brand || "\u2014"}
+                        </p>
+                      </div>
+                      {/* Download badge */}
+                      {canDownload && (
+                        <div className="absolute top-1.5 right-1.5">
+                          <Download size={10} className="text-white/25" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* ─── ABOUT F&F PANEL — People-focused ────────── */}
+        {/* ─── ABOUT F&F PANEL — Robust, dashboard-style ────────── */}
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#0e0e0e] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/[0.08] rounded-t-[20px] transition-transform duration-500 ease-out ${
             activePanel === "company" ? "translate-y-0" : "translate-y-full"
           }`}
-          style={{ maxHeight: "80vh" }}
+          style={{ maxHeight: "85vh" }}
         >
           <div
-            className="max-w-3xl mx-auto px-8 py-8 overflow-y-auto"
-            style={{ maxHeight: "80vh" }}
+            className="overflow-y-auto"
+            style={{ maxHeight: "85vh" }}
           >
             {/* Drag handle */}
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center pt-4 pb-2 sticky top-0 z-10 bg-[#0a0a0a]">
               <div className="w-10 h-1 rounded-full bg-white/10" />
             </div>
 
             {/* Close */}
             <button
               onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors z-10"
             >
               <X size={16} className="text-white/30" />
             </button>
 
-            {/* Company header — editorial style matching friendsandfamily.tv */}
-            <div className="mb-10">
-              <p className="text-[10px] text-white/15 uppercase tracking-[0.3em] mb-3">
-                About
-              </p>
-              <h3 className="text-3xl font-light text-white/90 tracking-tight leading-tight">
-                Friends &amp; Family
-              </h3>
-              <p className="text-[13px] text-white/35 mt-3 leading-[1.8] max-w-xl">
-                A boutique directors&apos; representation company built on
-                relationships, creative vision, and craft. Every reel is
-                hand-built for the opportunity.
-              </p>
-            </div>
+            <div className="max-w-4xl mx-auto px-10 pb-10">
 
-            {/* ─── The Team ─── */}
-            <div className="mb-10">
-              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-6">
-                The Team
-              </p>
-
-              {/* Scott Kaplan */}
-              <div className="flex gap-5 mb-8 group">
-                <div className="w-16 h-16 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0 ring-1 ring-white/[0.08]">
-                  <span className="text-lg text-white/25 font-light">SK</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-3">
-                    <h4 className="text-[15px] text-white/80 font-medium">Scott Kaplan</h4>
-                    <span className="text-[10px] text-white/20 uppercase tracking-wider">MD / EP</span>
+              {/* ─── Hero Header ─── */}
+              <div className="pt-4 pb-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center flex-shrink-0">
+                    <span className="text-[16px] font-bold text-[#0a0a0a] tracking-tight leading-none">FF</span>
                   </div>
-                  <p className="text-[12px] text-white/40 leading-[1.8] mt-1.5">
-                    25+ years in production. Has led campaigns for Tom Kuntz, Mark Romanek, Gus Van Sant,
-                    and Malcolm Venville.
-                  </p>
-                  <div className="flex items-center gap-3 mt-2.5">
-                    <div className="flex items-center gap-1.5">
-                      <Award size={10} className="text-amber-500/60" />
-                      <span className="text-[10px] text-white/25">Emmy</span>
+                  <div>
+                    <h3 className="text-[28px] font-light text-white/95 tracking-tight leading-none">
+                      Friends &amp; Family
+                    </h3>
+                    <p className="text-[11px] text-white/25 uppercase tracking-[0.2em] mt-1">
+                      Directors&apos; Representation &middot; Est. 2018
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-[14px] text-white/45 leading-[1.8] max-w-2xl">
+                  A boutique directors&apos; representation company built on close relationships,
+                  creative vision, and an obsessive commitment to craft. We represent a curated
+                  roster of directors across commercial, branded content, and music video.
+                </p>
+              </div>
+
+              {/* ─── Stats Bar — dashboard-style ─── */}
+              <div className="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-7 mb-10">
+                <div className="flex gap-14">
+                  <div>
+                    <p className="text-4xl font-light tracking-tight text-white/90">
+                      {rosterHighlights.length + 1}
+                    </p>
+                    <p className="mt-1.5 text-[10px] uppercase tracking-[0.15em] text-white/25">
+                      Roster Directors
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-4xl font-light tracking-tight text-white/90">
+                      65+
+                    </p>
+                    <p className="mt-1.5 text-[10px] uppercase tracking-[0.15em] text-white/25">
+                      Years Combined Exp.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-4xl font-light tracking-tight text-white/90">
+                      3
+                    </p>
+                    <p className="mt-1.5 text-[10px] uppercase tracking-[0.15em] text-white/25">
+                      Coast Coverage
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ─── Awards & Recognition ─── */}
+              <div className="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-7 mb-10">
+                <p className="text-[10px] text-white/20 uppercase tracking-[0.15em] mb-5">
+                  Awards &amp; Recognition
+                </p>
+                <div className="flex gap-8">
+                  <div className="flex items-center gap-3">
+                    <Award size={20} className="text-amber-400/70" />
+                    <div>
+                      <p className="text-[14px] text-white/70 font-medium">Emmy Award</p>
+                      <p className="text-[10px] text-white/25">Outstanding Commercial</p>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Award size={10} className="text-amber-500/60" />
-                      <span className="text-[10px] text-white/25">Cannes Grand Prix</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Award size={20} className="text-amber-400/70" />
+                    <div>
+                      <p className="text-[14px] text-white/70 font-medium">Cannes Grand Prix</p>
+                      <p className="text-[10px] text-white/25">Film Craft</p>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <Award size={10} className="text-amber-500/60" />
-                      <span className="text-[10px] text-white/25">D&amp;AD Black Pencil</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Award size={20} className="text-amber-400/70" />
+                    <div>
+                      <p className="text-[14px] text-white/70 font-medium">D&amp;AD Black Pencil</p>
+                      <p className="text-[10px] text-white/25">Craft Direction</p>
                     </div>
                   </div>
-                  <a
-                    href="mailto:scott@friendsandfamily.tv"
-                    className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-colors mt-2"
-                  >
-                    <Mail size={9} />
-                    scott@friendsandfamily.tv
-                  </a>
                 </div>
               </div>
 
-              {/* Jed Herold */}
-              <div className="flex gap-5 mb-8 group">
-                <div className="w-16 h-16 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0 ring-1 ring-white/[0.08]">
-                  <span className="text-lg text-white/25 font-light">JH</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-3">
-                    <h4 className="text-[15px] text-white/80 font-medium">Jed Herold</h4>
-                    <span className="text-[10px] text-white/20 uppercase tracking-wider">EP</span>
+              {/* ─── The Team — card grid ─── */}
+              <div className="mb-10">
+                <p className="text-[10px] text-white/20 uppercase tracking-[0.15em] mb-5">
+                  Leadership
+                </p>
+                <div className="grid grid-cols-3 gap-4">
+                  {/* Scott Kaplan */}
+                  <div className="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-6 hover:border-white/[0.12] transition-all">
+                    <div className="w-14 h-14 rounded-full bg-white/[0.08] flex items-center justify-center mb-4 ring-1 ring-white/[0.06]">
+                      <span className="text-[18px] text-white/30 font-light">SK</span>
+                    </div>
+                    <h4 className="text-[15px] text-white/85 font-medium tracking-tight">Scott Kaplan</h4>
+                    <p className="text-[10px] text-white/25 uppercase tracking-wider mt-0.5">
+                      Managing Director / EP
+                    </p>
+                    <p className="text-[12px] text-white/35 leading-[1.7] mt-3">
+                      25+ years in production. Campaigns for Tom Kuntz, Mark Romanek,
+                      Gus Van Sant, Malcolm Venville.
+                    </p>
+                    <a
+                      href="mailto:scott@friendsandfamily.tv"
+                      className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/45 transition-colors mt-3"
+                    >
+                      <Mail size={9} />
+                      scott@friendsandfamily.tv
+                    </a>
                   </div>
-                  <p className="text-[12px] text-white/40 leading-[1.8] mt-1.5">
-                    20+ years as a working professional in the commercial industry. Extensive
-                    collaborator networks built through diverse production experience.
-                  </p>
-                  <a
-                    href="mailto:jed@friendsandfamily.tv"
-                    className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-colors mt-2"
-                  >
-                    <Mail size={9} />
-                    jed@friendsandfamily.tv
-                  </a>
-                </div>
-              </div>
 
-              {/* Alana Hearn */}
-              <div className="flex gap-5 mb-8 group">
-                <div className="w-16 h-16 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0 ring-1 ring-white/[0.08]">
-                  <span className="text-lg text-white/25 font-light">AH</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-3">
-                    <h4 className="text-[15px] text-white/80 font-medium">Alana Hearn</h4>
-                    <span className="text-[10px] text-white/20 uppercase tracking-wider">EP</span>
+                  {/* Jed Herold */}
+                  <div className="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-6 hover:border-white/[0.12] transition-all">
+                    <div className="w-14 h-14 rounded-full bg-white/[0.08] flex items-center justify-center mb-4 ring-1 ring-white/[0.06]">
+                      <span className="text-[18px] text-white/30 font-light">JH</span>
+                    </div>
+                    <h4 className="text-[15px] text-white/85 font-medium tracking-tight">Jed Herold</h4>
+                    <p className="text-[10px] text-white/25 uppercase tracking-wider mt-0.5">
+                      Executive Producer
+                    </p>
+                    <p className="text-[12px] text-white/35 leading-[1.7] mt-3">
+                      20+ years in the commercial industry. Extensive collaborator
+                      networks through diverse production.
+                    </p>
+                    <a
+                      href="mailto:jed@friendsandfamily.tv"
+                      className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/45 transition-colors mt-3"
+                    >
+                      <Mail size={9} />
+                      jed@friendsandfamily.tv
+                    </a>
                   </div>
-                  <p className="text-[12px] text-white/40 leading-[1.8] mt-1.5">
-                    Career began at Lighthouse with Peter Lindbergh. Has collaborated with
-                    L&apos;Or&eacute;al, Maybelline, Nike, Pepsi, and Samsung.
-                  </p>
-                  <a
-                    href="mailto:alana@friendsandfamily.tv"
-                    className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/40 transition-colors mt-2"
-                  >
-                    <Mail size={9} />
-                    alana@friendsandfamily.tv
-                  </a>
+
+                  {/* Alana Hearn */}
+                  <div className="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-6 hover:border-white/[0.12] transition-all">
+                    <div className="w-14 h-14 rounded-full bg-white/[0.08] flex items-center justify-center mb-4 ring-1 ring-white/[0.06]">
+                      <span className="text-[18px] text-white/30 font-light">AH</span>
+                    </div>
+                    <h4 className="text-[15px] text-white/85 font-medium tracking-tight">Alana Hearn</h4>
+                    <p className="text-[10px] text-white/25 uppercase tracking-wider mt-0.5">
+                      Executive Producer
+                    </p>
+                    <p className="text-[12px] text-white/35 leading-[1.7] mt-3">
+                      Started at Lighthouse with Peter Lindbergh. Clients include
+                      Nike, Pepsi, Samsung, L&apos;Or&eacute;al, Maybelline.
+                    </p>
+                    <a
+                      href="mailto:alana@friendsandfamily.tv"
+                      className="inline-flex items-center gap-1.5 text-[10px] text-white/20 hover:text-white/45 transition-colors mt-3"
+                    >
+                      <Mail size={9} />
+                      alana@friendsandfamily.tv
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* ─── Sales Representation ─── */}
-            <div className="border-t border-white/[0.06] pt-8 mb-10">
-              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-5">
-                Sales Representation
-              </p>
-              <div className="grid grid-cols-3 gap-6">
-                <div>
-                  <p className="text-[11px] text-white/50 font-medium mb-1">West Coast</p>
-                  <p className="text-[11px] text-white/25">Uncle Lefty</p>
-                  <a href="mailto:james@unclelefty.com" className="text-[10px] text-white/15 hover:text-white/30 transition-colors block">
-                    james@unclelefty.com
-                  </a>
-                </div>
-                <div>
-                  <p className="text-[11px] text-white/50 font-medium mb-1">Midwest</p>
-                  <p className="text-[11px] text-white/25">CCCo</p>
-                  <a href="mailto:chiara@chiarachung.com" className="text-[10px] text-white/15 hover:text-white/30 transition-colors block">
-                    chiara@chiarachung.com
-                  </a>
-                </div>
-                <div>
-                  <p className="text-[11px] text-white/50 font-medium mb-1">East Coast</p>
-                  <p className="text-[11px] text-white/25">Talk Shop</p>
-                  <a href="mailto:katie.northy@talk-shop.tv" className="text-[10px] text-white/15 hover:text-white/30 transition-colors block">
-                    katie.northy@talk-shop.tv
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* ─── Our Directors ─── */}
-            {rosterHighlights.length > 0 && (
-              <div className="border-t border-white/[0.06] pt-8 mb-10">
-                <div className="flex items-center gap-2 mb-5">
-                  <Users size={11} className="text-white/15" />
-                  <p className="text-[10px] text-white/15 uppercase tracking-[0.25em]">
+              {/* ─── Our Directors — headshot grid ─── */}
+              {rosterHighlights.length > 0 && (
+                <div className="mb-10">
+                  <p className="text-[10px] text-white/20 uppercase tracking-[0.15em] mb-5">
                     Our Directors
                   </p>
-                </div>
-                <div className="grid grid-cols-4 gap-4">
-                  {rosterHighlights.map((d) => (
-                    <div key={d.id} className="text-center group">
-                      {d.headshotUrl ? (
-                        <img
-                          src={d.headshotUrl}
-                          alt={d.name}
-                          className="w-16 h-16 rounded-full object-cover mx-auto ring-1 ring-white/[0.08] group-hover:ring-white/25 transition-all"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 rounded-full bg-white/[0.04] mx-auto flex items-center justify-center ring-1 ring-white/[0.06]">
-                          <span className="text-[14px] text-white/20 font-light">
-                            {d.name.charAt(0)}
-                          </span>
+                  <div className="grid grid-cols-4 gap-5">
+                    {rosterHighlights.map((d) => (
+                      <div key={d.id} className="group">
+                        <div className="aspect-square rounded-xl overflow-hidden bg-white/[0.04] mb-2.5">
+                          {d.headshotUrl ? (
+                            <img
+                              src={d.headshotUrl}
+                              alt={d.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <span className="text-2xl text-white/15 font-light">
+                                {d.name.charAt(0)}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      )}
-                      <p className="text-[11px] text-white/35 mt-2 group-hover:text-white/55 transition-colors">
-                        {d.name}
-                      </p>
-                    </div>
-                  ))}
+                        <p className="text-[13px] text-white/50 group-hover:text-white/70 transition-colors font-medium tracking-tight">
+                          {d.name}
+                        </p>
+                        {d.categories.length > 0 && (
+                          <p className="text-[10px] text-white/20 mt-0.5 truncate">
+                            {d.categories.slice(0, 2).join(" \u00B7 ")}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ─── National Sales Coverage ─── */}
+              <div className="rounded-2xl bg-white/[0.04] border border-white/[0.06] p-7 mb-10">
+                <p className="text-[10px] text-white/20 uppercase tracking-[0.15em] mb-5">
+                  National Sales Coverage
+                </p>
+                <div className="grid grid-cols-3 gap-8">
+                  <div>
+                    <p className="text-[13px] text-white/60 font-medium tracking-tight">West Coast</p>
+                    <p className="text-[12px] text-white/30 mt-1">Uncle Lefty</p>
+                    <a href="mailto:james@unclelefty.com" className="text-[11px] text-white/20 hover:text-white/40 transition-colors block mt-1">
+                      james@unclelefty.com
+                    </a>
+                    <a href="mailto:laurel-ann@unclelefty.com" className="text-[11px] text-white/20 hover:text-white/40 transition-colors block">
+                      laurel-ann@unclelefty.com
+                    </a>
+                  </div>
+                  <div>
+                    <p className="text-[13px] text-white/60 font-medium tracking-tight">Midwest</p>
+                    <p className="text-[12px] text-white/30 mt-1">CCCo</p>
+                    <a href="mailto:chiara@chiarachung.com" className="text-[11px] text-white/20 hover:text-white/40 transition-colors block mt-1">
+                      chiara@chiarachung.com
+                    </a>
+                    <a href="mailto:gunder@chiarachung.com" className="text-[11px] text-white/20 hover:text-white/40 transition-colors block">
+                      gunder@chiarachung.com
+                    </a>
+                  </div>
+                  <div>
+                    <p className="text-[13px] text-white/60 font-medium tracking-tight">East Coast</p>
+                    <p className="text-[12px] text-white/30 mt-1">Talk Shop</p>
+                    <a href="mailto:katie.northy@talk-shop.tv" className="text-[11px] text-white/20 hover:text-white/40 transition-colors block mt-1">
+                      katie.northy@talk-shop.tv
+                    </a>
+                    <a href="mailto:kenard.jackson@talk-shop.tv" className="text-[11px] text-white/20 hover:text-white/40 transition-colors block">
+                      kenard.jackson@talk-shop.tv
+                    </a>
+                  </div>
                 </div>
               </div>
-            )}
 
-            {/* ─── Contact CTA ─── */}
-            <div className="border-t border-white/[0.06] pt-8">
-              <div className="flex items-center gap-4">
+              {/* ─── Contact CTA — prominent ─── */}
+              <div className="flex items-center gap-4 pb-4">
                 <a
                   href="https://www.friendsandfamily.tv"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-5 py-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.15] transition-all text-[11px] text-white/40 hover:text-white/60"
+                  className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-white text-[#0a0a0a] hover:bg-white/90 transition-all text-[12px] font-medium tracking-wide"
                 >
-                  <ExternalLink size={12} />
+                  <ExternalLink size={13} />
                   friendsandfamily.tv
                 </a>
                 <a
                   href="mailto:info@friendsandfamily.tv"
-                  className="flex items-center gap-2 px-5 py-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.15] transition-all text-[11px] text-white/40 hover:text-white/60"
+                  className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] hover:border-white/[0.15] transition-all text-[12px] text-white/50 hover:text-white/70 font-medium"
                 >
-                  <Mail size={12} />
+                  <Mail size={13} />
                   info@friendsandfamily.tv
                 </a>
               </div>
