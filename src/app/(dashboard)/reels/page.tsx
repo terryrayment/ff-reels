@@ -143,7 +143,7 @@ export default async function ReelsPage() {
             href="/reels/quick"
             className="mt-6 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#1A1A1A] text-white text-[13px] font-medium active:bg-[#333] transition-colors"
           >
-            <Zap size={14} />
+            <Plus size={14} />
             Build Your First Reel
           </Link>
         </div>
