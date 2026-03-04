@@ -46,7 +46,7 @@ export function Sidebar({ user }: SidebarProps) {
   const visibleNav = navItems.filter((item) => item.roles.includes(role));
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white/50 backdrop-blur-2xl border-r border-white/60 flex flex-col z-40">
+    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white/40 backdrop-blur-2xl border-r border-transparent flex flex-col z-40" style={{ boxShadow: '1px 0 8px rgba(0,0,0,0.02)' }}>
       {/* Brand */}
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">

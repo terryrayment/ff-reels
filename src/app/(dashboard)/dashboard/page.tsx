@@ -348,64 +348,66 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {/* Unified Stats Card — weekly metrics + roster counts */}
-      <div className="data-card p-8 mb-8">
-        <div className="flex items-end justify-between">
-          {/* Weekly pulse — left side */}
-          <div className="flex items-end gap-10">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-[#aaa] mb-2">
-                This Week
-              </p>
-              <p className="text-3xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A]">
-                {weeklyViewCount}
-              </p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#bbb]">
-                Views
-              </p>
-            </div>
-            <div>
-              <p className="text-3xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A]">
-                {weeklyTotalSeconds > 0
-                  ? formatDuration(weeklyTotalSeconds)
-                  : "\u2014"}
-              </p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#bbb]">
-                Watch Time
-              </p>
-            </div>
-            <div>
-              <p className="text-3xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A]">
-                {weeklyNewReels}
-              </p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#bbb]">
-                New Reels
-              </p>
-            </div>
-            {weeklyBestReel && (
-              <div className="pl-8 ml-2">
-                <p className="text-[10px] uppercase tracking-[0.15em] text-[#bbb] mb-1">
-                  Top Reel
+      {/* Unified Stats Card — weekly metrics | roster counts */}
+      <div className="data-card px-10 py-8 mb-10">
+        <div className="flex items-center">
+          {/* Weekly pulse — left group */}
+          <div className="flex-1">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[#aaa] font-medium mb-4">
+              This Week
+            </p>
+            <div className="flex items-end gap-10">
+              <div>
+                <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                  {weeklyViewCount}
                 </p>
-                <p className="text-[13px] font-medium text-[#1A1A1A]">
-                  {weeklyBestReel.director}
-                </p>
-                <p className="text-[11px] text-[#bbb]">
-                  {weeklyBestReel.title} &middot; {weeklyBestReel.count} view
-                  {weeklyBestReel.count !== 1 ? "s" : ""}
+                <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb]">
+                  Views
                 </p>
               </div>
-            )}
+              <div>
+                <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                  {weeklyTotalSeconds > 0
+                    ? formatDuration(weeklyTotalSeconds)
+                    : "\u2014"}
+                </p>
+                <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb]">
+                  Watch Time
+                </p>
+              </div>
+              <div>
+                <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                  {weeklyNewReels}
+                </p>
+                <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb]">
+                  New Reels
+                </p>
+              </div>
+              {weeklyBestReel && (
+                <div className="pl-6">
+                  <p className="text-[13px] font-medium text-[#1A1A1A]">
+                    {weeklyBestReel.director}
+                  </p>
+                  <p className="text-[11px] text-[#bbb] mt-0.5">
+                    {weeklyBestReel.title} &middot; {weeklyBestReel.count} view
+                    {weeklyBestReel.count !== 1 ? "s" : ""}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Roster counts — right side, compact */}
-          <div className="flex items-end gap-8">
+          {/* Vertical divider */}
+          <div className="w-px h-14 bg-[#E8E7E3]/40 mx-8 flex-shrink-0" />
+
+          {/* Roster counts — right group */}
+          <div className="flex items-end gap-8 flex-shrink-0">
             {rosterStats.map((stat) => (
-              <Link key={stat.label} href={stat.href} className="group text-right">
-                <p className="text-2xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors">
+              <Link key={stat.label} href={stat.href} className="group">
+                <p className="text-[22px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors leading-none">
                   {stat.value}
                 </p>
-                <p className="mt-0.5 text-[9px] uppercase tracking-[0.15em] text-[#bbb] group-hover:text-[#999] transition-colors">
+                <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb] group-hover:text-[#999] transition-colors">
                   {stat.label}
                 </p>
               </Link>
@@ -416,7 +418,7 @@ export default async function DashboardPage({
 
       {/* Hot Right Now — compact inline */}
       {hotRightNow.length > 0 && (
-        <div className="data-card px-8 py-5 mb-8">
+        <div className="data-card px-10 py-5 mb-10">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="relative flex h-2 w-2">
@@ -451,14 +453,14 @@ export default async function DashboardPage({
       )}
 
       {/* Two-column layout — 58/42 split */}
-      <div className="flex gap-8">
+      <div className="flex gap-10">
         {/* LEFT COLUMN — Activity */}
         <div
-          className="flex-1 min-w-0 flex flex-col gap-8"
+          className="flex-1 min-w-0 flex flex-col gap-10"
           style={{ flexBasis: "58%" }}
         >
           {/* Recent Views — grouped, no dividers */}
-          <div className="data-card p-8">
+          <div className="data-card p-9">
             <div className="flex items-baseline justify-between mb-6">
               <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
                 Recent Views
@@ -515,7 +517,7 @@ export default async function DashboardPage({
           </div>
 
           {/* Industry Pulse */}
-          <div className="data-card p-8">
+          <div className="data-card p-9">
             <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium mb-6">
               Industry Pulse
             </h2>
@@ -573,10 +575,10 @@ export default async function DashboardPage({
 
         {/* RIGHT COLUMN — Directors + Leaderboard + Signal */}
         <div className="flex-shrink-0" style={{ flexBasis: "38%" }}>
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-10">
             {/* Director Scorecards — moved to right column */}
             {scorecards.length > 0 && (
-              <div className="data-card p-8">
+              <div className="data-card p-9">
                 <div className="flex items-baseline justify-between mb-6">
                   <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
                     Directors
@@ -589,27 +591,22 @@ export default async function DashboardPage({
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-3">
                   {scorecards.map((d, i) => (
                     <Link
                       key={d.id}
                       href={`/directors/${d.slug}`}
-                      className="group relative rounded-xl bg-[#F7F6F3]/60 p-4 hover:bg-[#F0F0EC]/60 transition-all duration-300"
+                      className="group flex items-center gap-3 rounded-xl bg-[#F7F6F3]/50 px-4 py-3 hover:bg-[#F0F0EC]/50 transition-all duration-300"
                     >
-                      {i === 0 && d.totalViews > 0 && (
-                        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center">
-                          <Trophy size={10} className="text-white" />
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2.5 mb-2">
+                      <div className="relative flex-shrink-0">
                         {d.headshotUrl ? (
                           <img
                             src={d.headshotUrl}
                             alt={d.name}
-                            className="w-8 h-8 rounded-full object-cover"
+                            className="w-9 h-9 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[10px] font-medium text-[#999]">
+                          <div className="w-9 h-9 rounded-full bg-white/80 flex items-center justify-center text-[10px] font-medium text-[#999]">
                             {d.name
                               .split(" ")
                               .map((n) => n[0])
@@ -617,17 +614,24 @@ export default async function DashboardPage({
                               .slice(0, 2)}
                           </div>
                         )}
-                        <p className="text-[12px] font-medium text-[#1A1A1A] truncate group-hover:text-black transition-colors">
+                        {i === 0 && d.totalViews > 0 && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-400 flex items-center justify-center">
+                            <Trophy size={8} className="text-white" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] font-medium text-[#1A1A1A] group-hover:text-black transition-colors">
                           {d.name}
                         </p>
+                        <p className="text-[10px] text-[#bbb] mt-0.5">
+                          {d.spotCount} spots &middot; {d.reelCount} reel{d.reelCount !== 1 ? "s" : ""}
+                        </p>
                       </div>
-                      <div className="flex items-center gap-3 text-[9px] text-[#999]">
-                        <span className="flex items-center gap-1">
-                          <Eye size={8} />
-                          {d.totalViews}
-                        </span>
-                        <span>{d.spotCount} spots</span>
-                      </div>
+                      <span className="text-[10px] text-[#aaa] tabular-nums flex items-center gap-1 flex-shrink-0">
+                        <Eye size={8} />
+                        {d.totalViews}
+                      </span>
                     </Link>
                   ))}
                 </div>
@@ -636,7 +640,7 @@ export default async function DashboardPage({
 
             {/* Reel Leaderboard */}
             {leaderboard.length > 0 && (
-              <div className="data-card p-8">
+              <div className="data-card p-9">
                 <div className="flex items-center gap-2 mb-6">
                   <TrendingUp size={11} className="text-[#aaa]" />
                   <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
@@ -683,7 +687,7 @@ export default async function DashboardPage({
             )}
 
             {/* Signal */}
-            <div className="data-card p-8 sticky top-8">
+            <div className="data-card p-9 sticky top-8">
               <h2 className="text-[15px] font-medium tracking-tight-2 text-[#1A1A1A] mb-6">
                 Signal
               </h2>
