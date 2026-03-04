@@ -72,6 +72,23 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
   const projects = selectedDirector?.projects || [];
 
+  // Step progress
+  const allSteps: Step[] = ["director", "spots", "details", "done"];
+  const stepIndex = allSteps.indexOf(step);
+
+  const stepDots = (
+    <div className="flex items-center justify-center gap-1.5 py-2">
+      {allSteps.slice(0, 3).map((s, i) => (
+        <div
+          key={s}
+          className={`h-1 rounded-full transition-all duration-300 ${
+            i <= stepIndex ? "bg-[#1A1A1A] w-5" : "bg-[#E8E7E3] w-1.5"
+          }`}
+        />
+      ))}
+    </div>
+  );
+
   // Focus search on step change
   useEffect(() => {
     if (step === "director") {
@@ -241,15 +258,19 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
           <p className="text-[10px] text-[#bbb] uppercase tracking-[0.12em] mt-3">
             Select Director
           </p>
+          {stepDots}
         </div>
 
         {/* Director list */}
         <div className="flex-1 overflow-y-auto">
           {filteredDirectors.map((director) => {
             const hero = director.projects[0];
-            const thumbSrc = hero?.muxPlaybackId
-              ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=96&height=54&fit_mode=smartcrop`
-              : null;
+            const hasHeadshot = !!director.headshotUrl;
+            const thumbSrc = director.headshotUrl
+              ? director.headshotUrl
+              : hero?.muxPlaybackId
+                ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=96&height=96&fit_mode=smartcrop`
+                : null;
 
             return (
               <button
@@ -257,7 +278,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
                 onClick={() => selectDirector(director.id)}
                 className="w-full flex items-center gap-4 px-5 py-4 border-b border-[#E8E7E3]/40 active:bg-[#EEEDEA]/60 transition-colors"
               >
-                <div className="w-12 h-12 bg-[#EEEDEA] rounded-lg overflow-hidden flex-shrink-0">
+                <div className={`w-12 h-12 bg-[#EEEDEA] overflow-hidden flex-shrink-0 ${hasHeadshot ? "rounded-full" : "rounded-lg"}`}>
                   {thumbSrc ? (
                     <img
                       src={thumbSrc}
@@ -329,20 +350,35 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
             <div className="w-8" />
           </div>
 
-          {/* Search spots */}
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#bbb]"
-            />
-            <input
-              type="text"
-              value={spotSearch}
-              onChange={(e) => setSpotSearch(e.target.value)}
-              placeholder="Search spots..."
-              className="w-full pl-10 pr-4 py-2.5 text-[14px] bg-white/70 rounded-xl border border-[#E8E7E3]/60 text-[#1A1A1A] placeholder-[#bbb] focus:outline-none focus:border-[#ccc] transition-colors"
-            />
+          {/* Search spots + Select All */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#bbb]"
+              />
+              <input
+                type="text"
+                value={spotSearch}
+                onChange={(e) => setSpotSearch(e.target.value)}
+                placeholder="Search spots..."
+                className="w-full pl-10 pr-4 py-2.5 text-[14px] bg-white/70 rounded-xl border border-[#E8E7E3]/60 text-[#1A1A1A] placeholder-[#bbb] focus:outline-none focus:border-[#ccc] transition-colors"
+              />
+            </div>
+            <button
+              onClick={() => {
+                if (selectedIds.length === projects.length) {
+                  setSelectedIds([]);
+                } else {
+                  setSelectedIds(projects.map((p) => p.id));
+                }
+              }}
+              className="px-3 py-2.5 text-[11px] font-medium text-[#999] hover:text-[#1A1A1A] bg-white/70 rounded-xl border border-[#E8E7E3]/60 whitespace-nowrap transition-colors active:bg-[#EEEDEA]"
+            >
+              {selectedIds.length === projects.length ? "None" : "All"}
+            </button>
           </div>
+          {stepDots}
         </div>
 
         {/* Spot grid — 2 columns on mobile, 3 on wider screens */}
@@ -480,6 +516,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
             </p>
             <div className="w-8" />
           </div>
+          {stepDots}
         </div>
 
         <div className="flex-1 px-5 pt-6 pb-28">

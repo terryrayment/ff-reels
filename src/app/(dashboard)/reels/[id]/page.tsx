@@ -37,17 +37,17 @@ export default async function ReelDetailPage({
       {/* Back */}
       <Link
         href="/reels"
-        className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#999] hover:text-[#1A1A1A] transition-colors mb-8 block"
+        className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#999] hover:text-[#1A1A1A] transition-colors mb-6 md:mb-8 block"
       >
         <ArrowLeft size={11} />
         Reels
       </Link>
 
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div>
         <div>
-          <div className="flex items-baseline gap-3">
-            <h1 className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
+          <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
+            <h1 className="text-2xl md:text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
               {reel.title}
             </h1>
             <span className="text-[10px] text-[#bbb] uppercase tracking-wider">
@@ -80,23 +80,23 @@ export default async function ReelDetailPage({
       </div>
 
       {/* Spots in the reel */}
-      <div className="mt-12">
-        <h2 className="text-[10px] text-[#999] uppercase tracking-wider mb-5">
+      <div className="mt-8 md:mt-12">
+        <h2 className="text-[10px] text-[#999] uppercase tracking-wider mb-4 md:mb-5">
           Spots
         </h2>
         <div className="divide-y divide-[#E8E8E3]/60">
           {reel.items.map((item, index) => (
             <div
               key={item.id}
-              className="flex items-center gap-5 py-3.5"
+              className="flex items-center gap-3 md:gap-5 py-3"
             >
               {/* Sequence number */}
-              <span className="text-[11px] text-[#ccc] w-5 text-right tabular-nums">
+              <span className="text-[11px] text-[#ccc] w-4 md:w-5 text-right tabular-nums flex-shrink-0">
                 {index + 1}
               </span>
 
               {/* Thumbnail */}
-              <div className="w-24 h-14 bg-[#EEEDEA] overflow-hidden flex-shrink-0">
+              <div className="w-16 h-10 md:w-24 md:h-14 bg-[#EEEDEA] overflow-hidden flex-shrink-0 rounded-sm">
                 {item.project.muxPlaybackId ? (
                   <img
                     src={`https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=192&height=112&fit_mode=smartcrop`}
@@ -133,13 +133,13 @@ export default async function ReelDetailPage({
       </div>
 
       {/* Gallery */}
-      <div className="mt-16">
+      <div className="mt-10 md:mt-16">
         <GalleryControls reelId={reel.id} initialStatus={reel.galleryStatus} />
       </div>
 
       {/* Screening Links */}
-      <div className="mt-16">
-        <div className="flex items-center justify-between mb-5">
+      <div className="mt-10 md:mt-16">
+        <div className="flex items-center justify-between mb-4 md:mb-5">
           <h2 className="text-[10px] text-[#999] uppercase tracking-wider">
             Screening Links ({reel.screeningLinks.length})
           </h2>
@@ -151,22 +151,20 @@ export default async function ReelDetailPage({
             {reel.screeningLinks.map((link) => (
               <div
                 key={link.id}
-                className="flex items-center justify-between py-3.5"
+                className="flex items-center justify-between py-3 md:py-3.5 gap-3"
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="min-w-0">
-                    <p className="text-[13px] text-[#1A1A1A] truncate">
-                      {link.recipientName || link.recipientEmail || "Untitled link"}
-                    </p>
-                    <p className="text-[11px] text-[#999] truncate">
-                      {link.recipientCompany || "\u2014"} · {timeAgo(link.createdAt)}
-                    </p>
-                  </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] text-[#1A1A1A] truncate">
+                    {link.recipientName || link.recipientEmail || "Untitled link"}
+                  </p>
+                  <p className="text-[11px] text-[#999] truncate">
+                    {link.recipientCompany || "\u2014"} · {timeAgo(link.createdAt)}
+                  </p>
                 </div>
-                <div className="flex items-center gap-5 flex-shrink-0">
+                <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
                   <span className="flex items-center gap-1 text-[11px] text-[#bbb]">
                     <Eye size={10} />
-                    {link._count.views} view{link._count.views !== 1 ? "s" : ""}
+                    {link._count.views}
                   </span>
                   {link.expiresAt && new Date(link.expiresAt) < new Date() ? (
                     <span className="text-[10px] text-red-400 uppercase tracking-wider">Expired</span>
