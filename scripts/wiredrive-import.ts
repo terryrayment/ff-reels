@@ -14,6 +14,7 @@
  *   --dry-run     List assets without downloading/importing
  *   --skip-r2     Skip R2 upload (Mux will ingest from Wiredrive directly)
  *   --output      Local download directory (default: ./wiredrive-downloads)
+ *   --roster-status  Roster status for director (default: "ROSTER", e.g. "OFF_ROSTER")
  */
 
 import { PrismaClient } from "@prisma/client";
@@ -38,6 +39,7 @@ const DIRECTOR_NAME = getArg("director");
 const DRY_RUN = hasFlag("dry-run");
 const SKIP_R2 = hasFlag("skip-r2");
 const OUTPUT_DIR = getArg("output") || "./wiredrive-downloads";
+const ROSTER_STATUS = getArg("roster-status") || "ROSTER";
 
 if (!PRES_URL || !DIRECTOR_NAME) {
   console.error(
@@ -286,9 +288,9 @@ async function main() {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
     director = await prisma.director.create({
-      data: { name: DIRECTOR_NAME!, slug },
+      data: { name: DIRECTOR_NAME!, slug, rosterStatus: ROSTER_STATUS },
     });
-    console.log(`✅  Created director: ${director.name} (${director.id})`);
+    console.log(`✅  Created director: ${director.name} (${director.id}) [${ROSTER_STATUS}]`);
   } else {
     console.log(`📂  Using existing director: ${director.name} (${director.id})`);
   }
