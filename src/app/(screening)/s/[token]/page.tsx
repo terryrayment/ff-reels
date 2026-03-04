@@ -70,6 +70,26 @@ export default async function ScreeningPage({
       })
     : [];
 
+  // Roster highlights for the "About F&F" company panel
+  const rosterHighlights = link
+    ? await prisma.director.findMany({
+        where: {
+          isActive: true,
+          rosterStatus: "ROSTER",
+          id: { not: link.reel.director.id }, // exclude current director
+          headshotUrl: { not: null },
+        },
+        select: {
+          id: true,
+          name: true,
+          headshotUrl: true,
+          categories: true,
+        },
+        take: 8,
+        orderBy: { sortOrder: "asc" },
+      })
+    : [];
+
   if (!link) return notFound();
 
   if (link.expiresAt && link.expiresAt < new Date()) {
@@ -99,6 +119,7 @@ export default async function ScreeningPage({
         campaignName={reel.campaignName}
         curatorialNote={reel.curatorialNote}
         portfolioStills={portfolioStills}
+        rosterHighlights={rosterHighlights}
       />
     </ScreeningTracker>
   );

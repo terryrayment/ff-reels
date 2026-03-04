@@ -232,7 +232,11 @@ model ReelView {
   screeningLinkId  String
   screeningLink    ScreeningLink @relation(fields: [screeningLinkId], references: [id], onDelete: Cascade)
 
-  // Viewer info
+  // Viewer identity (self-reported at gate)
+  viewerName       String?
+  viewerEmail      String?
+
+  // Viewer info (auto-detected)
   userId           String?
   user             User?         @relation(fields: [userId], references: [id])
   viewerIp         String?

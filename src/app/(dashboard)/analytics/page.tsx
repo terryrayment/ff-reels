@@ -529,7 +529,7 @@ export default async function AnalyticsPage({
                     <div className="min-w-0">
                       <p className="text-[13px] truncate">
                         <span className="text-[#1A1A1A] font-medium group-hover:text-black transition-colors">
-                          {view.screeningLink.recipientName || "Anonymous"}
+                          {view.viewerName || view.screeningLink.recipientName || "Anonymous"}
                         </span>
                         {view.screeningLink.recipientCompany && (
                           <span className="text-[#999]">

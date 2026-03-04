@@ -83,9 +83,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Create the ReelView record
+    // Auto-populate viewer identity from the screening link's recipient info
     const view = await prisma.reelView.create({
       data: {
         screeningLinkId,
+        viewerName: link.recipientName,
+        viewerEmail: link.recipientEmail,
         viewerIp: geo.ip,
         viewerCity: geo.city,
         viewerCountry: geo.country,

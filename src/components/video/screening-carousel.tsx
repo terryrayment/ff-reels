@@ -4,7 +4,17 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { useViewContext } from "./screening-tracker";
 import { formatDuration } from "@/lib/utils";
-import { ChevronUp, X } from "lucide-react";
+import {
+  ChevronUp,
+  X,
+  Mail,
+  MessageCircle,
+  Copy,
+  Check,
+  Share2,
+  ExternalLink,
+  Download,
+} from "lucide-react";
 
 interface SpotItem {
   id: string;
@@ -35,6 +45,13 @@ interface PortfolioStill {
   thumbnailUrl: string | null;
 }
 
+interface RosterHighlight {
+  id: string;
+  name: string;
+  headshotUrl: string | null;
+  categories: string[];
+}
+
 interface ScreeningCarouselProps {
   items: SpotItem[];
   director: DirectorInfo;
@@ -44,6 +61,7 @@ interface ScreeningCarouselProps {
   campaignName: string | null;
   curatorialNote: string | null;
   portfolioStills?: PortfolioStill[];
+  rosterHighlights?: RosterHighlight[];
 }
 
 /**
@@ -53,6 +71,8 @@ interface ScreeningCarouselProps {
  * - Auto-advances when a spot ends
  * - Portfolio stills as ambient background between transitions
  * - Director bio slide-up panel
+ * - Share panel with contextual email/text/copy
+ * - About F&F company panel
  * - Engagement tracking per spot
  */
 export function ScreeningCarousel({
@@ -64,13 +84,17 @@ export function ScreeningCarousel({
   campaignName,
   curatorialNote,
   portfolioStills = [],
+  rosterHighlights = [],
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showBio, setShowBio] = useState(false);
+  const [activePanel, setActivePanel] = useState<
+    "bio" | "share" | "company" | "download" | null
+  >(null);
   const [showInfo, setShowInfo] = useState(true);
   const [bgStillIndex, setBgStillIndex] = useState(0);
+  const [shareCopied, setShareCopied] = useState<string | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
 
   // Tracking state per spot
@@ -148,7 +172,10 @@ export function ScreeningCarousel({
       const pct =
         overrides.percentWatched ??
         (totalDur > 0
-          ? Math.min(100, Math.round((watchedSeconds.current / totalDur) * 100))
+          ? Math.min(
+              100,
+              Math.round((watchedSeconds.current / totalDur) * 100)
+            )
           : 0);
 
       try {
@@ -175,7 +202,12 @@ export function ScreeningCarousel({
   // Periodic reporting
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isPlaying.current && viewId && watchedSeconds.current > 0 && currentProject) {
+      if (
+        isPlaying.current &&
+        viewId &&
+        watchedSeconds.current > 0 &&
+        currentProject
+      ) {
         sendSpotData(currentProject.id, currentProject.duration);
       }
     }, 15_000);
@@ -186,9 +218,15 @@ export function ScreeningCarousel({
   // Scroll active thumbnail into view
   useEffect(() => {
     if (!thumbStripRef.current) return;
-    const activeThumb = thumbStripRef.current.children[currentIndex] as HTMLElement;
+    const activeThumb = thumbStripRef.current.children[
+      currentIndex
+    ] as HTMLElement;
     if (activeThumb) {
-      activeThumb.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      activeThumb.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
     }
   }, [currentIndex]);
 
@@ -198,9 +236,14 @@ export function ScreeningCarousel({
       if (index === currentIndex || index < 0 || index >= items.length) return;
 
       // Report current spot data before switching
-      if (currentProject && watchedSeconds.current > 0 && !hasReportedComplete.current) {
+      if (
+        currentProject &&
+        watchedSeconds.current > 0 &&
+        !hasReportedComplete.current
+      ) {
         const totalDur = currentProject.duration || 0;
-        const pct = totalDur > 0 ? (watchedSeconds.current / totalDur) * 100 : 0;
+        const pct =
+          totalDur > 0 ? (watchedSeconds.current / totalDur) * 100 : 0;
         sendSpotData(currentProject.id, currentProject.duration, {
           skipped: pct < 25,
         });
@@ -275,17 +318,133 @@ export function ScreeningCarousel({
     }
   };
 
+  // === Share helpers ===
+  const getReelUrl = () =>
+    typeof window !== "undefined" ? window.location.href : "";
+
+  const getShareContext = () => {
+    const dirName = director.name;
+    const reelDesc = brand
+      ? `${reelTitle} for ${brand}`
+      : `${reelTitle}`;
+    const spotName = currentProject?.title;
+    const agency = agencyName ? ` (${agencyName})` : "";
+    return { dirName, reelDesc, spotName, agency };
+  };
+
+  const handleShareEmail = () => {
+    const { dirName, reelDesc, agency } = getShareContext();
+    const subject = encodeURIComponent(
+      `Director Reel: ${dirName} — ${reelDesc}`
+    );
+    const body = encodeURIComponent(
+      `Take a look at ${dirName}'s reel${agency} — curated by Friends & Family.\n\n${getReelUrl()}\n\n${
+        curatorialNote ? `Note: "${curatorialNote}"` : ""
+      }`
+    );
+    window.open(`mailto:?subject=${subject}&body=${body}`, "_self");
+  };
+
+  const handleShareEmailSpot = () => {
+    const { dirName, spotName } = getShareContext();
+    const subject = encodeURIComponent(
+      `Check out "${spotName}" — Dir. ${dirName}`
+    );
+    const body = encodeURIComponent(
+      `I wanted to flag this spot specifically — "${spotName}" by ${dirName}.\n\n${getReelUrl()}\n\nIt's spot ${
+        currentIndex + 1
+      } of ${items.length} in the reel.`
+    );
+    window.open(`mailto:?subject=${subject}&body=${body}`, "_self");
+  };
+
+  const handleShareText = () => {
+    const { dirName, reelDesc } = getShareContext();
+    const msg = encodeURIComponent(
+      `Check out ${dirName}'s reel — ${reelDesc}. Curated by Friends & Family: ${getReelUrl()}`
+    );
+    window.open(`sms:?&body=${msg}`, "_self");
+  };
+
+  const handleCopyReelLink = () => {
+    const { dirName, reelDesc, agency } = getShareContext();
+    const text = `${dirName} — ${reelDesc}${agency}\nFriends & Family\n${getReelUrl()}`;
+    navigator.clipboard.writeText(text);
+    setShareCopied("reel");
+    setTimeout(() => setShareCopied(null), 2000);
+  };
+
+  const handleCopySpotLink = () => {
+    const { dirName, spotName } = getShareContext();
+    const text = `"${spotName}" — Dir. ${dirName}\nSpot ${
+      currentIndex + 1
+    } of ${items.length}\n${getReelUrl()}`;
+    navigator.clipboard.writeText(text);
+    setShareCopied("spot");
+    setTimeout(() => setShareCopied(null), 2000);
+  };
+
+  const handleNativeShare = async () => {
+    const { dirName, reelDesc } = getShareContext();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${dirName} — ${reelDesc}`,
+          text: `Director reel curated by Friends & Family`,
+          url: getReelUrl(),
+        });
+      } catch {
+        // User cancelled or not supported
+      }
+    }
+  };
+
+  // === Download helpers ===
+  const handleDownloadSpot = (item: SpotItem) => {
+    if (!item.project.muxPlaybackId) return;
+    const url = `https://stream.mux.com/${item.project.muxPlaybackId}/high.mp4?download=${encodeURIComponent(item.project.title || "video")}.mp4`;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${item.project.title || "video"}.mp4`;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const handleDownloadAll = () => {
+    const downloadable = items.filter((i) => i.project.muxPlaybackId);
+    downloadable.forEach((item, idx) => {
+      // Stagger downloads to avoid browser blocking
+      setTimeout(() => handleDownloadSpot(item), idx * 500);
+    });
+  };
+
   if (!currentProject) return null;
 
   const hasBio = director.bio || director.statement;
   const subtitle = brand
-    ? [agencyName, campaignName].filter(Boolean).join(" · ") || `Directed by ${director.name}`
+    ? [agencyName, campaignName].filter(Boolean).join(" \u00B7 ") ||
+      `Directed by ${director.name}`
     : reelTitle;
   const titleDisplay = brand ? reelTitle : director.name;
 
   // Current background still from portfolio
   const currentBgStill = portfolioStills[bgStillIndex]?.thumbnailUrl;
-  const nextBgStill = portfolioStills[(bgStillIndex + 1) % Math.max(1, portfolioStills.length)]?.thumbnailUrl;
+  const nextBgStill =
+    portfolioStills[(bgStillIndex + 1) % Math.max(1, portfolioStills.length)]
+      ?.thumbnailUrl;
+
+  // Close any panel
+  const closePanel = () => setActivePanel(null);
+  const openPanel = (panel: "bio" | "share" | "company" | "download") =>
+    setActivePanel((prev) => (prev === panel ? null : panel));
+
+  // Notable brands from roster highlights
+  const rosterCategories = Array.from(
+    new Set(rosterHighlights.flatMap((d) => d.categories))
+  ).slice(0, 6);
 
   return (
     <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
@@ -322,17 +481,19 @@ export function ScreeningCarousel({
           <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-8 pb-6 pt-24">
             <div className="max-w-4xl mx-auto">
               <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] mb-4">
-                Friends & Family
+                Friends &amp; Family
               </p>
               <h1 className="text-3xl md:text-4xl font-light tracking-tight">
                 {titleDisplay}
               </h1>
               <p className="text-sm text-white/40 mt-2">{subtitle}</p>
               <div className="flex items-center gap-3 mt-2 text-xs text-white/20">
-                <span>{items.length} spot{items.length !== 1 ? "s" : ""}</span>
+                <span>
+                  {items.length} spot{items.length !== 1 ? "s" : ""}
+                </span>
                 {totalDuration > 0 && (
                   <>
-                    <span className="text-white/10">·</span>
+                    <span className="text-white/10">&middot;</span>
                     <span>{formatDuration(totalDuration)} total</span>
                   </>
                 )}
@@ -348,84 +509,92 @@ export function ScreeningCarousel({
 
         {/* Spot info — top left, shows when playing */}
         <div
-          className={`absolute top-5 left-6 z-10 pointer-events-none transition-opacity duration-500 ${
+          className={`absolute top-6 left-8 z-10 pointer-events-none transition-opacity duration-500 ${
             !showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
-          <h2 className="text-sm font-medium text-white/60">
+          <h2 className="text-xl font-medium text-white/80 tracking-tight drop-shadow-lg">
             {currentProject.title}
           </h2>
-          <p className="text-[11px] text-white/25 mt-0.5">
+          <p className="text-sm text-white/40 mt-1 drop-shadow-md">
             {[currentProject.brand, currentProject.agency, currentProject.year]
               .filter(Boolean)
-              .join(" · ")}
+              .join(" \u00B7 ")}
           </p>
         </div>
 
         {/* Spot counter — top right */}
-        <div className="absolute top-5 right-6 z-10 pointer-events-none">
-          <span className="text-[11px] text-white/20 tabular-nums">
+        <div className="absolute top-6 right-8 z-10 pointer-events-none">
+          <span className="text-xs text-white/30 tabular-nums font-medium drop-shadow-lg">
             {currentIndex + 1} / {items.length}
           </span>
         </div>
 
-        {/* Video player / Thumbnail display */}
+        {/* Video player — cinema-style framing, NOT full-screen */}
         <div
-          className={`w-full h-full transition-opacity duration-400 relative z-[1] ${
+          className={`w-full h-full flex items-center justify-center px-8 py-6 transition-opacity duration-400 relative z-[1] ${
             isTransitioning ? "opacity-0" : "opacity-100"
           }`}
         >
-          {currentProject.muxPlaybackId ? (
-            <MuxPlayer
-              key={currentProject.id}
-              playbackId={currentProject.muxPlaybackId}
-              streamType="on-demand"
-              autoPlay={currentIndex > 0 ? ("any" as const) : undefined}
-              metadata={{
-                video_id: currentProject.id,
-                video_title: currentProject.title,
-              }}
-              poster={getThumbUrl(currentItem, "large") || undefined}
-              primaryColor="#ffffff"
-              secondaryColor="#0e0e0e"
-              accentColor="#666666"
-              style={{ width: "100%", height: "100%" }}
-              onPlay={handlePlay}
-              onPause={handlePause}
-              onTimeUpdate={handleTimeUpdate}
-              onEnded={handleEnded}
-              onSeeked={handleSeeked}
-            />
-          ) : currentProject.thumbnailUrl ? (
-            /* No Mux yet — show full-size thumbnail with play overlay */
-            <div className="w-full h-full relative bg-black flex items-center justify-center">
-              <img
-                src={currentProject.thumbnailUrl}
-                alt={currentProject.title}
-                className="max-w-full max-h-full object-contain"
+          <div className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
+            {currentProject.muxPlaybackId ? (
+              <MuxPlayer
+                key={currentProject.id}
+                playbackId={currentProject.muxPlaybackId}
+                streamType="on-demand"
+                autoPlay={currentIndex > 0 ? ("any" as const) : undefined}
+                metadata={{
+                  video_id: currentProject.id,
+                  video_title: currentProject.title,
+                }}
+                poster={getThumbUrl(currentItem, "large") || undefined}
+                primaryColor="#ffffff"
+                secondaryColor="#0e0e0e"
+                accentColor="#666666"
+                style={{ width: "100%", height: "100%" }}
+                onPlay={handlePlay}
+                onPause={handlePause}
+                onTimeUpdate={handleTimeUpdate}
+                onEnded={handleEnded}
+                onSeeked={handleSeeked}
               />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                  <svg width="20" height="24" viewBox="0 0 20 24" fill="white" className="ml-1 opacity-60">
-                    <polygon points="0,0 20,12 0,24" />
-                  </svg>
+            ) : currentProject.thumbnailUrl ? (
+              /* No Mux yet — show full-size thumbnail with play overlay */
+              <div className="w-full h-full relative bg-black flex items-center justify-center">
+                <img
+                  src={currentProject.thumbnailUrl}
+                  alt={currentProject.title}
+                  className="max-w-full max-h-full object-contain"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                    <svg
+                      width="20"
+                      height="24"
+                      viewBox="0 0 20 24"
+                      fill="white"
+                      className="ml-1 opacity-60"
+                    >
+                      <polygon points="0,0 20,12 0,24" />
+                    </svg>
+                  </div>
                 </div>
+                <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/25 uppercase tracking-widest">
+                  Video uploading to stream
+                </p>
               </div>
-              <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/25 uppercase tracking-widest">
-                Video uploading to stream
-              </p>
-            </div>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <p className="text-xs text-white/15">Processing...</p>
-            </div>
-          )}
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-black">
+                <p className="text-xs text-white/15">Processing...</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Bottom bar: thumbnails + bio button */}
+      {/* Bottom bar: thumbnails + action buttons */}
       <div className="relative z-20 border-t border-white/[0.06] bg-[#080808] flex-shrink-0">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2">
           {/* Thumbnail strip */}
           <div
             ref={thumbStripRef}
@@ -469,7 +638,9 @@ export function ScreeningCarousel({
                   {/* Title tooltip on hover */}
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 px-2 py-1 rounded text-[9px] text-white/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
                     {item.project.title}
-                    {item.project.duration ? ` · ${formatDuration(item.project.duration)}` : ""}
+                    {item.project.duration
+                      ? ` \u00B7 ${formatDuration(item.project.duration)}`
+                      : ""}
                   </div>
 
                   {/* Active dot */}
@@ -481,120 +652,563 @@ export function ScreeningCarousel({
             })}
           </div>
 
-          {/* Bio button */}
-          {hasBio && (
+          {/* Action buttons */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Share button */}
             <button
-              onClick={() => setShowBio(true)}
-              className="flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[9px] text-white/30 hover:text-white/50 uppercase tracking-[0.15em]"
+              onClick={() => openPanel("share")}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                activePanel === "share"
+                  ? "bg-white/10 border-white/20 text-white/60"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+              }`}
             >
-              <ChevronUp size={10} />
-              Bio
+              <Share2 size={10} />
+              Share
             </button>
-          )}
+
+            {/* Bio button */}
+            {hasBio && (
+              <button
+                onClick={() => openPanel("bio")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "bio"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <ChevronUp size={10} />
+                Bio
+              </button>
+            )}
+
+            {/* Download button */}
+            {items.some((i) => i.project.muxPlaybackId) && (
+              <button
+                onClick={() => openPanel("download")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "download"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <Download size={10} />
+              </button>
+            )}
+
+            {/* F&F / About button */}
+            <button
+              onClick={() => openPanel("company")}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                activePanel === "company"
+                  ? "bg-white/10 border-white/20 text-white/60"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+              }`}
+            >
+              F&amp;F
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Bio slide-up panel */}
-      {hasBio && (
+      {/* ═══════════════════════════════════════════════════════
+          SLIDE-UP PANELS — Share / Bio / About F&F
+          Only one open at a time via activePanel state
+         ═══════════════════════════════════════════════════════ */}
+
+      {/* Shared backdrop */}
+      <div
+        className={`fixed inset-0 z-50 transition-all duration-500 ${
+          activePanel ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+      >
         <div
-          className={`fixed inset-0 z-50 transition-all duration-500 ${
-            showBio ? "pointer-events-auto" : "pointer-events-none"
+          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${
+            activePanel ? "opacity-100" : "opacity-0"
           }`}
+          onClick={closePanel}
+        />
+
+        {/* ─── SHARE PANEL ──────────────────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "share" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "65vh" }}
         >
-          {/* Backdrop */}
           <div
-            className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${
-              showBio ? "opacity-100" : "opacity-0"
-            }`}
-            onClick={() => setShowBio(false)}
-          />
-
-          {/* Panel */}
-          <div
-            className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
-              showBio ? "translate-y-0" : "translate-y-full"
-            }`}
-            style={{ maxHeight: "70vh" }}
+            className="max-w-xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "65vh" }}
           >
-            <div className="max-w-2xl mx-auto px-8 py-8 overflow-y-auto" style={{ maxHeight: "70vh" }}>
-              {/* Drag handle */}
-              <div className="flex justify-center mb-6">
-                <div className="w-10 h-1 rounded-full bg-white/10" />
-              </div>
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
 
-              {/* Close button */}
-              <button
-                onClick={() => setShowBio(false)}
-                className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
-              >
-                <X size={16} className="text-white/30" />
-              </button>
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
 
-              {/* Director info */}
-              <div className="flex items-start gap-6 mb-8">
-                {director.headshotUrl && (
-                  <img
-                    src={director.headshotUrl}
-                    alt={director.name}
-                    className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
-                  />
-                )}
-                <div>
-                  <h3 className="text-xl font-light text-white/90 tracking-tight">
-                    {director.name}
-                  </h3>
-                  <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-1">
-                    Director
-                  </p>
-                </div>
-              </div>
+            <h3 className="text-[10px] text-white/20 uppercase tracking-[0.2em] mb-6">
+              Share this reel
+            </h3>
 
-              {/* Bio text */}
-              {director.bio && (
-                <div className="mb-8">
-                  <p className="text-[13px] text-white/50 leading-[1.8] whitespace-pre-line">
-                    {director.bio}
-                  </p>
-                </div>
-              )}
+            {/* Share the full reel */}
+            <div className="mb-8">
+              <p className="text-[13px] text-white/60 mb-1">
+                {director.name}
+                {brand ? ` \u2014 ${reelTitle}` : ""}
+              </p>
+              <p className="text-[11px] text-white/25 mb-5">
+                {items.length} spot{items.length !== 1 ? "s" : ""}
+                {agencyName ? ` \u00B7 ${agencyName}` : ""}
+                {campaignName ? ` \u00B7 ${campaignName}` : ""}
+              </p>
 
-              {/* Portfolio stills grid — visual journey */}
-              {portfolioStills.length > 0 && (
-                <div className="border-t border-white/5 pt-6 mb-8">
-                  <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                    Selected Work
-                  </p>
-                  <div className="grid grid-cols-4 gap-1.5">
-                    {portfolioStills.slice(0, 8).map((still) =>
-                      still.thumbnailUrl ? (
-                        <div key={still.id} className="aspect-video rounded-sm overflow-hidden">
-                          <img
-                            src={still.thumbnailUrl}
-                            alt={still.title}
-                            className="w-full h-full object-cover opacity-60 hover:opacity-90 transition-opacity"
-                          />
-                        </div>
-                      ) : null
+              <div className="grid grid-cols-2 gap-3">
+                {/* Email the reel */}
+                <button
+                  onClick={handleShareEmail}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
+                    <Mail size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
+                      Email Reel
+                    </p>
+                    <p className="text-[10px] text-white/20">
+                      Pre-written with context
+                    </p>
+                  </div>
+                </button>
+
+                {/* Text the reel */}
+                <button
+                  onClick={handleShareText}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
+                    <MessageCircle size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
+                      Text / iMessage
+                    </p>
+                    <p className="text-[10px] text-white/20">Quick send</p>
+                  </div>
+                </button>
+
+                {/* Copy reel link with context */}
+                <button
+                  onClick={handleCopyReelLink}
+                  className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
+                    {shareCopied === "reel" ? (
+                      <Check size={14} className="text-emerald-400" />
+                    ) : (
+                      <Copy size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
                     )}
                   </div>
-                </div>
-              )}
+                  <div className="text-left">
+                    <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
+                      {shareCopied === "reel" ? "Copied!" : "Copy for Slack"}
+                    </p>
+                    <p className="text-[10px] text-white/20">
+                      Formatted with context
+                    </p>
+                  </div>
+                </button>
 
-              {/* Statement */}
-              {director.statement && (
-                <div className="border-t border-white/5 pt-6">
-                  <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                    Statement
+                {/* Native share (mobile) */}
+                {typeof navigator !== "undefined" && "share" in navigator && (
+                  <button
+                    onClick={handleNativeShare}
+                    className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
+                      <ExternalLink size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
+                        More Options
+                      </p>
+                      <p className="text-[10px] text-white/20">
+                        AirDrop, WhatsApp...
+                      </p>
+                    </div>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Share the current spot specifically */}
+            <div className="border-t border-white/5 pt-6">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
+                Recommend this spot specifically
+              </p>
+              <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-white/[0.03]">
+                {getThumbUrl(currentItem) && (
+                  <img
+                    src={getThumbUrl(currentItem)!}
+                    alt=""
+                    className="w-16 h-9 rounded object-cover flex-shrink-0"
+                  />
+                )}
+                <div className="min-w-0">
+                  <p className="text-[12px] text-white/50 truncate">
+                    {currentProject.title}
                   </p>
-                  <p className="text-[13px] text-white/35 leading-[1.8] italic whitespace-pre-line">
-                    {director.statement}
+                  <p className="text-[10px] text-white/20 truncate">
+                    {[
+                      currentProject.brand,
+                      currentProject.agency,
+                      currentProject.year,
+                    ]
+                      .filter(Boolean)
+                      .join(" \u00B7 ")}
                   </p>
                 </div>
-              )}
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleShareEmailSpot}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                >
+                  <Mail size={12} />
+                  Email this spot
+                </button>
+                <button
+                  onClick={handleCopySpotLink}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                >
+                  {shareCopied === "spot" ? (
+                    <Check size={12} className="text-emerald-400" />
+                  ) : (
+                    <Copy size={12} />
+                  )}
+                  {shareCopied === "spot" ? "Copied!" : "Copy spot link"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      )}
+
+        {/* ─── BIO PANEL ──────────────────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "bio" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "70vh" }}
+        >
+          <div
+            className="max-w-2xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "70vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            {/* Director info */}
+            <div className="flex items-start gap-6 mb-8">
+              {director.headshotUrl && (
+                <img
+                  src={director.headshotUrl}
+                  alt={director.name}
+                  className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
+                />
+              )}
+              <div>
+                <h3 className="text-xl font-light text-white/90 tracking-tight">
+                  {director.name}
+                </h3>
+                <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-1">
+                  Director
+                </p>
+              </div>
+            </div>
+
+            {/* Bio text */}
+            {director.bio && (
+              <div className="mb-8">
+                <p className="text-[13px] text-white/50 leading-[1.8] whitespace-pre-line">
+                  {director.bio}
+                </p>
+              </div>
+            )}
+
+            {/* Portfolio stills grid */}
+            {portfolioStills.length > 0 && (
+              <div className="border-t border-white/5 pt-6 mb-8">
+                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
+                  Selected Work
+                </p>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {portfolioStills.slice(0, 8).map((still) =>
+                    still.thumbnailUrl ? (
+                      <div
+                        key={still.id}
+                        className="aspect-video rounded-sm overflow-hidden"
+                      >
+                        <img
+                          src={still.thumbnailUrl}
+                          alt={still.title}
+                          className="w-full h-full object-cover opacity-60 hover:opacity-90 transition-opacity"
+                        />
+                      </div>
+                    ) : null
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Statement */}
+            {director.statement && (
+              <div className="border-t border-white/5 pt-6">
+                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
+                  Statement
+                </p>
+                <p className="text-[13px] text-white/35 leading-[1.8] italic whitespace-pre-line">
+                  {director.statement}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ─── ABOUT F&F PANEL ──────────────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "company" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "75vh" }}
+        >
+          <div
+            className="max-w-2xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "75vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            {/* F&F Logo/Name */}
+            <div className="mb-8">
+              <h3 className="text-2xl font-light text-white/90 tracking-tight">
+                Friends &amp; Family
+              </h3>
+              <p className="text-[10px] text-white/20 uppercase tracking-[0.25em] mt-1.5">
+                Directors&apos; Representation
+              </p>
+            </div>
+
+            {/* About */}
+            <div className="mb-8">
+              <p className="text-[13px] text-white/50 leading-[1.9]">
+                Friends &amp; Family is a boutique directors&apos;
+                representation company built on close relationships, creative
+                vision, and an obsessive commitment to craft. We represent a
+                curated roster of directors across commercial, branded content,
+                and music video work.
+              </p>
+              <p className="text-[13px] text-white/40 leading-[1.9] mt-4">
+                Every reel we send is hand-built for the opportunity &mdash;
+                because generic reels waste everyone&apos;s time. Our approach is
+                simple: understand the brief, know the director, make the
+                match.
+              </p>
+            </div>
+
+            {/* Roster Highlights */}
+            {rosterHighlights.length > 0 && (
+              <div className="border-t border-white/5 pt-6 mb-8">
+                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-5">
+                  Our Directors
+                </p>
+                <div className="grid grid-cols-4 gap-4">
+                  {rosterHighlights.map((d) => (
+                    <div key={d.id} className="text-center group">
+                      {d.headshotUrl ? (
+                        <img
+                          src={d.headshotUrl}
+                          alt={d.name}
+                          className="w-14 h-14 rounded-full object-cover mx-auto ring-1 ring-white/10 group-hover:ring-white/25 transition-all"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-white/5 mx-auto flex items-center justify-center">
+                          <span className="text-[14px] text-white/20">
+                            {d.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      <p className="text-[11px] text-white/40 mt-2 group-hover:text-white/60 transition-colors">
+                        {d.name}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Capabilities / Categories */}
+            {rosterCategories.length > 0 && (
+              <div className="border-t border-white/5 pt-6 mb-8">
+                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
+                  Expertise
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {rosterCategories.map((cat) => (
+                    <span
+                      key={cat}
+                      className="px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-[11px] text-white/30 capitalize"
+                    >
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Contact / CTA */}
+            <div className="border-t border-white/5 pt-6">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
+                Get in touch
+              </p>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://www.friendsandfamily.tv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                >
+                  <ExternalLink size={12} />
+                  friendsandfamily.tv
+                </a>
+                <a
+                  href="mailto:info@friendsandfamily.tv"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                >
+                  <Mail size={12} />
+                  info@friendsandfamily.tv
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── DOWNLOAD PANEL ──────────────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "download" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "65vh" }}
+        >
+          <div
+            className="max-w-xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "65vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <h3 className="text-[10px] text-white/20 uppercase tracking-[0.2em] mb-6">
+              Download
+            </h3>
+
+            {/* Download all */}
+            {items.filter((i) => i.project.muxPlaybackId).length > 1 && (
+              <button
+                onClick={handleDownloadAll}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] hover:border-white/[0.15] transition-all group mb-6"
+              >
+                <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
+                  <Download size={16} className="text-white/50 group-hover:text-white/70 transition-colors" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[13px] text-white/70 group-hover:text-white/90 transition-colors font-medium">
+                    Download All Spots
+                  </p>
+                  <p className="text-[11px] text-white/25">
+                    {items.filter((i) => i.project.muxPlaybackId).length} videos as MP4
+                  </p>
+                </div>
+              </button>
+            )}
+
+            {/* Individual spots */}
+            <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-3">
+              Individual spots
+            </p>
+            <div className="space-y-2">
+              {items.map((item, i) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleDownloadSpot(item)}
+                  disabled={!item.project.muxPlaybackId}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-white/[0.10] transition-all group disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  {getThumbUrl(item) && (
+                    <img
+                      src={getThumbUrl(item)!}
+                      alt=""
+                      className="w-14 h-8 rounded object-cover flex-shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 text-left min-w-0">
+                    <p className="text-[12px] text-white/50 group-hover:text-white/70 transition-colors truncate">
+                      {item.project.title}
+                    </p>
+                    <p className="text-[10px] text-white/20 truncate">
+                      {[item.project.brand, item.project.agency]
+                        .filter(Boolean)
+                        .join(" \u00B7 ") || "\u2014"}
+                    </p>
+                  </div>
+                  <span className="text-[10px] text-white/15 tabular-nums flex-shrink-0 mr-1">
+                    {i + 1}
+                  </span>
+                  <Download
+                    size={12}
+                    className="text-white/20 group-hover:text-white/50 transition-colors flex-shrink-0"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
