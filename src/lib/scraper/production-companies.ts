@@ -182,10 +182,76 @@ export function cityToTerritory(city: string): "EAST" | "MIDWEST" | "WEST" | nul
 
 /**
  * Look up territory for a production company by name.
+ * Uses fuzzy matching: exact first, then "contains" for partial names.
  */
 export function companyTerritory(companyName: string): "EAST" | "MIDWEST" | "WEST" | null {
-  const match = PRODUCTION_COMPANIES.find(
-    (c) => c.name.toLowerCase() === companyName.toLowerCase()
+  const lower = companyName.toLowerCase().trim();
+  // Exact match first
+  const exact = PRODUCTION_COMPANIES.find(
+    (c) => c.name.toLowerCase() === lower
   );
-  return match?.territory ?? null;
+  if (exact) return exact.territory;
+
+  // Fuzzy: input contains a known company name, or vice versa
+  const fuzzy = PRODUCTION_COMPANIES.find(
+    (c) => lower.includes(c.name.toLowerCase()) || c.name.toLowerCase().includes(lower)
+  );
+  return fuzzy?.territory ?? null;
+}
+
+/**
+ * Map major US agencies to territory by HQ location.
+ * Used as fallback when no production company is available.
+ */
+const AGENCY_TERRITORIES: Record<string, "EAST" | "MIDWEST" | "WEST"> = {
+  // NYC / East
+  "bbdo": "EAST", "bbdo new york": "EAST",
+  "ddb": "EAST", "ddb new york": "EAST",
+  "ogilvy": "EAST", "ogilvy new york": "EAST",
+  "mccann": "EAST", "mccann new york": "EAST",
+  "grey": "EAST", "grey new york": "EAST",
+  "jwt": "EAST", "fcb": "EAST", "fcb new york": "EAST",
+  "havas": "EAST", "havas new york": "EAST",
+  "r/ga": "EAST", "huge": "EAST", "akqa": "EAST",
+  "mother": "EAST", "anomaly": "EAST",
+  "droga5": "EAST", "johannes leonardo": "EAST",
+  "wunderman thompson": "EAST", "vml": "EAST", "vmly&r": "EAST",
+  "translation": "EAST", "mischief": "EAST",
+  "edelman": "EAST", "edelman new york": "EAST",
+  "saatchi": "EAST", "saatchi & saatchi": "EAST",
+  "publicis": "EAST", "publicis new york": "EAST",
+  "tbwa": "EAST", "dentsu creative": "EAST",
+  "gut": "EAST", "gut miami": "EAST",
+  "the community": "EAST", "alma": "EAST",
+  "gallegos united": "EAST", "la comunidad": "EAST",
+  "david": "EAST", "david miami": "EAST",
+  "bbh": "EAST", "bbh usa": "EAST", "bbh new york": "EAST",
+  "mullenlowe": "EAST", "deutsch": "EAST",
+  "the martin agency": "EAST", "arnold worldwide": "EAST",
+  "hill holliday": "EAST",
+  // West / LA / Portland
+  "wieden+kennedy": "WEST", "w+k": "WEST",
+  "72andsunny": "WEST", "tbwa\\chiat\\day": "WEST",
+  "tbwa\\media arts lab": "WEST", "media arts lab": "WEST",
+  "goodby silverstein": "WEST", "goodby silverstein & partners": "WEST",
+  "crispin porter bogusky": "WEST", "cpb": "WEST",
+  "special group": "WEST", "preacher": "WEST",
+  "in-house": "WEST",
+  // Chicago / Midwest
+  "leo burnett": "MIDWEST", "leo burnett chicago": "MIDWEST",
+  "fcb chicago": "MIDWEST", "energy bbdo": "MIDWEST",
+  "ddb chicago": "MIDWEST", "highdive": "MIDWEST",
+  "erich & kallman": "MIDWEST", "mckinney": "MIDWEST",
+  "360i": "MIDWEST",
+};
+
+export function agencyTerritory(agencyName: string): "EAST" | "MIDWEST" | "WEST" | null {
+  const lower = agencyName.toLowerCase().trim();
+  // Exact match
+  if (AGENCY_TERRITORIES[lower]) return AGENCY_TERRITORIES[lower];
+  // Fuzzy: check if any known agency name is contained
+  for (const [key, territory] of Object.entries(AGENCY_TERRITORIES)) {
+    if (lower.includes(key) || key.includes(lower)) return territory;
+  }
+  return null;
 }

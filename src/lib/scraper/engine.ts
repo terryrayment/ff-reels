@@ -3,7 +3,10 @@ import { ScrapedCredit, SourceAdapter } from "./types";
 import { MuseByClio } from "./sources/rss-muse";
 import { ProdCoNews } from "./sources/prodco-news";
 import { AdweekRss } from "./sources/rss-adweek";
-import { companyTerritory } from "./production-companies";
+import { ShotsAdapter } from "./sources/shots";
+import { ShootRssAdapter } from "./sources/rss-shoot";
+import { AdsOfTheWorldAdapter } from "./sources/ads-of-the-world";
+import { companyTerritory, agencyTerritory } from "./production-companies";
 import { extractCreditsBatch } from "./ai-extract";
 
 /**
@@ -25,10 +28,13 @@ function decodeEntities(s: string): string {
 /**
  * All registered source adapters.
  *
- * Three complementary streams:
+ * Six complementary streams:
  * 1. Muse by Clio RSS — Brand + Agency from <category> tags + article text for AI
  * 2. Production Company News — Director + Prod Co from WordPress APIs/RSS
  * 3. Adweek RSS — Campaign articles with full page text for AI extraction
+ * 4. SHOTS — shots.net /work page scraping (brand, director, agency, prodCo)
+ * 5. SHOOT Online RSS — Production industry news with location data
+ * 6. Ads of the World — Film ad archive (brand, agency, prodCo, director)
  *
  * AI enrichment extracts director, prodCo, DP, editor from article text.
  */
@@ -36,6 +42,9 @@ const ADAPTERS: SourceAdapter[] = [
   new MuseByClio(),
   new ProdCoNews(),
   new AdweekRss(),
+  new ShotsAdapter(),
+  new ShootRssAdapter(),
+  new AdsOfTheWorldAdapter(),
 ];
 
 /**
@@ -247,10 +256,13 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
         continue;
       }
 
-      // Resolve territory from production company if not already set
+      // Resolve territory: production company → agency → fallback
       let territory = credit.territory;
       if (!territory && credit.productionCompany) {
         territory = companyTerritory(credit.productionCompany) ?? undefined;
+      }
+      if (!territory && credit.agency) {
+        territory = agencyTerritory(credit.agency) ?? undefined;
       }
 
       const deep = credit as ScrapedCreditWithDeep;
