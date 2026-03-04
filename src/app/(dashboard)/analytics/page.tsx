@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
-import { Eye, Smartphone, Monitor, Tablet, MapPin, Mail, Building2, Flame, RotateCcw, Share2, TrendingUp } from "lucide-react";
-import { timeAgo, formatDuration } from "@/lib/utils";
-import Link from "next/link";
+import { formatDuration } from "@/lib/utils";
 import { DateRangePicker } from "@/components/analytics/date-range-picker";
+import { ReelAnalyticsTable, type ReelRow } from "@/components/analytics/reel-analytics-table";
 
 export default async function AnalyticsPage({
   searchParams,
@@ -30,16 +29,15 @@ export default async function AnalyticsPage({
 
   const hasDateFilter = fromDate || toDate;
 
-  // Role-based ownership filter
-  const ownerFilter = isAdmin
-    ? {}
-    : { reel: { createdById: userId } };
-
+  // Role-based ownership filters
+  const reelOwnerFilter = isAdmin ? {} : { createdById: userId };
   const viewOwnerFilter = isAdmin
     ? {}
     : { screeningLink: { reel: { createdById: userId } } };
+  const ownerFilter = isAdmin ? {} : { reel: { createdById: userId } };
 
-  const [totalViews, recentViews, screeningLinks, topLocations, topAgencies] =
+  // ── Aggregate stats (top row) ──
+  const [totalViews, recentViews, activeLinksCount, uniqueRecipients] =
     await Promise.all([
       prisma.reelView.count({
         where: {
@@ -48,149 +46,25 @@ export default async function AnalyticsPage({
         },
       }),
       prisma.reelView.findMany({
-        take: 30,
+        take: 50,
         orderBy: { startedAt: "desc" },
         where: {
           ...(hasDateFilter ? { startedAt: dateFilter } : {}),
           ...viewOwnerFilter,
         },
-        include: {
-          screeningLink: {
-            include: {
-              reel: {
-                include: { director: { select: { name: true } } },
-              },
-            },
-          },
-          spotViews: {
-            select: {
-              percentWatched: true,
-              rewatched: true,
-              skipped: true,
-            },
-          },
-        },
+        select: { totalDuration: true, device: true },
+      }),
+      prisma.screeningLink.count({
+        where: { isActive: true, ...ownerFilter },
       }),
       prisma.screeningLink.findMany({
-        where: {
-          isActive: true,
-          ...ownerFilter,
-        },
-        orderBy: { createdAt: "desc" },
-        take: 30,
-        include: {
-          reel: {
-            include: { director: { select: { name: true } } },
-          },
-          _count: { select: { views: true } },
-        },
-      }),
-      prisma.reelView.groupBy({
-        by: ["viewerCity", "viewerCountry"],
-        where: {
-          viewerCity: { not: null },
-          ...(hasDateFilter ? { startedAt: dateFilter } : {}),
-          ...viewOwnerFilter,
-        },
-        _count: { id: true },
-        orderBy: { _count: { id: "desc" } },
-        take: 10,
-      }),
-      prisma.screeningLink.groupBy({
-        by: ["recipientCompany"],
-        where: {
-          recipientCompany: { not: null },
-          ...ownerFilter,
-        },
-        _count: { id: true },
-        orderBy: { _count: { id: "desc" } },
-        take: 10,
+        where: ownerFilter,
+        select: { recipientEmail: true },
+        distinct: ["recipientEmail"],
       }),
     ]);
 
-  // Hot Leads — links with high engagement signals
-  const hotLeadLinks = await prisma.screeningLink.findMany({
-    where: {
-      views: { some: {} },
-      ...ownerFilter,
-    },
-    include: {
-      reel: {
-        include: { director: { select: { name: true } } },
-      },
-      views: {
-        include: {
-          spotViews: { select: { percentWatched: true } },
-        },
-      },
-      _count: { select: { views: true } },
-    },
-    take: 50,
-  });
-
-  const hotLeads = hotLeadLinks
-    .map((link) => {
-      const viewCount = link._count.views;
-      const uniqueDays = new Set(
-        link.views.map((v) => v.startedAt.toISOString().split("T")[0])
-      ).size;
-      const allSpotViews = link.views.flatMap((v) => v.spotViews);
-      const avgCompletion =
-        allSpotViews.length > 0
-          ? allSpotViews.reduce(
-              (s, sv) => s + (sv.percentWatched || 0),
-              0
-            ) / allSpotViews.length
-          : 0;
-      const score = viewCount * 2 + uniqueDays * 3 + avgCompletion / 10;
-      return {
-        link,
-        viewCount,
-        uniqueDays,
-        avgCompletion: Math.round(avgCompletion),
-        score,
-      };
-    })
-    .filter(
-      (h) => h.viewCount >= 2 || h.avgCompletion > 70 || h.uniqueDays >= 2
-    )
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 8);
-
-  // Top Performing Spots
-  const spotPerformance = await prisma.spotView.groupBy({
-    by: ["projectId"],
-    _avg: { percentWatched: true },
-    _count: { id: true },
-    orderBy: { _avg: { percentWatched: "desc" } },
-    take: 10,
-  });
-
-  const spotProjectIds = spotPerformance.map((s) => s.projectId);
-  const spotProjects =
-    spotProjectIds.length > 0
-      ? await prisma.project.findMany({
-          where: { id: { in: spotProjectIds } },
-          select: {
-            id: true,
-            title: true,
-            brand: true,
-            director: { select: { name: true } },
-          },
-        })
-      : [];
-  const projectMap = new Map(spotProjects.map((p) => [p.id, p]));
-
-  const rewatchCounts = await prisma.spotView.groupBy({
-    by: ["projectId"],
-    where: { rewatched: true },
-    _count: { id: true },
-  });
-  const rewatchMap = new Map(
-    rewatchCounts.map((r) => [r.projectId, r._count.id])
-  );
-
-  // Compute stats
+  // Compute aggregate stats
   const viewsWithDuration = recentViews.filter((v) => v.totalDuration);
   const avgDuration =
     viewsWithDuration.length > 0
@@ -209,21 +83,119 @@ export default async function AnalyticsPage({
     {} as Record<string, number>
   );
 
-  const uniqueEmails = new Set(
-    screeningLinks.map((l) => l.recipientEmail).filter(Boolean)
-  );
+  const uniqueEmailCount = uniqueRecipients.filter((r) => r.recipientEmail).length;
+
+  // ── Per-reel data for table ──
+  const reels = await prisma.reel.findMany({
+    where: reelOwnerFilter,
+    orderBy: { updatedAt: "desc" },
+    include: {
+      director: { select: { name: true } },
+      createdBy: { select: { name: true } },
+      screeningLinks: {
+        select: {
+          id: true,
+          isActive: true,
+          createdAt: true,
+          recipientName: true,
+          recipientEmail: true,
+          recipientCompany: true,
+          views: {
+            select: {
+              id: true,
+              viewerName: true,
+              viewerEmail: true,
+              viewerCity: true,
+              viewerCountry: true,
+              device: true,
+              startedAt: true,
+              totalDuration: true,
+              spotViews: {
+                select: { percentWatched: true },
+              },
+            },
+            orderBy: { startedAt: "desc" },
+          },
+          _count: { select: { views: true } },
+        },
+        ...(hasDateFilter
+          ? { where: { createdAt: dateFilter } }
+          : {}),
+      },
+    },
+  });
+
+  // Compute per-reel row data
+  const reelRows: ReelRow[] = reels.map((reel) => {
+    const totalViewsForReel = reel.screeningLinks.reduce(
+      (sum, link) => sum + link._count.views,
+      0
+    );
+    const totalSent = reel.screeningLinks.length;
+    const activeLinks = reel.screeningLinks.filter((l) => l.isActive).length;
+
+    // Last sent = most recent screening link createdAt
+    const sentDates = reel.screeningLinks.map((l) => l.createdAt.getTime());
+    const lastSent = sentDates.length > 0
+      ? new Date(Math.max(...sentDates)).toISOString()
+      : null;
+
+    // Flatten all views across all links for this reel
+    const allViews = reel.screeningLinks.flatMap((link) =>
+      link.views.map((v) => {
+        const avgCompletion =
+          v.spotViews.length > 0
+            ? Math.round(
+                v.spotViews.reduce((s, sv) => s + (sv.percentWatched || 0), 0) /
+                  v.spotViews.length
+              )
+            : null;
+        return {
+          id: v.id,
+          viewerName: v.viewerName || link.recipientName || "Anonymous",
+          viewerEmail: v.viewerEmail || link.recipientEmail || null,
+          company: link.recipientCompany || null,
+          city: v.viewerCity || null,
+          country: v.viewerCountry || null,
+          device: v.device || "desktop",
+          startedAt: v.startedAt.toISOString(),
+          duration: v.totalDuration || null,
+          avgCompletion,
+        };
+      })
+    );
+
+    // Sort views by most recent first
+    allViews.sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
+
+    const lastViewed = allViews.length > 0 ? allViews[0].startedAt : null;
+
+    return {
+      id: reel.id,
+      title: reel.title,
+      directorName: reel.director.name,
+      reelType: reel.reelType,
+      sentByName: reel.createdBy?.name || "Unknown",
+      totalViews: totalViewsForReel,
+      totalSent,
+      activeLinks,
+      lastSent,
+      lastViewed,
+      views: allViews,
+    };
+  });
 
   return (
     <div>
       {/* Header + Date Filter */}
-      <div className="flex items-start justify-between mb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-14 gap-4">
         <div>
-          <h1 className="text-[32px] font-extralight tracking-tight-3 text-[#1A1A1A]">
+          <h1 className="text-[32px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
             Analytics
           </h1>
-          <p className="text-[11px] uppercase tracking-[0.15em] text-[#999] mt-1.5">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#aaa] mt-2 md:mt-3">
             {isAdmin
-              ? "Viewing activity across all reels"
+              ? "All reel activity"
               : "Your reel engagement"}
           </p>
         </div>
@@ -231,10 +203,10 @@ export default async function AnalyticsPage({
       </div>
 
       {/* Top stats */}
-      <div className="data-card p-8 mb-8">
-        <div className="flex gap-14">
+      <div className="data-card p-6 md:p-8 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-14">
           <div>
-            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
+            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {totalViews}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
@@ -242,7 +214,7 @@ export default async function AnalyticsPage({
             </p>
           </div>
           <div>
-            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
+            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {avgDuration ? formatDuration(avgDuration) : "\u2014"}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
@@ -250,23 +222,23 @@ export default async function AnalyticsPage({
             </p>
           </div>
           <div>
-            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
-              {screeningLinks.length}
+            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
+              {activeLinksCount}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
               Active Links
             </p>
           </div>
           <div>
-            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
-              {uniqueEmails.size}
+            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
+              {uniqueEmailCount}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
               Recipients
             </p>
           </div>
-          <div>
-            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
+          <div className="hidden md:block">
+            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {deviceBreakdown["desktop"] || 0} /{" "}
               {deviceBreakdown["mobile"] || 0}
             </p>
@@ -277,364 +249,8 @@ export default async function AnalyticsPage({
         </div>
       </div>
 
-      {/* Three-column insights */}
-      <div className="grid grid-cols-3 gap-8 mb-8">
-        {/* Locations */}
-        <div className="data-card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <MapPin size={12} className="text-[#999]" />
-            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
-              Top Locations
-            </h3>
-          </div>
-          {topLocations.length > 0 ? (
-            <div className="space-y-2">
-              {topLocations.map((loc, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <span className="text-[12px] text-[#1A1A1A]">
-                    {loc.viewerCity}
-                    {loc.viewerCountry ? `, ${loc.viewerCountry}` : ""}
-                  </span>
-                  <span className="text-[11px] text-[#999] tabular-nums">
-                    {loc._count.id}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-[11px] text-[#ccc] py-4 text-center">
-              Location data populates as reels are viewed.
-            </p>
-          )}
-        </div>
-
-        {/* Agencies */}
-        <div className="data-card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Building2 size={12} className="text-[#999]" />
-            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
-              Top Agencies
-            </h3>
-          </div>
-          {topAgencies.length > 0 ? (
-            <div className="space-y-2">
-              {topAgencies.map((agency, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <span className="text-[12px] text-[#1A1A1A] truncate">
-                    {agency.recipientCompany}
-                  </span>
-                  <span className="text-[11px] text-[#999] tabular-nums ml-3">
-                    {agency._count.id}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-[11px] text-[#ccc] py-4 text-center">
-              Add recipient companies when creating screening links.
-            </p>
-          )}
-        </div>
-
-        {/* Recent Recipients */}
-        <div className="data-card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Mail size={12} className="text-[#999]" />
-            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
-              Recent Recipients
-            </h3>
-          </div>
-          {screeningLinks.filter((l) => l.recipientEmail || l.recipientName)
-            .length > 0 ? (
-            <div className="space-y-2.5">
-              {screeningLinks
-                .filter((l) => l.recipientEmail || l.recipientName)
-                .slice(0, 10)
-                .map((link) => (
-                  <Link
-                    key={link.id}
-                    href={`/analytics/link/${link.id}`}
-                    className="block min-w-0 group"
-                  >
-                    <p className="text-[12px] text-[#1A1A1A] truncate group-hover:text-black transition-colors">
-                      {link.recipientName || link.recipientEmail}
-                    </p>
-                    <p className="text-[10px] text-[#ccc] truncate">
-                      {link.recipientCompany
-                        ? `${link.recipientCompany} · `
-                        : ""}
-                      {link._count.views} view
-                      {link._count.views !== 1 ? "s" : ""}
-                    </p>
-                  </Link>
-                ))}
-            </div>
-          ) : (
-            <p className="text-[11px] text-[#ccc] py-4 text-center">
-              Add recipient info when sending screening links.
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Hot Leads + Top Spots */}
-      <div className="grid grid-cols-2 gap-8 mb-8">
-        {/* Hot Leads */}
-        <div className="data-card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Flame size={12} className="text-amber-500" />
-            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
-              Hot Leads
-            </h3>
-          </div>
-          {hotLeads.length > 0 ? (
-            <div className="space-y-3">
-              {hotLeads.map((hl) => (
-                <Link
-                  key={hl.link.id}
-                  href={`/analytics/link/${hl.link.id}`}
-                  className="block group"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="min-w-0">
-                      <p className="text-[12px] text-[#1A1A1A] truncate font-medium group-hover:text-black transition-colors">
-                        {hl.link.recipientName ||
-                          hl.link.recipientEmail ||
-                          "Anonymous"}
-                      </p>
-                      <p className="text-[10px] text-[#999] truncate mt-0.5">
-                        {hl.link.recipientCompany &&
-                          `${hl.link.recipientCompany} · `}
-                        {hl.link.reel.director.name}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                      <span className="text-[10px] text-[#999] tabular-nums flex items-center gap-0.5">
-                        <Eye size={9} />
-                        {hl.viewCount}
-                      </span>
-                      {hl.uniqueDays >= 2 && (
-                        <span className="text-[9px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
-                          {hl.uniqueDays}d
-                        </span>
-                      )}
-                      {hl.avgCompletion > 0 && (
-                        <span className="text-[10px] text-[#bbb] tabular-nums">
-                          {hl.avgCompletion}%
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <p className="text-[11px] text-[#ccc] py-4 text-center">
-              Hot leads appear as engagement accumulates.
-            </p>
-          )}
-        </div>
-
-        {/* Top Performing Spots */}
-        <div className="data-card p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={12} className="text-[#999]" />
-            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
-              Top Performing Spots
-            </h3>
-          </div>
-          {spotPerformance.length > 0 ? (
-            <div className="space-y-2.5">
-              {spotPerformance.map((sp, i) => {
-                const project = projectMap.get(sp.projectId);
-                if (!project) return null;
-                const avgPct = Math.round(sp._avg.percentWatched || 0);
-                const rw = rewatchMap.get(sp.projectId) || 0;
-                return (
-                  <div key={sp.projectId} className="flex items-center gap-3">
-                    <span className="text-[10px] text-[#ccc] w-4 text-right tabular-nums flex-shrink-0">
-                      {i + 1}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] text-[#1A1A1A] truncate">
-                        {project.title}
-                      </p>
-                      <p className="text-[10px] text-[#999] truncate">
-                        {project.director.name}
-                        {project.brand ? ` · ${project.brand}` : ""}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      {rw > 0 && (
-                        <span className="flex items-center gap-0.5 text-[10px] text-emerald-600">
-                          <RotateCcw size={8} />
-                          {rw}
-                        </span>
-                      )}
-                      <span className="text-[10px] text-[#999] tabular-nums w-8 text-right">
-                        {avgPct}%
-                      </span>
-                      <span className="text-[10px] text-[#bbb] tabular-nums">
-                        {sp._count.id} play
-                        {sp._count.id !== 1 ? "s" : ""}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="text-[11px] text-[#ccc] py-4 text-center">
-              Spot performance data appears after views are tracked.
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* View Feed */}
-      <div className="data-card p-8 mb-6">
-        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
-          View Feed
-        </h2>
-
-        {recentViews.length > 0 ? (
-          <div className="divide-y divide-[#F0F0EC]/50">
-            {recentViews.map((view) => {
-              const avgSpotCompletion =
-                view.spotViews.length > 0
-                  ? Math.round(
-                      view.spotViews.reduce(
-                        (sum, sv) => sum + (sv.percentWatched || 0),
-                        0
-                      ) / view.spotViews.length
-                    )
-                  : null;
-
-              return (
-                <Link
-                  key={view.id}
-                  href={`/analytics/link/${view.screeningLink.id}`}
-                  className="flex items-center justify-between py-3.5 group"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-6 h-6 flex items-center justify-center flex-shrink-0 text-[#bbb]">
-                      {view.device === "mobile" ? (
-                        <Smartphone size={12} />
-                      ) : view.device === "tablet" ? (
-                        <Tablet size={12} />
-                      ) : (
-                        <Monitor size={12} />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[13px] truncate">
-                        <span className="text-[#1A1A1A] font-medium group-hover:text-black transition-colors">
-                          {view.viewerName || view.screeningLink.recipientName || "Anonymous"}
-                        </span>
-                        {view.screeningLink.recipientCompany && (
-                          <span className="text-[#999]">
-                            {" "}
-                            ({view.screeningLink.recipientCompany})
-                          </span>
-                        )}
-                        <span className="text-[#bbb]"> viewed </span>
-                        <span className="text-[#666]">
-                          {view.screeningLink.reel.director.name}&apos;s{" "}
-                          {view.screeningLink.reel.title}
-                        </span>
-                      </p>
-                      <div className="flex items-center gap-3 mt-0.5">
-                        {view.totalDuration != null &&
-                          view.totalDuration > 0 && (
-                            <span className="text-[10px] text-[#bbb]">
-                              Watched {formatDuration(view.totalDuration)}
-                            </span>
-                          )}
-                        {avgSpotCompletion !== null && (
-                          <span className="text-[10px] text-[#bbb]">
-                            {avgSpotCompletion}% avg completion
-                          </span>
-                        )}
-                        {view.viewerCity && (
-                          <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
-                            <MapPin size={8} />
-                            {view.viewerCity}
-                            {view.viewerCountry
-                              ? `, ${view.viewerCountry}`
-                              : ""}
-                          </span>
-                        )}
-                        {view.isForwarded && (
-                          <span className="text-[10px] text-amber-600 flex items-center gap-0.5">
-                            <Share2 size={8} />
-                            Forwarded
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-[11px] text-[#ccc] flex-shrink-0 ml-6">
-                    {timeAgo(view.startedAt)}
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="py-16 text-center">
-            <p className="text-[13px] text-[#999]">
-              No views recorded yet. Send a reel to start tracking engagement.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Active Screening Links */}
-      <div className="data-card p-8">
-        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
-          Active Screening Links
-        </h2>
-
-        {screeningLinks.length > 0 ? (
-          <div className="grid grid-cols-2 gap-x-8 gap-y-1 divide-y-0">
-            {screeningLinks.map((link) => (
-              <Link
-                key={link.id}
-                href={`/analytics/link/${link.id}`}
-                className="group py-3.5 block border-b border-[#F0F0EC]/50"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="min-w-0">
-                    <p className="text-[13px] text-[#1A1A1A] group-hover:text-black transition-colors truncate font-medium">
-                      {link.recipientName || link.recipientEmail || "Untitled"}
-                    </p>
-                    <p className="text-[11px] text-[#999] truncate mt-0.5">
-                      {link.reel.director.name} — {link.reel.title}
-                    </p>
-                    {(link.recipientCompany || link.recipientEmail) && (
-                      <p className="text-[10px] text-[#ccc] mt-0.5 truncate">
-                        {[link.recipientCompany, link.recipientEmail]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
-                    )}
-                  </div>
-                  <span className="text-[11px] text-[#bbb] flex items-center gap-1 flex-shrink-0 ml-3">
-                    <Eye size={10} />
-                    {link._count.views}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="py-12 text-center">
-            <p className="text-[13px] text-[#999]">
-              No active screening links.
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Wiredrive-style reel table */}
+      <ReelAnalyticsTable rows={reelRows} />
     </div>
   );
 }
