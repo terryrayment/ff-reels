@@ -47,6 +47,11 @@ export function SignalFeed({
   const editRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
+  // Sync state when server re-renders with new data (e.g. after router.refresh())
+  useEffect(() => {
+    setUpdates(initialUpdates);
+  }, [initialUpdates]);
+
   useEffect(() => {
     if (editingId && editRef.current) {
       editRef.current.focus();
