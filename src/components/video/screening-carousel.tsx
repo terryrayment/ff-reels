@@ -15,6 +15,8 @@ import {
   ExternalLink,
   Download,
   FileText,
+  Image,
+  Palette,
 } from "lucide-react";
 
 interface SpotItem {
@@ -62,6 +64,22 @@ interface TreatmentSampleInfo {
   isRedacted: boolean;
 }
 
+interface FrameGrabInfo {
+  id: string;
+  projectId: string;
+  imageUrl: string;
+  caption: string | null;
+  sortOrder: number;
+}
+
+interface LookbookItemInfo {
+  id: string;
+  imageUrl: string;
+  caption: string | null;
+  source: string | null;
+  sortOrder: number;
+}
+
 interface ScreeningCarouselProps {
   items: SpotItem[];
   director: DirectorInfo;
@@ -74,6 +92,8 @@ interface ScreeningCarouselProps {
   rosterHighlights?: RosterHighlight[];
   treatmentSamples?: TreatmentSampleInfo[];
   clientBrands?: string[];
+  frameGrabsMap?: Record<string, FrameGrabInfo[]>;
+  lookbookItems?: LookbookItemInfo[];
 }
 
 /**
@@ -99,18 +119,25 @@ export function ScreeningCarousel({
   rosterHighlights = [],
   treatmentSamples = [],
   clientBrands = [],
+  frameGrabsMap = {},
+  lookbookItems = [],
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [activePanel, setActivePanel] = useState<
-    "bio" | "share" | "company" | "download" | "treatments" | null
+    "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | null
   >(null);
   const [showInfo, setShowInfo] = useState(true);
   const [bgStillIndex, setBgStillIndex] = useState(0);
   const [shareCopied, setShareCopied] = useState<string | null>(null);
   const [previewTreatment, setPreviewTreatment] = useState<TreatmentSampleInfo | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
+
+  // Check if any project in the reel has frame grabs
+  const hasFrameGrabs = Object.values(frameGrabsMap).some((grabs) => grabs.length > 0);
+  const totalFrameGrabs = Object.values(frameGrabsMap).reduce((sum, grabs) => sum + grabs.length, 0);
 
   // Tracking state per spot
   const watchedSeconds = useRef(0);
@@ -455,7 +482,7 @@ export function ScreeningCarousel({
     setActivePanel(null);
     setPreviewTreatment(null);
   };
-  const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments") =>
+  const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook") =>
     setActivePanel((prev) => (prev === panel ? null : panel));
 
   return (
@@ -705,6 +732,36 @@ export function ScreeningCarousel({
             >
               <Download size={10} />
             </button>
+
+            {/* Frame Grabs button — only if any project has frame grabs */}
+            {hasFrameGrabs && (
+              <button
+                onClick={() => openPanel("framegrabs")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "framegrabs"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <Image size={10} />
+                Stills
+              </button>
+            )}
+
+            {/* Lookbook / Mood Board button — only if director has lookbook items */}
+            {lookbookItems.length > 0 && (
+              <button
+                onClick={() => openPanel("lookbook")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "lookbook"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <Palette size={10} />
+                Lookbook
+              </button>
+            )}
 
             {/* Treatment Examples button */}
             {treatmentSamples.length > 0 && (
@@ -1466,7 +1523,196 @@ export function ScreeningCarousel({
             )}
           </div>
         </div>
+
+        {/* ─── FRAME GRABS PANEL ─────────────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#0e0e0e] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "framegrabs" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "80vh" }}
+        >
+          <div
+            className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "80vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <div className="mb-8">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                {director.name}
+              </p>
+              <h3 className="text-xl font-light text-white/80 tracking-tight">
+                Frame Grabs
+              </h3>
+              <p className="text-[12px] text-white/25 mt-1.5">
+                {totalFrameGrabs} curated stills across {Object.keys(frameGrabsMap).filter(k => frameGrabsMap[k].length > 0).length} projects
+              </p>
+            </div>
+
+            {/* Frame grabs grouped by project */}
+            <div className="space-y-10">
+              {items.map((item) => {
+                const grabs = frameGrabsMap[item.project.id];
+                if (!grabs || grabs.length === 0) return null;
+                return (
+                  <div key={item.project.id}>
+                    {/* Project label */}
+                    <div className="flex items-baseline gap-3 mb-4">
+                      <p className="text-[13px] text-white/50 font-light">
+                        {item.project.title}
+                      </p>
+                      {item.project.brand && (
+                        <p className="text-[10px] text-white/20">
+                          {item.project.brand}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Stills grid — 3 columns, cinematic ratio */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {grabs.map((fg) => (
+                        <button
+                          key={fg.id}
+                          onClick={() => setLightboxImage(fg.imageUrl)}
+                          className="group relative aspect-[16/9] rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.04] hover:border-white/[0.12] transition-all"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={fg.imageUrl}
+                            alt={fg.caption || `Frame grab from ${item.project.title}`}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                            loading="lazy"
+                          />
+                          {/* Hover overlay with caption */}
+                          {fg.caption && (
+                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-[10px] text-white/70 leading-relaxed">
+                                {fg.caption}
+                              </p>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* ─── LOOKBOOK / MOOD BOARD PANEL ────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "lookbook" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "85vh" }}
+        >
+          <div
+            className="max-w-5xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "85vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <div className="mb-8">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                {director.name}
+              </p>
+              <h3 className="text-xl font-light text-white/80 tracking-tight">
+                Visual World
+              </h3>
+              <p className="text-[12px] text-white/25 mt-1.5 max-w-lg">
+                Influences, references, and aesthetic thinking beyond personal work
+              </p>
+            </div>
+
+            {/* Masonry-style lookbook grid */}
+            <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
+              {lookbookItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setLightboxImage(item.imageUrl)}
+                  className="group relative w-full rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.04] hover:border-white/[0.12] transition-all break-inside-avoid block"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.imageUrl}
+                    alt={item.caption || "Lookbook reference"}
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    loading="lazy"
+                  />
+                  {/* Hover overlay with caption + source */}
+                  {(item.caption || item.source) && (
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 pt-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {item.caption && (
+                        <p className="text-[11px] text-white/70 leading-relaxed">
+                          {item.caption}
+                        </p>
+                      )}
+                      {item.source && (
+                        <p className="text-[9px] text-white/30 mt-1 italic">
+                          {item.source}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {lookbookItems.length === 0 && (
+              <p className="text-[13px] text-white/20 text-center py-12">
+                No lookbook items available for this director yet.
+              </p>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* ═══════════════════════════════════════════════════════
+          IMAGE LIGHTBOX — Full-screen view for frame grabs & lookbook
+         ═══════════════════════════════════════════════════════ */}
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center cursor-zoom-out"
+          onClick={() => setLightboxImage(null)}
+        >
+          <button
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-6 right-6 p-3 rounded-full hover:bg-white/5 transition-colors z-10"
+          >
+            <X size={20} className="text-white/40" />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightboxImage}
+            alt="Enlarged view"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+          />
+        </div>
+      )}
     </div>
   );
 }

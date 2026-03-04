@@ -123,6 +123,44 @@ export default async function ScreeningPage({
       })
     : [];
 
+  // Frame grabs per project in this reel (for "Frame Grabs" gallery panel)
+  const frameGrabsByProject = link
+    ? await prisma.frameGrab.findMany({
+        where: { projectId: { in: reelProjectIds } },
+        select: {
+          id: true,
+          projectId: true,
+          imageUrl: true,
+          caption: true,
+          sortOrder: true,
+        },
+        orderBy: { sortOrder: "asc" },
+      })
+    : [];
+
+  // Group frame grabs by projectId for easy lookup
+  const frameGrabsMap: Record<string, typeof frameGrabsByProject> = {};
+  for (const fg of frameGrabsByProject) {
+    if (!frameGrabsMap[fg.projectId]) frameGrabsMap[fg.projectId] = [];
+    frameGrabsMap[fg.projectId].push(fg);
+  }
+
+  // Lookbook items for the director (for "Lookbook" mood board panel)
+  const lookbookItems = link
+    ? await prisma.lookbookItem.findMany({
+        where: { directorId: link.reel.director.id },
+        select: {
+          id: true,
+          imageUrl: true,
+          caption: true,
+          source: true,
+          sortOrder: true,
+        },
+        orderBy: { sortOrder: "asc" },
+        take: 24,
+      })
+    : [];
+
   if (!link) return notFound();
 
   if (link.expiresAt && link.expiresAt < new Date()) {
@@ -155,6 +193,8 @@ export default async function ScreeningPage({
         rosterHighlights={rosterHighlights}
         treatmentSamples={treatmentSamples}
         clientBrands={clientBrands}
+        frameGrabsMap={frameGrabsMap}
+        lookbookItems={lookbookItems}
       />
     </ScreeningTracker>
   );
