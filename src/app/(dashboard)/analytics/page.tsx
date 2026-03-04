@@ -231,10 +231,10 @@ export default async function AnalyticsPage({
       </div>
 
       {/* Top stats */}
-      <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-7 mb-6">
+      <div className="data-card p-7 mb-6">
         <div className="flex gap-14">
           <div>
-            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {totalViews}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
@@ -242,7 +242,7 @@ export default async function AnalyticsPage({
             </p>
           </div>
           <div>
-            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {avgDuration ? formatDuration(avgDuration) : "\u2014"}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
@@ -250,7 +250,7 @@ export default async function AnalyticsPage({
             </p>
           </div>
           <div>
-            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {screeningLinks.length}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
@@ -258,7 +258,7 @@ export default async function AnalyticsPage({
             </p>
           </div>
           <div>
-            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {uniqueEmails.size}
             </p>
             <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
@@ -266,7 +266,7 @@ export default async function AnalyticsPage({
             </p>
           </div>
           <div>
-            <p className="text-5xl font-light tracking-tight-3 text-[#1A1A1A]">
+            <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
               {deviceBreakdown["desktop"] || 0} /{" "}
               {deviceBreakdown["mobile"] || 0}
             </p>
@@ -280,7 +280,7 @@ export default async function AnalyticsPage({
       {/* Three-column insights */}
       <div className="grid grid-cols-3 gap-6 mb-6">
         {/* Locations */}
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+        <div className="data-card p-6">
           <div className="flex items-center gap-2 mb-4">
             <MapPin size={12} className="text-[#999]" />
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
@@ -309,7 +309,7 @@ export default async function AnalyticsPage({
         </div>
 
         {/* Agencies */}
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+        <div className="data-card p-6">
           <div className="flex items-center gap-2 mb-4">
             <Building2 size={12} className="text-[#999]" />
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
@@ -337,7 +337,7 @@ export default async function AnalyticsPage({
         </div>
 
         {/* Recent Recipients */}
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+        <div className="data-card p-6">
           <div className="flex items-center gap-2 mb-4">
             <Mail size={12} className="text-[#999]" />
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
@@ -380,7 +380,7 @@ export default async function AnalyticsPage({
       {/* Hot Leads + Top Spots */}
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Hot Leads */}
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+        <div className="data-card p-6">
           <div className="flex items-center gap-2 mb-4">
             <Flame size={12} className="text-amber-500" />
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
@@ -436,7 +436,7 @@ export default async function AnalyticsPage({
         </div>
 
         {/* Top Performing Spots */}
-        <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+        <div className="data-card p-6">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp size={12} className="text-[#999]" />
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
@@ -492,7 +492,7 @@ export default async function AnalyticsPage({
       </div>
 
       {/* View Feed */}
-      <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-7 mb-6">
+      <div className="data-card p-7 mb-6">
         <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-5">
           View Feed
         </h2>
@@ -590,7 +590,7 @@ export default async function AnalyticsPage({
       </div>
 
       {/* Active Screening Links */}
-      <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-7">
+      <div className="data-card p-7">
         <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-5">
           Active Screening Links
         </h2>

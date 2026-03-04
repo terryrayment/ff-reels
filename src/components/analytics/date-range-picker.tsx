@@ -64,10 +64,10 @@ export function DateRangePicker() {
             <button
               key={p.label}
               onClick={() => handlePreset(p.days)}
-              className={`px-2.5 py-1 text-[10px] uppercase tracking-wider rounded-full transition-colors ${
+              className={`px-3 py-1.5 text-[10px] uppercase tracking-wider rounded-full transition-all duration-200 ${
                 isActive
-                  ? "bg-[#1A1A1A] text-white"
-                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-[#F5F5F0]"
+                  ? "bg-[#1A1A1A] text-white font-medium shadow-sm"
+                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-[#F0F0EC]"
               }`}
             >
               {p.label}
@@ -76,21 +76,21 @@ export function DateRangePicker() {
         })}
       </div>
 
-      <span className="text-[#E0E0E0]">|</span>
+      <span className="w-px h-4 bg-[#E8E7E3]" />
 
       {/* Custom date inputs */}
       <input
         type="date"
         value={from}
         onChange={(e) => updateParams("from", e.target.value)}
-        className="text-[11px] text-[#999] bg-transparent border-b border-[#E0E0E0] py-0.5 px-1 focus:outline-none focus:border-[#999] transition-colors"
+        className="text-[11px] text-[#999] bg-[#F7F6F3] border border-[#E8E7E3]/60 rounded-lg py-1.5 px-2.5 focus:outline-none focus:border-[#999] focus:ring-1 focus:ring-[#1A1A1A]/5 transition-all"
       />
       <span className="text-[10px] text-[#ccc]">to</span>
       <input
         type="date"
         value={to}
         onChange={(e) => updateParams("to", e.target.value)}
-        className="text-[11px] text-[#999] bg-transparent border-b border-[#E0E0E0] py-0.5 px-1 focus:outline-none focus:border-[#999] transition-colors"
+        className="text-[11px] text-[#999] bg-[#F7F6F3] border border-[#E8E7E3]/60 rounded-lg py-1.5 px-2.5 focus:outline-none focus:border-[#999] focus:ring-1 focus:ring-[#1A1A1A]/5 transition-all"
       />
     </div>
   );
