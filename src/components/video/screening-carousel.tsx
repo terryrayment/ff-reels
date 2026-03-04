@@ -172,7 +172,22 @@ export function ScreeningCarousel({
   const [shareCopied, setShareCopied] = useState<string | null>(null);
   const [previewTreatment, setPreviewTreatment] = useState<TreatmentSampleInfo | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [hoveredThumb, setHoveredThumb] = useState<{ text: string; x: number; y: number } | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const playerRef = useRef<any>(null);
+
+  // Auto-play first spot after 3 seconds
+  useEffect(() => {
+    if (currentIndex === 0) {
+      const timer = setTimeout(() => {
+        if (playerRef.current) {
+          playerRef.current?.play?.()?.catch?.(() => {});
+        }
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex]);
 
   // Check if any project in the reel has frame grabs
   const hasFrameGrabs = Object.values(frameGrabsMap).some((grabs) => grabs.length > 0);
@@ -614,6 +629,7 @@ export function ScreeningCarousel({
           <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
             {currentProject.muxPlaybackId ? (
               <MuxPlayer
+                ref={playerRef}
                 key={currentProject.id}
                 playbackId={currentProject.muxPlaybackId}
                 streamType="on-demand"
@@ -669,6 +685,20 @@ export function ScreeningCarousel({
         </div>
       </div>
 
+      {/* Floating thumbnail tooltip — rendered outside overflow container */}
+      {hoveredThumb && (
+        <div
+          className="fixed z-50 whitespace-nowrap bg-black/95 px-3 py-1.5 rounded-md text-[10px] text-white/80 pointer-events-none shadow-lg backdrop-blur-sm border border-white/10"
+          style={{
+            left: hoveredThumb.x,
+            top: hoveredThumb.y - 8,
+            transform: "translate(-50%, -100%)",
+          }}
+        >
+          {hoveredThumb.text}
+        </div>
+      )}
+
       {/* Bottom bar: thumbnails + action buttons */}
       <div className="relative z-20 border-t border-white/[0.06] bg-[#080808] flex-shrink-0">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2">
@@ -687,6 +717,13 @@ export function ScreeningCarousel({
                 <button
                   key={item.id}
                   onClick={() => goToSpot(i)}
+                  onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const label = item.project.title + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
+                    setHoveredThumb({ text: label, x: rect.left + rect.width / 2, y: rect.top });
+                  }}
+                  onMouseLeave={() => setHoveredThumb(null)}
+                  title={item.project.title}
                   className={`flex-shrink-0 group relative transition-all duration-300 rounded-[4px] overflow-hidden ${
                     isActive
                       ? "ring-1 ring-white/50 scale-105"
@@ -710,14 +747,6 @@ export function ScreeningCarousel({
                         </span>
                       </div>
                     )}
-                  </div>
-
-                  {/* Title tooltip on hover */}
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 px-2 py-1 rounded text-[9px] text-white/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
-                    {item.project.title}
-                    {item.project.duration
-                      ? ` \u00B7 ${formatDuration(item.project.duration)}`
-                      : ""}
                   </div>
 
                   {/* Active dot */}
