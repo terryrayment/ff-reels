@@ -323,6 +323,12 @@ model IndustryCredit {
   isVerified        Boolean           @default(false)
   isHidden          Boolean           @default(false)
   createdAt         DateTime          @default(now())
+  // Deep credits (AI-extracted)
+  dp                String?           // Director of Photography
+  editor            String?
+  musicCompany      String?
+  executiveProducer String?
+  isAiExtracted     Boolean           @default(false)
 
   // Dedup index
   @@index([brand, campaignName, directorName])

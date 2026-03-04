@@ -10,6 +10,8 @@ export interface ScrapedCredit {
   sourceName: string;
   thumbnailUrl?: string;
   publishedAt?: Date;
+  /** Transient — full article text for AI extraction, never persisted */
+  articleText?: string;
 }
 
 export interface SourceAdapter {

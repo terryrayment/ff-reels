@@ -194,6 +194,7 @@ export class MuseByClio implements SourceAdapter {
         const title = $(el).find("title").text().trim();
         const link = $(el).find("link").text().trim();
         const pubDate = $(el).find("pubDate").text().trim();
+        const contentEncoded = $(el).find("content\\:encoded").text().trim();
 
         if (!title) return;
 
@@ -269,6 +270,7 @@ export class MuseByClio implements SourceAdapter {
           sourceUrl: link || undefined,
           sourceName: "MUSE BY CLIO",
           publishedAt: pubDate ? new Date(pubDate) : undefined,
+          articleText: contentEncoded || undefined,
         });
       });
     } catch (err) {

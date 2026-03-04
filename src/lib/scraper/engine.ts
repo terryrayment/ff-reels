@@ -2,7 +2,9 @@ import { prisma } from "@/lib/db";
 import { ScrapedCredit, SourceAdapter } from "./types";
 import { MuseByClio } from "./sources/rss-muse";
 import { ProdCoNews } from "./sources/prodco-news";
+import { AdweekRss } from "./sources/rss-adweek";
 import { companyTerritory } from "./production-companies";
+import { extractCreditsBatch } from "./ai-extract";
 
 /**
  * Decode common HTML entities that leak through RSS parsing.
@@ -23,16 +25,17 @@ function decodeEntities(s: string): string {
 /**
  * All registered source adapters.
  *
- * Two complementary streams:
- * 1. Muse by Clio RSS — Brand + Agency from structured <category> tags
+ * Three complementary streams:
+ * 1. Muse by Clio RSS — Brand + Agency from <category> tags + article text for AI
  * 2. Production Company News — Director + Prod Co from WordPress APIs/RSS
+ * 3. Adweek RSS — Campaign articles with full page text for AI extraction
  *
- * Together they provide brand, agency, director, and production company.
- * The nightly dedup merges credits that share brand + campaign across sources.
+ * AI enrichment extracts director, prodCo, DP, editor from article text.
  */
 const ADAPTERS: SourceAdapter[] = [
   new MuseByClio(),
   new ProdCoNews(),
+  new AdweekRss(),
 ];
 
 /**
@@ -93,39 +96,116 @@ export interface ScrapeResult {
   totalScraped: number;
   newCredits: number;
   duplicatesSkipped: number;
+  aiEnriched: number;
   errors: string[];
   sourceBreakdown: Record<string, number>;
 }
 
 /**
+ * AI enrichment pass: extract director, prodCo, etc. from article text.
+ * Only processes credits that have articleText and are missing key fields.
+ */
+async function aiEnrichCredits(credits: ScrapedCredit[]): Promise<{ enriched: number }> {
+  // Find credits that have article text but are missing key fields
+  const needsEnrichment = credits.filter(
+    (c) => c.articleText && (!c.directorName || !c.productionCompany),
+  );
+
+  if (needsEnrichment.length === 0) {
+    console.log("[Scraper] AI: No credits need enrichment");
+    return { enriched: 0 };
+  }
+
+  // Cap at 25 to stay within time budget
+  const toProcess = needsEnrichment.slice(0, 25);
+  console.log(`[Scraper] AI: Enriching ${toProcess.length} credits (${needsEnrichment.length} eligible)`);
+
+  const articles = toProcess.map((c) => ({
+    articleHtml: c.articleText!,
+    hints: { brand: c.brand, agency: c.agency },
+  }));
+
+  const results = await extractCreditsBatch(articles, 5);
+
+  let enriched = 0;
+  for (let i = 0; i < results.length; i++) {
+    const extracted = results[i];
+    if (!extracted) continue;
+
+    const credit = toProcess[i];
+
+    // Merge AI-extracted fields into the credit (don't overwrite existing)
+    if (extracted.director && !credit.directorName) {
+      credit.directorName = extracted.director;
+    }
+    if (extracted.productionCompany && !credit.productionCompany) {
+      credit.productionCompany = extracted.productionCompany;
+    }
+    if (extracted.agency && !credit.agency) {
+      credit.agency = extracted.agency;
+    }
+    if (extracted.brand && credit.brand === "Unknown") {
+      credit.brand = extracted.brand;
+    }
+
+    // Store deep credits as custom properties for DB insert
+    (credit as ScrapedCreditWithDeep)._dp = extracted.dp;
+    (credit as ScrapedCreditWithDeep)._editor = extracted.editor;
+    (credit as ScrapedCreditWithDeep)._musicCompany = extracted.musicCompany;
+    (credit as ScrapedCreditWithDeep)._executiveProducer = extracted.executiveProducer;
+    (credit as ScrapedCreditWithDeep)._isAiExtracted = true;
+
+    enriched++;
+  }
+
+  console.log(`[Scraper] AI: Enriched ${enriched}/${toProcess.length} credits`);
+  return { enriched };
+}
+
+/** Extended type for passing deep credits through the pipeline */
+interface ScrapedCreditWithDeep extends ScrapedCredit {
+  _dp?: string;
+  _editor?: string;
+  _musicCompany?: string;
+  _executiveProducer?: string;
+  _isAiExtracted?: boolean;
+}
+
+/**
  * Run the full nightly scrape across all sources.
- * Deduplicates results and inserts new credits into the database.
+ * Deduplicates results, runs AI enrichment, and inserts new credits.
  */
 export async function runNightlyScrape(): Promise<ScrapeResult> {
   const result: ScrapeResult = {
     totalScraped: 0,
     newCredits: 0,
     duplicatesSkipped: 0,
+    aiEnriched: 0,
     errors: [],
     sourceBreakdown: {},
   };
 
   console.log(`[Scraper] Starting nightly scrape at ${new Date().toISOString()}`);
-  console.log(`[Scraper] Running ${ADAPTERS.length} source adapters...`);
+  console.log(`[Scraper] Running ${ADAPTERS.length} source adapters in parallel...`);
 
-  // Run all adapters
-  const allCredits: ScrapedCredit[] = [];
-
-  for (const adapter of ADAPTERS) {
-    try {
+  // Run all adapters in parallel
+  const adapterResults = await Promise.allSettled(
+    ADAPTERS.map(async (adapter) => {
       console.log(`[Scraper] Running ${adapter.name}...`);
       const credits = await adapter.scrape();
       console.log(`[Scraper] ${adapter.name}: found ${credits.length} credits`);
+      return { name: adapter.name, credits };
+    }),
+  );
 
-      result.sourceBreakdown[adapter.name] = credits.length;
-      allCredits.push(...credits);
-    } catch (err) {
-      const msg = `${adapter.name} failed: ${err}`;
+  const allCredits: ScrapedCredit[] = [];
+
+  for (const res of adapterResults) {
+    if (res.status === "fulfilled") {
+      result.sourceBreakdown[res.value.name] = res.value.credits.length;
+      allCredits.push(...res.value.credits);
+    } else {
+      const msg = `Adapter failed: ${res.reason}`;
       console.error(`[Scraper] ${msg}`);
       result.errors.push(msg);
     }
@@ -137,6 +217,15 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
   // Deduplicate
   const unique = deduplicateCredits(allCredits);
   console.log(`[Scraper] After dedup: ${unique.length} unique credits`);
+
+  // AI enrichment pass
+  try {
+    const aiResult = await aiEnrichCredits(unique);
+    result.aiEnriched = aiResult.enriched;
+  } catch (err) {
+    console.error("[Scraper] AI enrichment failed:", err);
+    result.errors.push(`AI enrichment failed: ${err}`);
+  }
 
   // Insert new credits (skip existing)
   for (const credit of unique) {
@@ -164,6 +253,8 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
         territory = companyTerritory(credit.productionCompany) ?? undefined;
       }
 
+      const deep = credit as ScrapedCreditWithDeep;
+
       await prisma.industryCredit.create({
         data: {
           brand: decodeEntities(credit.brand),
@@ -177,6 +268,12 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
           sourceName: credit.sourceName,
           thumbnailUrl: credit.thumbnailUrl,
           publishedAt: credit.publishedAt,
+          // Deep credits (AI-extracted)
+          dp: deep._dp,
+          editor: deep._editor,
+          musicCompany: deep._musicCompany,
+          executiveProducer: deep._executiveProducer,
+          isAiExtracted: deep._isAiExtracted || false,
         },
       });
 
@@ -187,7 +284,7 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
   }
 
   console.log(
-    `[Scraper] Complete: ${result.newCredits} new, ${result.duplicatesSkipped} dupes, ${result.errors.length} errors`
+    `[Scraper] Complete: ${result.newCredits} new, ${result.aiEnriched} AI-enriched, ${result.duplicatesSkipped} dupes, ${result.errors.length} errors`,
   );
 
   return result;
