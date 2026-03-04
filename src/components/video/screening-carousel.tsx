@@ -15,7 +15,7 @@ import {
   ExternalLink,
   Download,
   FileText,
-  Image,
+  Image as ImageIcon,
   Palette,
 } from "lucide-react";
 
@@ -743,7 +743,7 @@ export function ScreeningCarousel({
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
                 }`}
               >
-                <Image size={10} />
+                <ImageIcon size={10} />
                 Stills
               </button>
             )}

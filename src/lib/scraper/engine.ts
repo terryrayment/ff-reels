@@ -128,6 +128,14 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
       // Skip entries that are just dashes or empty
       if (!credit.brand || credit.brand === "—") continue;
 
+      // Data quality: reject entries with HTML fragments, tracking pixels, or absurd lengths
+      if (credit.brand.includes("<") || credit.brand.includes("src=") || credit.brand.length > 100) continue;
+      if (credit.campaignName && (credit.campaignName.includes("<") || credit.campaignName.length > 150)) continue;
+      if (credit.directorName && (credit.directorName.includes("<") || credit.directorName.length > 80)) continue;
+      if (credit.agency && (credit.agency.includes("<") || credit.agency.length > 100)) continue;
+      // Skip generic/useless entries
+      if (["recent work", "latest work", "our work", "work", "projects"].includes(credit.brand.toLowerCase())) continue;
+
       const exists = await creditExists(credit);
       if (exists) {
         result.duplicatesSkipped++;

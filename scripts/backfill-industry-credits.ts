@@ -171,17 +171,19 @@ const CREDITS: CreditEntry[] = [
 ];
 
 // ── DATE RANGES for spreading credits ────────────────────────
+// Backdate from Jan 1, 2026 through today (Mar 3, 2026) → ~62 days
+// 171 credits ÷ 62 days ≈ 2.8/day — realistic daily volume
 const DATE_RANGES = [
-  // November 2025
-  { start: new Date("2025-11-01"), end: new Date("2025-11-30"), count: 25 },
-  // December 2025
-  { start: new Date("2025-12-01"), end: new Date("2025-12-31"), count: 25 },
-  // January 2026
-  { start: new Date("2026-01-01"), end: new Date("2026-01-31"), count: 25 },
-  // February 2026
-  { start: new Date("2026-02-01"), end: new Date("2026-02-28"), count: 25 },
-  // March 2026 (so far)
-  { start: new Date("2026-03-01"), end: new Date("2026-03-03"), count: 5 },
+  // January 2026 (first 2 weeks — CES / post-holiday launches)
+  { start: new Date("2026-01-01"), end: new Date("2026-01-15"), count: 25 },
+  // January 2026 (second half — awards season ramp-up)
+  { start: new Date("2026-01-16"), end: new Date("2026-01-31"), count: 25 },
+  // February 2026 (first 2 weeks — pre-Super Bowl frenzy)
+  { start: new Date("2026-02-01"), end: new Date("2026-02-14"), count: 30 },
+  // February 2026 (Super Bowl + post-game — peak season)
+  { start: new Date("2026-02-15"), end: new Date("2026-02-28"), count: 35 },
+  // March 2026 (first 3 days)
+  { start: new Date("2026-03-01"), end: new Date("2026-03-03"), count: 10 },
 ];
 
 async function backfill() {
@@ -246,7 +248,7 @@ async function backfill() {
   if (remaining.length > 0) {
     for (const credit of remaining) {
       const publishDate = randomDate(
-        new Date("2025-11-01"),
+        new Date("2026-01-01"),
         new Date("2026-03-03")
       );
 
