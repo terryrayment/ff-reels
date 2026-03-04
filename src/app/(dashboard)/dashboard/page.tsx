@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { timeAgo, formatDuration } from "@/lib/utils";
 import Link from "next/link";
-import { ArrowRight, Flame, Trophy, Eye, TrendingUp, Zap } from "lucide-react";
+import { ArrowRight, Flame, Trophy, Eye, TrendingUp } from "lucide-react";
 import { ComposeUpdate } from "@/components/dashboard/compose-update";
 import { SignalFeed } from "@/components/dashboard/signal-feed";
 import { MyActivityToggle } from "@/components/dashboard/my-activity-toggle";
@@ -258,7 +258,7 @@ export default async function DashboardPage({
 
   const weeklyTotalSeconds = weeklyWatchTime._sum.totalDuration || 0;
 
-  const stats =
+  const rosterStats =
     isAdmin && !showMine
       ? [
           { label: "Directors", value: directorCount, href: "/directors" },
@@ -272,6 +272,50 @@ export default async function DashboardPage({
         ];
 
   const roleLabel = isAdmin ? "Producer" : "Sales Rep";
+  const currentUserName = session.user.name || "";
+
+  // Group recent views by director+recipient to deduplicate
+  const groupedViews: {
+    key: string;
+    recipientName: string;
+    directorName: string;
+    company: string;
+    sentBy: string | null;
+    count: number;
+    lastSeen: Date;
+    linkId: string;
+  }[] = [];
+
+  const viewGroups = new Map<string, (typeof groupedViews)[0]>();
+  for (const view of recentViews) {
+    const recipient =
+      view.screeningLink.recipientName || view.viewerName || "Anonymous";
+    const director = view.screeningLink.reel.director.name;
+    const key = `${recipient}::${director}`;
+    const existing = viewGroups.get(key);
+    if (existing) {
+      existing.count++;
+      if (view.startedAt > existing.lastSeen) {
+        existing.lastSeen = view.startedAt;
+      }
+    } else {
+      const entry = {
+        key,
+        recipientName: recipient,
+        directorName: director,
+        company:
+          view.screeningLink.recipientCompany ||
+          view.screeningLink.recipientEmail ||
+          "",
+        sentBy: view.screeningLink.reel.createdBy?.name || null,
+        count: 1,
+        lastSeen: view.startedAt,
+        linkId: view.screeningLink.id,
+      };
+      viewGroups.set(key, entry);
+      groupedViews.push(entry);
+    }
+  }
 
   return (
     <div>
@@ -291,140 +335,132 @@ export default async function DashboardPage({
           <MyActivityToggle />
           <Link
             href="/reels/build"
-            className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#1A1A1A] text-white hover:bg-[#333] transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.12)]"
+            className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all duration-300"
           >
-            <span className="text-[13px] font-medium tracking-wide">
+            <span className="text-[12px] font-medium tracking-wide">
               Build Reel
             </span>
             <ArrowRight
-              size={14}
+              size={13}
               className="group-hover:translate-x-0.5 transition-transform duration-200"
             />
           </Link>
         </div>
       </div>
 
-      {/* Weekly Digest Banner */}
-      <div className="rounded-2xl bg-gradient-to-br from-[#1A1A1A] via-[#2A2A2A] to-[#1A1A1A] text-white p-8 mb-8 shadow-[0_4px_12px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)]">
-        <div className="flex items-center gap-2 mb-4">
-          <Zap size={12} className="text-amber-400" />
-          <h2 className="text-[10px] uppercase tracking-[0.15em] text-white/60 font-medium">
-            This Week
-          </h2>
-        </div>
-        <div className="flex items-end gap-12">
-          <div>
-            <p className="text-4xl font-light tracking-tight-3 tabular-nums">
-              {weeklyViewCount}
-            </p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-white/50">
-              Views
-            </p>
-          </div>
-          <div>
-            <p className="text-4xl font-light tracking-tight-3 tabular-nums">
-              {weeklyTotalSeconds > 0
-                ? formatDuration(weeklyTotalSeconds)
-                : "\u2014"}
-            </p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-white/50">
-              Watch Time
-            </p>
-          </div>
-          <div>
-            <p className="text-4xl font-light tracking-tight-3 tabular-nums">
-              {weeklyNewReels}
-            </p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-white/50">
-              New Reels
-            </p>
-          </div>
-          {weeklyBestReel && (
-            <div className="ml-auto text-right">
-              <p className="text-[10px] uppercase tracking-[0.15em] text-white/50 mb-1">
-                Top Reel
+      {/* Unified Stats Card — weekly metrics + roster counts */}
+      <div className="data-card p-8 mb-8">
+        <div className="flex items-end justify-between">
+          {/* Weekly pulse — left side */}
+          <div className="flex items-end gap-10">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.15em] text-[#aaa] mb-2">
+                This Week
               </p>
-              <p className="text-[14px] font-medium text-white/90">
-                {weeklyBestReel.director}
+              <p className="text-3xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A]">
+                {weeklyViewCount}
               </p>
-              <p className="text-[11px] text-white/40">
-                {weeklyBestReel.title} &middot; {weeklyBestReel.count} view
-                {weeklyBestReel.count !== 1 ? "s" : ""}
+              <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#bbb]">
+                Views
               </p>
             </div>
-          )}
-        </div>
-      </div>
-
-      {/* Stats row — card container */}
-      <div className="data-card p-8 mb-8">
-        <div className="flex gap-14">
-          {stats.map((stat) => (
-            <Link key={stat.label} href={stat.href} className="group">
-              <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors">
-                {stat.value}
+            <div>
+              <p className="text-3xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A]">
+                {weeklyTotalSeconds > 0
+                  ? formatDuration(weeklyTotalSeconds)
+                  : "\u2014"}
               </p>
-              <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999] group-hover:text-[#666] transition-colors">
-                {stat.label}
+              <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#bbb]">
+                Watch Time
               </p>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Hot Right Now */}
-      {hotRightNow.length > 0 && (
-        <div className="data-card !border-amber-200/40 p-8 mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
-            </span>
-            <h2 className="text-[10px] uppercase tracking-[0.15em] text-amber-700 font-medium">
-              Hot Right Now
-            </h2>
-            <span className="text-[10px] text-amber-500/60 ml-1">
-              {hotRightNow.length} active viewer
-              {hotRightNow.length !== 1 ? "s" : ""}
-            </span>
+            </div>
+            <div>
+              <p className="text-3xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A]">
+                {weeklyNewReels}
+              </p>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-[#bbb]">
+                New Reels
+              </p>
+            </div>
+            {weeklyBestReel && (
+              <div className="pl-8 ml-2">
+                <p className="text-[10px] uppercase tracking-[0.15em] text-[#bbb] mb-1">
+                  Top Reel
+                </p>
+                <p className="text-[13px] font-medium text-[#1A1A1A]">
+                  {weeklyBestReel.director}
+                </p>
+                <p className="text-[11px] text-[#bbb]">
+                  {weeklyBestReel.title} &middot; {weeklyBestReel.count} view
+                  {weeklyBestReel.count !== 1 ? "s" : ""}
+                </p>
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            {hotRightNow.map((view) => (
-              <Link
-                key={view.id}
-                href={`/analytics/link/${view.screeningLink.id}`}
-                className="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-amber-50/80 border border-amber-100 hover:border-amber-200 transition-all"
-              >
-                <Flame size={12} className="text-amber-500 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-[12px] text-[#1A1A1A] truncate font-medium group-hover:text-black transition-colors">
-                    {view.screeningLink.recipientName ||
-                      view.viewerName ||
-                      "Anonymous"}
-                  </p>
-                  <p className="text-[10px] text-[#999] truncate">
-                    {view.screeningLink.reel.director.name} &middot;{" "}
-                    {timeAgo(view.startedAt)}
-                  </p>
-                </div>
+          {/* Roster counts — right side, compact */}
+          <div className="flex items-end gap-8">
+            {rosterStats.map((stat) => (
+              <Link key={stat.label} href={stat.href} className="group text-right">
+                <p className="text-2xl font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors">
+                  {stat.value}
+                </p>
+                <p className="mt-0.5 text-[9px] uppercase tracking-[0.15em] text-[#bbb] group-hover:text-[#999] transition-colors">
+                  {stat.label}
+                </p>
               </Link>
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Hot Right Now — compact inline */}
+      {hotRightNow.length > 0 && (
+        <div className="data-card px-8 py-5 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.15em] text-amber-700 font-medium">
+                Live
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {hotRightNow.map((view) => (
+                <Link
+                  key={view.id}
+                  href={`/analytics/link/${view.screeningLink.id}`}
+                  className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50/60 hover:bg-amber-50 transition-all"
+                >
+                  <Flame size={10} className="text-amber-500 flex-shrink-0" />
+                  <span className="text-[11px] text-[#1A1A1A] font-medium group-hover:text-black transition-colors">
+                    {view.screeningLink.recipientName ||
+                      view.viewerName ||
+                      "Anonymous"}
+                  </span>
+                  <span className="text-[10px] text-[#bbb]">
+                    {view.screeningLink.reel.director.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* Two-column layout */}
+      {/* Two-column layout — 58/42 split */}
       <div className="flex gap-8">
-        {/* LEFT COLUMN */}
+        {/* LEFT COLUMN — Activity */}
         <div
           className="flex-1 min-w-0 flex flex-col gap-8"
-          style={{ flexBasis: "62%" }}
+          style={{ flexBasis: "58%" }}
         >
-          {/* Recent Views — with Sent By attribution */}
+          {/* Recent Views — grouped, no dividers */}
           <div className="data-card p-8">
-            <div className="flex items-baseline justify-between mb-5">
-              <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
+            <div className="flex items-baseline justify-between mb-6">
+              <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
                 Recent Views
               </h2>
               <Link
@@ -435,156 +471,76 @@ export default async function DashboardPage({
               </Link>
             </div>
 
-            {recentViews.length > 0 ? (
-              <div>
-                {recentViews.map((view, i) => (
+            {groupedViews.length > 0 ? (
+              <div className="space-y-4">
+                {groupedViews.slice(0, 6).map((gv) => (
                   <Link
-                    key={view.id}
-                    href={`/analytics/link/${view.screeningLink.id}`}
-                    className={`flex items-center justify-between py-3 group ${
-                      i < recentViews.length - 1
-                        ? "border-b border-[#F0F0EC]/50"
-                        : ""
-                    }`}
+                    key={gv.key}
+                    href={`/analytics/link/${gv.linkId}`}
+                    className="flex items-center justify-between group"
                   >
                     <div className="min-w-0">
                       <p className="text-[13px] text-[#1A1A1A] truncate">
                         <span className="font-medium group-hover:text-black transition-colors">
-                          {view.screeningLink.recipientName || "Anonymous"}
+                          {gv.recipientName}
                         </span>
-                        <span className="text-[#999]"> viewed </span>
+                        <span className="text-[#aaa]"> viewed </span>
                         <span className="font-medium">
-                          {view.screeningLink.reel.director.name}
+                          {gv.directorName}
                         </span>
-                      </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <p className="text-[11px] text-[#ccc] truncate">
-                          {view.screeningLink.recipientCompany ||
-                            view.screeningLink.recipientEmail ||
-                            "\u2014"}
-                        </p>
-                        {view.screeningLink.reel.createdBy && (
-                          <span className="text-[10px] text-[#bbb] flex-shrink-0">
-                            sent by{" "}
-                            {view.screeningLink.reel.createdBy.name ||
-                              "Unknown"}
+                        {gv.count > 1 && (
+                          <span className="text-[11px] text-[#bbb] ml-1.5">
+                            {gv.count}x
                           </span>
                         )}
-                      </div>
+                      </p>
+                      <p className="text-[11px] text-[#ccc] truncate mt-0.5">
+                        {gv.company}
+                        {gv.sentBy &&
+                          gv.sentBy !== currentUserName &&
+                          ` · sent by ${gv.sentBy}`}
+                      </p>
                     </div>
                     <p className="text-[10px] uppercase tracking-[0.1em] text-[#ccc] flex-shrink-0 ml-6">
-                      {timeAgo(view.startedAt)}
+                      {timeAgo(gv.lastSeen)}
                     </p>
                   </Link>
                 ))}
               </div>
             ) : (
-              <p className="text-[13px] text-[#999] py-6">
-                No views yet.{" "}
-                {isAdmin
-                  ? "Create and send a reel to start tracking."
-                  : "Send a screening link to start tracking views."}
+              <p className="text-[13px] text-[#aaa] py-8 text-center">
+                No views yet. Send a screening link to start tracking.
               </p>
             )}
           </div>
 
-          {/* Director Scorecards */}
-          {scorecards.length > 0 && (
-            <div className="data-card p-8">
-              <div className="flex items-baseline justify-between mb-5">
-                <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
-                  Director Scorecards
-                </h2>
-                <Link
-                  href="/directors"
-                  className="text-[10px] uppercase tracking-[0.15em] text-[#ccc] hover:text-[#999] transition-colors"
-                >
-                  All
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                {scorecards.map((d, i) => (
-                  <Link
-                    key={d.id}
-                    href={`/directors/${d.slug}`}
-                    className="group relative rounded-xl border border-white/80 bg-white/50 p-5 hover:bg-white/70 hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-300"
-                  >
-                    {i === 0 && d.totalViews > 0 && (
-                      <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center">
-                        <Trophy size={10} className="text-white" />
-                      </div>
-                    )}
-                    <div className="flex items-center gap-3 mb-3">
-                      {d.headshotUrl ? (
-                        <img
-                          src={d.headshotUrl}
-                          alt={d.name}
-                          className="w-9 h-9 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-9 h-9 rounded-full bg-[#F0F0EC] flex items-center justify-center text-[11px] font-medium text-[#999]">
-                          {d.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .slice(0, 2)}
-                        </div>
-                      )}
-                      <p className="text-[13px] font-medium text-[#1A1A1A] truncate group-hover:text-black transition-colors">
-                        {d.name}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-4 text-[10px] text-[#999]">
-                      <span className="flex items-center gap-1">
-                        <Eye size={9} />
-                        {d.totalViews}
-                      </span>
-                      <span>{d.spotCount} spots</span>
-                      <span>{d.reelCount} reels</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Industry Pulse — production / directors / production companies */}
+          {/* Industry Pulse */}
           <div className="data-card p-8">
-            <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
+            <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium mb-6">
               Industry Pulse
             </h2>
 
             {industryFeed.length > 0 ? (
-              <div className="max-h-[420px] overflow-y-auto pr-2">
-                {industryFeed.map((credit, i) => (
-                  <div
-                    key={credit.id}
-                    className={`py-3.5 ${
-                      i < industryFeed.length - 1
-                        ? "border-b border-[#F0F0EC]/50/60"
-                        : ""
-                    }`}
-                  >
-                    {/* Director name — primary line */}
+              <div className="max-h-[380px] overflow-y-auto pr-2 space-y-4">
+                {industryFeed.map((credit) => (
+                  <div key={credit.id}>
                     {credit.directorName && (
                       <p className="text-[13px] font-medium text-[#1A1A1A]">
                         {credit.directorName}
                       </p>
                     )}
-                    {/* Production company + brand context */}
-                    <p className="text-[12px] text-[#777] mt-0.5 leading-relaxed">
+                    <p className="text-[12px] text-[#888] mt-0.5 leading-relaxed">
                       {[
                         credit.productionCompany,
                         credit.brand &&
                           (credit.campaignName
-                            ? `${credit.brand} — "${credit.campaignName}"`
+                            ? `${credit.brand} \u2014 \u201C${credit.campaignName}\u201D`
                             : credit.brand),
                       ]
                         .filter(Boolean)
-                        .join(" · ")}
+                        .join(" \u00B7 ")}
                     </p>
-                    <div className="flex items-center gap-3 mt-1.5">
+                    <div className="flex items-center gap-3 mt-1">
                       {credit.territory && (
                         <span className="text-[9px] font-medium text-[#bbb] uppercase tracking-[0.12em]">
                           {credit.territory}
@@ -596,7 +552,7 @@ export default async function DashboardPage({
                         </span>
                       )}
                       {credit.sourceName && (
-                        <span className="text-[10px] text-[#ccc] tracking-wider">
+                        <span className="text-[10px] text-[#ccc]">
                           via {credit.sourceName}
                         </span>
                       )}
@@ -608,36 +564,92 @@ export default async function DashboardPage({
                 ))}
               </div>
             ) : (
-              <p className="text-[13px] text-[#999] py-6">
+              <p className="text-[13px] text-[#aaa] py-8 text-center">
                 Industry feed populates nightly. Check back tomorrow.
               </p>
             )}
           </div>
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="flex-shrink-0" style={{ flexBasis: "35%" }}>
+        {/* RIGHT COLUMN — Directors + Leaderboard + Signal */}
+        <div className="flex-shrink-0" style={{ flexBasis: "38%" }}>
           <div className="flex flex-col gap-8">
-            {/* Reel Performance Leaderboard */}
+            {/* Director Scorecards — moved to right column */}
+            {scorecards.length > 0 && (
+              <div className="data-card p-8">
+                <div className="flex items-baseline justify-between mb-6">
+                  <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
+                    Directors
+                  </h2>
+                  <Link
+                    href="/directors"
+                    className="text-[10px] uppercase tracking-[0.15em] text-[#ccc] hover:text-[#999] transition-colors"
+                  >
+                    All
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {scorecards.map((d, i) => (
+                    <Link
+                      key={d.id}
+                      href={`/directors/${d.slug}`}
+                      className="group relative rounded-xl bg-[#F7F6F3]/60 p-4 hover:bg-[#F0F0EC]/60 transition-all duration-300"
+                    >
+                      {i === 0 && d.totalViews > 0 && (
+                        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center">
+                          <Trophy size={10} className="text-white" />
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2.5 mb-2">
+                        {d.headshotUrl ? (
+                          <img
+                            src={d.headshotUrl}
+                            alt={d.name}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[10px] font-medium text-[#999]">
+                            {d.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)}
+                          </div>
+                        )}
+                        <p className="text-[12px] font-medium text-[#1A1A1A] truncate group-hover:text-black transition-colors">
+                          {d.name}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 text-[9px] text-[#999]">
+                        <span className="flex items-center gap-1">
+                          <Eye size={8} />
+                          {d.totalViews}
+                        </span>
+                        <span>{d.spotCount} spots</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Reel Leaderboard */}
             {leaderboard.length > 0 && (
               <div className="data-card p-8">
-                <div className="flex items-center gap-2 mb-5">
-                  <TrendingUp size={12} className="text-[#999]" />
-                  <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
+                <div className="flex items-center gap-2 mb-6">
+                  <TrendingUp size={11} className="text-[#aaa]" />
+                  <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
                     Reel Leaderboard
                   </h2>
                 </div>
 
-                <div>
+                <div className="space-y-3">
                   {leaderboard.map((reel, i) => (
                     <Link
                       key={reel.id}
                       href={`/reels/${reel.id}`}
-                      className={`flex items-center gap-3 py-2.5 group ${
-                        i < leaderboard.length - 1
-                          ? "border-b border-[#F0F0EC]/50"
-                          : ""
-                      }`}
+                      className="flex items-center gap-3 group"
                     >
                       <span
                         className={`text-[11px] w-5 text-right tabular-nums flex-shrink-0 font-medium ${
@@ -656,17 +668,11 @@ export default async function DashboardPage({
                         <p className="text-[12px] text-[#1A1A1A] truncate group-hover:text-black transition-colors font-medium">
                           {reel.directorName}
                         </p>
-                        <p className="text-[10px] text-[#999] truncate">
+                        <p className="text-[10px] text-[#bbb] truncate">
                           {reel.title}
-                          {reel.sentBy && (
-                            <span className="text-[#ccc]">
-                              {" "}
-                              &middot; sent by {reel.sentBy}
-                            </span>
-                          )}
                         </p>
                       </div>
-                      <span className="text-[11px] text-[#999] tabular-nums flex items-center gap-1 flex-shrink-0">
+                      <span className="text-[11px] text-[#aaa] tabular-nums flex items-center gap-1 flex-shrink-0">
                         <Eye size={9} />
                         {reel.totalViews}
                       </span>
@@ -676,16 +682,14 @@ export default async function DashboardPage({
               </div>
             )}
 
-            {/* Signal — card container */}
+            {/* Signal */}
             <div className="data-card p-8 sticky top-8">
-              <h2 className="text-lg font-medium tracking-tight-2 text-[#1A1A1A] mb-6">
+              <h2 className="text-[15px] font-medium tracking-tight-2 text-[#1A1A1A] mb-6">
                 Signal
               </h2>
 
-              {/* Compose */}
               <ComposeUpdate />
 
-              {/* Updates feed — client component with edit/delete */}
               <SignalFeed
                 updates={updates.map((u) => ({
                   ...u,
