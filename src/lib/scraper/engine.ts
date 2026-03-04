@@ -1,22 +1,36 @@
 import { prisma } from "@/lib/db";
 import { ScrapedCredit, SourceAdapter } from "./types";
-import { ShotsAdapter } from "./sources/shots";
-import { ShootOnlineAdapter } from "./sources/shoot-online";
-import { SourceCreativeAdapter } from "./sources/source-creative";
-import { AdsOfTheWorldAdapter } from "./sources/ads-of-the-world";
-import { ProductionCompanySitesAdapter } from "./sources/production-company-sites";
+import { MuseByClio } from "./sources/rss-muse";
 import { companyTerritory } from "./production-companies";
 
 /**
+ * Decode common HTML entities that leak through RSS parsing.
+ */
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&#039;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8216;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"');
+}
+
+/**
  * All registered source adapters.
- * Add new sources here to include them in the nightly scrape.
+ *
+ * APPROACH: RSS feeds from real industry publications.
+ * - Muse by Clio: Best structured data — brand + agency in <category> tags,
+ *   real publish dates, and US-only filtering.
+ *
+ * SHOOT Online RSS tested but produces mostly industry news (personnel moves,
+ * reviews, tech) — not structured commercial credits. Disabled for now.
  */
 const ADAPTERS: SourceAdapter[] = [
-  new ShotsAdapter(),
-  new ShootOnlineAdapter(),
-  new SourceCreativeAdapter(),
-  new AdsOfTheWorldAdapter(),
-  new ProductionCompanySitesAdapter(),
+  new MuseByClio(),
 ];
 
 /**
@@ -150,9 +164,9 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
 
       await prisma.industryCredit.create({
         data: {
-          brand: credit.brand,
-          campaignName: credit.campaignName,
-          agency: credit.agency,
+          brand: decodeEntities(credit.brand),
+          campaignName: credit.campaignName ? decodeEntities(credit.campaignName) : undefined,
+          agency: credit.agency ? decodeEntities(credit.agency) : undefined,
           productionCompany: credit.productionCompany,
           directorName: credit.directorName,
           category: credit.category,
