@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
+import { hapticImpact, hapticSelection, hapticNotification, nativeShare } from "@/lib/native";
 
 /* ──────────────────────────────────────────────── Types ─── */
 
@@ -143,6 +144,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
 
   /* ── Actions ── */
   const selectDirector = (id: string) => {
+    hapticImpact("medium");
     setSelectedDirectorId(id);
     setSelectedIds([]);
     setSpotSearch("");
@@ -150,12 +152,14 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
   };
 
   const toggleSpot = (id: string) => {
+    hapticSelection();
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
   const removeSpot = (id: string) => {
+    hapticImpact("light");
     setSelectedIds((prev) => prev.filter((x) => x !== id));
   };
 
@@ -191,6 +195,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
         setScreeningUrl(reel.screeningUrl);
         setReelId(reel.id);
         setStep("done");
+        hapticNotification("success");
       }
     } finally {
       setSaving(false);
@@ -204,19 +209,15 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
   };
 
   const handleNativeShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${selectedDirector?.name} Reel`,
-          text: `Check out this director reel from Friends & Family`,
-          url: screeningUrl,
-        });
-      } catch {
-        // User cancelled or share failed — fall back to copy
-        handleCopy();
-      }
-    } else {
-      handleCopy();
+    hapticImpact("medium");
+    const shared = await nativeShare({
+      title: `${selectedDirector?.name} Reel`,
+      text: `Check out this director reel from Friends & Family`,
+      url: screeningUrl,
+    });
+    if (shared) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
