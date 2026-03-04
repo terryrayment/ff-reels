@@ -218,7 +218,7 @@ export default async function AnalyticsPage({
       {/* Header + Date Filter */}
       <div className="flex items-start justify-between mb-10">
         <div>
-          <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
+          <h1 className="text-[32px] font-extralight tracking-tight-3 text-[#1A1A1A]">
             Analytics
           </h1>
           <p className="text-[11px] uppercase tracking-[0.15em] text-[#999] mt-1.5">
@@ -231,7 +231,7 @@ export default async function AnalyticsPage({
       </div>
 
       {/* Top stats */}
-      <div className="data-card p-7 mb-6">
+      <div className="data-card p-8 mb-8">
         <div className="flex gap-14">
           <div>
             <p className="text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
@@ -278,7 +278,7 @@ export default async function AnalyticsPage({
       </div>
 
       {/* Three-column insights */}
-      <div className="grid grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-3 gap-8 mb-8">
         {/* Locations */}
         <div className="data-card p-6">
           <div className="flex items-center gap-2 mb-4">
@@ -378,7 +378,7 @@ export default async function AnalyticsPage({
       </div>
 
       {/* Hot Leads + Top Spots */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-2 gap-8 mb-8">
         {/* Hot Leads */}
         <div className="data-card p-6">
           <div className="flex items-center gap-2 mb-4">
@@ -492,13 +492,13 @@ export default async function AnalyticsPage({
       </div>
 
       {/* View Feed */}
-      <div className="data-card p-7 mb-6">
-        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-5">
+      <div className="data-card p-8 mb-6">
+        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
           View Feed
         </h2>
 
         {recentViews.length > 0 ? (
-          <div className="divide-y divide-[#F0F0EC]">
+          <div className="divide-y divide-[#F0F0EC]/50">
             {recentViews.map((view) => {
               const avgSpotCompletion =
                 view.spotViews.length > 0
@@ -590,8 +590,8 @@ export default async function AnalyticsPage({
       </div>
 
       {/* Active Screening Links */}
-      <div className="data-card p-7">
-        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-5">
+      <div className="data-card p-8">
+        <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
           Active Screening Links
         </h2>
 
@@ -601,7 +601,7 @@ export default async function AnalyticsPage({
               <Link
                 key={link.id}
                 href={`/analytics/link/${link.id}`}
-                className="group py-3.5 block border-b border-[#F0F0EC]"
+                className="group py-3.5 block border-b border-[#F0F0EC]/50"
               >
                 <div className="flex items-start justify-between">
                   <div className="min-w-0">

@@ -46,7 +46,7 @@ export function Sidebar({ user }: SidebarProps) {
   const visibleNav = navItems.filter((item) => item.roles.includes(role));
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white/40 backdrop-blur-xl border-r border-[#E8E7E3]/60 flex flex-col z-40">
+    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white/50 backdrop-blur-2xl border-r border-white/60 flex flex-col z-40">
       {/* Brand */}
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">
@@ -68,7 +68,7 @@ export function Sidebar({ user }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-4 space-y-0.5">
+      <nav className="flex-1 px-4 space-y-1">
         {visibleNav.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(item.href + "/");
@@ -77,10 +77,10 @@ export function Sidebar({ user }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "block px-3 py-2 text-[13px] rounded-lg transition-all duration-300",
+                "block px-3 py-2.5 text-[13px] rounded-xl transition-all duration-300",
                 isActive
-                  ? "text-[#1A1A1A] font-medium bg-[#1A1A1A]/[0.04]"
-                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-[#1A1A1A]/[0.02]"
+                  ? "text-[#1A1A1A] font-medium bg-white/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-white/40"
               )}
             >
               {item.label}
@@ -90,7 +90,7 @@ export function Sidebar({ user }: SidebarProps) {
 
         {/* Upload Spots -- ADMIN only */}
         {isAdmin && (
-          <div className="pt-3 mt-3 border-t border-[#E8E7E3]/60 mx-3">
+          <div className="pt-3 mt-3 border-t border-[#E8E7E3]/30 mx-3">
             <Link
               href="/upload"
               className="block py-1.5 text-[13px] text-[#bbb] hover:text-[#1A1A1A] transition-colors duration-300"
@@ -103,7 +103,7 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* User */}
       <div className="px-4 py-5">
-        <div className="flex items-center justify-between px-3 py-2.5 rounded-lg bg-[#1A1A1A]/[0.02]">
+        <div className="flex items-center justify-between px-3 py-3 rounded-xl bg-white/50">
           <div className="min-w-0">
             <p className="text-[12px] text-[#1A1A1A] truncate font-medium leading-tight">
               {user.name ?? user.email}

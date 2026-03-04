@@ -93,7 +93,13 @@ export default async function DashboardPage({
     }),
     prisma.industryCredit.findMany({
       take: 25,
-      where: { isHidden: false },
+      where: {
+        isHidden: false,
+        OR: [
+          { directorName: { not: null } },
+          { productionCompany: { not: null } },
+        ],
+      },
       orderBy: { createdAt: "desc" },
     }),
     // Weekly view count
@@ -272,10 +278,10 @@ export default async function DashboardPage({
       {/* Header */}
       <div className="flex items-start justify-between mb-10">
         <div>
-          <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
+          <h1 className="text-[32px] font-extralight tracking-tight-3 text-[#1A1A1A]">
             Dashboard
           </h1>
-          <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-[#999]">
+          <p className="mt-2 text-[11px] uppercase tracking-[0.15em] text-[#aaa]">
             {session.user.name || session.user.email}
             <span className="mx-2 text-[#E0E0E0]">/</span>
             {roleLabel}
@@ -285,7 +291,7 @@ export default async function DashboardPage({
           <MyActivityToggle />
           <Link
             href="/reels/build"
-            className="group flex items-center gap-3 px-6 py-3 rounded-xl bg-[#1A1A1A] text-white hover:bg-[#333] transition-all duration-300 shadow-sm"
+            className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#1A1A1A] text-white hover:bg-[#333] transition-all duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.12)]"
           >
             <span className="text-[13px] font-medium tracking-wide">
               Build Reel
@@ -299,7 +305,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Weekly Digest Banner */}
-      <div className="rounded-2xl bg-gradient-to-r from-[#1A1A1A] to-[#333] text-white p-8 mb-6 shadow-[0_2px_8px_rgba(0,0,0,0.15),0_12px_32px_rgba(0,0,0,0.1)]">
+      <div className="rounded-2xl bg-gradient-to-br from-[#1A1A1A] via-[#2A2A2A] to-[#1A1A1A] text-white p-8 mb-8 shadow-[0_4px_12px_rgba(0,0,0,0.12),0_16px_40px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-2 mb-4">
           <Zap size={12} className="text-amber-400" />
           <h2 className="text-[10px] uppercase tracking-[0.15em] text-white/60 font-medium">
@@ -351,7 +357,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Stats row — card container */}
-      <div className="data-card p-7 mb-6">
+      <div className="data-card p-8 mb-8">
         <div className="flex gap-14">
           {stats.map((stat) => (
             <Link key={stat.label} href={stat.href} className="group">
@@ -368,7 +374,7 @@ export default async function DashboardPage({
 
       {/* Hot Right Now */}
       {hotRightNow.length > 0 && (
-        <div className="data-card !border-amber-200/50 p-7 mb-6">
+        <div className="data-card !border-amber-200/40 p-8 mb-8">
           <div className="flex items-center gap-2 mb-4">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
@@ -409,14 +415,14 @@ export default async function DashboardPage({
       )}
 
       {/* Two-column layout */}
-      <div className="flex gap-6">
+      <div className="flex gap-8">
         {/* LEFT COLUMN */}
         <div
-          className="flex-1 min-w-0 flex flex-col gap-6"
+          className="flex-1 min-w-0 flex flex-col gap-8"
           style={{ flexBasis: "62%" }}
         >
           {/* Recent Views — with Sent By attribution */}
-          <div className="data-card p-7">
+          <div className="data-card p-8">
             <div className="flex items-baseline justify-between mb-5">
               <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
                 Recent Views
@@ -437,7 +443,7 @@ export default async function DashboardPage({
                     href={`/analytics/link/${view.screeningLink.id}`}
                     className={`flex items-center justify-between py-3 group ${
                       i < recentViews.length - 1
-                        ? "border-b border-[#F0F0EC]"
+                        ? "border-b border-[#F0F0EC]/50"
                         : ""
                     }`}
                   >
@@ -484,7 +490,7 @@ export default async function DashboardPage({
 
           {/* Director Scorecards */}
           {scorecards.length > 0 && (
-            <div className="data-card p-7">
+            <div className="data-card p-8">
               <div className="flex items-baseline justify-between mb-5">
                 <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
                   Director Scorecards
@@ -502,7 +508,7 @@ export default async function DashboardPage({
                   <Link
                     key={d.id}
                     href={`/directors/${d.slug}`}
-                    className="group relative rounded-xl border border-[#E8E7E3]/40 bg-white/40 p-4 hover:border-[#ccc] hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all"
+                    className="group relative rounded-xl border border-white/80 bg-white/50 p-5 hover:bg-white/70 hover:shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-300"
                   >
                     {i === 0 && d.totalViews > 0 && (
                       <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center">
@@ -543,9 +549,9 @@ export default async function DashboardPage({
             </div>
           )}
 
-          {/* Industry Pulse — scrollable card container */}
-          <div className="data-card p-7">
-            <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-5">
+          {/* Industry Pulse — production / directors / production companies */}
+          <div className="data-card p-8">
+            <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-6">
               Industry Pulse
             </h2>
 
@@ -554,44 +560,44 @@ export default async function DashboardPage({
                 {industryFeed.map((credit, i) => (
                   <div
                     key={credit.id}
-                    className={`py-3 ${
+                    className={`py-3.5 ${
                       i < industryFeed.length - 1
-                        ? "border-b border-[#F0F0EC]"
+                        ? "border-b border-[#F0F0EC]/50/60"
                         : ""
                     }`}
                   >
-                    <p className="text-[13px] text-[#1A1A1A] leading-relaxed">
+                    {/* Director name — primary line */}
+                    {credit.directorName && (
+                      <p className="text-[13px] font-medium text-[#1A1A1A]">
+                        {credit.directorName}
+                      </p>
+                    )}
+                    {/* Production company + brand context */}
+                    <p className="text-[12px] text-[#777] mt-0.5 leading-relaxed">
                       {[
-                        credit.brand,
-                        credit.campaignName,
-                        credit.agency,
                         credit.productionCompany,
-                        credit.directorName,
+                        credit.brand &&
+                          (credit.campaignName
+                            ? `${credit.brand} — "${credit.campaignName}"`
+                            : credit.brand),
                       ]
                         .filter(Boolean)
-                        .join(" / ")}
+                        .join(" · ")}
                     </p>
-                    <div className="flex items-center gap-3 mt-1">
+                    <div className="flex items-center gap-3 mt-1.5">
                       {credit.territory && (
                         <span className="text-[9px] font-medium text-[#bbb] uppercase tracking-[0.12em]">
                           {credit.territory}
                         </span>
                       )}
-                      {(credit.category || credit.sourceName) && (
-                        <span className="text-[10px] text-[#ccc]">
-                          {credit.category && (
-                            <span className="uppercase tracking-wider">
-                              {credit.category}
-                            </span>
-                          )}
-                          {credit.category && credit.sourceName && (
-                            <span className="mx-1">&middot;</span>
-                          )}
-                          {credit.sourceName && (
-                            <span className="tracking-wider">
-                              via {credit.sourceName}
-                            </span>
-                          )}
+                      {credit.category && (
+                        <span className="text-[9px] text-[#ccc] uppercase tracking-wider">
+                          {credit.category}
+                        </span>
+                      )}
+                      {credit.sourceName && (
+                        <span className="text-[10px] text-[#ccc] tracking-wider">
+                          via {credit.sourceName}
                         </span>
                       )}
                       <span className="text-[10px] text-[#ccc] uppercase tracking-[0.1em] ml-auto flex-shrink-0">
@@ -611,10 +617,10 @@ export default async function DashboardPage({
 
         {/* RIGHT COLUMN */}
         <div className="flex-shrink-0" style={{ flexBasis: "35%" }}>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             {/* Reel Performance Leaderboard */}
             {leaderboard.length > 0 && (
-              <div className="data-card p-7">
+              <div className="data-card p-8">
                 <div className="flex items-center gap-2 mb-5">
                   <TrendingUp size={12} className="text-[#999]" />
                   <h2 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
@@ -629,7 +635,7 @@ export default async function DashboardPage({
                       href={`/reels/${reel.id}`}
                       className={`flex items-center gap-3 py-2.5 group ${
                         i < leaderboard.length - 1
-                          ? "border-b border-[#F0F0EC]"
+                          ? "border-b border-[#F0F0EC]/50"
                           : ""
                       }`}
                     >
@@ -671,7 +677,7 @@ export default async function DashboardPage({
             )}
 
             {/* Signal — card container */}
-            <div className="data-card p-7 sticky top-8">
+            <div className="data-card p-8 sticky top-8">
               <h2 className="text-lg font-medium tracking-tight-2 text-[#1A1A1A] mb-6">
                 Signal
               </h2>
