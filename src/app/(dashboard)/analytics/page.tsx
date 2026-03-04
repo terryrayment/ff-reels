@@ -170,6 +170,41 @@ export default async function AnalyticsPage({
 
     const lastViewed = allViews.length > 0 ? allViews[0].startedAt : null;
 
+    // Recipient — first non-null recipient name or company across links
+    const recipients = reel.screeningLinks
+      .filter((l) => l.recipientName || l.recipientCompany)
+      .map((l) => ({
+        name: l.recipientName || l.recipientEmail || null,
+        company: l.recipientCompany || null,
+      }));
+    const recipient = recipients.length > 0
+      ? recipients[0].name
+        ? (recipients[0].company
+            ? `${recipients[0].name} (${recipients[0].company})`
+            : recipients[0].name)
+        : recipients[0].company || null
+      : null;
+    const recipientCount = recipients.length;
+
+    // Avg completion % across all spot views
+    const allSpotCompletions = allViews
+      .map((v) => v.avgCompletion)
+      .filter((c): c is number => c !== null);
+    const avgCompletionPct = allSpotCompletions.length > 0
+      ? Math.round(
+          allSpotCompletions.reduce((s, c) => s + c, 0) / allSpotCompletions.length
+        )
+      : null;
+
+    // Hot lead detection: 3+ views, or viewed on multiple days, or high completion
+    const uniqueViewDays = new Set(
+      allViews.map((v) => v.startedAt.split("T")[0])
+    ).size;
+    const isHotLead =
+      totalViewsForReel >= 3 ||
+      uniqueViewDays >= 2 ||
+      (avgCompletionPct !== null && avgCompletionPct > 70);
+
     return {
       id: reel.id,
       title: reel.title,
@@ -182,6 +217,10 @@ export default async function AnalyticsPage({
       lastSent,
       lastViewed,
       views: allViews,
+      recipient,
+      recipientCount,
+      avgCompletionPct,
+      isHotLead,
     };
   });
 

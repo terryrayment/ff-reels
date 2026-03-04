@@ -32,23 +32,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] flex items-center justify-center px-6">
-      <div className="w-full max-w-[320px]">
+    <div className="min-h-screen bg-[#F5F4F0] flex items-center justify-center px-6">
+      <div className="w-full max-w-[340px]">
         {/* Brand */}
-        <div className="text-center mb-16">
-          <h1 className="text-[28px] font-light tracking-tight-2 text-[#1A1A1A] leading-none">
+        <div className="flex flex-col items-center mb-16">
+          <img
+            src="/logo.svg"
+            alt="Friends & Family"
+            className="w-12 h-12 object-contain mb-5"
+          />
+          <h1 className="text-[32px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-none">
             Friends &amp; Family
           </h1>
-          <span className="block mt-2 text-[9px] text-[#999] uppercase tracking-[0.25em]">
+          <span className="block mt-2.5 text-[9px] text-[#bbb] uppercase tracking-[0.25em]">
             Reels
           </span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-7">
           <div>
             <label
               htmlFor="email"
-              className="block text-[10px] text-[#999] mb-2 uppercase tracking-[0.12em]"
+              className="block text-[10px] text-[#aaa] mb-2.5 uppercase tracking-[0.15em] font-medium"
             >
               Email
             </label>
@@ -60,14 +65,14 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@friendsandfamily.tv"
               autoComplete="email"
-              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#DDDDD8] text-[#1A1A1A] text-[14px] placeholder:text-[#C8C8C4] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
+              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#E0DDD8] text-[#1A1A1A] text-[15px] placeholder:text-[#ccc] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
             />
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="block text-[10px] text-[#999] mb-2 uppercase tracking-[0.12em]"
+              className="block text-[10px] text-[#aaa] mb-2.5 uppercase tracking-[0.15em] font-medium"
             >
               Password
             </label>
@@ -78,7 +83,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#DDDDD8] text-[#1A1A1A] text-[14px] placeholder:text-[#C8C8C4] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
+              className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#E0DDD8] text-[#1A1A1A] text-[15px] placeholder:text-[#ccc] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
             />
           </div>
 
@@ -89,13 +94,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 mt-2 bg-[#1A1A1A] text-white text-[13px] font-medium tracking-tight-2 hover:bg-[#333] transition-colors duration-300 disabled:opacity-30"
+            className="w-full py-4 mt-3 bg-[#1A1A1A] text-white text-[13px] font-medium tracking-tight-2 rounded-xl hover:bg-[#333] active:bg-[#444] transition-colors duration-300 disabled:opacity-30"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
-        <p className="text-center text-[10px] text-[#C8C8C4] mt-20 tracking-[0.05em]">
+        <p className="text-center text-[10px] text-[#ccc] mt-20 tracking-[0.05em]">
           friendsandfamily.tv
         </p>
       </div>

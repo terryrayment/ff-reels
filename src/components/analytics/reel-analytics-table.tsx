@@ -11,6 +11,7 @@ import {
   Smartphone,
   Tablet,
   MapPin,
+  Flame,
 } from "lucide-react";
 
 export interface ViewDetail {
@@ -38,6 +39,10 @@ export interface ReelRow {
   lastSent: string | null;
   lastViewed: string | null;
   views: ViewDetail[];
+  recipient: string | null;
+  recipientCount: number;
+  avgCompletionPct: number | null;
+  isHotLead: boolean;
 }
 
 type SortKey =
@@ -47,7 +52,9 @@ type SortKey =
   | "activeLinks"
   | "lastSent"
   | "sentByName"
-  | "lastViewed";
+  | "lastViewed"
+  | "avgCompletionPct"
+  | "recipient";
 
 interface Props {
   rows: ReelRow[];
@@ -118,7 +125,11 @@ export function ReelAnalyticsTable({ rows }: Props) {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     } else {
       setSortKey(key);
-      setSortDir(key === "title" || key === "sentByName" ? "asc" : "desc");
+      setSortDir(
+        key === "title" || key === "sentByName" || key === "recipient"
+          ? "asc"
+          : "desc"
+      );
     }
   };
 
@@ -129,7 +140,8 @@ export function ReelAnalyticsTable({ rows }: Props) {
       (r) =>
         r.title.toLowerCase().includes(q) ||
         r.directorName.toLowerCase().includes(q) ||
-        r.sentByName.toLowerCase().includes(q)
+        r.sentByName.toLowerCase().includes(q) ||
+        (r.recipient && r.recipient.toLowerCase().includes(q))
     );
   }, [rows, search]);
 
@@ -152,6 +164,12 @@ export function ReelAnalyticsTable({ rows }: Props) {
           break;
         case "sentByName":
           cmp = a.sentByName.localeCompare(b.sentByName);
+          break;
+        case "recipient":
+          cmp = (a.recipient || "").localeCompare(b.recipient || "");
+          break;
+        case "avgCompletionPct":
+          cmp = (a.avgCompletionPct || 0) - (b.avgCompletionPct || 0);
           break;
         case "lastSent": {
           const aTime = a.lastSent ? new Date(a.lastSent).getTime() : 0;
@@ -194,7 +212,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
           />
           <input
             type="text"
-            placeholder="Search reels or directors..."
+            placeholder="Search reels, directors, or recipients..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2.5 text-[13px] bg-white/50 border border-[#E0DDD8]/60 rounded-xl placeholder:text-[#ccc] text-[#1A1A1A] focus:outline-none focus:border-[#999] focus:ring-1 focus:ring-[#1A1A1A]/5 transition-all"
@@ -215,11 +233,19 @@ export function ReelAnalyticsTable({ rows }: Props) {
                   {/* Expand chevron column */}
                   <th className="w-8" />
                   <th
-                    className={`${headerClass} text-left min-w-[240px]`}
+                    className={`${headerClass} text-left min-w-[220px]`}
                     onClick={() => handleSort("title")}
                   >
                     <span className="inline-flex items-center gap-1">
                       Reel <SortIcon col="title" />
+                    </span>
+                  </th>
+                  <th
+                    className={`${headerClass} text-left min-w-[120px]`}
+                    onClick={() => handleSort("recipient")}
+                  >
+                    <span className="inline-flex items-center gap-1">
+                      Recipient <SortIcon col="recipient" />
                     </span>
                   </th>
                   <th
@@ -228,6 +254,14 @@ export function ReelAnalyticsTable({ rows }: Props) {
                   >
                     <span className="inline-flex items-center gap-1 justify-end">
                       Views <SortIcon col="totalViews" />
+                    </span>
+                  </th>
+                  <th
+                    className={`${headerClass} text-right`}
+                    onClick={() => handleSort("avgCompletionPct")}
+                  >
+                    <span className="inline-flex items-center gap-1 justify-end">
+                      Avg % <SortIcon col="avgCompletionPct" />
                     </span>
                   </th>
                   <th
@@ -276,6 +310,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                 {sorted.map((row) => {
                   const isExpanded = expandedIds.has(row.id);
                   const hasViews = row.views.length > 0;
+                  const colCount = 10;
 
                   return (
                     <Fragment key={row.id}>
@@ -299,22 +334,67 @@ export function ReelAnalyticsTable({ rows }: Props) {
                             />
                           )}
                         </td>
-                        {/* Reel title + director */}
+                        {/* Reel title + director + hot lead */}
                         <td className="py-3.5 px-3">
-                          <p className="text-[13px] font-medium text-[#1A1A1A] group-hover:text-black transition-colors truncate max-w-[320px]">
-                            {row.title}
-                          </p>
-                          <p className="text-[11px] text-[#999] mt-0.5">
-                            {row.directorName}
-                            <span className="text-[#ccc]">
-                              {" "}
-                              &middot; {row.reelType.toLowerCase()}
-                            </span>
-                          </p>
+                          <div className="flex items-center gap-1.5">
+                            {row.isHotLead && (
+                              <span title="Hot lead — high engagement">
+                                <Flame
+                                  size={13}
+                                  className="text-amber-500 flex-shrink-0"
+                                />
+                              </span>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-[13px] font-medium text-[#1A1A1A] group-hover:text-black transition-colors truncate max-w-[280px]">
+                                {row.title}
+                              </p>
+                              <p className="text-[11px] text-[#999] mt-0.5">
+                                {row.directorName}
+                                <span className="text-[#ccc]">
+                                  {" "}
+                                  &middot; {row.reelType.toLowerCase()}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        {/* Recipient */}
+                        <td className="py-3.5 px-3 text-[12px] text-[#999]">
+                          {row.recipient ? (
+                            <div className="min-w-0">
+                              <p className="truncate max-w-[150px]">{row.recipient}</p>
+                              {row.recipientCount > 1 && (
+                                <p className="text-[10px] text-[#ccc] mt-0.5">
+                                  +{row.recipientCount - 1} more
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-[#ccc]">{"\u2014"}</span>
+                          )}
                         </td>
                         {/* Views */}
                         <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A]">
                           {row.totalViews}
+                        </td>
+                        {/* Avg Completion % */}
+                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px]">
+                          {row.avgCompletionPct !== null ? (
+                            <span
+                              className={
+                                row.avgCompletionPct >= 70
+                                  ? "text-emerald-600"
+                                  : row.avgCompletionPct >= 40
+                                    ? "text-[#1A1A1A]"
+                                    : "text-[#999]"
+                              }
+                            >
+                              {row.avgCompletionPct}%
+                            </span>
+                          ) : (
+                            <span className="text-[#ccc]">{"\u2014"}</span>
+                          )}
                         </td>
                         {/* Sent */}
                         <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A]">
@@ -329,7 +409,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                           {formatDate(row.lastSent)}
                         </td>
                         {/* Sent By */}
-                        <td className="py-3.5 px-3 text-[12px] text-[#999] truncate max-w-[140px]">
+                        <td className="py-3.5 px-3 text-[12px] text-[#999] truncate max-w-[130px]">
                           {row.sentByName || "\u2014"}
                         </td>
                         {/* Last Viewed */}
@@ -341,12 +421,13 @@ export function ReelAnalyticsTable({ rows }: Props) {
                       {/* Expanded view details */}
                       {isExpanded && row.views.length > 0 && (
                         <tr>
-                          <td colSpan={8} className="p-0">
+                          <td colSpan={colCount} className="p-0">
                             <div className="bg-[#F9F8F5] border-b border-[#E8E7E3]/30">
                               {/* View feed header */}
                               <div className="px-6 pt-4 pb-2">
                                 <p className="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium">
-                                  {row.views.length} view{row.views.length !== 1 ? "s" : ""}
+                                  {row.views.length} view
+                                  {row.views.length !== 1 ? "s" : ""}
                                 </p>
                               </div>
                               {/* Individual views */}
@@ -369,26 +450,39 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                           </span>
                                           {view.company && (
                                             <span className="text-[#999]">
-                                              {" "}({view.company})
+                                              {" "}
+                                              ({view.company})
                                             </span>
                                           )}
                                         </p>
                                         <div className="flex items-center gap-2.5 mt-0.5">
-                                          {view.duration != null && view.duration > 0 && (
-                                            <span className="text-[10px] text-[#bbb]">
-                                              Watched {formatDurationShort(view.duration)}
-                                            </span>
-                                          )}
+                                          {view.duration != null &&
+                                            view.duration > 0 && (
+                                              <span className="text-[10px] text-[#bbb]">
+                                                Watched{" "}
+                                                {formatDurationShort(
+                                                  view.duration
+                                                )}
+                                              </span>
+                                            )}
                                           {view.avgCompletion !== null && (
-                                            <span className="text-[10px] text-[#bbb]">
-                                              {view.avgCompletion}% avg
+                                            <span
+                                              className={`text-[10px] ${
+                                                view.avgCompletion >= 70
+                                                  ? "text-emerald-600"
+                                                  : "text-[#bbb]"
+                                              }`}
+                                            >
+                                              {view.avgCompletion}% completion
                                             </span>
                                           )}
                                           {view.city && (
                                             <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
                                               <MapPin size={8} />
                                               {view.city}
-                                              {view.country ? `, ${view.country}` : ""}
+                                              {view.country
+                                                ? `, ${view.country}`
+                                                : ""}
                                             </span>
                                           )}
                                         </div>
