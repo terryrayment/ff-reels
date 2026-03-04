@@ -24,6 +24,7 @@ interface Project {
 interface Director {
   id: string;
   name: string;
+  rosterStatus: string;
   projects: Project[];
 }
 
@@ -42,6 +43,49 @@ const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: "shortest", label: "Shortest" },
 ];
 
+function DirectorRow({
+  director,
+  isSelected,
+  onSelect,
+}: {
+  director: Director;
+  isSelected: boolean;
+  onSelect: () => void;
+}) {
+  const hero = director.projects[0];
+  const thumbSrc = hero?.muxPlaybackId
+    ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=80&height=45&fit_mode=smartcrop`
+    : hero?.thumbnailUrl || null;
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-[#F7F6F3]/80 transition-colors ${
+        isSelected ? "bg-[#F7F6F3]" : ""
+      }`}
+    >
+      <div className="w-10 h-6 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
+        {thumbSrc ? (
+          <img src={thumbSrc} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Film size={10} className="text-[#ccc]" />
+          </div>
+        )}
+      </div>
+      <div className="min-w-0">
+        <p className="text-[13px] text-[#1A1A1A] font-medium truncate">
+          {director.name}
+        </p>
+        <p className="text-[10px] text-[#999]">
+          {director.projects.length} spot{director.projects.length !== 1 ? "s" : ""}
+        </p>
+      </div>
+    </button>
+  );
+}
+
 function DirectorDropdown({
   directors,
   selectedId,
@@ -52,7 +96,10 @@ function DirectorDropdown({
   onSelect: (id: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [showOffRoster, setShowOffRoster] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -64,7 +111,30 @@ function DirectorDropdown({
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => inputRef.current?.focus(), 50);
+    } else {
+      setSearch("");
+      setShowOffRoster(false);
+    }
+  }, [open]);
+
   const selected = directors.find((d) => d.id === selectedId);
+
+  const rosterDirectors = directors.filter((d) => d.rosterStatus === "ROSTER");
+  const offRosterDirectors = directors.filter((d) => d.rosterStatus === "OFF_ROSTER");
+
+  const query = search.toLowerCase().trim();
+  const filteredRoster = query
+    ? rosterDirectors.filter((d) => d.name.toLowerCase().includes(query))
+    : rosterDirectors;
+  const filteredOffRoster = query
+    ? offRosterDirectors.filter((d) => d.name.toLowerCase().includes(query))
+    : offRosterDirectors;
+
+  // Auto-show off-roster section when search matches off-roster directors
+  const showOffRosterSection = showOffRoster || (query.length > 0 && filteredOffRoster.length > 0);
 
   return (
     <div ref={ref} className="relative">
@@ -85,45 +155,88 @@ function DirectorDropdown({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1.5 w-full rounded-xl bg-white/90 backdrop-blur-lg border border-[#E8E7E3]/60 shadow-lg ring-1 ring-inset ring-white/60 max-h-[320px] overflow-y-auto">
-          {directors.map((director) => {
-            const hero = director.projects[0];
-            const thumbSrc = hero?.muxPlaybackId
-              ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=80&height=45&fit_mode=smartcrop`
-              : hero?.thumbnailUrl || null;
+        <div className="absolute z-50 mt-1.5 w-full rounded-xl bg-white/90 backdrop-blur-lg border border-[#E8E7E3]/60 shadow-lg ring-1 ring-inset ring-white/60 max-h-[400px] overflow-y-auto">
+          {/* Search input */}
+          <div className="sticky top-0 bg-white/95 backdrop-blur-md px-3 pt-3 pb-2 border-b border-[#E8E7E3]/40 z-10">
+            <input
+              ref={inputRef}
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search directors…"
+              className="w-full px-3 py-1.5 text-[13px] bg-[#F7F6F3]/80 rounded-lg border border-[#E8E7E3]/50 focus:outline-none focus:border-[#ccc] placeholder:text-[#bbb]"
+            />
+          </div>
 
-            return (
-              <button
-                key={director.id}
-                type="button"
-                onClick={() => {
-                  onSelect(director.id);
-                  setOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-[#F7F6F3]/80 transition-colors first:rounded-t-xl last:rounded-b-xl ${
-                  selectedId === director.id ? "bg-[#F7F6F3]" : ""
-                }`}
-              >
-                <div className="w-10 h-6 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
-                  {thumbSrc ? (
-                    <img src={thumbSrc} alt="" className="w-full h-full object-cover" />
+          {/* Roster directors */}
+          {filteredRoster.length > 0 && (
+            <div>
+              {filteredRoster.map((director) => (
+                <DirectorRow
+                  key={director.id}
+                  director={director}
+                  isSelected={selectedId === director.id}
+                  onSelect={() => {
+                    onSelect(director.id);
+                    setOpen(false);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Off-roster section */}
+          {offRosterDirectors.length > 0 && (
+            <div className="border-t border-[#E8E7E3]/40">
+              {!showOffRosterSection ? (
+                <button
+                  type="button"
+                  onClick={() => setShowOffRoster(true)}
+                  className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-[#F7F6F3]/60 transition-colors"
+                >
+                  <ChevronDown size={11} className="text-[#bbb]" />
+                  <span className="text-[11px] text-[#999] uppercase tracking-[0.1em]">
+                    Off-Roster Talent
+                  </span>
+                  <span className="text-[10px] text-[#ccc]">
+                    ({offRosterDirectors.length})
+                  </span>
+                </button>
+              ) : (
+                <>
+                  <div className="px-4 py-1.5 flex items-center gap-2">
+                    <span className="text-[10px] text-[#bbb] uppercase tracking-[0.1em]">
+                      Off-Roster Talent
+                    </span>
+                  </div>
+                  {filteredOffRoster.length > 0 ? (
+                    filteredOffRoster.map((director) => (
+                      <DirectorRow
+                        key={director.id}
+                        director={director}
+                        isSelected={selectedId === director.id}
+                        onSelect={() => {
+                          onSelect(director.id);
+                          setOpen(false);
+                        }}
+                      />
+                    ))
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Film size={10} className="text-[#ccc]" />
-                    </div>
+                    <p className="px-4 py-2 text-[11px] text-[#ccc]">
+                      No off-roster matches
+                    </p>
                   )}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[13px] text-[#1A1A1A] font-medium truncate">
-                    {director.name}
-                  </p>
-                  <p className="text-[10px] text-[#999]">
-                    {director.projects.length} spot{director.projects.length !== 1 ? "s" : ""}
-                  </p>
-                </div>
-              </button>
-            );
-          })}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* No results */}
+          {filteredRoster.length === 0 && filteredOffRoster.length === 0 && query && (
+            <p className="px-4 py-6 text-center text-[12px] text-[#999]">
+              No directors matching &ldquo;{search}&rdquo;
+            </p>
+          )}
         </div>
       )}
     </div>

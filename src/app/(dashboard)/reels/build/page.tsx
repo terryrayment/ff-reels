@@ -6,7 +6,10 @@ export default async function ReelBuildPage() {
     prisma.director.findMany({
       where: { isActive: true },
       orderBy: { name: "asc" },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        rosterStatus: true,
         projects: {
           where: { isPublished: true },
           orderBy: { sortOrder: "asc" },
