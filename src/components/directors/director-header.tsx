@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Pencil } from "lucide-react";
 
@@ -12,11 +14,26 @@ interface DirectorHeaderProps {
     statement: string | null;
     categories: string[];
     isActive: boolean;
+    rosterStatus: string;
     _count: { projects: number; reels: number };
   };
 }
 
 export function DirectorHeader({ director }: DirectorHeaderProps) {
+  const [rosterStatus, setRosterStatus] = useState(director.rosterStatus);
+  const router = useRouter();
+
+  const toggleRoster = async () => {
+    const newStatus = rosterStatus === "ROSTER" ? "OFF_ROSTER" : "ROSTER";
+    setRosterStatus(newStatus);
+    await fetch(`/api/directors/${director.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rosterStatus: newStatus }),
+    });
+    router.refresh();
+  };
+
   return (
     <div>
       <Link
@@ -29,15 +46,20 @@ export function DirectorHeader({ director }: DirectorHeaderProps) {
 
       <div className="flex items-start justify-between">
         <div className="max-w-2xl">
-          <div className="flex items-baseline gap-4">
+          <div className="flex items-center gap-3">
             <h1 className="text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
               {director.name}
             </h1>
-            {!director.isActive && (
-              <span className="text-[10px] uppercase tracking-wider text-[#999]">
-                Off-roster
-              </span>
-            )}
+            <button
+              onClick={toggleRoster}
+              className={`text-[9px] uppercase tracking-[0.12em] px-2 py-0.5 rounded-full transition-colors ${
+                rosterStatus === "OFF_ROSTER"
+                  ? "bg-[#F0F0EC] text-[#999] hover:bg-[#E8E7E3]"
+                  : "bg-[#1A1A1A]/[0.04] text-[#999] hover:bg-[#1A1A1A]/[0.08]"
+              }`}
+            >
+              {rosterStatus === "OFF_ROSTER" ? "Off-Roster" : "Roster"}
+            </button>
           </div>
 
           {director.bio && (

@@ -3,7 +3,7 @@ import { DirectorGrid } from "@/components/directors/director-grid";
 import { Users } from "lucide-react";
 
 export default async function DirectorsPage() {
-  const directors = await prisma.director.findMany({
+  const allDirectors = await prisma.director.findMany({
     orderBy: { name: "asc" },
     include: {
       projects: {
@@ -26,6 +26,13 @@ export default async function DirectorsPage() {
     },
   });
 
+  const rosterDirectors = allDirectors.filter(
+    (d) => d.rosterStatus !== "OFF_ROSTER"
+  );
+  const offRosterDirectors = allDirectors.filter(
+    (d) => d.rosterStatus === "OFF_ROSTER"
+  );
+
   return (
     <div>
       <div className="mb-12">
@@ -33,12 +40,14 @@ export default async function DirectorsPage() {
           Directors
         </h1>
         <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
-          {directors.length} on roster
+          {rosterDirectors.length} on roster
+          {offRosterDirectors.length > 0 &&
+            ` · ${offRosterDirectors.length} off-roster`}
         </p>
       </div>
 
-      {directors.length > 0 ? (
-        <DirectorGrid directors={directors} />
+      {rosterDirectors.length > 0 ? (
+        <DirectorGrid directors={rosterDirectors} />
       ) : (
         <div className="flex flex-col items-center justify-center py-32 text-center">
           <Users size={20} className="text-[#ccc] mb-4" />
@@ -46,6 +55,18 @@ export default async function DirectorsPage() {
           <p className="text-[12px] text-[#999] mt-1">
             Add your first director to get started.
           </p>
+        </div>
+      )}
+
+      {/* Off-Roster Directors */}
+      {offRosterDirectors.length > 0 && (
+        <div className="mt-16">
+          <div className="mb-6">
+            <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#999] font-medium">
+              Off-Roster Directors
+            </h2>
+          </div>
+          <DirectorGrid directors={offRosterDirectors} />
         </div>
       )}
     </div>

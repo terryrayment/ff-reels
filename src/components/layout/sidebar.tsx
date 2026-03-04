@@ -49,12 +49,33 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Brand */}
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">
-          <h1 className="text-[20px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none group-hover:text-[#000] transition-colors">
-            Friends &amp; Family
-          </h1>
-          <span className="block mt-1.5 text-[9px] text-[#bbb] uppercase tracking-[0.2em] font-normal group-hover:text-[#999] transition-colors">
-            Reels
-          </span>
+          <div className="flex items-center gap-3">
+            {/* F&F houndstooth mark */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 48 56"
+              fill="currentColor"
+              className="w-[22px] h-auto text-[#1A1A1A] group-hover:text-[#000] transition-colors flex-shrink-0"
+            >
+              <path d="M8,8 L16,0 L32,0 L32,8 L20,8 L20,16 L8,16Z"/>
+              <path d="M32,0 L32,8 L36,8 L36,16 L48,16 L48,8 L40,0Z"/>
+              <path d="M20,16 L28,16 L28,20 L32,16 L36,16 L36,28 L32,28 L32,24 L20,24Z"/>
+              <path d="M36,16 L48,16 L48,28 L40,28 L40,36 L48,36 L48,28"/>
+              <path d="M0,20 L8,16 L8,28 L20,28 L20,40 L12,40 L12,48 L20,48 L20,40"/>
+              <path d="M0,20 L0,40 L8,48 L12,48 L12,40 L8,40 L8,28 L0,28Z"/>
+              <path d="M20,28 L32,28 L32,40 L20,40Z"/>
+              <path d="M32,28 L40,28 L40,36 L48,36 L48,48 L40,56 L32,56 L32,40 L20,40 L20,48 L32,48 L32,56"/>
+              <path d="M32,40 L48,40 L48,48 L40,56 L32,56Z"/>
+            </svg>
+            <div>
+              <h1 className="text-[15px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none group-hover:text-[#000] transition-colors">
+                Friends &amp; Family
+              </h1>
+              <span className="block mt-1 text-[9px] text-[#bbb] uppercase tracking-[0.2em] font-normal group-hover:text-[#999] transition-colors">
+                Reels
+              </span>
+            </div>
+          </div>
         </Link>
       </div>
 
@@ -83,7 +104,7 @@ export function Sidebar({ user }: SidebarProps) {
         {isAdmin && (
           <div className="pt-3 mt-3 border-t border-[#E8E7E3]/60 mx-3">
             <Link
-              href="/directors?upload=true"
+              href="/upload"
               className="block py-1.5 text-[13px] text-[#bbb] hover:text-[#1A1A1A] transition-colors duration-300"
             >
               Upload Spots

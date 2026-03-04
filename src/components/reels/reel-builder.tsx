@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Film, X, ChevronDown } from "lucide-react";
+import { Film, X, ChevronDown, Copy, Check, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { formatDuration } from "@/lib/utils";
@@ -18,6 +18,7 @@ interface Project {
   thumbnailUrl: string | null;
   duration: number | null;
   createdAt: string | Date;
+  viewCount?: number;
 }
 
 interface Director {
@@ -30,11 +31,12 @@ interface ReelBuilderProps {
   directors: Director[];
 }
 
-type SortMode = "default" | "newest" | "brand" | "category" | "shortest";
+type SortMode = "default" | "newest" | "most-watched" | "brand" | "category" | "shortest";
 
 const SORT_OPTIONS: { value: SortMode; label: string }[] = [
   { value: "default", label: "All" },
   { value: "newest", label: "Newest" },
+  { value: "most-watched", label: "Most Watched" },
   { value: "brand", label: "By Brand" },
   { value: "category", label: "By Category" },
   { value: "shortest", label: "Shortest" },
@@ -140,6 +142,9 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [sortMode, setSortMode] = useState<SortMode>("default");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [createdUrl, setCreatedUrl] = useState("");
+  const [createdReelId, setCreatedReelId] = useState("");
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
 
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
@@ -171,6 +176,10 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
       case "category":
         return projects.sort((a, b) =>
           (a.category || "zzz").localeCompare(b.category || "zzz")
+        );
+      case "most-watched":
+        return projects.sort(
+          (a, b) => (b.viewCount || 0) - (a.viewCount || 0)
         );
       case "shortest":
         return projects.sort(
@@ -227,17 +236,87 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
 
       if (res.ok) {
         const reel = await res.json();
-        router.push(`/reels/${reel.id}`);
+        setCreatedUrl(reel.screeningUrl);
+        setCreatedReelId(reel.id);
       }
     } finally {
       setSaving(false);
     }
   };
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(createdUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const totalDuration = selectedProjects.reduce(
     (sum, p) => sum + (p.duration || 0),
     0
   );
+
+  // Lightbox after reel creation
+  if (createdUrl) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+        <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 p-8">
+          <h2 className="text-lg font-medium text-[#1A1A1A] mb-1">
+            Reel Created
+          </h2>
+          <p className="text-[13px] text-[#999] mb-6">
+            Share this screening link with the recipient.
+          </p>
+
+          <div className="flex items-center gap-2 mb-6">
+            <div className="flex-1 px-4 py-3 bg-[#F7F6F3] rounded-lg text-[13px] text-[#1A1A1A] truncate font-mono">
+              {createdUrl}
+            </div>
+            <button
+              onClick={handleCopy}
+              className="p-3 bg-[#F7F6F3] rounded-lg hover:bg-[#EEEDEA] transition-colors flex-shrink-0"
+            >
+              {copied ? (
+                <Check size={16} className="text-emerald-600" />
+              ) : (
+                <Copy size={16} className="text-[#999]" />
+              )}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <a
+              href={createdUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#1A1A1A] transition-colors"
+            >
+              <ExternalLink size={12} />
+              Preview
+            </a>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push(`/reels/${createdReelId}`)}
+              >
+                View Reel
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  handleCopy();
+                  setTimeout(() => router.push(`/reels/${createdReelId}`), 300);
+                }}
+              >
+                {copied ? "Copied!" : "Copy & Done"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-[1fr_340px] gap-6">
@@ -340,8 +419,8 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
       </div>
 
       {/* Right — reel details + spot order */}
-      <div className="space-y-4 sticky top-8 self-start">
-        <div className="rounded-2xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-6 space-y-4">
+      <div className="space-y-3 sticky top-8 self-start">
+        <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5 space-y-3">
           <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
             Reel Details
           </h3>
@@ -354,19 +433,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
             placeholder="e.g. Cheerios"
           />
 
-          <Input
-            id="title"
-            label="Reel Title"
-            value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-              setTitleManuallyEdited(true);
-            }}
-            placeholder="Auto-generates from director + brand"
-            required
-          />
-
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <Input
               id="agencyName"
               label="Agency"
@@ -401,8 +468,8 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
           />
         </div>
 
-        {/* Spot order */}
-        <div className="rounded-2xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-6">
+        {/* Spot order + Create Reel button inside */}
+        <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
               Spot Order
@@ -458,21 +525,24 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               })}
             </div>
           ) : (
-            <p className="text-[11px] text-[#ccc] py-5 text-center">
+            <p className="text-[11px] text-[#ccc] py-4 text-center">
               Select spots from the left to build your reel.
             </p>
           )}
-        </div>
 
-        <Button
-          onClick={handleSave}
-          loading={saving}
-          disabled={!selectedDirectorId || !title || selectedProjectIds.length === 0}
-          className="w-full"
-          size="lg"
-        >
-          Create Reel ({selectedProjects.length} spot{selectedProjects.length !== 1 ? "s" : ""})
-        </Button>
+          {/* Create Reel — inside the card */}
+          <div className="mt-4 pt-3 border-t border-[#E8E7E3]/40">
+            <Button
+              onClick={handleSave}
+              loading={saving}
+              disabled={!selectedDirectorId || !title || selectedProjectIds.length === 0}
+              className="w-full"
+              size="lg"
+            >
+              Create Reel ({selectedProjects.length} spot{selectedProjects.length !== 1 ? "s" : ""})
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

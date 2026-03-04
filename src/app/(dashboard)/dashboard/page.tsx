@@ -6,21 +6,6 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ComposeUpdate } from "@/components/dashboard/compose-update";
 
-function updateTypeLabel(type: string): string {
-  switch (type) {
-    case "SPOT_ADDED":
-      return "New Spot";
-    case "REEL_CREATED":
-      return "New Reel";
-    case "DIRECTOR_ADDED":
-      return "New Director";
-    case "ADMIN_NOTE":
-      return "Note";
-    default:
-      return "Update";
-  }
-}
-
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) return null;
@@ -178,9 +163,10 @@ export default async function DashboardPage() {
             {recentViews.length > 0 ? (
               <div>
                 {recentViews.map((view, i) => (
-                  <div
+                  <Link
                     key={view.id}
-                    className={`flex items-center justify-between py-3 ${
+                    href={`/analytics/link/${view.screeningLink.id}`}
+                    className={`flex items-center justify-between py-3 group ${
                       i < recentViews.length - 1
                         ? "border-b border-[#F0F0EC]"
                         : ""
@@ -188,7 +174,7 @@ export default async function DashboardPage() {
                   >
                     <div className="min-w-0">
                       <p className="text-[13px] text-[#1A1A1A] truncate">
-                        <span className="font-medium">
+                        <span className="font-medium group-hover:text-black transition-colors">
                           {view.screeningLink.recipientName || "Anonymous"}
                         </span>
                         <span className="text-[#999]"> viewed </span>
@@ -205,7 +191,7 @@ export default async function DashboardPage() {
                     <p className="text-[10px] uppercase tracking-[0.1em] text-[#ccc] flex-shrink-0 ml-6">
                       {timeAgo(view.startedAt)}
                     </p>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : (
@@ -309,17 +295,14 @@ export default async function DashboardPage() {
                           : ""
                       }`}
                     >
-                      {/* Type + pin + time */}
-                      <div className="flex items-center gap-3 mb-1.5">
-                        <span className="text-[10px] uppercase tracking-[0.12em] text-[#999]">
-                          {updateTypeLabel(update.type)}
-                        </span>
-                        {update.isPinned && (
+                      {/* Pin badge */}
+                      {update.isPinned && (
+                        <div className="mb-1.5">
                           <span className="text-[10px] uppercase tracking-[0.12em] text-[#1A1A1A] font-medium">
                             Pinned
                           </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
 
                       {/* Title */}
                       <p className="text-[13px] text-[#1A1A1A] leading-snug">

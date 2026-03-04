@@ -80,6 +80,7 @@ model Director {
   awards         Json?               // Structured awards data
   pressLinks     Json?               // Links to press features
   clientLogos    String[]            // URLs to client logo images
+  rosterStatus   String   @default("ROSTER")  // "ROSTER" | "OFF_ROSTER"
   isActive       Boolean  @default(true)
   sortOrder      Int      @default(0)
   projects       Project[]
@@ -296,6 +297,7 @@ enum UpdateType {
   REEL_CREATED     // Auto: new reel built
   DIRECTOR_ADDED   // Auto: new director added to roster
   ADMIN_NOTE       // Manual: admin posts a note for the team
+  REEL_VIEWED      // Auto: someone viewed a screening link
 }
 
 // ─── Industry Credits Feed (Nightly Scrape) ─────────────

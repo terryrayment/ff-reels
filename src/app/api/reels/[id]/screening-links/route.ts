@@ -34,10 +34,10 @@ export async function POST(
     },
   });
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const screeningDomain = process.env.NEXT_PUBLIC_SCREENING_URL || "https://reels.friendsandfamily.tv";
 
   return NextResponse.json({
     ...link,
-    url: `${appUrl}/s/${link.token}`,
+    url: `${screeningDomain}/s/${link.token}`,
   }, { status: 201 });
 }

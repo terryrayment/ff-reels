@@ -29,7 +29,7 @@ export default async function ReelDetailPage({
 
   if (!reel) return notFound();
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const screeningDomain = process.env.NEXT_PUBLIC_SCREENING_URL || "https://reels.friendsandfamily.tv";
 
   return (
     <div>
@@ -170,7 +170,7 @@ export default async function ReelDetailPage({
                     <span className="text-[10px] text-emerald-500 uppercase tracking-wider">Active</span>
                   )}
                   <a
-                    href={`${appUrl}/s/${link.token}`}
+                    href={`${screeningDomain}/s/${link.token}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#ccc] hover:text-[#666] transition-colors"

@@ -79,6 +79,16 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  // Auto-create a screening link for the reel
+  const screeningLink = await prisma.screeningLink.create({
+    data: {
+      reelId: reel.id,
+      expiresAt: new Date(Date.now() + 30 * 86400000), // 30 days
+    },
+  });
+
+  const screeningUrl = `https://reels.friendsandfamily.tv/s/${screeningLink.token}`;
+
   // Auto-create activity update
   await prisma.update.create({
     data: {
@@ -90,5 +100,5 @@ export async function POST(req: NextRequest) {
     },
   }).catch(() => {}); // Non-critical
 
-  return NextResponse.json(reel, { status: 201 });
+  return NextResponse.json({ ...reel, screeningUrl }, { status: 201 });
 }
