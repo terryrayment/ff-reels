@@ -5,6 +5,7 @@ import { timeAgo } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ComposeUpdate } from "@/components/dashboard/compose-update";
+import { SignalFeed } from "@/components/dashboard/signal-feed";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -282,74 +283,27 @@ export default async function DashboardPage() {
             {/* Compose */}
             <ComposeUpdate />
 
-            {/* Updates feed */}
-            <div className="mt-8 max-h-[600px] overflow-y-auto pr-1">
-              {updates.length > 0 ? (
-                <div>
-                  {updates.map((update, i) => (
-                    <div
-                      key={update.id}
-                      className={`py-4 ${
-                        i < updates.length - 1
-                          ? "border-b border-[#F0F0EC]"
-                          : ""
-                      }`}
-                    >
-                      {/* Pin badge */}
-                      {update.isPinned && (
-                        <div className="mb-1.5">
-                          <span className="text-[10px] uppercase tracking-[0.12em] text-[#1A1A1A] font-medium">
-                            Pinned
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Title */}
-                      <p className="text-[13px] text-[#1A1A1A] leading-snug">
-                        {update.title}
-                      </p>
-
-                      {/* Body */}
-                      {update.body && (
-                        <p className="text-[12px] text-[#888] mt-1 leading-relaxed">
-                          {update.body}
-                        </p>
-                      )}
-
-                      {/* Director / Project */}
-                      {(update.director || update.project) && (
-                        <p className="text-[11px] text-[#999] mt-2">
-                          {update.director && (
-                            <span>{update.director.name}</span>
-                          )}
-                          {update.director && update.project && (
-                            <span className="text-[#ddd]"> / </span>
-                          )}
-                          {update.project && (
-                            <span>
-                              {update.project.title}
-                              {update.project.brand &&
-                                ` (${update.project.brand})`}
-                            </span>
-                          )}
-                        </p>
-                      )}
-
-                      {/* Author + time */}
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-[#ccc] mt-2">
-                        {update.author?.name || update.author?.email || "System"}
-                        <span className="mx-2 text-[#E8E8E3]">/</span>
-                        {timeAgo(update.createdAt)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[13px] text-[#999] py-6">
-                  No updates yet. Post the first one.
-                </p>
-              )}
-            </div>
+            {/* Updates feed — client component with edit/delete */}
+            <SignalFeed
+              updates={updates.map((u) => ({
+                ...u,
+                createdAt: u.createdAt.toISOString(),
+                body: u.body || null,
+                director: u.director,
+                project: u.project
+                  ? { ...u.project, brand: u.project.brand || null }
+                  : null,
+                author: u.author
+                  ? {
+                      ...u.author,
+                      name: u.author.name || null,
+                      email: u.author.email || "",
+                    }
+                  : null,
+              }))}
+              currentUserId={userId}
+              isAdmin={isAdmin}
+            />
           </div>
         </div>
       </div>

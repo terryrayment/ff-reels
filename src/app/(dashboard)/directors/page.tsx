@@ -63,7 +63,7 @@ export default async function DirectorsPage() {
         <div className="mt-16">
           <div className="mb-6">
             <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#999] font-medium">
-              Off-Roster Directors
+              Off-Roster Talent
             </h2>
           </div>
           <DirectorGrid directors={offRosterDirectors} />
