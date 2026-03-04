@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Film, Send, Plus, Zap } from "lucide-react";
+import { Film, Send, Plus } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 
 export default async function ReelsPage() {
@@ -48,24 +48,13 @@ export default async function ReelsPage() {
             {reels.length} reel{reels.length !== 1 ? "s" : ""}{isRep ? " by you" : " created"}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          {/* Quick Reel — prominent on all sizes */}
-          <Link
-            href="/reels/quick"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 md:px-3 md:py-1.5 rounded-xl bg-[#1A1A1A] text-white text-[12px] font-medium active:bg-[#333] transition-colors"
-          >
-            <Zap size={12} />
-            Quick Reel
-          </Link>
-          {/* Full builder — desktop only */}
-          <Link
-            href="/reels/build"
-            className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-[#999] hover:text-[#1A1A1A] transition-colors"
-          >
-            <Plus size={12} />
-            Build Reel
-          </Link>
-        </div>
+        <Link
+          href="/reels/build"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 md:px-3 md:py-1.5 rounded-xl bg-[#1A1A1A] text-white text-[12px] font-medium active:bg-[#333] transition-colors"
+        >
+          <Plus size={12} />
+          Build Reel
+        </Link>
       </div>
 
       {reels.length > 0 ? (

@@ -70,9 +70,11 @@ export function Sidebar({ user }: SidebarProps) {
       <div className="px-7 pt-8 pb-10">
         <Link href="/dashboard" className="block group">
           <div className="flex items-center gap-3">
-            <div className="w-[26px] h-[26px] rounded-md bg-[#1A1A1A] group-hover:bg-[#000] transition-colors flex items-center justify-center flex-shrink-0">
-              <span className="text-[11px] font-bold text-white tracking-tight leading-none">FF</span>
-            </div>
+            <img
+              src="/logo.svg"
+              alt="FF"
+              className="w-[26px] h-[26px] object-contain flex-shrink-0"
+            />
             <div>
               <h1 className="text-[15px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none group-hover:text-[#000] transition-colors">
                 Friends &amp; Family
@@ -105,17 +107,6 @@ export function Sidebar({ user }: SidebarProps) {
             </Link>
           );
         })}
-
-        {/* Quick Reel — mobile-only shortcut */}
-        <div className="pt-3 mt-3 border-t border-[#E8E7E3]/30 mx-3 md:hidden">
-          <Link
-            href="/reels/quick"
-            className="flex items-center gap-2 py-2 text-[13px] text-[#1A1A1A] font-medium transition-colors duration-300"
-          >
-            <span className="text-base">⚡</span>
-            Quick Reel
-          </Link>
-        </div>
 
         {/* Upload Spots -- ADMIN only */}
         {isAdmin && (
