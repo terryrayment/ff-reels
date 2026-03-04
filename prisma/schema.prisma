@@ -76,6 +76,7 @@ model Director {
   statement      String?  @db.Text   // Director's artistic philosophy
   videoIntroUrl  String?             // Optional 60s video intro (Mux playback ID)
   headshotUrl    String?
+  websiteUrl     String?             // Director's personal website
   categories     String[]            // e.g. ["comedy", "automotive", "food"]
   awards         Json?               // Structured awards data
   pressLinks     Json?               // Links to press features
@@ -106,6 +107,7 @@ model Project {
   year            Int?
   description     String?  @db.Text
   contextNote     String?  @db.Text   // "Achieved on a 2-day shoot with practical effects"
+  contentType     String   @default("SPOT")  // SPOT | CASE_STUDY | SHORT_FILM
 
   // Mux video
   muxAssetId      String?  @unique
@@ -129,6 +131,7 @@ model Project {
   isPublished     Boolean  @default(false)
   sortOrder       Int      @default(0)
   reelItems       ReelItem[]
+  galleryImages   ReelGalleryImage[]
   updates         Update[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -177,6 +180,10 @@ model Reel {
   // Who built this reel
   createdById    String?
   createdBy      User?      @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  // AI gallery
+  galleryStatus  String?              // "none" | "generating" | "ready" | "failed"
+  galleryImages  ReelGalleryImage[]
 
   items          ReelItem[]
   screeningLinks ScreeningLink[]
@@ -348,4 +355,24 @@ model TreatmentSample {
   pageCount   Int?
   isRedacted  Boolean  @default(false)
   createdAt   DateTime @default(now())
+}
+
+// ─── AI Gallery (Best Frames from Reels) ────────────────
+
+model ReelGalleryImage {
+  id             String   @id @default(cuid())
+  reelId         String
+  reel           Reel     @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  projectId      String
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  r2Key          String
+  thumbnailR2Key String?
+  timeOffset     Float
+  aiScore        Float?
+  width          Int
+  height         Int
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  @@index([reelId])
 }

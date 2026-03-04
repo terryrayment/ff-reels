@@ -17,6 +17,10 @@ import {
   FileText,
   Image as ImageIcon,
   Palette,
+  Play,
+  Film,
+  Globe,
+  Sparkles,
 } from "lucide-react";
 
 interface SpotItem {
@@ -36,9 +40,22 @@ interface SpotItem {
 
 interface DirectorInfo {
   name: string;
+  slug: string;
   bio: string | null;
   statement: string | null;
   headshotUrl: string | null;
+  websiteUrl: string | null;
+}
+
+interface DirectorVideoItem {
+  id: string;
+  title: string;
+  brand: string | null;
+  agency: string | null;
+  year: number | null;
+  duration: number | null;
+  muxPlaybackId: string | null;
+  thumbnailUrl: string | null;
 }
 
 interface PortfolioStill {
@@ -80,6 +97,20 @@ interface LookbookItemInfo {
   sortOrder: number;
 }
 
+interface GalleryImageInfo {
+  id: string;
+  projectId: string;
+  projectTitle: string;
+  projectBrand: string | null;
+  timeOffset: number;
+  aiScore: number | null;
+  width: number;
+  height: number;
+  sortOrder: number;
+  imageUrl: string;
+  thumbnailUrl: string;
+}
+
 interface ScreeningCarouselProps {
   items: SpotItem[];
   director: DirectorInfo;
@@ -94,6 +125,10 @@ interface ScreeningCarouselProps {
   clientBrands?: string[];
   frameGrabsMap?: Record<string, FrameGrabInfo[]>;
   lookbookItems?: LookbookItemInfo[];
+  caseStudies?: DirectorVideoItem[];
+  shortFilms?: DirectorVideoItem[];
+  galleryImages?: GalleryImageInfo[];
+  reelId?: string;
 }
 
 /**
@@ -121,12 +156,16 @@ export function ScreeningCarousel({
   clientBrands = [],
   frameGrabsMap = {},
   lookbookItems = [],
+  caseStudies = [],
+  shortFilms = [],
+  galleryImages = [],
+  reelId,
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [activePanel, setActivePanel] = useState<
-    "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | null
+    "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | "casestudies" | "shortfilms" | "gallery" | null
   >(null);
   const [showInfo, setShowInfo] = useState(true);
   const [bgStillIndex, setBgStillIndex] = useState(0);
@@ -482,7 +521,7 @@ export function ScreeningCarousel({
     setActivePanel(null);
     setPreviewTreatment(null);
   };
-  const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook") =>
+  const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | "casestudies" | "shortfilms" | "gallery") =>
     setActivePanel((prev) => (prev === panel ? null : panel));
 
   return (
@@ -745,6 +784,21 @@ export function ScreeningCarousel({
               </button>
             )}
 
+            {/* AI Gallery button — only if gallery images exist */}
+            {galleryImages.length > 0 && (
+              <button
+                onClick={() => openPanel("gallery")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "gallery"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <Sparkles size={10} />
+                Gallery
+              </button>
+            )}
+
             {/* Lookbook / Mood Board button — only if director has lookbook items */}
             {lookbookItems.length > 0 && (
               <button
@@ -786,6 +840,36 @@ export function ScreeningCarousel({
             >
               F&amp;F
             </button>
+
+            {/* Case Studies button — only if director has case studies */}
+            {caseStudies.length > 0 && (
+              <button
+                onClick={() => openPanel("casestudies")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "casestudies"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <Play size={10} />
+                Case Studies
+              </button>
+            )}
+
+            {/* Short Films button — only if director has short films */}
+            {shortFilms.length > 0 && (
+              <button
+                onClick={() => openPanel("shortfilms")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "shortfilms"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <Film size={10} />
+                Short Films
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -1019,6 +1103,17 @@ export function ScreeningCarousel({
                 <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-1">
                   Director
                 </p>
+                {director.websiteUrl && (
+                  <a
+                    href={director.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[10px] text-white/30 hover:text-white/60 transition-colors mt-2"
+                  >
+                    <Globe size={10} />
+                    {director.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </a>
+                )}
               </div>
             </div>
 
@@ -1699,6 +1794,247 @@ export function ScreeningCarousel({
             )}
           </div>
         </div>
+
+        {/* ─── AI GALLERY PANEL ─────────────────────────── */}
+        {galleryImages.length > 0 && (
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "gallery" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "85vh" }}
+        >
+          <div
+            className="max-w-5xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "85vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                  {director.name}
+                </p>
+                <h3 className="text-xl font-light text-white/80 tracking-tight">
+                  Best Frames
+                </h3>
+                <p className="text-[12px] text-white/25 mt-1.5">
+                  {galleryImages.length} AI-selected stills — presentation quality
+                </p>
+              </div>
+              {reelId && (
+                <a
+                  href={`/api/reels/${reelId}/gallery/download${typeof window !== "undefined" ? `?token=${window.location.pathname.split("/").pop()}` : ""}`}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition-colors text-[10px] text-white/40 hover:text-white/60 uppercase tracking-[0.15em]"
+                >
+                  <Download size={10} />
+                  Download All
+                </a>
+              )}
+            </div>
+
+            {/* Gallery grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {galleryImages.map((img) => (
+                <button
+                  key={img.id}
+                  onClick={() => setLightboxImage(img.imageUrl)}
+                  className="group relative aspect-[16/9] rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.04] hover:border-white/[0.12] transition-all"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img.thumbnailUrl}
+                    alt={`${img.projectTitle} — best frame`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                  {/* Hover overlay with download + info */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-200">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Download size={20} className="text-white/70" />
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2.5 pt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <p className="text-[10px] text-white/70 truncate leading-tight">
+                        {img.projectTitle}
+                      </p>
+                      {img.projectBrand && (
+                        <p className="text-[8px] text-white/35 truncate">
+                          {img.projectBrand}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+        )}
+
+        {/* ─── CASE STUDIES PANEL ────────────────────────── */}
+        {caseStudies.length > 0 && (
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "casestudies" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "85vh" }}
+        >
+          <div
+            className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "85vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <div className="mb-8">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                {director.name}
+              </p>
+              <h3 className="text-xl font-light text-white/80 tracking-tight">
+                Case Studies
+              </h3>
+              <p className="text-[12px] text-white/25 mt-1.5 max-w-lg">
+                Director commentary and behind-the-scenes breakdowns
+              </p>
+            </div>
+
+            {/* Video grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {caseStudies.map((cs) => (
+                <div key={cs.id} className="group">
+                  {cs.muxPlaybackId ? (
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
+                      <MuxPlayer
+                        playbackId={cs.muxPlaybackId}
+                        streamType="on-demand"
+                        autoPlay={false}
+                        muted={false}
+                        style={{ width: "100%", height: "100%", "--controls": "none" }}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  ) : cs.thumbnailUrl ? (
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={cs.thumbnailUrl} alt={cs.title} className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                      <Play size={24} className="text-white/15" />
+                    </div>
+                  )}
+                  <div className="mt-2">
+                    <p className="text-[12px] text-white/60 leading-tight">{cs.title}</p>
+                    {cs.brand && (
+                      <p className="text-[10px] text-white/25 mt-0.5">{cs.brand}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        )}
+
+        {/* ─── SHORT FILMS PANEL ─────────────────────────── */}
+        {shortFilms.length > 0 && (
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "shortfilms" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "85vh" }}
+        >
+          <div
+            className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
+            style={{ maxHeight: "85vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <div className="mb-8">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                {director.name}
+              </p>
+              <h3 className="text-xl font-light text-white/80 tracking-tight">
+                Short Films
+              </h3>
+              <p className="text-[12px] text-white/25 mt-1.5 max-w-lg">
+                Narrative and personal filmmaking
+              </p>
+            </div>
+
+            {/* Video grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {shortFilms.map((sf) => (
+                <div key={sf.id} className="group">
+                  {sf.muxPlaybackId ? (
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
+                      <MuxPlayer
+                        playbackId={sf.muxPlaybackId}
+                        streamType="on-demand"
+                        autoPlay={false}
+                        muted={false}
+                        style={{ width: "100%", height: "100%", "--controls": "none" }}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  ) : sf.thumbnailUrl ? (
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/40 border border-white/[0.06]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={sf.thumbnailUrl} alt={sf.title} className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
+                      <Film size={24} className="text-white/15" />
+                    </div>
+                  )}
+                  <div className="mt-2">
+                    <p className="text-[12px] text-white/60 leading-tight">{sf.title}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      {sf.year && (
+                        <p className="text-[10px] text-white/25">{sf.year}</p>
+                      )}
+                      {sf.duration && (
+                        <p className="text-[10px] text-white/25">{formatDuration(sf.duration)}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        )}
       </div>
 
       {/* ═══════════════════════════════════════════════════════

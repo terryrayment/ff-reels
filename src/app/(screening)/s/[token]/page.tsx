@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { getDownloadUrl } from "@/lib/r2/client";
 import { ScreeningTracker } from "@/components/video/screening-tracker";
 import { ScreeningCarousel } from "@/components/video/screening-carousel";
 
@@ -17,9 +18,11 @@ export default async function ScreeningPage({
             select: {
               id: true,
               name: true,
+              slug: true,
               bio: true,
               statement: true,
               headshotUrl: true,
+              websiteUrl: true,
             },
           },
           items: {
@@ -161,6 +164,77 @@ export default async function ScreeningPage({
       })
     : [];
 
+  // Case study projects for the director (director commentary videos)
+  const caseStudies = link
+    ? await prisma.project.findMany({
+        where: {
+          directorId: link.reel.director.id,
+          contentType: "CASE_STUDY",
+          isPublished: true,
+        },
+        select: {
+          id: true,
+          title: true,
+          brand: true,
+          agency: true,
+          year: true,
+          duration: true,
+          muxPlaybackId: true,
+          thumbnailUrl: true,
+        },
+        orderBy: { sortOrder: "asc" },
+      })
+    : [];
+
+  // Short film projects for the director
+  const shortFilms = link
+    ? await prisma.project.findMany({
+        where: {
+          directorId: link.reel.director.id,
+          contentType: "SHORT_FILM",
+          isPublished: true,
+        },
+        select: {
+          id: true,
+          title: true,
+          brand: true,
+          agency: true,
+          year: true,
+          duration: true,
+          muxPlaybackId: true,
+          thumbnailUrl: true,
+        },
+        orderBy: { sortOrder: "asc" },
+      })
+    : [];
+
+  // AI gallery images for this reel
+  const galleryImages = link?.reel
+    ? await prisma.reelGalleryImage.findMany({
+        where: { reelId: link.reel.id },
+        orderBy: { sortOrder: "asc" },
+        include: { project: { select: { id: true, title: true, brand: true } } },
+      })
+    : [];
+
+  const galleryWithUrls = await Promise.all(
+    galleryImages.map(async (img) => ({
+      id: img.id,
+      projectId: img.projectId,
+      projectTitle: img.project.title,
+      projectBrand: img.project.brand,
+      timeOffset: img.timeOffset,
+      aiScore: img.aiScore,
+      width: img.width,
+      height: img.height,
+      sortOrder: img.sortOrder,
+      imageUrl: await getDownloadUrl(img.r2Key, 3600),
+      thumbnailUrl: img.thumbnailR2Key
+        ? await getDownloadUrl(img.thumbnailR2Key, 3600)
+        : await getDownloadUrl(img.r2Key, 3600),
+    })),
+  );
+
   if (!link) return notFound();
 
   if (link.expiresAt && link.expiresAt < new Date()) {
@@ -195,6 +269,10 @@ export default async function ScreeningPage({
         clientBrands={clientBrands}
         frameGrabsMap={frameGrabsMap}
         lookbookItems={lookbookItems}
+        caseStudies={caseStudies}
+        shortFilms={shortFilms}
+        galleryImages={galleryWithUrls}
+        reelId={reel.id}
       />
     </ScreeningTracker>
   );

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 if (
@@ -42,4 +42,31 @@ export async function getDownloadUrl(key: string, expiresIn = 3600) {
     Key: key,
   });
   return getSignedUrl(r2, command, { expiresIn });
+}
+
+/**
+ * Upload a buffer directly to R2 (server-side upload, no presigned URL).
+ */
+export async function uploadBuffer(key: string, buffer: Buffer, contentType: string) {
+  await r2.send(
+    new PutObjectCommand({
+      Bucket: R2_BUCKET,
+      Key: key,
+      Body: buffer,
+      ContentType: contentType,
+    }),
+  );
+}
+
+/**
+ * Delete multiple objects from R2 by key.
+ */
+export async function deleteObjects(keys: string[]) {
+  if (keys.length === 0) return;
+  await r2.send(
+    new DeleteObjectsCommand({
+      Bucket: R2_BUCKET,
+      Delete: { Objects: keys.map((Key) => ({ Key })) },
+    }),
+  );
 }
