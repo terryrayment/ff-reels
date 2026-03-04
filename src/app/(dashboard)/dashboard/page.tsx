@@ -320,14 +320,14 @@ export default async function DashboardPage({
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-10">
+      <div className="flex items-start justify-between mb-14">
         <div>
-          <h1 className="text-[32px] font-extralight tracking-tight-3 text-[#1A1A1A]">
+          <h1 className="text-[42px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
             Dashboard
           </h1>
-          <p className="mt-2 text-[11px] uppercase tracking-[0.15em] text-[#aaa]">
+          <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-[#aaa]">
             {session.user.name || session.user.email}
-            <span className="mx-2 text-[#E0E0E0]">/</span>
+            <span className="mx-2 text-[#ddd]">/</span>
             {roleLabel}
           </p>
         </div>
@@ -349,7 +349,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Unified Stats Card — weekly metrics | roster counts */}
-      <div className="data-card px-10 py-8 mb-10">
+      <div className="data-card px-10 py-9 mb-12">
         <div className="flex items-stretch">
           {/* Weekly pulse — left group */}
           <div className="flex-1 min-w-0">
@@ -358,7 +358,7 @@ export default async function DashboardPage({
             </p>
             <div className="flex items-end gap-10">
               <div>
-                <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
                   {weeklyViewCount}
                 </p>
                 <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb]">
@@ -366,7 +366,7 @@ export default async function DashboardPage({
                 </p>
               </div>
               <div>
-                <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
                   {weeklyTotalSeconds > 0
                     ? formatDuration(weeklyTotalSeconds)
                     : "\u2014"}
@@ -376,7 +376,7 @@ export default async function DashboardPage({
                 </p>
               </div>
               <div>
-                <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
                   {weeklyNewReels}
                 </p>
                 <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb]">
@@ -403,7 +403,7 @@ export default async function DashboardPage({
             <div className="flex items-end gap-8">
               {rosterStats.map((stat) => (
                 <Link key={stat.label} href={stat.href} className="group">
-                  <p className="text-[28px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors leading-none">
+                  <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors leading-none">
                     {stat.value}
                   </p>
                   <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb] group-hover:text-[#999] transition-colors">
@@ -418,7 +418,7 @@ export default async function DashboardPage({
 
       {/* Hot Right Now — compact inline */}
       {hotRightNow.length > 0 && (
-        <div className="data-card px-10 py-5 mb-10">
+        <div className="data-card px-10 py-5 mb-12">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="relative flex h-2 w-2">
@@ -453,7 +453,7 @@ export default async function DashboardPage({
       )}
 
       {/* Signal — full-width, compact 3-column pills */}
-      <div className="data-card p-9 mb-10">
+      <div className="data-card p-9 mb-12">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
             Signal

@@ -20,7 +20,6 @@ const navItems: NavItem[] = [
   { href: "/treatments", label: "Treatments", roles: ["ADMIN", "REP"] },
   { href: "/industry", label: "Industry", roles: ["ADMIN", "REP"] },
   { href: "/analytics", label: "Analytics", roles: ["ADMIN", "REP"] },
-  { href: "/about", label: "About", roles: ["ADMIN", "REP"] },
 ];
 
 function getRoleDisplayName(role: string): string {
@@ -67,19 +66,19 @@ export function Sidebar({ user }: SidebarProps) {
   const sidebarContent = (
     <>
       {/* Brand */}
-      <div className="px-7 pt-8 pb-10">
+      <div className="px-7 pt-8 pb-12">
         <Link href="/dashboard" className="block group">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
             <img
               src="/logo.svg"
               alt="FF"
-              className="w-[26px] h-[26px] object-contain flex-shrink-0"
+              className="w-[30px] h-[30px] object-contain flex-shrink-0"
             />
             <div>
               <h1 className="text-[15px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none group-hover:text-[#000] transition-colors">
                 Friends &amp; Family
               </h1>
-              <span className="block mt-1 text-[9px] text-[#bbb] uppercase tracking-[0.2em] font-normal group-hover:text-[#999] transition-colors">
+              <span className="block mt-1.5 text-[9px] text-[#bbb] uppercase tracking-[0.2em] font-normal group-hover:text-[#999] transition-colors">
                 Reels
               </span>
             </div>
@@ -88,7 +87,7 @@ export function Sidebar({ user }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-4 space-y-1">
+      <nav className="flex-1 px-4 space-y-0.5">
         {visibleNav.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(item.href + "/");

@@ -82,12 +82,10 @@ export default async function AboutPage() {
   return (
     <div className="-mx-5 -mt-16 md:-mx-16 md:-mt-14 min-h-screen bg-[#111] text-white">
       {/* Header */}
-      <div className="px-6 md:px-16 pt-20 md:pt-16 pb-8">
+      <div className="px-6 md:px-16 pt-20 md:pt-16 pb-10">
         <div className="flex items-center gap-4 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-            <span className="text-[10px] font-bold tracking-tight">FF</span>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-light tracking-tight text-white/90">
+          <img src="/logo.svg" alt="FF" className="w-8 h-8 object-contain invert brightness-200" />
+          <h1 className="text-[32px] md:text-[56px] font-extralight tracking-tight-3 text-white/90 leading-[1.05]">
             Friends &amp; Family
           </h1>
         </div>
@@ -98,7 +96,7 @@ export default async function AboutPage() {
 
       {/* Roster section */}
       <div className="px-6 md:px-16 pb-20">
-        <h2 className="text-[10px] uppercase tracking-[0.25em] text-white/25 mb-10">
+        <h2 className="section-header text-white/25 mb-12">
           R O S T E R
         </h2>
 

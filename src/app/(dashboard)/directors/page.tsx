@@ -35,15 +35,22 @@ export default async function DirectorsPage() {
 
   return (
     <div>
-      <div className="mb-12">
-        <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
+      <div className="mb-14">
+        <h1 className="text-[42px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
           Directors
         </h1>
-        <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
-          {rosterDirectors.length} on roster
-          {offRosterDirectors.length > 0 &&
-            ` · ${offRosterDirectors.length} off-roster`}
-        </p>
+        <div className="flex items-center gap-3 mt-3">
+          <span className="pill-tag">
+            <span className="pill-dot" />
+            {rosterDirectors.length} on roster
+          </span>
+          {offRosterDirectors.length > 0 && (
+            <span className="pill-tag">
+              <span className="pill-dot" />
+              {offRosterDirectors.length} off-roster
+            </span>
+          )}
+        </div>
       </div>
 
       {rosterDirectors.length > 0 ? (
@@ -60,9 +67,9 @@ export default async function DirectorsPage() {
 
       {/* Off-Roster Directors */}
       {offRosterDirectors.length > 0 && (
-        <div className="mt-16">
-          <div className="mb-6">
-            <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#999] font-medium">
+        <div className="mt-20">
+          <div className="mb-8">
+            <h2 className="section-header">
               Off-Roster Talent
             </h2>
           </div>

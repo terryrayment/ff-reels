@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Film, Send, Plus } from "lucide-react";
+import { Film, Send, Plus, ExternalLink } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 
 export default async function ReelsPage() {
@@ -30,7 +30,9 @@ export default async function ReelsPage() {
       },
       screeningLinks: {
         where: { isActive: true },
-        select: { id: true },
+        select: { id: true, token: true },
+        orderBy: { createdAt: "desc" as const },
+        take: 1,
       },
       _count: { select: { items: true, screeningLinks: true } },
     },
@@ -39,20 +41,20 @@ export default async function ReelsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center md:items-end justify-between mb-8 md:mb-12">
+      <div className="flex items-center md:items-end justify-between mb-10 md:mb-14">
         <div>
-          <h1 className="text-2xl md:text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
+          <h1 className="text-[32px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
             Reels
           </h1>
-          <p className="text-[11px] uppercase tracking-wider text-[#999] mt-1.5 md:mt-2">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#aaa] mt-2 md:mt-3">
             {reels.length} reel{reels.length !== 1 ? "s" : ""}{isRep ? " by you" : " created"}
           </p>
         </div>
         <Link
           href="/reels/build"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 md:px-3 md:py-1.5 rounded-xl bg-[#1A1A1A] text-white text-[12px] font-medium active:bg-[#333] transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 md:px-5 md:py-2.5 rounded-xl bg-[#1A1A1A] text-white text-[12px] font-medium hover:bg-[#333] active:bg-[#444] transition-colors"
         >
-          <Plus size={12} />
+          <Plus size={13} />
           Build Reel
         </Link>
       </div>
@@ -96,7 +98,8 @@ export default async function ReelsPage() {
                   <h3 className="text-[14px] md:text-lg font-medium tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors truncate">
                     {reel.title}
                   </h3>
-                  <span className="hidden md:inline text-[10px] text-[#bbb] uppercase tracking-wider flex-shrink-0">
+                  <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-[#E0DDD8] text-[9px] text-[#999] uppercase tracking-[0.1em] flex-shrink-0">
+                    <span className="w-1 h-1 rounded-full bg-[#ccc]" />
                     {reel.reelType.toLowerCase()}
                   </span>
                 </div>
@@ -113,22 +116,37 @@ export default async function ReelsPage() {
                 )}
               </div>
 
-              {/* Right side stats — desktop only */}
-              <div className="hidden md:flex items-center gap-5 flex-shrink-0 text-[11px] text-[#bbb]">
-                <span className="flex items-center gap-1">
-                  <Send size={10} />
-                  {reel._count.screeningLinks}
-                </span>
-                <span>{timeAgo(reel.updatedAt)}</span>
-              </div>
-
-              {/* Mobile: link count pill */}
-              {reel._count.screeningLinks > 0 && (
-                <div className="md:hidden flex items-center gap-1 text-[10px] text-[#bbb] flex-shrink-0">
-                  <Send size={9} />
-                  {reel._count.screeningLinks}
+              {/* Right side — screening link + stats */}
+              <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
+                {/* Screening link icon */}
+                {reel.screeningLinks[0] && (
+                  <a
+                    href={`/s/${reel.screeningLinks[0].token}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-[#E0DDD8] text-[#bbb] hover:text-[#1A1A1A] hover:border-[#1A1A1A]/20 hover:bg-white/50 transition-all"
+                    title="Open screening link"
+                  >
+                    <ExternalLink size={12} />
+                  </a>
+                )}
+                {/* Stats — desktop */}
+                <div className="hidden md:flex items-center gap-5 text-[11px] text-[#bbb]">
+                  <span className="flex items-center gap-1">
+                    <Send size={10} />
+                    {reel._count.screeningLinks}
+                  </span>
+                  <span>{timeAgo(reel.updatedAt)}</span>
                 </div>
-              )}
+                {/* Mobile: link count */}
+                {reel._count.screeningLinks > 0 && (
+                  <div className="md:hidden flex items-center gap-1 text-[10px] text-[#bbb]">
+                    <Send size={9} />
+                    {reel._count.screeningLinks}
+                  </div>
+                )}
+              </div>
             </Link>
           ))}
         </div>
@@ -140,7 +158,7 @@ export default async function ReelsPage() {
             Build your first reel by selecting spots from a director&apos;s library.
           </p>
           <Link
-            href="/reels/quick"
+            href="/reels/build"
             className="mt-6 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#1A1A1A] text-white text-[13px] font-medium active:bg-[#333] transition-colors"
           >
             <Plus size={14} />
