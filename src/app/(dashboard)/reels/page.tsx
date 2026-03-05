@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Film, Send, Plus, ExternalLink } from "lucide-react";
+import { Film, Send, Plus, ExternalLink, Eye, Flame } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 
 export default async function ReelsPage() {
@@ -29,13 +29,65 @@ export default async function ReelsPage() {
         take: 5,
       },
       screeningLinks: {
-        where: { isActive: true },
-        select: { id: true, token: true },
+        select: {
+          id: true,
+          token: true,
+          isActive: true,
+          _count: { select: { views: true } },
+        },
         orderBy: { createdAt: "desc" as const },
-        take: 1,
       },
       _count: { select: { items: true, screeningLinks: true } },
     },
+  });
+
+  // Get latest view per reel for "last viewed" indicator
+  const reelIds = reels.map((r) => r.id);
+  const latestViews = reelIds.length > 0
+    ? await prisma.reelView.findMany({
+        where: { screeningLink: { reelId: { in: reelIds } } },
+        orderBy: { startedAt: "desc" },
+        select: { startedAt: true, screeningLink: { select: { reelId: true } } },
+        distinct: ["screeningLinkId"],
+        take: 200,
+      })
+    : [];
+
+  // Build map of reelId → latest view date
+  const lastViewedMap: Record<string, Date> = {};
+  for (const v of latestViews) {
+    const rid = v.screeningLink.reelId;
+    if (!lastViewedMap[rid] || v.startedAt > lastViewedMap[rid]) {
+      lastViewedMap[rid] = v.startedAt;
+    }
+  }
+
+  // Compute per-reel stats for quick badges
+  const now = new Date();
+  const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  const reelsWithStats = reels.map((reel) => {
+    const totalViews = reel.screeningLinks.reduce((sum, l) => sum + l._count.views, 0);
+    const activeLink = reel.screeningLinks.find((l) => l.isActive);
+    const lastViewed = lastViewedMap[reel.id] || null;
+
+    // Activity status
+    let activity: "hot" | "recent" | "stale" | "dead" | "none" = "none";
+    if (totalViews === 0) {
+      activity = reel._count.screeningLinks > 0 ? "dead" : "none";
+    } else if (lastViewed && lastViewed > oneDayAgo) {
+      activity = "hot";
+    } else if (lastViewed && lastViewed > oneWeekAgo) {
+      activity = "recent";
+    } else {
+      activity = "stale";
+    }
+
+    // Hot lead: 3+ views
+    const isHotLead = totalViews >= 3;
+
+    return { ...reel, totalViews, activeLink, lastViewed, activity, isHotLead };
   });
 
   return (
@@ -59,14 +111,32 @@ export default async function ReelsPage() {
         </Link>
       </div>
 
-      {reels.length > 0 ? (
+      {reelsWithStats.length > 0 ? (
         <div className="space-y-2.5 md:space-y-3">
-          {reels.map((reel) => (
+          {reelsWithStats.map((reel) => (
             <Link
               key={reel.id}
               href={`/reels/${reel.id}`}
               className="content-card flex items-center gap-3 md:gap-5 p-3 md:p-4 group"
             >
+              {/* Activity indicator dot */}
+              <div className="flex-shrink-0 hidden md:block">
+                {reel.activity === "hot" ? (
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                  </span>
+                ) : reel.activity === "recent" ? (
+                  <span className="inline-flex rounded-full h-2.5 w-2.5 bg-amber-400" />
+                ) : reel.activity === "stale" ? (
+                  <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#ddd]" />
+                ) : reel.activity === "dead" ? (
+                  <span className="inline-flex rounded-full h-2.5 w-2.5 bg-red-300" />
+                ) : (
+                  <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#eee]" />
+                )}
+              </div>
+
               {/* Thumbnail strip — 2 on mobile, 3 on desktop */}
               <div className="flex gap-0.5 md:gap-1 flex-shrink-0">
                 {reel.items.slice(0, 3).map((item, i) => (
@@ -94,10 +164,15 @@ export default async function ReelsPage() {
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-baseline gap-2 md:gap-3">
+                <div className="flex items-center gap-2 md:gap-3">
                   <h3 className="text-[14px] md:text-lg font-medium tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors truncate">
                     {reel.title}
                   </h3>
+                  {reel.isHotLead && (
+                    <span title="Hot lead — high engagement" className="flex-shrink-0">
+                      <Flame size={13} className="text-amber-500" />
+                    </span>
+                  )}
                   <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-[#E0DDD8] text-[9px] text-[#999] uppercase tracking-[0.1em] flex-shrink-0">
                     <span className="w-1 h-1 rounded-full bg-[#ccc]" />
                     {reel.reelType.toLowerCase()}
@@ -106,7 +181,6 @@ export default async function ReelsPage() {
                 <p className="text-[11px] md:text-[12px] text-[#999] mt-0.5">
                   {reel.director.name} · {reel._count.items} spot
                   {reel._count.items !== 1 ? "s" : ""}
-                  {/* Mobile: inline time */}
                   <span className="md:hidden"> · {timeAgo(reel.updatedAt)}</span>
                 </p>
                 {reel.curatorialNote && (
@@ -116,12 +190,29 @@ export default async function ReelsPage() {
                 )}
               </div>
 
-              {/* Right side — screening link + stats */}
+              {/* Right side — engagement stats + actions */}
               <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
+                {/* View count badge */}
+                <div className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] tabular-nums ${
+                  reel.totalViews > 0
+                    ? "bg-[#F7F6F3] text-[#1A1A1A] font-medium"
+                    : "text-[#ccc]"
+                }`}>
+                  <Eye size={11} className={reel.totalViews > 0 ? "text-[#999]" : "text-[#ddd]"} />
+                  {reel.totalViews}
+                </div>
+
+                {/* Last viewed — desktop */}
+                {reel.lastViewed && (
+                  <span className="hidden md:block text-[10px] text-[#bbb] whitespace-nowrap">
+                    {timeAgo(reel.lastViewed)}
+                  </span>
+                )}
+
                 {/* Screening link icon */}
-                {reel.screeningLinks[0] && (
+                {reel.activeLink && (
                   <a
-                    href={`/s/${reel.screeningLinks[0].token}`}
+                    href={`/s/${reel.activeLink.token}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
@@ -131,21 +222,28 @@ export default async function ReelsPage() {
                     <ExternalLink size={12} />
                   </a>
                 )}
-                {/* Stats — desktop */}
-                <div className="hidden md:flex items-center gap-5 text-[11px] text-[#bbb]">
-                  <span className="flex items-center gap-1">
-                    <Send size={10} />
-                    {reel._count.screeningLinks}
-                  </span>
-                  <span>{timeAgo(reel.updatedAt)}</span>
+
+                {/* Send count — desktop */}
+                <div className="hidden md:flex items-center gap-1 text-[11px] text-[#bbb]">
+                  <Send size={10} />
+                  {reel._count.screeningLinks}
                 </div>
-                {/* Mobile: link count */}
-                {reel._count.screeningLinks > 0 && (
-                  <div className="md:hidden flex items-center gap-1 text-[10px] text-[#bbb]">
-                    <Send size={9} />
-                    {reel._count.screeningLinks}
-                  </div>
-                )}
+
+                {/* Mobile: compact stats */}
+                <div className="md:hidden flex items-center gap-2.5">
+                  {reel.totalViews > 0 && (
+                    <span className="flex items-center gap-1 text-[10px] text-[#999] font-medium">
+                      <Eye size={9} />
+                      {reel.totalViews}
+                    </span>
+                  )}
+                  {reel._count.screeningLinks > 0 && (
+                    <span className="flex items-center gap-1 text-[10px] text-[#bbb]">
+                      <Send size={9} />
+                      {reel._count.screeningLinks}
+                    </span>
+                  )}
+                </div>
               </div>
             </Link>
           ))}

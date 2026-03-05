@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
-import { ArrowLeft, Film, ExternalLink, Eye } from "lucide-react";
-import { formatDuration, timeAgo } from "@/lib/utils";
-import { CreateScreeningLink } from "@/components/reels/create-screening-link";
+import { ArrowLeft, Film } from "lucide-react";
+import { formatDuration } from "@/lib/utils";
+import { ScreeningLinksPanel } from "@/components/reels/screening-links-panel";
 import { GalleryControls } from "@/components/reels/gallery-controls";
 
 export default async function ReelDetailPage({
@@ -138,62 +138,21 @@ export default async function ReelDetailPage({
       </div>
 
       {/* Screening Links */}
-      <div className="mt-10 md:mt-16">
-        <div className="flex items-center justify-between mb-4 md:mb-5">
-          <h2 className="text-[10px] text-[#999] uppercase tracking-wider">
-            Screening Links ({reel.screeningLinks.length})
-          </h2>
-          <CreateScreeningLink reelId={reel.id} />
-        </div>
-
-        {reel.screeningLinks.length > 0 ? (
-          <div className="divide-y divide-[#E8E8E3]/60">
-            {reel.screeningLinks.map((link) => (
-              <div
-                key={link.id}
-                className="flex items-center justify-between py-3 md:py-3.5 gap-3"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="text-[13px] text-[#1A1A1A] truncate">
-                    {link.recipientName || link.recipientEmail || "Untitled link"}
-                  </p>
-                  <p className="text-[11px] text-[#999] truncate">
-                    {link.recipientCompany || "\u2014"} · {timeAgo(link.createdAt)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
-                  <span className="flex items-center gap-1 text-[11px] text-[#bbb]">
-                    <Eye size={10} />
-                    {link._count.views}
-                  </span>
-                  {link.expiresAt && new Date(link.expiresAt) < new Date() ? (
-                    <span className="text-[10px] text-red-400 uppercase tracking-wider">Expired</span>
-                  ) : !link.isActive ? (
-                    <span className="text-[10px] text-red-400 uppercase tracking-wider">Disabled</span>
-                  ) : (
-                    <span className="text-[10px] text-emerald-500 uppercase tracking-wider">Active</span>
-                  )}
-                  <a
-                    href={`${screeningDomain}/s/${link.token}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#ccc] hover:text-[#666] transition-colors"
-                    title="Open screening link"
-                  >
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="py-12 text-center">
-            <p className="text-[13px] text-[#999]">
-              No screening links yet. Create one to share this reel.
-            </p>
-          </div>
-        )}
-      </div>
+      <ScreeningLinksPanel
+        reelId={reel.id}
+        links={reel.screeningLinks.map((l) => ({
+          id: l.id,
+          token: l.token,
+          isActive: l.isActive,
+          recipientName: l.recipientName,
+          recipientEmail: l.recipientEmail,
+          recipientCompany: l.recipientCompany,
+          expiresAt: l.expiresAt ? l.expiresAt.toISOString() : null,
+          createdAt: l.createdAt.toISOString(),
+          _count: l._count,
+        }))}
+        screeningDomain={screeningDomain}
+      />
     </div>
   );
 }
