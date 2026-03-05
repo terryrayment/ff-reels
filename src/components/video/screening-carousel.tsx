@@ -539,6 +539,8 @@ export function ScreeningCarousel({
     setPlayingPanelVideo(null);
   };
   const openPanel = (panel: "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | "casestudies" | "shortfilms" | "gallery") => {
+    // Pause main reel player when opening any panel
+    playerRef.current?.pause?.();
     setPlayingPanelVideo(null);
     setActivePanel((prev) => (prev === panel ? null : panel));
   };
