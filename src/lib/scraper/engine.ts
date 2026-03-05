@@ -6,6 +6,10 @@ import { AdweekRss } from "./sources/rss-adweek";
 import { ShotsAdapter } from "./sources/shots";
 import { ShootRssAdapter } from "./sources/rss-shoot";
 import { AdsOfTheWorldAdapter } from "./sources/ads-of-the-world";
+import { ChampionNewsletter } from "./sources/champion-newsletter";
+import { LbbOnlineRss } from "./sources/rss-lbb";
+import { CampaignBriefRss } from "./sources/rss-campaign-brief";
+import { AdlandRss } from "./sources/rss-adland";
 import { companyTerritory, agencyTerritory } from "./production-companies";
 import { extractCreditsBatch } from "./ai-extract";
 
@@ -28,13 +32,17 @@ function decodeEntities(s: string): string {
 /**
  * All registered source adapters.
  *
- * Six complementary streams:
+ * Ten complementary streams:
  * 1. Muse by Clio RSS — Brand + Agency from <category> tags + article text for AI
  * 2. Production Company News — Director + Prod Co from WordPress APIs/RSS
  * 3. Adweek RSS — Campaign articles with full page text for AI extraction
  * 4. SHOTS — shots.net /work page scraping (brand, director, agency, prodCo)
  * 5. SHOOT Online RSS — Production industry news with location data
  * 6. Ads of the World — Film ad archive (brand, agency, prodCo, director)
+ * 7. Champion Newsletter — Weekly MailChimp newsletter with production credits
+ * 8. LBB Online RSS — Production-focused news (director signings, new work)
+ * 9. Campaign Brief RSS — Global campaigns with full article content
+ * 10. Adland RSS — High-volume ad industry feed (50 items)
  *
  * AI enrichment extracts director, prodCo, DP, editor from article text.
  */
@@ -45,6 +53,10 @@ const ADAPTERS: SourceAdapter[] = [
   new ShotsAdapter(),
   new ShootRssAdapter(),
   new AdsOfTheWorldAdapter(),
+  new ChampionNewsletter(),
+  new LbbOnlineRss(),
+  new CampaignBriefRss(),
+  new AdlandRss(),
 ];
 
 /**
