@@ -463,22 +463,54 @@ export function ScreeningCarousel({
     window.open(`sms:?&body=${msg}`, "_self");
   };
 
-  const handleCopyReelLink = () => {
-    const { dirName, reelDesc, agency } = getShareContext();
-    const text = `${dirName} — ${reelDesc}${agency}\nFriends & Family\n${getReelUrl()}`;
-    navigator.clipboard.writeText(text);
-    setShareCopied("reel");
-    setTimeout(() => setShareCopied(null), 2000);
+  const copyToClipboard = async (text: string): Promise<boolean> => {
+    // Try modern clipboard API first
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        // Fall through to fallback
+      }
+    }
+    // Fallback: textarea + execCommand for iOS Safari / older browsers
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      ta.style.top = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch {
+      return false;
+    }
   };
 
-  const handleCopySpotLink = () => {
+  const handleCopyReelLink = async () => {
+    const { dirName, reelDesc, agency } = getShareContext();
+    const text = `${dirName} — ${reelDesc}${agency}\nFriends & Family\n${getReelUrl()}`;
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      setShareCopied("reel");
+      setTimeout(() => setShareCopied(null), 2000);
+    }
+  };
+
+  const handleCopySpotLink = async () => {
     const { dirName, spotName } = getShareContext();
     const text = `"${spotName}" — Dir. ${dirName}\nSpot ${
       currentIndex + 1
     } of ${items.length}\n${getReelUrl()}`;
-    navigator.clipboard.writeText(text);
-    setShareCopied("spot");
-    setTimeout(() => setShareCopied(null), 2000);
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      setShareCopied("spot");
+      setTimeout(() => setShareCopied(null), 2000);
+    }
   };
 
   const handleNativeShare = async () => {
