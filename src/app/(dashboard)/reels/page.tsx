@@ -43,23 +43,33 @@ export default async function ReelsPage() {
   });
 
   // Get latest view per reel for "last viewed" indicator
-  const reelIds = reels.map((r) => r.id);
-  const latestViews = reelIds.length > 0
-    ? await prisma.reelView.findMany({
-        where: { screeningLink: { reelId: { in: reelIds } } },
-        orderBy: { startedAt: "desc" },
-        select: { startedAt: true, screeningLink: { select: { reelId: true } } },
-        distinct: ["screeningLinkId"],
-        take: 200,
-      })
-    : [];
-
-  // Build map of reelId → latest view date
+  // Use a simple query per-reel's screening links to avoid Neon timeout
+  // on distinct + relation filter combos
   const lastViewedMap: Record<string, Date> = {};
-  for (const v of latestViews) {
-    const rid = v.screeningLink.reelId;
-    if (!lastViewedMap[rid] || v.startedAt > lastViewedMap[rid]) {
-      lastViewedMap[rid] = v.startedAt;
+  const screeningLinkIds = reels.flatMap((r) =>
+    r.screeningLinks.map((l) => l.id),
+  );
+  if (screeningLinkIds.length > 0) {
+    const recentViews = await prisma.reelView.findMany({
+      where: { screeningLinkId: { in: screeningLinkIds } },
+      orderBy: { startedAt: "desc" },
+      select: { startedAt: true, screeningLinkId: true },
+      take: 500,
+    });
+
+    // Build screeningLinkId → reelId lookup
+    const linkToReel: Record<string, string> = {};
+    for (const reel of reels) {
+      for (const link of reel.screeningLinks) {
+        linkToReel[link.id] = reel.id;
+      }
+    }
+
+    for (const v of recentViews) {
+      const rid = linkToReel[v.screeningLinkId];
+      if (rid && (!lastViewedMap[rid] || v.startedAt > lastViewedMap[rid])) {
+        lastViewedMap[rid] = v.startedAt;
+      }
     }
   }
 
