@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Film, Send, Plus, ExternalLink, Eye, Flame } from "lucide-react";
+import { Film, Send, Plus, Eye, Flame } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
+import { ScreeningLinkButton } from "@/components/reels/screening-link-button";
 
 export default async function ReelsPage() {
   const session = await getServerSession(authOptions);
@@ -222,15 +223,7 @@ export default async function ReelsPage() {
 
                 {/* Screening link icon */}
                 {reel.activeLink && (
-                  <a
-                    href={`/s/${reel.activeLink.token}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-[#E0DDD8] text-[#bbb] hover:text-[#1A1A1A] hover:border-[#1A1A1A]/20 hover:bg-white/50 transition-all"
-                    title="Open screening link"
-                  >
-                    <ExternalLink size={12} />
-                  </a>
+                  <ScreeningLinkButton token={reel.activeLink.token} />
                 )}
 
                 {/* Send count — desktop */}
