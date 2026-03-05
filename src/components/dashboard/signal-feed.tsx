@@ -115,7 +115,7 @@ export function SignalFeed({
 
   // Compact 3-column pill layout
   if (compact) {
-    const displayUpdates = updates.slice(0, 9);
+    const displayUpdates = updates.slice(0, 6);
 
     return (
       <div>

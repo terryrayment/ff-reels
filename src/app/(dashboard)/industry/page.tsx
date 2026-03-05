@@ -11,32 +11,35 @@ export default async function IndustryPage() {
   const role = (session.user as { role?: string })?.role || "VIEWER";
   if (role === "VIEWER") redirect("/dashboard");
 
-  // Fetch most recent 200 credits
-  const credits = await prisma.industryCredit.findMany({
-    where: { isHidden: false },
-    orderBy: { createdAt: "desc" },
-    take: 200,
-  });
-
-  // Stats
-  const totalCredits = await prisma.industryCredit.count({ where: { isHidden: false } });
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  const thisWeek = await prisma.industryCredit.count({
-    where: { isHidden: false, createdAt: { gte: sevenDaysAgo } },
-  });
 
-  // AI-enriched count
-  const aiEnriched = await prisma.industryCredit.count({
-    where: { isHidden: false, isAiExtracted: true },
-  });
-
-  // Territory breakdown
-  const territoryBreakdown = await prisma.industryCredit.groupBy({
-    by: ["territory"],
-    where: { isHidden: false, territory: { not: null } },
-    _count: true,
-  });
+  // Run all queries in parallel to avoid sequential Neon round-trips
+  const [credits, totalCredits, thisWeek, aiEnriched, territoryBreakdown, sourceBreakdown] =
+    await Promise.all([
+      prisma.industryCredit.findMany({
+        where: { isHidden: false },
+        orderBy: { createdAt: "desc" },
+        take: 200,
+      }),
+      prisma.industryCredit.count({ where: { isHidden: false } }),
+      prisma.industryCredit.count({
+        where: { isHidden: false, createdAt: { gte: sevenDaysAgo } },
+      }),
+      prisma.industryCredit.count({
+        where: { isHidden: false, isAiExtracted: true },
+      }),
+      prisma.industryCredit.groupBy({
+        by: ["territory"],
+        where: { isHidden: false, territory: { not: null } },
+        _count: true,
+      }),
+      prisma.industryCredit.groupBy({
+        by: ["sourceName"],
+        where: { isHidden: false, sourceName: { not: null } },
+        _count: true,
+      }),
+    ]);
 
   const territories = territoryBreakdown.reduce(
     (acc, t) => {
@@ -45,14 +48,6 @@ export default async function IndustryPage() {
     },
     {} as Record<string, number>
   );
-
-  // Source breakdown
-  const sourceBreakdown = await prisma.industryCredit.groupBy({
-    by: ["sourceName"],
-    where: { isHidden: false, sourceName: { not: null } },
-    _count: true,
-    orderBy: { _count: { sourceName: "desc" } },
-  });
 
   const sources = sourceBreakdown.reduce(
     (acc, s) => {
