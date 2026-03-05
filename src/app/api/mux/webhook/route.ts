@@ -1,18 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import Mux from "@mux/mux-node";
+
+const mux = new Mux();
 
 /**
  * Mux Webhook handler
  * Receives events when video assets finish processing, error, etc.
  * Set this URL in your Mux Dashboard: https://dashboard.mux.com/settings/webhooks
+ *
+ * Env: MUX_WEBHOOK_SECRET — from Mux dashboard webhook settings.
+ * When set, webhook signature is verified. When missing, verification is
+ * skipped (dev only — logs a warning).
  */
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { type, data } = body;
+    const rawBody = await req.text();
 
-    // TODO: Verify Mux webhook signature in production
-    // https://docs.mux.com/guides/listen-for-webhooks#verify-webhook-signatures
+    // Verify webhook signature when secret is configured
+    const secret = process.env.MUX_WEBHOOK_SECRET;
+    if (secret) {
+      const signature = req.headers.get("mux-signature") || "";
+      try {
+        mux.webhooks.verifySignature(rawBody, { "mux-signature": signature }, secret);
+      } catch {
+        console.error("[Mux webhook] Signature verification failed");
+        return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+      }
+    } else {
+      console.warn("[Mux webhook] MUX_WEBHOOK_SECRET not set — skipping signature verification");
+    }
+
+    const body = JSON.parse(rawBody);
+    const { type, data } = body;
 
     switch (type) {
       case "video.asset.ready": {

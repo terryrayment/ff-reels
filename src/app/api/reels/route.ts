@@ -22,6 +22,7 @@ export async function GET() {
   const reels = await prisma.reel.findMany({
     where,
     orderBy: { updatedAt: "desc" },
+    take: 200,
     include: {
       director: { select: { id: true, name: true, slug: true } },
       _count: { select: { items: true, screeningLinks: true } },

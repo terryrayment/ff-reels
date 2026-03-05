@@ -16,6 +16,7 @@ export async function GET() {
 
   const directors = await prisma.director.findMany({
     orderBy: { sortOrder: "asc" },
+    take: 200,
     include: {
       _count: { select: { projects: true, reels: true } },
     },
