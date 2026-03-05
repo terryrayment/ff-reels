@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
 import { getMux } from "@/lib/mux/client";
 import { getUploadUrl } from "@/lib/r2/client";
 import { prisma } from "@/lib/db";
@@ -11,6 +13,11 @@ import { prisma } from "@/lib/db";
  *   - R2: for archival of the original file
  */
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { directorId, title, filename, contentType, fileSizeMb } = body;

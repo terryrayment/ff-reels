@@ -9,29 +9,24 @@ export default async function UpdatesPage() {
   const session = await getServerSession(authOptions);
   const isAdmin = session?.user?.role === "ADMIN";
 
-  const updates = await prisma.update.findMany({
-    where: {
-      type: { not: "REEL_VIEWED" }, // Don't show auto-generated view notifications
-    },
-    take: 50,
-    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-    include: {
-      director: { select: { id: true, name: true } },
-      project: { select: { id: true, title: true, brand: true, muxPlaybackId: true } },
-      author: { select: { id: true, name: true, email: true } },
-    },
-  });
-
-  const directors = isAdmin
-    ? await prisma.director.findMany({
-        where: { isActive: true },
-        orderBy: { name: "asc" },
-        select: { id: true, name: true },
-      })
-    : [];
-
-  // Stats for the top
-  const [spotCount, reelCount, directorCount] = await Promise.all([
+  const [updates, directors, spotCount, reelCount, directorCount] = await Promise.all([
+    prisma.update.findMany({
+      where: { type: { not: "REEL_VIEWED" } },
+      take: 50,
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+      include: {
+        director: { select: { id: true, name: true } },
+        project: { select: { id: true, title: true, brand: true, muxPlaybackId: true } },
+        author: { select: { id: true, name: true, email: true } },
+      },
+    }),
+    isAdmin
+      ? prisma.director.findMany({
+          where: { isActive: true },
+          orderBy: { name: "asc" },
+          select: { id: true, name: true },
+        })
+      : Promise.resolve([]),
     prisma.project.count(),
     prisma.reel.count(),
     prisma.director.count({ where: { isActive: true } }),

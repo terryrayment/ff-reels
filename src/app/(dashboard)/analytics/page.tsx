@@ -89,6 +89,7 @@ export default async function AnalyticsPage({
   const reels = await prisma.reel.findMany({
     where: reelOwnerFilter,
     orderBy: { updatedAt: "desc" },
+    take: 100,
     include: {
       director: { select: { name: true } },
       createdBy: { select: { name: true } },

@@ -17,10 +17,8 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Block public access if no CRON_SECRET is configured
   if (!cronSecret) {
-    console.warn("[Cron] CRON_SECRET not set — set it in Vercel env vars");
-    // Still allow execution so it works during setup
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 403 });
   }
 
   try {

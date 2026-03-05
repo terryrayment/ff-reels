@@ -17,6 +17,7 @@ export default async function ReelsPage() {
   const reels = await prisma.reel.findMany({
     where,
     orderBy: { updatedAt: "desc" },
+    take: 100,
     include: {
       director: { select: { id: true, name: true } },
       items: {

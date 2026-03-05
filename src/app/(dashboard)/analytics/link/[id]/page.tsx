@@ -86,10 +86,10 @@ export default async function LinkDetailPage({
   const isReturnVisitor = uniqueDays >= 2;
   const hasForwarded = link.views.some((v) => v.isForwarded);
 
+  const viewsWithDuration = link.views.filter((v) => v.totalDuration);
   const avgDuration =
-    totalViewCount > 0
-      ? link.views.reduce((s, v) => s + (v.totalDuration || 0), 0) /
-        link.views.filter((v) => v.totalDuration).length || 0
+    viewsWithDuration.length > 0
+      ? viewsWithDuration.reduce((s, v) => s + (v.totalDuration || 0), 0) / viewsWithDuration.length
       : 0;
 
   // Status
