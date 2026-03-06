@@ -251,7 +251,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [agencyName, setAgencyName] = useState("");
   const [campaignName, setCampaignName] = useState("");
   const [producer, setProducer] = useState("");
-  const [titleManuallyEdited, setTitleManuallyEdited] = useState(false);
+  const [titleManuallyEdited] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>("default");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -263,18 +263,50 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
   const availableProjects = selectedDirector?.projects || [];
 
-  // Auto-title: "{Director} for {Brand}"
+  // Master lookup: all projects across all directors (for the spot order panel)
+  const allProjectsMap = useMemo(() => {
+    const map = new Map<string, Project & { directorId: string; directorName: string }>();
+    for (const d of directors) {
+      for (const p of d.projects) {
+        map.set(p.id, { ...p, directorId: d.id, directorName: d.name });
+      }
+    }
+    return map;
+  }, [directors]);
+
+  // Which directors have selected spots (for multi-director reels)
+  const selectedDirectorIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const pid of selectedProjectIds) {
+      const p = allProjectsMap.get(pid);
+      if (p) ids.add(p.directorId);
+    }
+    return ids;
+  }, [selectedProjectIds, allProjectsMap]);
+
+  const isMultiDirector = selectedDirectorIds.size > 1;
+  const primaryDirectorId = selectedProjectIds.length > 0
+    ? allProjectsMap.get(selectedProjectIds[0])?.directorId || selectedDirectorId
+    : selectedDirectorId;
+
+  // Auto-title: "{Director} for {Brand}" or "Multi-Director Reel for {Brand}"
   useEffect(() => {
     if (titleManuallyEdited) return;
-    const director = directors.find((d) => d.id === selectedDirectorId);
-    if (director && brand.trim()) {
-      setTitle(`${director.name} for ${brand.trim()}`);
-    } else if (director && !brand.trim()) {
+    if (isMultiDirector && brand.trim()) {
+      setTitle(`Multi-Director Reel for ${brand.trim()}`);
+    } else if (isMultiDirector && !brand.trim()) {
       setTitle("");
+    } else {
+      const director = directors.find((d) => d.id === selectedDirectorId);
+      if (director && brand.trim()) {
+        setTitle(`${director.name} for ${brand.trim()}`);
+      } else if (director && !brand.trim()) {
+        setTitle("");
+      }
     }
-  }, [selectedDirectorId, brand, titleManuallyEdited, directors]);
+  }, [selectedDirectorId, brand, titleManuallyEdited, directors, isMultiDirector]);
 
-  // Sorted/filtered projects
+  // Sorted/filtered projects for current director view
   const sortedProjects = useMemo(() => {
     const projects = [...availableProjects];
     switch (sortMode) {
@@ -303,17 +335,18 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     }
   }, [availableProjects, sortMode]);
 
-  // Slate always first — sort selected projects so "slate" titles come first
+  // Selected projects resolved from all directors (not just current one)
+  // Slate always first
   const selectedProjects = useMemo(() => {
     const projects = selectedProjectIds
-      .map((id) => availableProjects.find((p) => p.id === id))
-      .filter(Boolean) as Project[];
+      .map((id) => allProjectsMap.get(id))
+      .filter(Boolean) as (Project & { directorId: string; directorName: string })[];
     return projects.sort((a, b) => {
       const aSlate = a.title.toLowerCase().includes("slate") ? 0 : 1;
       const bSlate = b.title.toLowerCase().includes("slate") ? 0 : 1;
       return aSlate - bSlate;
     });
-  }, [selectedProjectIds, availableProjects]);
+  }, [selectedProjectIds, allProjectsMap]);
 
   const toggleProject = (projectId: string) => {
     setSelectedProjectIds((prev) =>
@@ -329,13 +362,12 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
 
   const handleSelectDirector = (id: string) => {
     setSelectedDirectorId(id);
-    setSelectedProjectIds([]);
-    setTitleManuallyEdited(false);
+    // Don't clear selections — allow multi-director reels
     setSortMode("default");
   };
 
   const handleSave = async () => {
-    if (!selectedDirectorId || !title || selectedProjectIds.length === 0) return;
+    if (!primaryDirectorId || !title || selectedProjectIds.length === 0) return;
     setSaving(true);
 
     // Send project IDs in display order (slate first)
@@ -346,7 +378,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          directorId: selectedDirectorId,
+          directorId: primaryDirectorId,
           title,
           curatorialNote: curatorialNote || undefined,
           brand: brand || undefined,
@@ -454,6 +486,29 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
 
         {selectedDirector && (
           <div className="mt-5">
+            {/* Cross-director selection indicator */}
+            {selectedProjectIds.length > 0 && (() => {
+              const otherDirSpots = selectedProjectIds.filter((id) => {
+                const p = allProjectsMap.get(id);
+                return p && p.directorId !== selectedDirectorId;
+              });
+              const thisDirSpots = selectedProjectIds.filter((id) => {
+                const p = allProjectsMap.get(id);
+                return p && p.directorId === selectedDirectorId;
+              });
+              if (otherDirSpots.length > 0) {
+                const otherDirs = new Set(otherDirSpots.map((id) => allProjectsMap.get(id)!.directorName));
+                return (
+                  <div className="mb-3 px-3 py-2 rounded-lg bg-amber-50/80 border border-amber-200/50 text-[11px] text-amber-700">
+                    {thisDirSpots.length} spot{thisDirSpots.length !== 1 ? "s" : ""} from {selectedDirector.name}
+                    {" + "}
+                    {otherDirSpots.length} from {Array.from(otherDirs).join(", ")}
+                  </div>
+                );
+              }
+              return null;
+            })()}
+
             {/* Filter bar */}
             <div className="flex items-center gap-1.5 mb-4">
               {SORT_OPTIONS.map((opt) => (
@@ -596,7 +651,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
             <Button
               onClick={handleSave}
               loading={saving}
-              disabled={!selectedDirectorId || !title || selectedProjectIds.length === 0}
+              disabled={!primaryDirectorId || !title || selectedProjectIds.length === 0}
               className="w-full"
               size="lg"
             >
@@ -621,6 +676,11 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
 
           {selectedProjects.length > 0 ? (
             <div className="space-y-1.5">
+              {isMultiDirector && (
+                <p className="text-[9px] text-amber-600 uppercase tracking-wider mb-1">
+                  Multi-Director Reel · {selectedDirectorIds.size} directors
+                </p>
+              )}
               {selectedProjects.map((project, i) => {
                 const thumbSrc = project.muxPlaybackId
                   ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36&fit_mode=smartcrop`
@@ -643,17 +703,24 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                         </div>
                       )}
                     </div>
-                    <span className="flex-1 text-[12px] text-[#1A1A1A] truncate">
-                      {project.title}
-                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[12px] text-[#1A1A1A] truncate block">
+                        {project.title}
+                      </span>
+                      {isMultiDirector && (project as Project & { directorName: string }).directorName && (
+                        <span className="text-[9px] text-[#bbb] truncate block">
+                          {(project as Project & { directorName: string }).directorName}
+                        </span>
+                      )}
+                    </div>
                     {project.duration && (
-                      <span className="text-[10px] text-[#ccc] tabular-nums">
+                      <span className="text-[10px] text-[#ccc] tabular-nums flex-shrink-0">
                         {formatDuration(project.duration)}
                       </span>
                     )}
                     <button
                       onClick={() => removeProject(project.id)}
-                      className="text-[#ddd] hover:text-[#999] transition-colors opacity-0 group-hover:opacity-100"
+                      className="text-[#ddd] hover:text-[#999] transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
                     >
                       <X size={12} />
                     </button>
