@@ -17,11 +17,37 @@ export async function POST(
   }
 
   const body = await req.json();
-  const { recipientName, recipientEmail, recipientCompany, expiresInDays, password } = body;
+  const { recipientName, recipientEmail, recipientCompany, expiresInDays, password, contactId } = body;
 
   const expiresAt = expiresInDays
     ? new Date(Date.now() + expiresInDays * 86400000)
     : null;
+
+  // Auto-create/link contact when email is provided
+  let resolvedContactId = contactId || null;
+  if (!resolvedContactId && recipientEmail?.trim()) {
+    const email = recipientEmail.trim().toLowerCase();
+    let companyId: string | null = null;
+    if (recipientCompany?.trim()) {
+      const company = await prisma.company.upsert({
+        where: { name: recipientCompany.trim() },
+        create: { name: recipientCompany.trim(), type: "Agency" },
+        update: {},
+      });
+      companyId = company.id;
+    }
+    const contact = await prisma.contact.upsert({
+      where: { email },
+      create: {
+        name: recipientName || email.split("@")[0],
+        email,
+        companyId,
+        tags: [],
+      },
+      update: {},
+    });
+    resolvedContactId = contact.id;
+  }
 
   const link = await prisma.screeningLink.create({
     data: {
@@ -29,6 +55,7 @@ export async function POST(
       recipientName: recipientName || null,
       recipientEmail: recipientEmail || null,
       recipientCompany: recipientCompany || null,
+      contactId: resolvedContactId,
       expiresAt,
       password: password || null,
     },

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Smartphone, Monitor, Tablet, MapPin, RotateCcw, SkipForward, Share2 } from "lucide-react";
+import { ArrowLeft, Smartphone, Monitor, Tablet, MapPin, RotateCcw, SkipForward, Share2, User } from "lucide-react";
 import { timeAgo, formatDuration } from "@/lib/utils";
 
 export default async function LinkDetailPage({
@@ -26,6 +26,9 @@ export default async function LinkDetailPage({
             orderBy: { sortOrder: "asc" },
           },
         },
+      },
+      contact: {
+        select: { id: true, name: true },
       },
       views: {
         orderBy: { startedAt: "desc" },
@@ -117,6 +120,15 @@ export default async function LinkDetailPage({
           <span className={`text-[10px] uppercase tracking-wider ${statusColor}`}>
             {status}
           </span>
+          {link.contact && (
+            <Link
+              href={`/contacts/${link.contact.id}`}
+              className="inline-flex items-center gap-1 text-[11px] text-[#999] hover:text-[#1A1A1A] transition-colors bg-[#F7F6F3] hover:bg-[#EEEDEA] px-2.5 py-1 rounded-full"
+            >
+              <User size={10} />
+              View Profile
+            </Link>
+          )}
         </div>
         <p className="text-[12px] text-[#999]">
           {link.recipientCompany && (

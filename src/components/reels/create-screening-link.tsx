@@ -6,6 +6,15 @@ import { Link2, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
+import { ContactAutocomplete } from "@/components/contacts/contact-autocomplete";
+
+interface SelectedContact {
+  id: string;
+  name: string;
+  email: string;
+  role: string | null;
+  company: { id: string; name: string } | null;
+}
 
 interface CreateScreeningLinkProps {
   reelId: string;
@@ -20,7 +29,22 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientCompany, setRecipientCompany] = useState("");
   const [expiresInDays, setExpiresInDays] = useState("30");
+  const [selectedContact, setSelectedContact] = useState<SelectedContact | null>(null);
   const router = useRouter();
+
+  const handleContactSelect = (contact: SelectedContact) => {
+    setSelectedContact(contact);
+    setRecipientName(contact.name);
+    setRecipientEmail(contact.email);
+    setRecipientCompany(contact.company?.name || "");
+  };
+
+  const handleContactClear = () => {
+    setSelectedContact(null);
+    setRecipientName("");
+    setRecipientEmail("");
+    setRecipientCompany("");
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +59,7 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
           recipientEmail: recipientEmail || undefined,
           recipientCompany: recipientCompany || undefined,
           expiresInDays: expiresInDays ? parseInt(expiresInDays) : undefined,
+          contactId: selectedContact?.id || undefined,
         }),
       });
 
@@ -61,6 +86,7 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
     setRecipientEmail("");
     setRecipientCompany("");
     setExpiresInDays("30");
+    setSelectedContact(null);
     setCopied(false);
   };
 
@@ -102,30 +128,30 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
           </div>
         ) : (
           <form onSubmit={handleCreate} className="space-y-4">
-            <Input
-              id="recipientName"
-              label="Recipient Name"
-              value={recipientName}
-              onChange={(e) => setRecipientName(e.target.value)}
-              placeholder="e.g. Sarah at BBH"
+            <ContactAutocomplete
+              onSelect={handleContactSelect}
+              onClear={handleContactClear}
+              selectedContact={selectedContact}
             />
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                id="recipientEmail"
-                label="Email"
-                type="email"
-                value={recipientEmail}
-                onChange={(e) => setRecipientEmail(e.target.value)}
-                placeholder="sarah@bbh.com"
-              />
-              <Input
-                id="recipientCompany"
-                label="Company"
-                value={recipientCompany}
-                onChange={(e) => setRecipientCompany(e.target.value)}
-                placeholder="BBH"
-              />
-            </div>
+            {!selectedContact && (
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  id="recipientEmail"
+                  label="Email"
+                  type="email"
+                  value={recipientEmail}
+                  onChange={(e) => setRecipientEmail(e.target.value)}
+                  placeholder="sarah@bbh.com"
+                />
+                <Input
+                  id="recipientCompany"
+                  label="Company"
+                  value={recipientCompany}
+                  onChange={(e) => setRecipientCompany(e.target.value)}
+                  placeholder="BBH"
+                />
+              </div>
+            )}
             <Input
               id="expires"
               label="Expires in (days)"

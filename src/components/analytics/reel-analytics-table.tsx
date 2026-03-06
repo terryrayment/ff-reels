@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, Fragment } from "react";
+import Link from "next/link";
 import {
   Search,
   ChevronUp,
@@ -19,6 +20,7 @@ export interface ViewDetail {
   viewerName: string;
   viewerEmail: string | null;
   company: string | null;
+  contactId: string | null;
   city: string | null;
   country: string | null;
   device: string;
@@ -41,6 +43,7 @@ export interface ReelRow {
   views: ViewDetail[];
   recipient: string | null;
   recipientCount: number;
+  recipientContactId: string | null;
   avgCompletionPct: number | null;
   isHotLead: boolean;
 }
@@ -363,7 +366,17 @@ export function ReelAnalyticsTable({ rows }: Props) {
                         <td className="py-3.5 px-3 text-[12px] text-[#999]">
                           {row.recipient ? (
                             <div className="min-w-0">
-                              <p className="truncate max-w-[150px]">{row.recipient}</p>
+                              {row.recipientContactId ? (
+                                <Link
+                                  href={`/contacts/${row.recipientContactId}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="truncate max-w-[150px] block text-[#1A1A1A] hover:underline"
+                                >
+                                  {row.recipient}
+                                </Link>
+                              ) : (
+                                <p className="truncate max-w-[150px]">{row.recipient}</p>
+                              )}
                               {row.recipientCount > 1 && (
                                 <p className="text-[10px] text-[#ccc] mt-0.5">
                                   +{row.recipientCount - 1} more
@@ -445,9 +458,18 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                       {/* Viewer info */}
                                       <div className="min-w-0">
                                         <p className="text-[12px] text-[#1A1A1A] truncate">
-                                          <span className="font-medium">
-                                            {view.viewerName}
-                                          </span>
+                                          {view.contactId ? (
+                                            <Link
+                                              href={`/contacts/${view.contactId}`}
+                                              className="font-medium hover:underline"
+                                            >
+                                              {view.viewerName}
+                                            </Link>
+                                          ) : (
+                                            <span className="font-medium">
+                                              {view.viewerName}
+                                            </span>
+                                          )}
                                           {view.company && (
                                             <span className="text-[#999]">
                                               {" "}

@@ -101,6 +101,7 @@ export default async function AnalyticsPage({
           recipientName: true,
           recipientEmail: true,
           recipientCompany: true,
+          contactId: true,
           views: {
             select: {
               id: true,
@@ -158,6 +159,7 @@ export default async function AnalyticsPage({
           viewerName: v.viewerName || link.recipientName || "Anonymous",
           viewerEmail: v.viewerEmail || link.recipientEmail || null,
           company: link.recipientCompany || null,
+          contactId: link.contactId || null,
           city: v.viewerCity || null,
           country: v.viewerCountry || null,
           device: v.device || "desktop",
@@ -179,6 +181,7 @@ export default async function AnalyticsPage({
       .map((l) => ({
         name: l.recipientName || l.recipientEmail || null,
         company: l.recipientCompany || null,
+        contactId: l.contactId || null,
       }));
     const recipient = recipients.length > 0
       ? recipients[0].name
@@ -188,6 +191,7 @@ export default async function AnalyticsPage({
         : recipients[0].company || null
       : null;
     const recipientCount = recipients.length;
+    const recipientContactId = recipients.length > 0 ? recipients[0].contactId : null;
 
     // Avg completion % across all spot views
     const allSpotCompletions = allViews
@@ -222,6 +226,7 @@ export default async function AnalyticsPage({
       views: allViews,
       recipient,
       recipientCount,
+      recipientContactId,
       avgCompletionPct,
       isHotLead,
     };

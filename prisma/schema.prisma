@@ -209,6 +209,33 @@ enum ReelType {
   CATEGORY    // Category-specific (e.g. "food reel")
 }
 
+// ─── Companies & Contacts (Lightweight CRM) ─────────────
+
+model Company {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  type      String?   // "Agency" | "Brand" | "Production Company"
+  domain    String?   // e.g. "bbh.com" — extracted from email
+  contacts  Contact[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Contact {
+  id             String          @id @default(cuid())
+  name           String
+  email          String          @unique
+  companyId      String?
+  company        Company?        @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  role           String?         // "Creative Director", "Producer", "Head of Production"
+  phone          String?
+  notes          String?         @db.Text
+  tags           String[]
+  screeningLinks ScreeningLink[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
 // ─── Screening Links (Shareable tracking links) ────────
 
 model ScreeningLink {
@@ -221,6 +248,8 @@ model ScreeningLink {
   recipientName    String?
   recipientEmail   String?
   recipientCompany String?    // Agency name
+  contactId        String?
+  contact          Contact?   @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
   // Link settings
   expiresAt        DateTime?

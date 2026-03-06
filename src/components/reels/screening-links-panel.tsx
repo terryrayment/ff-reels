@@ -6,7 +6,16 @@ import { Link2, Copy, Check, Eye, ExternalLink, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
+import { ContactAutocomplete } from "@/components/contacts/contact-autocomplete";
 import { timeAgo } from "@/lib/utils";
+
+interface SelectedContact {
+  id: string;
+  name: string;
+  email: string;
+  role: string | null;
+  company: { id: string; name: string } | null;
+}
 
 interface ScreeningLinkData {
   id: string;
@@ -36,6 +45,7 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
   const [recipientCompany, setRecipientCompany] = useState("");
   const [expiresInDays, setExpiresInDays] = useState("30");
   const [resendFrom, setResendFrom] = useState<string | null>(null);
+  const [selectedContact, setSelectedContact] = useState<SelectedContact | null>(null);
   const router = useRouter();
 
   const openFresh = () => {
@@ -44,6 +54,7 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
     setRecipientCompany("");
     setExpiresInDays("30");
     setResendFrom(null);
+    setSelectedContact(null);
     setCreatedUrl("");
     setCopied(false);
     setOpen(true);
@@ -55,9 +66,24 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
     setRecipientCompany(link.recipientCompany || "");
     setExpiresInDays("30");
     setResendFrom(link.recipientName || link.recipientEmail || "this recipient");
+    setSelectedContact(null);
     setCreatedUrl("");
     setCopied(false);
     setOpen(true);
+  };
+
+  const handleContactSelect = (contact: SelectedContact) => {
+    setSelectedContact(contact);
+    setRecipientName(contact.name);
+    setRecipientEmail(contact.email);
+    setRecipientCompany(contact.company?.name || "");
+  };
+
+  const handleContactClear = () => {
+    setSelectedContact(null);
+    setRecipientName("");
+    setRecipientEmail("");
+    setRecipientCompany("");
   };
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -73,6 +99,7 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
           recipientEmail: recipientEmail || undefined,
           recipientCompany: recipientCompany || undefined,
           expiresInDays: expiresInDays ? parseInt(expiresInDays) : undefined,
+          contactId: selectedContact?.id || undefined,
         }),
       });
 
@@ -100,6 +127,7 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
     setRecipientCompany("");
     setExpiresInDays("30");
     setResendFrom(null);
+    setSelectedContact(null);
     setCopied(false);
   };
 
@@ -221,30 +249,40 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
           </div>
         ) : (
           <form onSubmit={handleCreate} className="space-y-4">
-            <Input
-              id="recipientName"
-              label="Recipient Name"
-              value={recipientName}
-              onChange={(e) => setRecipientName(e.target.value)}
-              placeholder="e.g. Sarah at BBH"
-            />
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                id="recipientEmail"
-                label="Email"
-                type="email"
-                value={recipientEmail}
-                onChange={(e) => setRecipientEmail(e.target.value)}
-                placeholder="sarah@bbh.com"
+            {!resendFrom ? (
+              <ContactAutocomplete
+                onSelect={handleContactSelect}
+                onClear={handleContactClear}
+                selectedContact={selectedContact}
               />
+            ) : (
               <Input
-                id="recipientCompany"
-                label="Company"
-                value={recipientCompany}
-                onChange={(e) => setRecipientCompany(e.target.value)}
-                placeholder="BBH"
+                id="recipientName"
+                label="Recipient Name"
+                value={recipientName}
+                onChange={(e) => setRecipientName(e.target.value)}
+                placeholder="e.g. Sarah at BBH"
               />
-            </div>
+            )}
+            {!selectedContact && (
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  id="recipientEmail"
+                  label="Email"
+                  type="email"
+                  value={recipientEmail}
+                  onChange={(e) => setRecipientEmail(e.target.value)}
+                  placeholder="sarah@bbh.com"
+                />
+                <Input
+                  id="recipientCompany"
+                  label="Company"
+                  value={recipientCompany}
+                  onChange={(e) => setRecipientCompany(e.target.value)}
+                  placeholder="BBH"
+                />
+              </div>
+            )}
             <Input
               id="expires"
               label="Expires in (days)"
