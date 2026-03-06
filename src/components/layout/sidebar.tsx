@@ -14,18 +14,20 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", roles: ["ADMIN", "REP"] },
-  { href: "/reels", label: "Reels", roles: ["ADMIN", "REP"] },
-  { href: "/analytics", label: "Analytics", roles: ["ADMIN", "REP"] },
-  { href: "/contacts", label: "Contacts", roles: ["ADMIN", "REP"] },
-  { href: "/directors", label: "Directors", roles: ["ADMIN"] },
-  { href: "/treatments", label: "Treatments", roles: ["ADMIN", "REP"] },
-  { href: "/industry", label: "Industry", roles: ["ADMIN", "REP"] },
+  { href: "/dashboard", label: "Dashboard", roles: ["ADMIN", "PRODUCER", "REP"] },
+  { href: "/reels", label: "Reels", roles: ["ADMIN", "PRODUCER", "REP"] },
+  { href: "/analytics", label: "Analytics", roles: ["ADMIN", "PRODUCER", "REP"] },
+  { href: "/contacts", label: "Contacts", roles: ["ADMIN", "PRODUCER", "REP"] },
+  { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER"] },
+  { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"] },
+  { href: "/industry", label: "Industry", roles: ["ADMIN", "PRODUCER", "REP"] },
 ];
 
 function getRoleDisplayName(role: string): string {
   switch (role) {
     case "ADMIN":
+      return "Admin";
+    case "PRODUCER":
       return "Producer";
     case "REP":
       return "Sales Rep";
@@ -45,7 +47,7 @@ interface SidebarProps {
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
   const role = user.role || "VIEWER";
-  const isAdmin = role === "ADMIN";
+  const canUpload = role === "ADMIN" || role === "PRODUCER";
   const visibleNav = navItems.filter((item) => item.roles.includes(role));
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -108,8 +110,8 @@ export function Sidebar({ user }: SidebarProps) {
           );
         })}
 
-        {/* Upload Spots -- ADMIN only */}
-        {isAdmin && (
+        {/* Upload Spots -- ADMIN + PRODUCER */}
+        {canUpload && (
           <div className="pt-3 mt-3 border-t border-[#E8E7E3]/30 mx-3">
             <Link
               href="/upload"

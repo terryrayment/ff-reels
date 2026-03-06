@@ -2,14 +2,88 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { IndustryFeed } from "./industry-feed";
+import { UsersPanel } from "./users-panel";
 
-export default async function IndustryPage() {
+export default async function IndustryPage({
+  searchParams,
+}: {
+  searchParams: { tab?: string };
+}) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  const role = (session.user as { role?: string })?.role || "VIEWER";
+  const role = (session.user as { role?: string; id?: string })?.role || "VIEWER";
+  const userId = (session.user as { id?: string })?.id || "";
   if (role === "VIEWER") redirect("/dashboard");
+
+  const isAdmin = role === "ADMIN";
+  const tab = searchParams.tab;
+  const isTeamTab = tab === "team" && isAdmin;
+
+  // If team tab, fetch users instead of credits
+  if (isTeamTab) {
+    const users = await prisma.user.findMany({
+      where: { role: { not: "VIEWER" } },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        passwordHash: true,
+        inviteToken: true,
+        inviteTokenExpires: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const serializedUsers = users.map((u) => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      status: u.passwordHash ? "active" : "invited",
+      invitePending: !u.passwordHash,
+      inviteExpired: !u.passwordHash && u.inviteTokenExpires
+        ? u.inviteTokenExpires < new Date()
+        : false,
+      createdAt: u.createdAt.toISOString(),
+    }));
+
+    return (
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-xl font-medium tracking-tight text-[#1A1A1A]">
+            Industry
+          </h1>
+          <p className="text-[12px] text-[#999] mt-1">
+            Credits, intel &amp; team management
+          </p>
+        </div>
+
+        {/* Tab bar */}
+        <div className="flex items-center gap-1 mb-8">
+          <Link
+            href="/industry"
+            className="px-4 py-2 text-[12px] font-medium rounded-lg transition-colors text-[#999] hover:text-[#666] hover:bg-white/40"
+          >
+            Credits
+          </Link>
+          <Link
+            href="/industry?tab=team"
+            className="px-4 py-2 text-[12px] font-medium rounded-lg transition-colors bg-[#1A1A1A] text-white"
+          >
+            Team
+          </Link>
+        </div>
+
+        <UsersPanel initialUsers={serializedUsers} currentUserId={userId} />
+      </div>
+    );
+  }
 
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -65,10 +139,10 @@ export default async function IndustryPage() {
       <div className="flex items-baseline justify-between mb-6">
         <div>
           <h1 className="text-xl font-medium tracking-tight text-[#1A1A1A]">
-            Industry Pulse
+            Industry
           </h1>
           <p className="text-[12px] text-[#999] mt-1">
-            Commercial production credits from across the industry
+            Credits, intel &amp; team management
           </p>
         </div>
         <div className="flex items-center gap-6">
@@ -90,6 +164,24 @@ export default async function IndustryPage() {
           </div>
         </div>
       </div>
+
+      {/* Tab bar */}
+      {isAdmin && (
+        <div className="flex items-center gap-1 mb-8">
+          <Link
+            href="/industry"
+            className="px-4 py-2 text-[12px] font-medium rounded-lg transition-colors bg-[#1A1A1A] text-white"
+          >
+            Credits
+          </Link>
+          <Link
+            href="/industry?tab=team"
+            className="px-4 py-2 text-[12px] font-medium rounded-lg transition-colors text-[#999] hover:text-[#666] hover:bg-white/40"
+          >
+            Team
+          </Link>
+        </div>
+      )}
 
       {/* Territory + Source breakdown bar */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">

@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { useViewContext } from "./screening-tracker";
 import { formatDuration } from "@/lib/utils";
+import React from "react";
 import {
   ChevronUp,
   X,
@@ -23,6 +24,16 @@ import {
   Sparkles,
 } from "lucide-react";
 
+interface SpotDirectorInfo {
+  id: string;
+  name: string;
+  slug: string;
+  headshotUrl: string | null;
+  bio: string | null;
+  statement: string | null;
+  websiteUrl: string | null;
+}
+
 interface SpotItem {
   id: string;
   project: {
@@ -35,10 +46,12 @@ interface SpotItem {
     muxPlaybackId: string | null;
     thumbnailUrl: string | null;
     contextNote: string | null;
+    director: SpotDirectorInfo;
   };
 }
 
 interface DirectorInfo {
+  id: string;
   name: string;
   slug: string;
   bio: string | null;
@@ -129,6 +142,14 @@ interface ScreeningCarouselProps {
   shortFilms?: DirectorVideoItem[];
   galleryImages?: GalleryImageInfo[];
   reelId?: string;
+  directorsData?: Record<string, {
+    portfolioStills: PortfolioStill[];
+    clientBrands: string[];
+    treatmentSamples: TreatmentSampleInfo[];
+    lookbookItems: LookbookItemInfo[];
+    caseStudies: DirectorVideoItem[];
+    shortFilms: DirectorVideoItem[];
+  }>;
 }
 
 /**
@@ -160,6 +181,7 @@ export function ScreeningCarousel({
   shortFilms = [],
   galleryImages = [],
   reelId,
+  directorsData,
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -174,9 +196,39 @@ export function ScreeningCarousel({
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [hoveredThumb, setHoveredThumb] = useState<{ text: string; x: number; y: number } | null>(null);
   const [playingPanelVideo, setPlayingPanelVideo] = useState<DirectorVideoItem | null>(null);
+  const [showDirectorCard, setShowDirectorCard] = useState(false);
+  const [transitionDirector, setTransitionDirector] = useState<SpotDirectorInfo | null>(null);
+  const [pendingSpotIndex, setPendingSpotIndex] = useState<number | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const playerRef = useRef<any>(null);
+
+  // ── Multi-director detection ──
+  const isMultiDirector = useMemo(() => {
+    const ids = new Set(items.map((item) => item.project.director.id));
+    return ids.size > 1;
+  }, [items]);
+
+  const directorTransitions = useMemo(() => {
+    const transitions = new Set<number>();
+    for (let i = 1; i < items.length; i++) {
+      if (items[i].project.director.id !== items[i - 1].project.director.id) {
+        transitions.add(i);
+      }
+    }
+    return transitions;
+  }, [items]);
+
+  const currentDirector = isMultiDirector
+    ? items[currentIndex]?.project.director ?? director
+    : director;
+
+  // Get the active director's secondary data (bio panel content)
+  const activeClientBrands = directorsData?.[currentDirector.id]?.clientBrands ?? clientBrands;
+  const activeTreatmentSamples = directorsData?.[currentDirector.id]?.treatmentSamples ?? treatmentSamples;
+  const activeLookbookItems = directorsData?.[currentDirector.id]?.lookbookItems ?? lookbookItems;
+  const activeCaseStudies = directorsData?.[currentDirector.id]?.caseStudies ?? caseStudies;
+  const activeShortFilms = directorsData?.[currentDirector.id]?.shortFilms ?? shortFilms;
 
   // Auto-play first spot after 3 seconds
   useEffect(() => {
@@ -327,10 +379,27 @@ export function ScreeningCarousel({
     }
   }, [currentIndex]);
 
+  // Director card auto-dismiss
+  const handleDirectorCardComplete = useCallback(() => {
+    if (pendingSpotIndex !== null) {
+      setCurrentIndex(pendingSpotIndex);
+      setPendingSpotIndex(null);
+    }
+    setShowDirectorCard(false);
+    setTransitionDirector(null);
+  }, [pendingSpotIndex]);
+
+  useEffect(() => {
+    if (!showDirectorCard) return;
+    const timer = setTimeout(handleDirectorCardComplete, 2800);
+    return () => clearTimeout(timer);
+  }, [showDirectorCard, handleDirectorCardComplete]);
+
   // Navigate to a specific spot
   const goToSpot = useCallback(
     (index: number) => {
       if (index === currentIndex || index < 0 || index >= items.length) return;
+      if (isTransitioning || showDirectorCard) return;
 
       // Report current spot data before switching
       if (
@@ -350,12 +419,21 @@ export function ScreeningCarousel({
       setIsTransitioning(true);
       resetTracking();
 
+      const needsDirectorCard = isMultiDirector && directorTransitions.has(index);
+
       setTimeout(() => {
-        setCurrentIndex(index);
-        setIsTransitioning(false);
+        if (needsDirectorCard) {
+          setTransitionDirector(items[index].project.director);
+          setPendingSpotIndex(index);
+          setShowDirectorCard(true);
+          setIsTransitioning(false);
+        } else {
+          setCurrentIndex(index);
+          setIsTransitioning(false);
+        }
       }, 400);
     },
-    [currentIndex, items.length, currentProject, sendSpotData, resetTracking]
+    [currentIndex, items, isTransitioning, showDirectorCard, isMultiDirector, directorTransitions, currentProject, sendSpotData, resetTracking]
   );
 
   // Player event handlers
@@ -645,6 +723,9 @@ export function ScreeningCarousel({
             {currentProject.title}
           </h2>
           <p className="text-sm text-white/40 mt-1 drop-shadow-md">
+            {isMultiDirector && (
+              <span className="text-white/50">{currentDirector.name} &middot; </span>
+            )}
             {[currentProject.brand, currentProject.agency, currentProject.year]
               .filter(Boolean)
               .join(" \u00B7 ")}
@@ -721,6 +802,42 @@ export function ScreeningCarousel({
             )}
           </div>
         </div>
+
+        {/* Director transition card — between spots from different directors */}
+        {showDirectorCard && transitionDirector && (
+          <div
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0e0e0e]"
+            style={{ animation: "fadeIn 300ms ease-out" }}
+          >
+            {transitionDirector.headshotUrl && (
+              <div className="mb-6 w-20 h-20 rounded-full overflow-hidden ring-1 ring-white/10">
+                <img
+                  src={transitionDirector.headshotUrl}
+                  alt={transitionDirector.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <h2 className="text-4xl md:text-5xl font-light tracking-tight text-white/90">
+              {transitionDirector.name}
+            </h2>
+            <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-white/25">
+              Director
+            </p>
+            {pendingSpotIndex !== null && items[pendingSpotIndex] && (
+              <p className="mt-6 text-xs text-white/20">
+                Up next: {items[pendingSpotIndex].project.title}
+              </p>
+            )}
+            {/* Auto-dismiss progress bar */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-32 h-0.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-white/30"
+                style={{ animation: "expandWidth 2.5s linear forwards" }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Floating thumbnail tooltip — rendered outside overflow container */}
@@ -750,48 +867,54 @@ export function ScreeningCarousel({
               const thumb = getThumbUrl(item);
               const isActive = i === currentIndex;
               const isPast = i < currentIndex;
+              const isTransitionPoint = isMultiDirector && directorTransitions.has(i);
 
               return (
-                <button
-                  key={item.id}
-                  onClick={() => goToSpot(i)}
-                  onMouseEnter={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const label = item.project.title + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
-                    setHoveredThumb({ text: label, x: rect.left + rect.width / 2, y: rect.top });
-                  }}
-                  onMouseLeave={() => setHoveredThumb(null)}
-                  title={item.project.title}
-                  className={`flex-shrink-0 group relative transition-all duration-300 rounded-[4px] overflow-hidden ${
-                    isActive
-                      ? "ring-1 ring-white/50 scale-105"
-                      : isPast
-                        ? "opacity-50 hover:opacity-75"
-                        : "opacity-35 hover:opacity-60"
-                  }`}
-                >
-                  <div className="w-[72px] h-[40px] bg-white/[0.04]">
-                    {thumb ? (
-                      <img
-                        src={thumb}
-                        alt={item.project.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-[8px] text-white/15 tabular-nums">
-                          {i + 1}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Active dot */}
-                  {isActive && (
-                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white/60" />
+                <React.Fragment key={item.id}>
+                  {/* Director group separator */}
+                  {isTransitionPoint && (
+                    <div className="flex-shrink-0 w-px h-[40px] bg-white/10 mx-1" />
                   )}
-                </button>
+                  <button
+                    onClick={() => goToSpot(i)}
+                    onMouseEnter={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const label = (isMultiDirector ? `${item.project.director.name} · ` : "") + item.project.title + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
+                      setHoveredThumb({ text: label, x: rect.left + rect.width / 2, y: rect.top });
+                    }}
+                    onMouseLeave={() => setHoveredThumb(null)}
+                    title={item.project.title}
+                    className={`flex-shrink-0 group relative transition-all duration-300 rounded-[4px] overflow-hidden ${
+                      isActive
+                        ? "ring-1 ring-white/50 scale-105"
+                        : isPast
+                          ? "opacity-50 hover:opacity-75"
+                          : "opacity-35 hover:opacity-60"
+                    }`}
+                  >
+                    <div className="w-[72px] h-[40px] bg-white/[0.04]">
+                      {thumb ? (
+                        <img
+                          src={thumb}
+                          alt={item.project.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-[8px] text-white/15 tabular-nums">
+                            {i + 1}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Active dot */}
+                    {isActive && (
+                      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white/60" />
+                    )}
+                  </button>
+                </React.Fragment>
               );
             })}
           </div>
@@ -867,7 +990,7 @@ export function ScreeningCarousel({
             )}
 
             {/* Lookbook / Mood Board button — only if director has lookbook items */}
-            {lookbookItems.length > 0 && (
+            {activeLookbookItems.length > 0 && (
               <button
                 onClick={() => openPanel("lookbook")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
@@ -882,7 +1005,7 @@ export function ScreeningCarousel({
             )}
 
             {/* Treatment Examples button */}
-            {treatmentSamples.length > 0 && (
+            {activeTreatmentSamples.length > 0 && (
               <button
                 onClick={() => openPanel("treatments")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
@@ -909,7 +1032,7 @@ export function ScreeningCarousel({
             </button>
 
             {/* Case Studies button — only if director has case studies */}
-            {caseStudies.length > 0 && (
+            {activeCaseStudies.length > 0 && (
               <button
                 onClick={() => openPanel("casestudies")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
@@ -924,7 +1047,7 @@ export function ScreeningCarousel({
             )}
 
             {/* Short Films button — only if director has short films */}
-            {shortFilms.length > 0 && (
+            {activeShortFilms.length > 0 && (
               <button
                 onClick={() => openPanel("shortfilms")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
@@ -1156,51 +1279,51 @@ export function ScreeningCarousel({
 
             {/* Director info */}
             <div className="flex items-start gap-6 mb-8">
-              {director.headshotUrl && (
+              {currentDirector.headshotUrl && (
                 <img
-                  src={director.headshotUrl}
-                  alt={director.name}
+                  src={currentDirector.headshotUrl}
+                  alt={currentDirector.name}
                   className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
                 />
               )}
               <div>
                 <h3 className="text-xl font-light text-white/90 tracking-tight">
-                  {director.name}
+                  {currentDirector.name}
                 </h3>
                 <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-1">
                   Director
                 </p>
-                {director.websiteUrl && (
+                {currentDirector.websiteUrl && (
                   <a
-                    href={director.websiteUrl}
+                    href={currentDirector.websiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-[10px] text-white/30 hover:text-white/60 transition-colors mt-2"
                   >
                     <Globe size={10} />
-                    {director.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                    {currentDirector.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                   </a>
                 )}
               </div>
             </div>
 
             {/* Bio text */}
-            {director.bio && (
+            {currentDirector.bio && (
               <div className="mb-8">
                 <p className="text-[13px] text-white/50 leading-[1.8] whitespace-pre-line">
-                  {director.bio}
+                  {currentDirector.bio}
                 </p>
               </div>
             )}
 
             {/* Client List */}
-            {clientBrands.length > 0 && (
+            {activeClientBrands.length > 0 && (
               <div className="border-t border-white/5 pt-6 mb-8">
                 <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
                   Client List
                 </p>
                 <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-                  {clientBrands.map((brand) => (
+                  {activeClientBrands.map((brand) => (
                     <span
                       key={brand}
                       className="text-[12px] text-white/30"
@@ -1213,13 +1336,13 @@ export function ScreeningCarousel({
             )}
 
             {/* Statement */}
-            {director.statement && (
+            {currentDirector.statement && (
               <div className="border-t border-white/5 pt-6 mb-8">
                 <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
                   Statement
                 </p>
                 <p className="text-[13px] text-white/35 leading-[1.8] italic whitespace-pre-line">
-                  {director.statement}
+                  {currentDirector.statement}
                 </p>
               </div>
             )}
@@ -1624,7 +1747,7 @@ export function ScreeningCarousel({
 
             {/* Treatment list */}
             <div className="space-y-3">
-              {treatmentSamples.map((t) => (
+              {activeTreatmentSamples.map((t) => (
                 <div key={t.id}>
                   <button
                     onClick={() => setPreviewTreatment(previewTreatment?.id === t.id ? null : t)}
@@ -1688,7 +1811,7 @@ export function ScreeningCarousel({
               ))}
             </div>
 
-            {treatmentSamples.length === 0 && (
+            {activeTreatmentSamples.length === 0 && (
               <p className="text-[13px] text-white/20 text-center py-12">
                 No treatment examples available for this director yet.
               </p>
@@ -1822,7 +1945,7 @@ export function ScreeningCarousel({
 
             {/* Masonry-style lookbook grid */}
             <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
-              {lookbookItems.map((item) => (
+              {activeLookbookItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setLightboxImage(item.imageUrl)}
@@ -1854,7 +1977,7 @@ export function ScreeningCarousel({
               ))}
             </div>
 
-            {lookbookItems.length === 0 && (
+            {activeLookbookItems.length === 0 && (
               <p className="text-[13px] text-white/20 text-center py-12">
                 No lookbook items available for this director yet.
               </p>
@@ -1949,7 +2072,7 @@ export function ScreeningCarousel({
         )}
 
         {/* ─── CASE STUDIES PANEL ────────────────────────── */}
-        {caseStudies.length > 0 && (
+        {activeCaseStudies.length > 0 && (
         <div
           className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-all duration-500 ease-out ${
             activePanel === "casestudies" ? "translate-y-0" : "translate-y-full"
@@ -2024,7 +2147,7 @@ export function ScreeningCarousel({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {caseStudies.map((cs) => (
+                  {activeCaseStudies.map((cs) => (
                     <button
                       key={cs.id}
                       onClick={() => cs.muxPlaybackId ? setPlayingPanelVideo(cs) : null}
@@ -2074,7 +2197,7 @@ export function ScreeningCarousel({
         )}
 
         {/* ─── SHORT FILMS PANEL ─────────────────────────── */}
-        {shortFilms.length > 0 && (
+        {activeShortFilms.length > 0 && (
         <div
           className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-all duration-500 ease-out ${
             activePanel === "shortfilms" ? "translate-y-0" : "translate-y-full"
@@ -2149,7 +2272,7 @@ export function ScreeningCarousel({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {shortFilms.map((sf) => (
+                  {activeShortFilms.map((sf) => (
                     <button
                       key={sf.id}
                       onClick={() => sf.muxPlaybackId ? setPlayingPanelVideo(sf) : null}

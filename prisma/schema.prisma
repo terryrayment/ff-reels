@@ -10,20 +10,22 @@ datasource db {
 // ─── Auth ──────────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  passwordHash  String?
-  emailVerified DateTime?
-  image         String?
-  role          Role      @default(VIEWER)
-  accounts      Account[]
-  sessions      Session[]
-  reelViews     ReelView[]
-  updates       Update[]
-  reels         Reel[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String    @unique
+  passwordHash       String?
+  emailVerified      DateTime?
+  image              String?
+  role               Role      @default(VIEWER)
+  inviteToken        String?   @unique
+  inviteTokenExpires DateTime?
+  accounts           Account[]
+  sessions           Session[]
+  reelViews          ReelView[]
+  updates            Update[]
+  reels              Reel[]
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
 model Account {
@@ -61,9 +63,10 @@ model VerificationToken {
 }
 
 enum Role {
-  ADMIN       // F&F team — full access
-  REP         // Sales reps — can build & send reels
-  VIEWER      // Agency contacts — view-only via screening links
+  ADMIN       // Full access + user management
+  PRODUCER    // Directors, upload, everything except user management
+  REP         // Sales reps — build & send reels
+  VIEWER      // View-only via screening links
 }
 
 // ─── Directors ─────────────────────────────────────────

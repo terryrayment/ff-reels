@@ -62,6 +62,14 @@ export const authOptions: NextAuthOptions = {
         // @ts-expect-error — role is on our user object
         token.role = user.role;
       }
+      // Refresh role from DB on every request so role changes take effect immediately
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true },
+        });
+        if (dbUser) token.role = dbUser.role;
+      }
       return token;
     },
     async session({ session, token }) {

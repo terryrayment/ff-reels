@@ -39,6 +39,17 @@ export default async function ScreeningPage({
                   muxPlaybackId: true,
                   thumbnailUrl: true,
                   contextNote: true,
+                  director: {
+                    select: {
+                      id: true,
+                      name: true,
+                      slug: true,
+                      headshotUrl: true,
+                      bio: true,
+                      statement: true,
+                      websiteUrl: true,
+                    },
+                  },
                 },
               },
             },
@@ -67,6 +78,12 @@ export default async function ScreeningPage({
   const reelProjectIds = link.reel.items.map((item) => item.project.id);
   const directorId = link.reel.director.id;
   const reelId = link.reel.id;
+
+  // Detect multi-director reel — collect unique director IDs from items
+  const directorIdSet = new Set(link.reel.items.map((item) => item.project.director.id));
+  const allDirectorIds = Array.from(directorIdSet);
+  const secondaryDirectorIds = allDirectorIds.filter((id) => id !== directorId);
+  const isMultiDirector = secondaryDirectorIds.length > 0;
 
   // Step 2: Run ALL secondary queries in parallel (10 sequential → 1 parallel batch)
   const [
@@ -217,6 +234,91 @@ export default async function ScreeningPage({
     .map((p) => p.brand)
     .filter((b): b is string => b !== null);
 
+  // Step 3: For multi-director reels, load secondary data for each additional director
+  type DirectorSecondaryData = {
+    portfolioStills: typeof portfolioStills;
+    clientBrands: string[];
+    treatmentSamples: typeof treatmentSamples;
+    lookbookItems: typeof lookbookItems;
+    caseStudies: typeof caseStudies;
+    shortFilms: typeof shortFilms;
+  };
+
+  const directorsData: Record<string, DirectorSecondaryData> = {};
+
+  // Primary director data is already loaded
+  directorsData[directorId] = {
+    portfolioStills,
+    clientBrands,
+    treatmentSamples,
+    lookbookItems,
+    caseStudies,
+    shortFilms,
+  };
+
+  if (isMultiDirector) {
+    const secondaryResults = await Promise.all(
+      secondaryDirectorIds.map(async (dId) => {
+        const [stills, brands, treatments, looks, cases, shorts] = await Promise.all([
+          prisma.project.findMany({
+            where: { directorId: dId, isPublished: true, id: { notIn: reelProjectIds }, thumbnailUrl: { not: null } },
+            select: { id: true, title: true, brand: true, thumbnailUrl: true },
+            take: 20,
+            orderBy: { sortOrder: "asc" },
+          }),
+          prisma.project.findMany({
+            where: { directorId: dId, brand: { not: null } },
+            select: { brand: true },
+            distinct: ["brand"],
+            orderBy: { brand: "asc" },
+          }),
+          prisma.treatmentSample.findMany({
+            where: { directorId: dId },
+            select: { id: true, title: true, brand: true, previewUrl: true, pageCount: true, isRedacted: true },
+            orderBy: { createdAt: "desc" },
+            take: 6,
+          }),
+          prisma.lookbookItem.findMany({
+            where: { directorId: dId },
+            select: { id: true, imageUrl: true, caption: true, source: true, sortOrder: true },
+            orderBy: { sortOrder: "asc" },
+            take: 24,
+          }),
+          prisma.project.findMany({
+            where: {
+              directorId: dId, isPublished: true,
+              OR: [{ contentType: "CASE_STUDY" }, { title: { contains: "Director Commentary", mode: "insensitive" } }],
+            },
+            select: { id: true, title: true, brand: true, agency: true, year: true, duration: true, muxPlaybackId: true, thumbnailUrl: true },
+            orderBy: { sortOrder: "asc" },
+          }),
+          prisma.project.findMany({
+            where: {
+              directorId: dId, isPublished: true,
+              OR: [{ contentType: "SHORT_FILM" }, { category: { contains: "Short Film", mode: "insensitive" } }, { title: { contains: "Short Film", mode: "insensitive" } }],
+            },
+            select: { id: true, title: true, brand: true, agency: true, year: true, duration: true, muxPlaybackId: true, thumbnailUrl: true },
+            orderBy: { sortOrder: "asc" },
+          }),
+        ]);
+        return {
+          id: dId,
+          data: {
+            portfolioStills: stills,
+            clientBrands: brands.map((b) => b.brand).filter((b): b is string => b !== null),
+            treatmentSamples: treatments,
+            lookbookItems: looks,
+            caseStudies: cases,
+            shortFilms: shorts,
+          } as DirectorSecondaryData,
+        };
+      })
+    );
+    for (const r of secondaryResults) {
+      directorsData[r.id] = r.data;
+    }
+  }
+
   // Group frame grabs by projectId for easy lookup
   const frameGrabsMap: Record<string, typeof frameGrabsByProject> = {};
   for (const fg of frameGrabsByProject) {
@@ -266,6 +368,7 @@ export default async function ScreeningPage({
         shortFilms={shortFilms}
         galleryImages={galleryWithUrls}
         reelId={reel.id}
+        directorsData={isMultiDirector ? directorsData : undefined}
       />
     </ScreeningTracker>
   );
