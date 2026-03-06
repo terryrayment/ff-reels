@@ -29,7 +29,7 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
       {directors.map((director) => {
         const hero = director.projects[0];
         const heroSrc = hero?.muxPlaybackId
-          ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop`
+          ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=3`
           : hero?.thumbnailUrl || null;
 
         return (

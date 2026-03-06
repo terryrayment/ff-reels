@@ -15,7 +15,7 @@ export default async function DirectorsPage() {
           ],
         },
         orderBy: { createdAt: "desc" },
-        take: 1,
+        take: 5,
         select: {
           id: true,
           muxPlaybackId: true,
@@ -26,10 +26,18 @@ export default async function DirectorsPage() {
     },
   });
 
-  const rosterDirectors = allDirectors.filter(
+  // Resolve hero thumbnail: prefer heroProjectId, then fall back to first project
+  const directorsWithHero = allDirectors.map((d) => {
+    const heroProject = d.heroProjectId
+      ? d.projects.find((p) => p.id === d.heroProjectId) || d.projects[0]
+      : d.projects[0];
+    return { ...d, projects: heroProject ? [heroProject] : [] };
+  });
+
+  const rosterDirectors = directorsWithHero.filter(
     (d) => d.rosterStatus !== "OFF_ROSTER"
   );
-  const offRosterDirectors = allDirectors.filter(
+  const offRosterDirectors = directorsWithHero.filter(
     (d) => d.rosterStatus === "OFF_ROSTER"
   );
 
