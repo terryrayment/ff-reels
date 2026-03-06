@@ -21,6 +21,7 @@ const navItems: NavItem[] = [
   { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER"] },
   { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"] },
   { href: "/industry", label: "Industry", roles: ["ADMIN", "PRODUCER", "REP"] },
+  { href: "/users", label: "Users", roles: ["ADMIN"] },
 ];
 
 function getRoleDisplayName(role: string): string {
