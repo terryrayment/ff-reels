@@ -5,7 +5,7 @@ function getResend() {
 }
 
 const FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "Terry Rayment <terry@friendsandfamily.tv>";
+  process.env.RESEND_FROM_EMAIL || "Friends & Family Reels <onboarding@resend.dev>";
 
 function getBaseUrl(): string {
   return process.env.NEXTAUTH_URL || "https://reels.friendsandfamily.tv";
