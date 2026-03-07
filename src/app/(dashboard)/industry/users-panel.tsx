@@ -102,15 +102,23 @@ export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: Team
       }
 
       setUsers((prev) => [data, ...prev]);
-      setInviteSuccess(`Invite sent to ${inviteEmail}`);
+
+      if (data.emailSent === false && data.emailError) {
+        setInviteError(`User created but email failed: ${data.emailError}`);
+      } else if (data.emailSent === false) {
+        setInviteError("User created but invite email could not be sent. Try resending.");
+      } else {
+        setInviteSuccess(`Invite sent to ${inviteEmail}`);
+        setTimeout(() => {
+          setInviteSuccess(null);
+          setShowInviteForm(false);
+        }, 2000);
+      }
+
       setInviteName("");
       setInviteEmail("");
       setInviteRole("REP");
       setInviteLoading(false);
-      setTimeout(() => {
-        setInviteSuccess(null);
-        setShowInviteForm(false);
-      }, 2000);
     } catch {
       setInviteError("Something went wrong");
       setInviteLoading(false);

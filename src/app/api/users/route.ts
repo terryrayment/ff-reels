@@ -107,15 +107,25 @@ export async function POST(req: NextRequest) {
   });
 
   // Send invite email
+  let emailSent = false;
+  let emailError = "";
   try {
     await sendInviteEmail(email, name, inviteToken);
+    emailSent = true;
   } catch (err) {
-    console.error("[Users] Failed to send invite email:", err);
-    // User was created, just email failed — don't roll back
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.error("[Users] Failed to send invite email:", errMsg);
+    emailError = errMsg;
   }
 
   return NextResponse.json(
-    { ...user, status: "invited", invitePending: true },
+    {
+      ...user,
+      status: "invited",
+      invitePending: true,
+      emailSent,
+      ...(emailError ? { emailError } : {}),
+    },
     { status: 201 }
   );
 }
