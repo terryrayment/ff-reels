@@ -26,10 +26,25 @@ export default async function DirectorsPage() {
     },
   });
 
+  // Fetch hero projects separately (they may not be in the top-5-by-date window)
+  const heroProjectIds = allDirectors
+    .map((d) => d.heroProjectId)
+    .filter((id): id is string => id !== null);
+
+  const heroProjects =
+    heroProjectIds.length > 0
+      ? await prisma.project.findMany({
+          where: { id: { in: heroProjectIds } },
+          select: { id: true, muxPlaybackId: true, thumbnailUrl: true },
+        })
+      : [];
+
+  const heroMap = new Map(heroProjects.map((p) => [p.id, p]));
+
   // Resolve hero thumbnail: prefer heroProjectId, then fall back to first project
   const directorsWithHero = allDirectors.map((d) => {
     const heroProject = d.heroProjectId
-      ? d.projects.find((p) => p.id === d.heroProjectId) || d.projects[0]
+      ? heroMap.get(d.heroProjectId) || d.projects[0]
       : d.projects[0];
     return { ...d, projects: heroProject ? [heroProject] : [] };
   });
