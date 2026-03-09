@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Clock, AlertCircle, Upload, Star } from "lucide-react";
+import { Film, Clock, AlertCircle, Upload, Image } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
 
@@ -43,9 +43,12 @@ interface DirectorSpotsProps {
 export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorSpotsProps) {
   const [sortBy, setSortBy] = useState<SortKey>("brand");
   const [settingHero, setSettingHero] = useState<string | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ projectId: string; x: number; y: number } | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const setAsHero = async (projectId: string) => {
+    setContextMenu(null);
     setSettingHero(projectId);
     await fetch(`/api/directors/${directorId}`, {
       method: "PATCH",
@@ -55,6 +58,24 @@ export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorS
     router.refresh();
     setSettingHero(null);
   };
+
+  const handleContextMenu = useCallback((e: React.MouseEvent, projectId: string) => {
+    e.preventDefault();
+    setContextMenu({ projectId, x: e.clientX, y: e.clientY });
+  }, []);
+
+  // Close context menu on click-away or Escape
+  useEffect(() => {
+    if (!contextMenu) return;
+    const close = () => setContextMenu(null);
+    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    window.addEventListener("click", close);
+    window.addEventListener("keydown", handleKey);
+    return () => {
+      window.removeEventListener("click", close);
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [contextMenu]);
 
   const sorted = useMemo(() => {
     const arr = [...projects];
@@ -113,20 +134,23 @@ export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorS
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {sorted.map((project) => (
           <div key={project.id} className="group">
-            <div className="relative aspect-video bg-[#EEEDEA] overflow-hidden rounded-[3px]">
+            <div
+              className="relative aspect-video bg-[#EEEDEA] overflow-hidden rounded-[3px]"
+              onContextMenu={(e) => handleContextMenu(e, project.id)}
+            >
               {project.muxPlaybackId ? (
                 <HoverScrubThumbnail
                   muxPlaybackId={project.muxPlaybackId}
                   duration={project.duration}
                   alt={project.title}
                   className="w-full h-full"
-                  staticClassName="opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-300 ease-out"
+                  staticClassName="opacity-95 group-hover:opacity-100 transition-opacity duration-300 ease-out"
                 />
               ) : project.thumbnailUrl ? (
                 <img
                   src={project.thumbnailUrl}
                   alt={project.title}
-                  className="w-full h-full object-cover opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-300 ease-out"
+                  className="w-full h-full object-cover opacity-95 group-hover:opacity-100 transition-opacity duration-300 ease-out"
                   loading="lazy"
                 />
               ) : (
@@ -152,26 +176,10 @@ export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorS
                 </span>
               )}
 
-              {/* Hero badge */}
-              {heroProjectId === project.id && (
-                <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded-sm">
-                  <Star size={9} className="text-amber-400 fill-amber-400" />
-                  <span className="text-[9px] text-white/90 uppercase tracking-wider font-medium">Cover</span>
+              {settingHero === project.id && (
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                  <span className="text-[11px] text-white/90">Setting cover...</span>
                 </div>
-              )}
-
-              {/* Set as Cover overlay */}
-              {heroProjectId !== project.id && project.muxStatus === "ready" && (
-                <button
-                  onClick={() => setAsHero(project.id)}
-                  disabled={settingHero !== null}
-                  className="absolute top-2 right-2 flex items-center gap-1 bg-black/70 hover:bg-black/90 px-2 py-1 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer disabled:opacity-50"
-                >
-                  <Star size={9} className="text-white/80" />
-                  <span className="text-[9px] text-white/90 uppercase tracking-wider font-medium">
-                    {settingHero === project.id ? "Setting..." : "Set Cover"}
-                  </span>
-                </button>
               )}
             </div>
 
@@ -205,6 +213,25 @@ export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorS
           </div>
         ))}
       </div>
+
+      {/* Right-click context menu */}
+      {contextMenu && (
+        <div
+          ref={menuRef}
+          className="fixed z-50 bg-white rounded-md shadow-lg border border-[#E8E8E3] py-1 min-w-[160px]"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setAsHero(contextMenu.projectId)}
+            disabled={settingHero !== null || contextMenu.projectId === heroProjectId}
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-[12px] text-[#333] hover:bg-[#F5F4F0] transition-colors disabled:opacity-40 disabled:cursor-default"
+          >
+            <Image size={13} className="text-[#999]" />
+            {contextMenu.projectId === heroProjectId ? "Already cover" : "Set as cover"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
