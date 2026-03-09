@@ -85,7 +85,8 @@ model Director {
   pressLinks     Json?               // Links to press features
   clientLogos    String[]            // URLs to client logo images
   rosterStatus   String   @default("ROSTER")  // "ROSTER" | "OFF_ROSTER"
-  heroProjectId  String?             // Curated thumbnail — points to a Project ID
+  heroProjectId      String?             // Curated thumbnail — points to a Project ID
+  heroThumbnailUrl   String?             // Custom thumbnail URL (overrides Mux auto-thumbnail)
   isActive       Boolean  @default(true)
   sortOrder      Int      @default(0)
   projects       Project[]

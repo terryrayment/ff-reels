@@ -292,19 +292,19 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-left hidden md:table-cell`}
-                    onClick={() => handleSort("sentByName")}
-                  >
-                    <span className="inline-flex items-center gap-1">
-                      Sent By <SortIcon col="sentByName" />
-                    </span>
-                  </th>
-                  <th
-                    className={`${headerClass} text-right pr-5`}
+                    className={`${headerClass} text-right`}
                     onClick={() => handleSort("lastViewed")}
                   >
                     <span className="inline-flex items-center gap-1 justify-end">
                       Last Viewed <SortIcon col="lastViewed" />
+                    </span>
+                  </th>
+                  <th
+                    className={`${headerClass} text-left pr-5 hidden md:table-cell`}
+                    onClick={() => handleSort("sentByName")}
+                  >
+                    <span className="inline-flex items-center gap-1">
+                      Sent By <SortIcon col="sentByName" />
                     </span>
                   </th>
                 </tr>
@@ -427,13 +427,13 @@ export function ReelAnalyticsTable({ rows }: Props) {
                         <td className="py-3.5 px-3 text-right text-[12px] text-[#999] whitespace-nowrap hidden lg:table-cell">
                           {formatDate(row.lastSent)}
                         </td>
-                        {/* Sent By */}
-                        <td className="py-3.5 px-3 text-[12px] text-[#999] truncate max-w-[130px] hidden md:table-cell">
-                          {row.sentByName || "\u2014"}
-                        </td>
                         {/* Last Viewed */}
-                        <td className="py-3.5 px-3 pr-5 text-right text-[12px] text-[#999] whitespace-nowrap">
+                        <td className="py-3.5 px-3 text-right text-[12px] text-[#999] whitespace-nowrap">
                           {formatDate(row.lastViewed)}
+                        </td>
+                        {/* Sent By */}
+                        <td className="py-3.5 px-3 pr-5 text-[12px] text-[#999] truncate max-w-[130px] hidden md:table-cell">
+                          {row.sentByName || "\u2014"}
                         </td>
                       </tr>
 

@@ -15,6 +15,7 @@ interface DirectorWithProjects {
   slug: string;
   categories: string[];
   isActive: boolean;
+  heroThumbnailUrl: string | null;
   projects: DirectorProject[];
   _count: { projects: number; reels: number };
 }
@@ -28,9 +29,11 @@ export function DirectorGrid({ directors }: DirectorGridProps) {
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
       {directors.map((director) => {
         const hero = director.projects[0];
-        const heroSrc = hero?.muxPlaybackId
-          ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=3`
-          : hero?.thumbnailUrl || null;
+        const heroSrc = director.heroThumbnailUrl
+          ? director.heroThumbnailUrl
+          : hero?.muxPlaybackId
+            ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=3`
+            : hero?.thumbnailUrl || null;
 
         return (
           <Link
