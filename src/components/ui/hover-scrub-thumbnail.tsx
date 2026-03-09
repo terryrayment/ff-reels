@@ -2,8 +2,9 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 
-const TILE_W = 160;
-const TILE_H = 90;
+// Fallback tile dimensions (Mux default for 16:9 landscape video)
+const DEFAULT_TILE_W = 160;
+const DEFAULT_TILE_H = 90;
 
 interface HoverScrubThumbnailProps {
   muxPlaybackId: string;
@@ -15,8 +16,8 @@ interface HoverScrubThumbnailProps {
 
 /**
  * Video thumbnail that scrubs through Mux storyboard frames on hover.
- * Loads a single storyboard sprite sheet and uses CSS background-position
- * to scrub through frames as the mouse moves left → right.
+ * Fetches the storyboard VTT to get accurate tile dimensions, then uses
+ * CSS background-position on the sprite sheet to scrub through frames.
  */
 export function HoverScrubThumbnail({
   muxPlaybackId,
@@ -41,25 +42,58 @@ export function HoverScrubThumbnail({
 
   const staticUrl = `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`;
   const storyboardUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.jpg`;
+  const storyboardVttUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.vtt`;
 
-  // Preload storyboard sprite on first hover
+  // Preload storyboard sprite + VTT on first hover
   useEffect(() => {
     if (!hovering || spriteLoadedRef.current) return;
+    spriteLoadedRef.current = true;
 
-    const img = new Image();
-    img.onload = () => {
-      const cols = Math.round(img.naturalWidth / TILE_W);
-      const rows = Math.round(img.naturalHeight / TILE_H);
-      setSpriteSize({ w: img.naturalWidth, h: img.naturalHeight, cols, rows, total: cols * rows });
-      setSpriteReady(true);
-      spriteLoadedRef.current = true;
+    const load = async () => {
+      try {
+        // Fetch VTT (for accurate tile dimensions) and sprite image in parallel
+        const [vttText, img] = await Promise.all([
+          fetch(storyboardVttUrl)
+            .then((r) => (r.ok ? r.text() : null))
+            .catch(() => null),
+          new Promise<HTMLImageElement>((resolve, reject) => {
+            const i = new Image();
+            i.onload = () => resolve(i);
+            i.onerror = reject;
+            i.src = storyboardUrl;
+          }),
+        ]);
+
+        // Parse tile dimensions from VTT rect parameter (rect=x,y,w,h)
+        let tileW = DEFAULT_TILE_W;
+        let tileH = DEFAULT_TILE_H;
+
+        if (vttText) {
+          const rectMatch = vttText.match(/rect=(\d+),(\d+),(\d+),(\d+)/);
+          if (rectMatch) {
+            tileW = parseInt(rectMatch[3], 10);
+            tileH = parseInt(rectMatch[4], 10);
+          }
+        }
+
+        const cols = Math.max(1, Math.round(img.naturalWidth / tileW));
+        const rows = Math.max(1, Math.round(img.naturalHeight / tileH));
+
+        setSpriteSize({
+          w: img.naturalWidth,
+          h: img.naturalHeight,
+          cols,
+          rows,
+          total: cols * rows,
+        });
+        setSpriteReady(true);
+      } catch {
+        // Storyboard not available — stay on static thumbnail
+      }
     };
-    img.onerror = () => {
-      // Storyboard not available — stay on static thumbnail
-      spriteLoadedRef.current = true;
-    };
-    img.src = storyboardUrl;
-  }, [hovering, storyboardUrl]);
+
+    load();
+  }, [hovering, storyboardUrl, storyboardVttUrl]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
@@ -108,7 +142,7 @@ export function HoverScrubThumbnail({
           style={{
             backgroundImage: `url(${storyboardUrl})`,
             backgroundSize: `${spriteSize.cols * 100}% ${spriteSize.rows * 100}%`,
-            backgroundPosition: `${(col / (spriteSize.cols - 1)) * 100}% ${(row / (spriteSize.rows - 1)) * 100}%`,
+            backgroundPosition: `${spriteSize.cols > 1 ? (col / (spriteSize.cols - 1)) * 100 : 0}% ${spriteSize.rows > 1 ? (row / (spriteSize.rows - 1)) * 100 : 0}%`,
           }}
         />
       )}
