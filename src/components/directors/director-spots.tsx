@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { Film, Clock, AlertCircle, Upload } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
+import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
 
 interface ProjectWithStats {
   id: string;
@@ -94,11 +95,12 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
           <div key={project.id} className="group">
             <div className="relative aspect-video bg-[#EEEDEA] overflow-hidden rounded-[3px]">
               {project.muxPlaybackId ? (
-                <img
-                  src={`https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`}
+                <HoverScrubThumbnail
+                  muxPlaybackId={project.muxPlaybackId}
+                  duration={project.duration}
                   alt={project.title}
-                  className="w-full h-full object-cover opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-300 ease-out"
-                  loading="lazy"
+                  className="w-full h-full"
+                  staticClassName="opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-300 ease-out"
                 />
               ) : project.thumbnailUrl ? (
                 <img
