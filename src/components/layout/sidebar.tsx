@@ -137,13 +137,13 @@ export function Sidebar({ user }: SidebarProps) {
           </div>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-[#ccc] hover:text-[#666] transition-colors duration-300 ml-3 shrink-0"
+            className="text-[#ccc] hover:text-[#666] transition-colors duration-300 ml-3 shrink-0 p-1"
             title="Sign out"
             aria-label="Sign out"
           >
             <svg
-              width="13"
-              height="13"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -166,7 +166,7 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Mobile hamburger — fixed top-left */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed top-4 left-4 z-50 md:hidden p-2.5 rounded-xl bg-white/80 backdrop-blur-lg border border-[#E8E7E3]/60 shadow-sm"
+        className="fixed top-4 left-4 z-50 md:hidden p-3 rounded-xl bg-white/80 backdrop-blur-lg border border-[#E8E7E3]/60 shadow-sm"
         aria-label="Open menu"
       >
         <Menu size={18} className="text-[#1A1A1A]" />
@@ -184,7 +184,7 @@ export function Sidebar({ user }: SidebarProps) {
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 md:hidden"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="fixed left-0 top-0 bottom-0 w-[280px] bg-[#F7F6F3] backdrop-blur-2xl shadow-2xl flex flex-col z-50 md:hidden">
+          <aside className="fixed left-0 top-0 bottom-0 w-[260px] bg-[#F7F6F3] backdrop-blur-2xl shadow-2xl flex flex-col z-50 md:hidden">
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute top-4 right-4 p-2 text-[#999] hover:text-[#1A1A1A] transition-colors"

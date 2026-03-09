@@ -321,8 +321,8 @@ export default async function DashboardPage({
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-14">
-        <div>
+      <div className="flex items-start justify-between mb-8 md:mb-14 gap-4">
+        <div className="min-w-0">
           <h1 className="text-[42px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
             Dashboard
           </h1>
@@ -332,13 +332,13 @@ export default async function DashboardPage({
             {roleLabel}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
           <MyActivityToggle />
           <Link
             href="/reels/build"
-            className="group flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#C45A2D] text-white hover:bg-[#A84B24] shadow-[0_2px_12px_rgba(196,90,45,0.3)] hover:shadow-[0_4px_20px_rgba(196,90,45,0.4)] transition-all duration-300"
+            className="group flex items-center gap-2 md:gap-2.5 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-[#C45A2D] text-white hover:bg-[#A84B24] shadow-[0_2px_12px_rgba(196,90,45,0.3)] hover:shadow-[0_4px_20px_rgba(196,90,45,0.4)] transition-all duration-300"
           >
-            <span className="text-[13px] font-semibold tracking-wide">
+            <span className="text-[12px] md:text-[13px] font-semibold tracking-wide">
               Build Reel
             </span>
             <ArrowRight
@@ -350,16 +350,16 @@ export default async function DashboardPage({
       </div>
 
       {/* Unified Stats Card — weekly metrics | roster counts */}
-      <div className="data-card px-10 py-9 mb-12">
-        <div className="flex items-stretch">
+      <div className="data-card px-5 md:px-10 py-6 md:py-9 mb-8 md:mb-12">
+        <div className="flex flex-col md:flex-row md:items-stretch gap-6 md:gap-0">
           {/* Weekly pulse — left group */}
           <div className="flex-1 min-w-0">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#aaa] font-medium mb-4">
               This Week
             </p>
-            <div className="flex items-end gap-10">
+            <div className="flex items-end gap-6 md:gap-10 flex-wrap">
               <div>
-                <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
                   {weeklyViewCount}
                 </p>
                 <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb]">
@@ -367,7 +367,7 @@ export default async function DashboardPage({
                 </p>
               </div>
               <div>
-                <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
                   {weeklyTotalSeconds > 0
                     ? formatDuration(weeklyTotalSeconds)
                     : "\u2014"}
@@ -377,7 +377,7 @@ export default async function DashboardPage({
                 </p>
               </div>
               <div>
-                <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+                <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
                   {weeklyNewReels}
                 </p>
                 <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb]">
@@ -393,18 +393,18 @@ export default async function DashboardPage({
             )}
           </div>
 
-          {/* Vertical divider */}
-          <div className="w-px bg-[#E8E7E3]/40 mx-10 flex-shrink-0" />
+          {/* Divider — horizontal on mobile, vertical on desktop */}
+          <div className="h-px md:h-auto md:w-px bg-[#E8E7E3]/40 md:mx-10 flex-shrink-0" />
 
           {/* Roster counts — right group */}
           <div className="flex-shrink-0">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#aaa] font-medium mb-4">
               Roster
             </p>
-            <div className="flex items-end gap-8">
+            <div className="flex items-end gap-6 md:gap-8 flex-wrap">
               {rosterStats.map((stat) => (
                 <Link key={stat.label} href={stat.href} className="group">
-                  <p className="text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors leading-none">
+                  <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#666] transition-colors leading-none">
                     {stat.value}
                   </p>
                   <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-[#bbb] group-hover:text-[#999] transition-colors">
@@ -419,7 +419,7 @@ export default async function DashboardPage({
 
       {/* Hot Right Now — compact inline */}
       {hotRightNow.length > 0 && (
-        <div className="data-card px-10 py-5 mb-12">
+        <div className="data-card px-5 md:px-10 py-5 mb-8 md:mb-12">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="relative flex h-2 w-2">
@@ -454,7 +454,7 @@ export default async function DashboardPage({
       )}
 
       {/* Signal — full-width, compact 3-column pills */}
-      <div className="data-card p-9 mb-12">
+      <div className="data-card p-5 md:p-9 mb-8 md:mb-12">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
             Signal
@@ -486,14 +486,11 @@ export default async function DashboardPage({
       </div>
 
       {/* Two-column layout — 58/42 split */}
-      <div className="flex gap-10">
+      <div className="flex flex-col lg:flex-row gap-6 md:gap-10">
         {/* LEFT COLUMN — Activity */}
-        <div
-          className="flex-1 min-w-0 flex flex-col gap-10"
-          style={{ flexBasis: "58%" }}
-        >
+        <div className="flex-1 min-w-0 flex flex-col gap-6 md:gap-10 lg:basis-[58%]">
           {/* Recent Views — grouped, no dividers */}
-          <div className="data-card p-9">
+          <div className="data-card p-5 md:p-9">
             <div className="flex items-baseline justify-between mb-6">
               <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
                 Recent Views
@@ -550,7 +547,7 @@ export default async function DashboardPage({
           </div>
 
           {/* Industry Pulse */}
-          <div className="data-card p-9">
+          <div className="data-card p-5 md:p-9">
             <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium mb-6">
               Industry Pulse
             </h2>
@@ -607,11 +604,11 @@ export default async function DashboardPage({
         </div>
 
         {/* RIGHT COLUMN — Directors + Leaderboard */}
-        <div className="flex-shrink-0" style={{ flexBasis: "38%" }}>
-          <div className="flex flex-col gap-10">
+        <div className="lg:basis-[38%] lg:flex-shrink-0">
+          <div className="flex flex-col gap-6 md:gap-10">
             {/* Director Scorecards */}
             {scorecards.length > 0 && (
-              <div className="data-card p-9">
+              <div className="data-card p-5 md:p-9">
                 <div className="flex items-baseline justify-between mb-6">
                   <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">
                     Directors
@@ -673,7 +670,7 @@ export default async function DashboardPage({
 
             {/* Reel Leaderboard */}
             {leaderboard.length > 0 && (
-              <div className="data-card p-9">
+              <div className="data-card p-5 md:p-9">
                 <div className="flex items-center gap-2 mb-6">
                   <TrendingUp size={11} className="text-[#aaa]" />
                   <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium">

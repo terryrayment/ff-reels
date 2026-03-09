@@ -475,7 +475,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   }
 
   return (
-    <div className="grid grid-cols-[1fr_340px] gap-6">
+    <div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-6">
       {/* Left — director select + spot grid */}
       <div>
         <DirectorDropdown
@@ -510,7 +510,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
             })()}
 
             {/* Filter bar */}
-            <div className="flex items-center gap-1.5 mb-4">
+            <div className="flex items-center gap-1.5 mb-4 flex-wrap">
               {SORT_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
@@ -530,7 +530,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
             </div>
 
             {sortedProjects.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {sortedProjects.map((project) => {
                   const isSelected = selectedProjectIds.includes(project.id);
                   const thumbSrc = project.muxPlaybackId
@@ -598,7 +598,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
       </div>
 
       {/* Right — reel details + spot order */}
-      <div className="space-y-3 sticky top-8 self-start">
+      <div className="space-y-3 lg:sticky lg:top-8 lg:self-start">
         <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5 space-y-3">
           <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
             Reel Details
@@ -720,7 +720,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                     )}
                     <button
                       onClick={() => removeProject(project.id)}
-                      className="text-[#ddd] hover:text-[#999] transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
+                      className="text-[#ddd] hover:text-[#999] transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100 flex-shrink-0"
                     >
                       <X size={12} />
                     </button>

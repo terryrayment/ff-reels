@@ -26,7 +26,7 @@ export default async function DashboardLayout({
 
       {/* Main content — responsive: full-width on mobile, offset on desktop */}
       <main className="md:ml-[220px] min-h-screen">
-        <div className="px-5 pt-16 pb-8 md:px-16 md:py-14 max-w-[1400px]">{children}</div>
+        <div className="px-4 pt-14 pb-8 md:px-16 md:py-14 max-w-[1400px]">{children}</div>
       </main>
     </div>
   );

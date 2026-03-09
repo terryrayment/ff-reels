@@ -687,7 +687,7 @@ export function ScreeningCarousel({
             showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-8 pb-6 pt-24">
+          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-6 pt-24">
             <div className="max-w-3xl mx-auto">
               <h1 className="text-3xl md:text-4xl font-light tracking-tight">
                 {titleDisplay}
@@ -715,7 +715,7 @@ export function ScreeningCarousel({
 
         {/* Spot info — top left, shows when playing */}
         <div
-          className={`absolute top-6 left-8 z-10 pointer-events-none transition-opacity duration-500 ${
+          className={`absolute top-4 left-4 md:top-6 md:left-8 z-10 pointer-events-none transition-opacity duration-500 ${
             !showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -733,7 +733,7 @@ export function ScreeningCarousel({
         </div>
 
         {/* Spot counter — top right */}
-        <div className="absolute top-6 right-8 z-10 pointer-events-none">
+        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-10 pointer-events-none">
           <span className="text-xs text-white/30 tabular-nums font-medium drop-shadow-lg">
             {currentIndex + 1} / {items.length}
           </span>
@@ -741,7 +741,7 @@ export function ScreeningCarousel({
 
         {/* Video player — cinema-style framing, NOT full-screen */}
         <div
-          className={`w-full h-full flex items-center justify-center px-8 py-6 transition-opacity duration-400 relative z-[1] ${
+          className={`w-full h-full flex items-center justify-center px-3 md:px-8 py-6 transition-opacity duration-400 relative z-[1] ${
             isTransitioning ? "opacity-0" : "opacity-100"
           }`}
         >
@@ -1090,7 +1090,7 @@ export function ScreeningCarousel({
           style={{ maxHeight: "65vh" }}
         >
           <div
-            className="max-w-xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "65vh" }}
           >
             {/* Drag handle */}
@@ -1261,7 +1261,7 @@ export function ScreeningCarousel({
           style={{ maxHeight: "70vh" }}
         >
           <div
-            className="max-w-2xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-2xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "70vh" }}
           >
             {/* Drag handle */}
@@ -1362,7 +1362,7 @@ export function ScreeningCarousel({
                   Download All
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {items.map((item, i) => {
                   const thumb = getThumbUrl(item, "large");
                   const canDownload = !!item.project.muxPlaybackId;
@@ -1568,7 +1568,7 @@ export function ScreeningCarousel({
                 <p className="text-[11px] text-white/15 uppercase tracking-[0.25em] mb-10">
                   Sales
                 </p>
-                <div className="grid grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10">
                   <div>
                     <p className="text-[14px] text-white/50 font-light tracking-tight">West Coast</p>
                     <p className="text-[12px] text-white/20 mt-2">Uncle Lefty</p>
@@ -1625,7 +1625,7 @@ export function ScreeningCarousel({
           style={{ maxHeight: "65vh" }}
         >
           <div
-            className="max-w-xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "65vh" }}
           >
             {/* Drag handle */}
@@ -1714,7 +1714,7 @@ export function ScreeningCarousel({
           style={{ maxHeight: "70vh" }}
         >
           <div
-            className="max-w-2xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-2xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "70vh" }}
           >
             {/* Drag handle */}
@@ -1827,7 +1827,7 @@ export function ScreeningCarousel({
           style={{ maxHeight: "80vh" }}
         >
           <div
-            className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-4xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "80vh" }}
           >
             {/* Drag handle */}
@@ -1915,7 +1915,7 @@ export function ScreeningCarousel({
           style={{ maxHeight: "85vh" }}
         >
           <div
-            className="max-w-5xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-5xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "85vh" }}
           >
             {/* Drag handle */}
@@ -1994,7 +1994,7 @@ export function ScreeningCarousel({
           style={{ maxHeight: "85vh" }}
         >
           <div
-            className="max-w-5xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-5xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "85vh" }}
           >
             {/* Drag handle */}
@@ -2080,7 +2080,7 @@ export function ScreeningCarousel({
           style={{ height: playingPanelVideo && activePanel === "casestudies" ? "75vh" : "auto", maxHeight: "85vh" }}
         >
           <div
-            className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-4xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "85vh" }}
           >
             {/* Drag handle */}
@@ -2205,7 +2205,7 @@ export function ScreeningCarousel({
           style={{ height: playingPanelVideo && activePanel === "shortfilms" ? "75vh" : "auto", maxHeight: "85vh" }}
         >
           <div
-            className="max-w-4xl mx-auto px-8 py-8 overflow-y-auto"
+            className="max-w-4xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
             style={{ maxHeight: "85vh" }}
           >
             {/* Drag handle */}

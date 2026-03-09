@@ -187,10 +187,10 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
                     href={`${screeningDomain}/s/${link.token}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#ccc] hover:text-[#666] transition-colors"
+                    className="text-[#ccc] hover:text-[#666] transition-colors p-1.5"
                     title="Open screening link"
                   >
-                    <ExternalLink size={12} />
+                    <ExternalLink size={14} />
                   </a>
                 </div>
               </div>
@@ -265,7 +265,7 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
               />
             )}
             {!selectedContact && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
                   id="recipientEmail"
                   label="Email"

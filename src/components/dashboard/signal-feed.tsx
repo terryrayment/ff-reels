@@ -120,7 +120,7 @@ export function SignalFeed({
     return (
       <div>
         {displayUpdates.length > 0 ? (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {displayUpdates.map((update) => (
               <div
                 key={update.id}
@@ -175,18 +175,18 @@ export function SignalFeed({
 
                 {/* Edit/Delete — hover */}
                 {canModify(update) && editingId !== update.id && (
-                  <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-0 group-hover/item:opacity-100 transition-opacity">
+                  <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-100 md:opacity-0 md:group-hover/item:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleEdit(update)}
-                      className="text-[#ccc] hover:text-[#999] transition-colors p-1 rounded hover:bg-white/60"
+                      className="text-[#ccc] hover:text-[#999] transition-colors p-2 rounded hover:bg-white/60"
                     >
-                      <Pencil size={9} />
+                      <Pencil size={14} className="md:w-[9px] md:h-[9px]" />
                     </button>
                     <button
                       onClick={() => handleDelete(update.id)}
-                      className="text-[#ccc] hover:text-red-400 transition-colors p-1 rounded hover:bg-red-50/60"
+                      className="text-[#ccc] hover:text-red-400 transition-colors p-2 rounded hover:bg-red-50/60"
                     >
-                      <Trash2 size={9} />
+                      <Trash2 size={14} className="md:w-[9px] md:h-[9px]" />
                     </button>
                   </div>
                 )}
@@ -257,20 +257,20 @@ export function SignalFeed({
 
                   {/* Edit/Delete actions — show on hover */}
                   {canModify(update) && (
-                    <div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0 -mt-0.5">
+                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover/item:opacity-100 transition-opacity flex-shrink-0 -mt-0.5">
                       <button
                         onClick={() => handleEdit(update)}
-                        className="text-[#ccc] hover:text-[#999] transition-colors p-1 rounded hover:bg-[#F5F5F0]"
+                        className="text-[#ccc] hover:text-[#999] transition-colors p-2 md:p-1 rounded hover:bg-[#F5F5F0]"
                         title="Edit"
                       >
-                        <Pencil size={10} />
+                        <Pencil size={14} className="md:w-[10px] md:h-[10px]" />
                       </button>
                       <button
                         onClick={() => handleDelete(update.id)}
-                        className="text-[#ccc] hover:text-red-400 transition-colors p-1 rounded hover:bg-red-50"
+                        className="text-[#ccc] hover:text-red-400 transition-colors p-2 md:p-1 rounded hover:bg-red-50"
                         title="Delete"
                       >
-                        <Trash2 size={10} />
+                        <Trash2 size={14} className="md:w-[10px] md:h-[10px]" />
                       </button>
                     </div>
                   )}

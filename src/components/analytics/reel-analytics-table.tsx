@@ -236,7 +236,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                   {/* Expand chevron column */}
                   <th className="w-8" />
                   <th
-                    className={`${headerClass} text-left min-w-[220px]`}
+                    className={`${headerClass} text-left min-w-[160px] md:min-w-[220px]`}
                     onClick={() => handleSort("title")}
                   >
                     <span className="inline-flex items-center gap-1">
@@ -244,7 +244,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-left min-w-[120px]`}
+                    className={`${headerClass} text-left min-w-[120px] hidden md:table-cell`}
                     onClick={() => handleSort("recipient")}
                   >
                     <span className="inline-flex items-center gap-1">
@@ -260,7 +260,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-right`}
+                    className={`${headerClass} text-right hidden md:table-cell`}
                     onClick={() => handleSort("avgCompletionPct")}
                   >
                     <span className="inline-flex items-center gap-1 justify-end">
@@ -268,7 +268,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-right`}
+                    className={`${headerClass} text-right hidden lg:table-cell`}
                     onClick={() => handleSort("totalSent")}
                   >
                     <span className="inline-flex items-center gap-1 justify-end">
@@ -276,7 +276,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-right`}
+                    className={`${headerClass} text-right hidden lg:table-cell`}
                     onClick={() => handleSort("activeLinks")}
                   >
                     <span className="inline-flex items-center gap-1 justify-end">
@@ -284,7 +284,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-right`}
+                    className={`${headerClass} text-right hidden lg:table-cell`}
                     onClick={() => handleSort("lastSent")}
                   >
                     <span className="inline-flex items-center gap-1 justify-end">
@@ -292,7 +292,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-left`}
+                    className={`${headerClass} text-left hidden md:table-cell`}
                     onClick={() => handleSort("sentByName")}
                   >
                     <span className="inline-flex items-center gap-1">
@@ -359,11 +359,17 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                   &middot; {row.reelType.toLowerCase()}
                                 </span>
                               </p>
+                              {/* Mobile-only summary of hidden columns */}
+                              <p className="text-[10px] text-[#bbb] mt-0.5 md:hidden">
+                                {row.recipient && <>{row.recipient} · </>}
+                                {row.avgCompletionPct !== null && <>{row.avgCompletionPct}% · </>}
+                                {row.sentByName}
+                              </p>
                             </div>
                           </div>
                         </td>
                         {/* Recipient */}
-                        <td className="py-3.5 px-3 text-[12px] text-[#999]">
+                        <td className="py-3.5 px-3 text-[12px] text-[#999] hidden md:table-cell">
                           {row.recipient ? (
                             <div className="min-w-0">
                               {row.recipientContactId ? (
@@ -392,7 +398,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                           {row.totalViews}
                         </td>
                         {/* Avg Completion % */}
-                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px]">
+                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] hidden md:table-cell">
                           {row.avgCompletionPct !== null ? (
                             <span
                               className={
@@ -410,19 +416,19 @@ export function ReelAnalyticsTable({ rows }: Props) {
                           )}
                         </td>
                         {/* Sent */}
-                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A]">
+                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A] hidden lg:table-cell">
                           {row.totalSent}
                         </td>
                         {/* Active */}
-                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A]">
+                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A] hidden lg:table-cell">
                           {row.activeLinks}
                         </td>
                         {/* Last Sent */}
-                        <td className="py-3.5 px-3 text-right text-[12px] text-[#999] whitespace-nowrap">
+                        <td className="py-3.5 px-3 text-right text-[12px] text-[#999] whitespace-nowrap hidden lg:table-cell">
                           {formatDate(row.lastSent)}
                         </td>
                         {/* Sent By */}
-                        <td className="py-3.5 px-3 text-[12px] text-[#999] truncate max-w-[130px]">
+                        <td className="py-3.5 px-3 text-[12px] text-[#999] truncate max-w-[130px] hidden md:table-cell">
                           {row.sentByName || "\u2014"}
                         </td>
                         {/* Last Viewed */}

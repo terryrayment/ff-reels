@@ -178,7 +178,7 @@ export function GalleryControls({ reelId, initialStatus }: GalleryControlsProps)
       </div>
 
       {/* Thumbnail grid */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {images.map((img, index) => (
           <button
             key={img.id}
@@ -192,7 +192,7 @@ export function GalleryControls({ reelId, initialStatus }: GalleryControlsProps)
               loading="lazy"
             />
             {/* Hover overlay */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-end justify-between p-2 opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 bg-black/30 md:bg-black/0 md:group-hover:bg-black/30 transition-colors flex items-end justify-between p-2 opacity-100 md:opacity-0 md:group-hover:opacity-100">
               <span className="text-[9px] text-white/80 truncate">
                 {img.projectTitle}
               </span>
