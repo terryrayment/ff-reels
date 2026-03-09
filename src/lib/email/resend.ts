@@ -1,11 +1,16 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-function getResend() {
-  return new Resend(process.env.RESEND_API_KEY);
-}
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 const FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "Friends & Family Reels <onboarding@resend.dev>";
+  process.env.EMAIL_FROM ||
+  "Friends & Family Reels <terry@friendsandfamily.tv>";
 
 function getBaseUrl(): string {
   return process.env.NEXTAUTH_URL || "https://reels.friendsandfamily.tv";
@@ -18,7 +23,7 @@ export async function sendInviteEmail(
 ) {
   const url = `${getBaseUrl()}/set-password?token=${token}`;
 
-  await getResend().emails.send({
+  await transporter.sendMail({
     from: FROM_EMAIL,
     to,
     subject: "You've been invited to Friends & Family Reels",
