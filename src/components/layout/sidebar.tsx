@@ -107,6 +107,9 @@ export function Sidebar({ user }: SidebarProps) {
               )}
             >
               {item.label}
+              {item.href === "/industry" && (
+                <span className="ml-1.5 text-[8px] font-semibold tracking-[0.08em] text-[#bbb] uppercase align-middle">Beta</span>
+              )}
             </Link>
           );
         })}

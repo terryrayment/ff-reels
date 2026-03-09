@@ -550,6 +550,7 @@ export default async function DashboardPage({
           <div className="data-card p-5 md:p-9">
             <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium mb-6">
               Industry Pulse
+              <span className="ml-1.5 text-[8px] font-semibold tracking-[0.08em] text-[#bbb] uppercase">Beta</span>
             </h2>
 
             {industryFeed.length > 0 ? (

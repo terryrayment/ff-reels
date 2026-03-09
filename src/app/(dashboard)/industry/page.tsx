@@ -66,6 +66,7 @@ export default async function IndustryPage() {
         <div>
           <h1 className="text-xl font-medium tracking-tight text-[#1A1A1A]">
             Industry Pulse
+            <span className="ml-2 text-[9px] font-semibold tracking-[0.1em] text-[#bbb] uppercase align-middle">Beta</span>
           </h1>
           <p className="text-[12px] text-[#999] mt-1">
             Commercial production credits from across the industry
