@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { formatDuration } from "@/lib/utils";
-import { Eye, Clock, TrendingUp, TrendingDown, Minus, BarChart3, Film } from "lucide-react";
+import { Eye, TrendingUp, TrendingDown, Minus, BarChart3, Film } from "lucide-react";
 
 export default async function MyStatsPage() {
   const session = await getServerSession(authOptions);
