@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Film, Clock, AlertCircle, Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Film, Clock, AlertCircle, Upload, Star } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
 
@@ -33,8 +34,27 @@ const sortOptions: { key: SortKey; label: string }[] = [
   { key: "views", label: "Most Viewed" },
 ];
 
-export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
+interface DirectorSpotsProps {
+  projects: ProjectWithStats[];
+  directorId: string;
+  heroProjectId: string | null;
+}
+
+export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorSpotsProps) {
   const [sortBy, setSortBy] = useState<SortKey>("brand");
+  const [settingHero, setSettingHero] = useState<string | null>(null);
+  const router = useRouter();
+
+  const setAsHero = async (projectId: string) => {
+    setSettingHero(projectId);
+    await fetch(`/api/directors/${directorId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ heroProjectId: projectId, heroThumbnailUrl: null }),
+    });
+    router.refresh();
+    setSettingHero(null);
+  };
 
   const sorted = useMemo(() => {
     const arr = [...projects];
@@ -130,6 +150,28 @@ export function DirectorSpots({ projects }: { projects: ProjectWithStats[] }) {
                 <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 px-1.5 py-0.5 text-white/90">
                   {formatDuration(project.duration)}
                 </span>
+              )}
+
+              {/* Hero badge */}
+              {heroProjectId === project.id && (
+                <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 px-1.5 py-0.5 rounded-sm">
+                  <Star size={9} className="text-amber-400 fill-amber-400" />
+                  <span className="text-[9px] text-white/90 uppercase tracking-wider font-medium">Cover</span>
+                </div>
+              )}
+
+              {/* Set as Cover overlay */}
+              {heroProjectId !== project.id && project.muxStatus === "ready" && (
+                <button
+                  onClick={() => setAsHero(project.id)}
+                  disabled={settingHero !== null}
+                  className="absolute top-2 right-2 flex items-center gap-1 bg-black/70 hover:bg-black/90 px-2 py-1 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer disabled:opacity-50"
+                >
+                  <Star size={9} className="text-white/80" />
+                  <span className="text-[9px] text-white/90 uppercase tracking-wider font-medium">
+                    {settingHero === project.id ? "Setting..." : "Set Cover"}
+                  </span>
+                </button>
               )}
             </div>
 

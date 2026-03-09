@@ -73,7 +73,11 @@ export default async function DirectorDetailPage({
           <UploadButton directorId={director.id} directorName={director.name} />
         </div>
 
-        <DirectorSpots projects={projectsWithStats} />
+        <DirectorSpots
+          projects={projectsWithStats}
+          directorId={director.id}
+          heroProjectId={director.heroProjectId}
+        />
       </div>
 
       {director.reels.length > 0 && (
