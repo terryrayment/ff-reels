@@ -22,6 +22,10 @@ const navItems: NavItem[] = [
   { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"] },
   { href: "/industry", label: "Industry", roles: ["ADMIN", "PRODUCER", "REP"] },
   { href: "/users", label: "Users", roles: ["ADMIN"] },
+  // Director-only pages
+  { href: "/portfolio", label: "Portfolio", roles: ["DIRECTOR"] },
+  { href: "/my-reels", label: "My Reels", roles: ["DIRECTOR"] },
+  { href: "/my-stats", label: "My Stats", roles: ["DIRECTOR"] },
 ];
 
 function getRoleDisplayName(role: string): string {
@@ -32,6 +36,8 @@ function getRoleDisplayName(role: string): string {
       return "Producer";
     case "REP":
       return "Sales Rep";
+    case "DIRECTOR":
+      return "Director";
     default:
       return role.toLowerCase();
   }

@@ -8,16 +8,23 @@ interface TeamUser {
   name: string | null;
   email: string;
   role: string;
+  directorName?: string | null;
   status: string;
   invitePending: boolean;
   inviteExpired: boolean;
   createdAt: string;
 }
 
+interface DirectorOption {
+  id: string;
+  name: string;
+}
+
 const ROLE_OPTIONS = [
   { value: "ADMIN", label: "Admin" },
   { value: "PRODUCER", label: "Producer" },
   { value: "REP", label: "Sales Rep" },
+  { value: "DIRECTOR", label: "Director" },
 ];
 
 function getRoleLabel(role: string): string {
@@ -25,6 +32,7 @@ function getRoleLabel(role: string): string {
     case "ADMIN": return "Admin";
     case "PRODUCER": return "Producer";
     case "REP": return "Sales Rep";
+    case "DIRECTOR": return "Director";
     default: return role;
   }
 }
@@ -34,6 +42,7 @@ function getRoleColor(role: string): string {
     case "ADMIN": return "bg-violet-50 text-violet-600";
     case "PRODUCER": return "bg-blue-50 text-blue-600";
     case "REP": return "bg-amber-50 text-amber-600";
+    case "DIRECTOR": return "bg-emerald-50 text-emerald-600";
     default: return "bg-gray-50 text-gray-600";
   }
 }
@@ -52,7 +61,7 @@ function timeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: TeamUser[]; currentUserId: string }) {
+export function UsersPanel({ initialUsers, currentUserId, directors = [] }: { initialUsers: TeamUser[]; currentUserId: string; directors?: DirectorOption[] }) {
   const [users, setUsers] = useState<TeamUser[]>(initialUsers);
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [search, setSearch] = useState("");
@@ -61,6 +70,7 @@ export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: Team
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("REP");
+  const [inviteDirectorId, setInviteDirectorId] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteError, setInviteError] = useState<string | null>(null);
   const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
@@ -90,7 +100,12 @@ export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: Team
       const res = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: inviteName, email: inviteEmail, role: inviteRole }),
+        body: JSON.stringify({
+          name: inviteName,
+          email: inviteEmail,
+          role: inviteRole,
+          ...(inviteRole === "DIRECTOR" && inviteDirectorId ? { directorId: inviteDirectorId } : {}),
+        }),
       });
 
       const data = await res.json();
@@ -118,6 +133,7 @@ export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: Team
       setInviteName("");
       setInviteEmail("");
       setInviteRole("REP");
+      setInviteDirectorId("");
       setInviteLoading(false);
     } catch {
       setInviteError("Something went wrong");
@@ -249,7 +265,7 @@ export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: Team
                 </label>
                 <select
                   value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value)}
+                  onChange={(e) => { setInviteRole(e.target.value); if (e.target.value !== "DIRECTOR") setInviteDirectorId(""); }}
                   className="w-full px-3 py-2 text-[13px] rounded-lg border border-[#E8E7E3]/80 bg-white/60 focus:outline-none focus:border-[#1A1A1A]/20 transition-colors"
                 >
                   {ROLE_OPTIONS.map((r) => (
@@ -260,6 +276,26 @@ export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: Team
                 </select>
               </div>
             </div>
+
+            {/* Director selector — shown when DIRECTOR role is selected */}
+            {inviteRole === "DIRECTOR" && (
+              <div className="mt-4">
+                <label className="block text-[10px] text-[#999] uppercase tracking-[0.12em] mb-1.5">
+                  Link to Director Profile
+                </label>
+                <select
+                  value={inviteDirectorId}
+                  onChange={(e) => setInviteDirectorId(e.target.value)}
+                  required
+                  className="w-full max-w-sm px-3 py-2 text-[13px] rounded-lg border border-[#E8E7E3]/80 bg-white/60 focus:outline-none focus:border-[#1A1A1A]/20 transition-colors"
+                >
+                  <option value="">Select a director...</option>
+                  {directors.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="flex items-center gap-3 mt-4">
               <button
@@ -318,6 +354,9 @@ export function UsersPanel({ initialUsers, currentUserId }: { initialUsers: Team
                       </div>
                       <p className="text-[11px] text-[#999] truncate">
                         {user.email}
+                        {user.role === "DIRECTOR" && user.directorName && (
+                          <span className="text-[10px] text-emerald-500/70 ml-1.5">{user.directorName}</span>
+                        )}
                       </p>
                     </div>
                   </div>

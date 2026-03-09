@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
+import { redirect } from "next/navigation";
 import { timeAgo, formatDuration } from "@/lib/utils";
 import Link from "next/link";
 import { ArrowRight, Flame, Trophy, Eye, TrendingUp } from "lucide-react";
@@ -15,6 +16,9 @@ export default async function DashboardPage({
 }) {
   const session = await getServerSession(authOptions);
   if (!session) return null;
+
+  // Directors have their own portal
+  if (session.user.role === "DIRECTOR") redirect("/portfolio");
 
   const isAdmin = session.user.role === "ADMIN";
   const userId = session.user.id;

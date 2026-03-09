@@ -62,13 +62,16 @@ export const authOptions: NextAuthOptions = {
         // @ts-expect-error — role is on our user object
         token.role = user.role;
       }
-      // Refresh role from DB on every request so role changes take effect immediately
+      // Refresh role + directorId from DB on every request so changes take effect immediately
       if (token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true },
+          select: { role: true, directorId: true },
         });
-        if (dbUser) token.role = dbUser.role;
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.directorId = dbUser.directorId;
+        }
       }
       return token;
     },
@@ -77,6 +80,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         // @ts-expect-error — role is on token
         session.user.role = token.role;
+        // @ts-expect-error — directorId is on token
+        session.user.directorId = token.directorId;
       }
       return session;
     },

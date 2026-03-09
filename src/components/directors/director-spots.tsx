@@ -36,11 +36,12 @@ const sortOptions: { key: SortKey; label: string }[] = [
 
 interface DirectorSpotsProps {
   projects: ProjectWithStats[];
-  directorId: string;
-  heroProjectId: string | null;
+  directorId?: string;
+  heroProjectId?: string | null;
+  readOnly?: boolean;
 }
 
-export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorSpotsProps) {
+export function DirectorSpots({ projects, directorId, heroProjectId, readOnly }: DirectorSpotsProps) {
   const [sortBy, setSortBy] = useState<SortKey>("brand");
   const [settingHero, setSettingHero] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{ projectId: string; x: number; y: number } | null>(null);
@@ -136,7 +137,7 @@ export function DirectorSpots({ projects, directorId, heroProjectId }: DirectorS
           <div key={project.id} className="group">
             <div
               className="relative aspect-video bg-[#EEEDEA] overflow-hidden rounded-[3px]"
-              onContextMenu={(e) => handleContextMenu(e, project.id)}
+              {...(!readOnly && directorId ? { onContextMenu: (e: React.MouseEvent) => handleContextMenu(e, project.id) } : {})}
             >
               {project.muxPlaybackId ? (
                 <HoverScrubThumbnail

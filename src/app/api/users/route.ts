@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, email, role } = body;
+  const { name, email, role, directorId } = body;
 
   if (!name || !email || !role) {
     return NextResponse.json(
@@ -70,9 +70,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!["ADMIN", "PRODUCER", "REP"].includes(role)) {
+  if (!["ADMIN", "PRODUCER", "REP", "DIRECTOR"].includes(role)) {
     return NextResponse.json(
-      { error: "Invalid role. Must be ADMIN, PRODUCER, or REP" },
+      { error: "Invalid role. Must be ADMIN, PRODUCER, REP, or DIRECTOR" },
       { status: 400 }
     );
   }
@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
       name,
       email: email.toLowerCase().trim(),
       role,
+      ...(role === "DIRECTOR" && directorId ? { directorId } : {}),
       inviteToken,
       inviteTokenExpires,
     },

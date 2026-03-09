@@ -12,26 +12,36 @@ export default async function UsersPage() {
   const userId = (session.user as { id?: string })?.id || "";
   if (role !== "ADMIN") redirect("/dashboard");
 
-  const users = await prisma.user.findMany({
-    where: { role: { not: "VIEWER" } },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      passwordHash: true,
-      inviteToken: true,
-      inviteTokenExpires: true,
-      createdAt: true,
-    },
-    orderBy: { createdAt: "asc" },
-  });
+  const [users, directors] = await Promise.all([
+    prisma.user.findMany({
+      where: { role: { not: "VIEWER" } },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        passwordHash: true,
+        inviteToken: true,
+        inviteTokenExpires: true,
+        directorId: true,
+        director: { select: { name: true } },
+        createdAt: true,
+      },
+      orderBy: { createdAt: "asc" },
+    }),
+    prisma.director.findMany({
+      where: { isActive: true },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+  ]);
 
   const serializedUsers = users.map((u) => ({
     id: u.id,
     name: u.name,
     email: u.email,
     role: u.role,
+    directorName: u.director?.name || null,
     status: u.passwordHash ? "active" : "invited",
     invitePending: !u.passwordHash,
     inviteExpired: !u.passwordHash && u.inviteTokenExpires
@@ -51,7 +61,7 @@ export default async function UsersPage() {
         </p>
       </div>
 
-      <UsersPanel initialUsers={serializedUsers} currentUserId={userId} />
+      <UsersPanel initialUsers={serializedUsers} currentUserId={userId} directors={directors} />
     </div>
   );
 }
