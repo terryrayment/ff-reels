@@ -1,9 +1,18 @@
-import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
-import { formatDuration } from "@/lib/utils";
 import { DateRangePicker } from "@/components/analytics/date-range-picker";
 import { ReelAnalyticsTable, type ReelRow } from "@/components/analytics/reel-analytics-table";
+import { HeroStats } from "@/components/analytics/hero-stats";
+import { ViewsOverTimeChart } from "@/components/analytics/views-over-time-chart";
+import { EngagementOverview } from "@/components/analytics/engagement-overview";
+import { TopSpotsTable } from "@/components/analytics/top-spots-table";
+import {
+  getHeroStats,
+  getViewsPerDay,
+  getEngagementOverview,
+  getTopSpots,
+} from "@/lib/analytics/queries";
+import { prisma } from "@/lib/db";
 
 export default async function AnalyticsPage({
   searchParams,
@@ -27,7 +36,7 @@ export default async function AnalyticsPage({
     ...(toDate ? { lte: toDate } : {}),
   };
 
-  const hasDateFilter = fromDate || toDate;
+  const hasDateFilter = !!(fromDate || toDate);
 
   // Role-based ownership filters
   const reelOwnerFilter = isAdmin ? {} : { createdById: userId };
@@ -36,100 +45,59 @@ export default async function AnalyticsPage({
     : { screeningLink: { reel: { createdById: userId } } };
   const ownerFilter = isAdmin ? {} : { reel: { createdById: userId } };
 
-  // ── Aggregate stats (top row) ──
-  const [totalViews, recentViews, activeLinksCount, uniqueRecipients] =
+  // ── Fetch all dashboard data in parallel ──
+  const [heroStats, viewsPerDay, engagement, topSpots, reels] =
     await Promise.all([
-      prisma.reelView.count({
-        where: {
-          ...(hasDateFilter ? { startedAt: dateFilter } : {}),
-          ...viewOwnerFilter,
+      getHeroStats(dateFilter, hasDateFilter, viewOwnerFilter, ownerFilter, fromDate, toDate),
+      getViewsPerDay(dateFilter, hasDateFilter, viewOwnerFilter, fromDate, toDate),
+      getEngagementOverview(dateFilter, hasDateFilter, viewOwnerFilter),
+      getTopSpots(dateFilter, hasDateFilter, viewOwnerFilter),
+      // Existing reel table query
+      prisma.reel.findMany({
+        where: reelOwnerFilter,
+        orderBy: { updatedAt: "desc" },
+        take: 100,
+        include: {
+          director: { select: { name: true } },
+          createdBy: { select: { name: true } },
+          screeningLinks: {
+            select: {
+              id: true,
+              isActive: true,
+              createdAt: true,
+              recipientName: true,
+              recipientEmail: true,
+              recipientCompany: true,
+              contactId: true,
+              views: {
+                select: {
+                  id: true,
+                  viewerName: true,
+                  viewerEmail: true,
+                  viewerCity: true,
+                  viewerCountry: true,
+                  device: true,
+                  startedAt: true,
+                  totalDuration: true,
+                  spotViews: {
+                    select: { percentWatched: true },
+                    take: 10,
+                  },
+                },
+                orderBy: { startedAt: "desc" },
+                take: 25,
+              },
+              _count: { select: { views: true } },
+            },
+            ...(hasDateFilter
+              ? { where: { createdAt: dateFilter } }
+              : {}),
+          },
         },
-      }),
-      prisma.reelView.findMany({
-        take: 50,
-        orderBy: { startedAt: "desc" },
-        where: {
-          ...(hasDateFilter ? { startedAt: dateFilter } : {}),
-          ...viewOwnerFilter,
-        },
-        select: { totalDuration: true, device: true },
-      }),
-      prisma.screeningLink.count({
-        where: { isActive: true, ...ownerFilter },
-      }),
-      prisma.screeningLink.findMany({
-        where: ownerFilter,
-        select: { recipientEmail: true },
-        distinct: ["recipientEmail"],
       }),
     ]);
 
-  // Compute aggregate stats
-  const viewsWithDuration = recentViews.filter((v) => v.totalDuration);
-  const avgDuration =
-    viewsWithDuration.length > 0
-      ? viewsWithDuration.reduce(
-          (sum, v) => sum + (v.totalDuration || 0),
-          0
-        ) / viewsWithDuration.length
-      : 0;
-
-  const deviceBreakdown = recentViews.reduce(
-    (acc, v) => {
-      const device = v.device || "unknown";
-      acc[device] = (acc[device] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
-
-  const uniqueEmailCount = uniqueRecipients.filter((r) => r.recipientEmail).length;
-
-  // ── Per-reel data for table ──
-  const reels = await prisma.reel.findMany({
-    where: reelOwnerFilter,
-    orderBy: { updatedAt: "desc" },
-    take: 100,
-    include: {
-      director: { select: { name: true } },
-      createdBy: { select: { name: true } },
-      screeningLinks: {
-        select: {
-          id: true,
-          isActive: true,
-          createdAt: true,
-          recipientName: true,
-          recipientEmail: true,
-          recipientCompany: true,
-          contactId: true,
-          views: {
-            select: {
-              id: true,
-              viewerName: true,
-              viewerEmail: true,
-              viewerCity: true,
-              viewerCountry: true,
-              device: true,
-              startedAt: true,
-              totalDuration: true,
-              spotViews: {
-                select: { percentWatched: true },
-                take: 10,
-              },
-            },
-            orderBy: { startedAt: "desc" },
-            take: 25,
-          },
-          _count: { select: { views: true } },
-        },
-        ...(hasDateFilter
-          ? { where: { createdAt: dateFilter } }
-          : {}),
-      },
-    },
-  });
-
-  // Compute per-reel row data
+  // ── Compute per-reel row data ──
   const reelRows: ReelRow[] = reels.map((reel) => {
     const totalViewsForReel = reel.screeningLinks.reduce(
       (sum, link) => sum + link._count.views,
@@ -138,13 +106,11 @@ export default async function AnalyticsPage({
     const totalSent = reel.screeningLinks.length;
     const activeLinks = reel.screeningLinks.filter((l) => l.isActive).length;
 
-    // Last sent = most recent screening link createdAt
     const sentDates = reel.screeningLinks.map((l) => l.createdAt.getTime());
     const lastSent = sentDates.length > 0
       ? new Date(Math.max(...sentDates)).toISOString()
       : null;
 
-    // Flatten all views across all links for this reel
     const allViews = reel.screeningLinks.flatMap((link) =>
       link.views.map((v) => {
         const avgCompletion =
@@ -170,12 +136,10 @@ export default async function AnalyticsPage({
       })
     );
 
-    // Sort views by most recent first
     allViews.sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
 
     const lastViewed = allViews.length > 0 ? allViews[0].startedAt : null;
 
-    // Recipient — first non-null recipient name or company across links
     const recipients = reel.screeningLinks
       .filter((l) => l.recipientName || l.recipientCompany)
       .map((l) => ({
@@ -193,7 +157,6 @@ export default async function AnalyticsPage({
     const recipientCount = recipients.length;
     const recipientContactId = recipients.length > 0 ? recipients[0].contactId : null;
 
-    // Avg completion % across all spot views
     const allSpotCompletions = allViews
       .map((v) => v.avgCompletion)
       .filter((c): c is number => c !== null);
@@ -203,7 +166,6 @@ export default async function AnalyticsPage({
         )
       : null;
 
-    // Hot lead detection: 3+ views, or viewed on multiple days, or high completion
     const uniqueViewDays = new Set(
       allViews.map((v) => v.startedAt.split("T")[0])
     ).size;
@@ -249,54 +211,19 @@ export default async function AnalyticsPage({
         <DateRangePicker />
       </div>
 
-      {/* Top stats */}
-      <div className="data-card p-6 md:p-8 mb-8">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-14">
-          <div>
-            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
-              {totalViews}
-            </p>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
-              Total Views
-            </p>
-          </div>
-          <div>
-            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
-              {avgDuration ? formatDuration(avgDuration) : "\u2014"}
-            </p>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
-              Avg. Watch Time
-            </p>
-          </div>
-          <div>
-            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
-              {activeLinksCount}
-            </p>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
-              Active Links
-            </p>
-          </div>
-          <div>
-            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
-              {uniqueEmailCount}
-            </p>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
-              Recipients
-            </p>
-          </div>
-          <div className="hidden md:block">
-            <p className="text-[32px] md:text-5xl font-light tracking-tight-3 tabular-nums text-[#1A1A1A]">
-              {deviceBreakdown["desktop"] || 0} /{" "}
-              {deviceBreakdown["mobile"] || 0}
-            </p>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#999]">
-              Desktop / Mobile
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Hero Stats with Trends */}
+      <HeroStats stats={heroStats} />
 
-      {/* Wiredrive-style reel table */}
+      {/* Views Over Time */}
+      <ViewsOverTimeChart data={viewsPerDay} />
+
+      {/* Engagement Overview — 3-col grid */}
+      <EngagementOverview data={engagement} />
+
+      {/* Top Performing Spots */}
+      <TopSpotsTable spots={topSpots} />
+
+      {/* Reel Activity Table (existing) */}
       <ReelAnalyticsTable rows={reelRows} />
     </div>
   );
