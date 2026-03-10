@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Eye, ArrowLeft } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -53,10 +53,23 @@ interface SidebarProps {
 
 export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const role = user.role || "VIEWER";
-  const canUpload = role === "ADMIN" || role === "PRODUCER";
-  const visibleNav = navItems.filter((item) => item.roles.includes(role));
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Admin preview mode: when ?preview=directorId is in the URL
+  const previewDirectorId = role === "ADMIN" ? searchParams.get("preview") : null;
+  const isPreview = !!previewDirectorId;
+
+  // In preview mode, show director nav items with the preview param
+  const previewSuffix = isPreview ? `?preview=${previewDirectorId}` : "";
+  const visibleNav = isPreview
+    ? navItems.filter((item) => item.roles.includes("DIRECTOR")).map((item) => ({
+        ...item,
+        href: `${item.href}${previewSuffix}`,
+      }))
+    : navItems.filter((item) => item.roles.includes(role));
+  const canUpload = !isPreview && (role === "ADMIN" || role === "PRODUCER");
 
   // Close mobile sidebar on navigation
   useEffect(() => {
@@ -77,7 +90,7 @@ export function Sidebar({ user }: SidebarProps) {
     <>
       {/* Brand */}
       <div className="px-7 pt-8 pb-12">
-        <Link href="/dashboard" className="block group">
+        <Link href={isPreview ? `/portfolio${previewSuffix}` : "/dashboard"} className="block group">
           <div className="flex items-center gap-3.5">
             <img
               src="/logo.svg"
@@ -96,11 +109,32 @@ export function Sidebar({ user }: SidebarProps) {
         </Link>
       </div>
 
+      {/* Preview mode indicator */}
+      {isPreview && (
+        <div className="px-4 -mt-6 mb-4">
+          <div className="px-3 py-2 bg-amber-50/80 border border-amber-200/40 rounded-xl">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <Eye size={10} className="text-amber-500" />
+              <span className="text-[9px] uppercase tracking-[0.12em] text-amber-600 font-semibold">Director Preview</span>
+            </div>
+            <Link
+              href={`/directors/${previewDirectorId}`}
+              className="flex items-center gap-1 text-[11px] text-amber-600 hover:text-amber-800 transition-colors font-medium"
+            >
+              <ArrowLeft size={10} />
+              Exit Preview
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Nav */}
       <nav className="flex-1 px-4 space-y-0.5">
         {visibleNav.map((item) => {
+          // Strip query params for active check
+          const itemPath = item.href.split("?")[0];
           const isActive =
-            pathname === item.href || pathname.startsWith(item.href + "/");
+            pathname === itemPath || pathname.startsWith(itemPath + "/");
           return (
             <Link
               key={item.href}
@@ -141,7 +175,7 @@ export function Sidebar({ user }: SidebarProps) {
               {user.name ?? user.email}
             </p>
             <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em] mt-0.5">
-              {getRoleDisplayName(role)}
+              {isPreview ? "Previewing" : getRoleDisplayName(role)}
             </p>
           </div>
           <button
