@@ -134,15 +134,26 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
               selectedContact={selectedContact}
             />
             {!selectedContact && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Input
-                  id="recipientEmail"
-                  label="Email"
-                  type="email"
-                  value={recipientEmail}
-                  onChange={(e) => setRecipientEmail(e.target.value)}
-                  placeholder="sarah@bbh.com"
-                />
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    id="recipientName"
+                    label="Name"
+                    value={recipientName}
+                    onChange={(e) => setRecipientName(e.target.value)}
+                    placeholder="Sarah Johnson"
+                    required
+                  />
+                  <Input
+                    id="recipientEmail"
+                    label="Email"
+                    type="email"
+                    value={recipientEmail}
+                    onChange={(e) => setRecipientEmail(e.target.value)}
+                    placeholder="sarah@bbh.com"
+                    required
+                  />
+                </div>
                 <Input
                   id="recipientCompany"
                   label="Company"
@@ -165,7 +176,11 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
               <Button type="button" variant="ghost" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button type="submit" loading={loading}>
+              <Button
+                type="submit"
+                loading={loading}
+                disabled={!selectedContact && (!recipientName.trim() || !recipientEmail.trim())}
+              >
                 Create Link
               </Button>
             </div>
