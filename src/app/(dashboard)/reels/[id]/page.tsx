@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ScreeningLinksPanel } from "@/components/reels/screening-links-panel";
 import { ReelSpotList } from "@/components/reels/reel-spot-list";
+import { EditableReelTitle } from "@/components/reels/editable-reel-title";
 
 export default async function ReelDetailPage({
   params,
@@ -46,9 +47,7 @@ export default async function ReelDetailPage({
       <div>
         <div>
           <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
-            <h1 className="text-2xl md:text-4xl font-light tracking-tight-2 text-[#1A1A1A]">
-              {reel.title}
-            </h1>
+            <EditableReelTitle reelId={reel.id} initialTitle={reel.title} />
             <span className="text-[10px] text-[#bbb] uppercase tracking-wider">
               {reel.reelType.toLowerCase()}
             </span>
@@ -85,6 +84,7 @@ export default async function ReelDetailPage({
         </h2>
         <ReelSpotList
           reelId={reel.id}
+          directorId={reel.directorId}
           items={reel.items.map((item) => ({
             id: item.id,
             projectId: item.projectId,

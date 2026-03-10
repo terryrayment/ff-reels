@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Film, GripVertical, X } from "lucide-react";
+import { Film, GripVertical, X, Plus } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
+import { AddSpotsModal } from "./add-spots-modal";
 import {
   DndContext,
   closestCenter,
@@ -131,12 +132,15 @@ function SortableSpot({
 
 export function ReelSpotList({
   reelId,
+  directorId,
   items,
 }: {
   reelId: string;
+  directorId: string;
   items: SpotItem[];
 }) {
   const [spots, setSpots] = useState(items);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -189,22 +193,50 @@ export function ReelSpotList({
     [reelId]
   );
 
+  const handleSpotsAdded = useCallback(
+    (newSpots: SpotItem[]) => {
+      setSpots((prev) => [...prev, ...newSpots]);
+    },
+    []
+  );
+
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext
-        items={spots.map((s) => s.id)}
-        strategy={verticalListSortingStrategy}
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
       >
-        <div className="divide-y divide-[#E8E8E3]/60">
-          {spots.map((item, index) => (
-            <SortableSpot key={item.id} item={item} index={index} onRemove={handleRemove} />
-          ))}
-        </div>
-      </SortableContext>
-    </DndContext>
+        <SortableContext
+          items={spots.map((s) => s.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="divide-y divide-[#E8E8E3]/60">
+            {spots.map((item, index) => (
+              <SortableSpot key={item.id} item={item} index={index} onRemove={handleRemove} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      {/* Add Spots button */}
+      <button
+        type="button"
+        onClick={() => setShowAddModal(true)}
+        className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] text-[#999] hover:text-[#1A1A1A] border border-dashed border-[#E8E7E3] hover:border-[#ccc] transition-all duration-200 hover:bg-[#F7F6F3]/50"
+      >
+        <Plus size={14} />
+        Add Spots
+      </button>
+
+      <AddSpotsModal
+        reelId={reelId}
+        directorId={directorId}
+        existingProjectIds={spots.map((s) => s.projectId)}
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSpotsAdded={handleSpotsAdded}
+      />
+    </>
   );
 }
