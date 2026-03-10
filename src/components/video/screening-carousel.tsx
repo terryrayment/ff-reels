@@ -6,6 +6,8 @@ import { useViewContext } from "./screening-tracker";
 import { formatDuration } from "@/lib/utils";
 import React from "react";
 import {
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   X,
   Mail,
@@ -201,6 +203,8 @@ export function ScreeningCarousel({
   const thumbStripRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const playerRef = useRef<any>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   // ── Multi-director detection ──
   const isMultiDirector = useMemo(() => {
@@ -434,6 +438,35 @@ export function ScreeningCarousel({
     },
     [currentIndex, items, isTransitioning, showDirectorCard, isMultiDirector, directorTransitions, currentProject, sendSpotData, resetTracking]
   );
+
+  // Prev / Next helpers
+  const goToPrev = useCallback(() => {
+    if (currentIndex > 0) goToSpot(currentIndex - 1);
+  }, [currentIndex, goToSpot]);
+
+  const goToNext = useCallback(() => {
+    if (currentIndex < items.length - 1) goToSpot(currentIndex + 1);
+  }, [currentIndex, items.length, goToSpot]);
+
+  // Touch swipe handlers for mobile
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    // Only trigger if horizontal swipe is dominant and exceeds threshold
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) goToNext();   // swipe left → next
+      else goToPrev();           // swipe right → prev
+    }
+  }, [goToNext, goToPrev]);
 
   // Player event handlers
   const handlePlay = () => {
@@ -743,7 +776,31 @@ export function ScreeningCarousel({
           className={`w-full h-full flex items-center justify-center px-3 md:px-8 py-6 transition-opacity duration-400 relative z-[1] ${
             isTransitioning ? "opacity-0" : "opacity-100"
           }`}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
+          {/* Prev arrow */}
+          {currentIndex > 0 && (
+            <button
+              onClick={goToPrev}
+              className="absolute left-1 md:left-4 z-10 p-2 rounded-full bg-black/20 md:bg-black/0 md:hover:bg-black/30 text-white/40 md:text-white/20 md:hover:text-white/70 transition-all backdrop-blur-sm md:backdrop-blur-none"
+              aria-label="Previous spot"
+            >
+              <ChevronLeft size={28} />
+            </button>
+          )}
+
+          {/* Next arrow */}
+          {currentIndex < items.length - 1 && (
+            <button
+              onClick={goToNext}
+              className="absolute right-1 md:right-4 z-10 p-2 rounded-full bg-black/20 md:bg-black/0 md:hover:bg-black/30 text-white/40 md:text-white/20 md:hover:text-white/70 transition-all backdrop-blur-sm md:backdrop-blur-none"
+              aria-label="Next spot"
+            >
+              <ChevronRight size={28} />
+            </button>
+          )}
+
           <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
             {currentProject.muxPlaybackId ? (
               <MuxPlayer

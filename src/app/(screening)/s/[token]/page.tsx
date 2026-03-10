@@ -1,7 +1,65 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ScreeningTracker } from "@/components/video/screening-tracker";
 import { ScreeningCarousel } from "@/components/video/screening-carousel";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { token: string };
+}): Promise<Metadata> {
+  const link = await prisma.screeningLink.findUnique({
+    where: { token: params.token, isActive: true },
+    select: {
+      reel: {
+        select: {
+          title: true,
+          brand: true,
+          director: { select: { name: true } },
+          items: {
+            select: { project: { select: { muxPlaybackId: true, thumbnailUrl: true } } },
+            orderBy: { sortOrder: "asc" },
+            take: 1,
+          },
+        },
+      },
+    },
+  });
+
+  if (!link) {
+    return { title: "Screening — Friends & Family" };
+  }
+
+  const { reel } = link;
+  const title = reel.brand
+    ? `${reel.title} — ${reel.brand}`
+    : `${reel.title} — ${reel.director.name}`;
+  const description = `A screening reel by ${reel.director.name} via Friends & Family`;
+
+  // Use the first spot's thumbnail for the OG image
+  const firstSpot = reel.items[0]?.project;
+  const ogImage = firstSpot?.muxPlaybackId
+    ? `https://image.mux.com/${firstSpot.muxPlaybackId}/thumbnail.jpg?width=1200&height=630&fit_mode=smartcrop`
+    : firstSpot?.thumbnailUrl || undefined;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "video.other",
+      ...(ogImage ? { images: [{ url: ogImage, width: 1200, height: 630 }] } : {}),
+    },
+    twitter: {
+      card: ogImage ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(ogImage ? { images: [ogImage] } : {}),
+    },
+  };
+}
 
 export default async function ScreeningPage({
   params,
