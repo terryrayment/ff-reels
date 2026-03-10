@@ -779,28 +779,6 @@ export function ScreeningCarousel({
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Prev arrow */}
-          {currentIndex > 0 && (
-            <button
-              onClick={goToPrev}
-              className="absolute left-1 md:left-4 z-10 p-2 rounded-full bg-black/20 md:bg-black/0 md:hover:bg-black/30 text-white/40 md:text-white/20 md:hover:text-white/70 transition-all backdrop-blur-sm md:backdrop-blur-none"
-              aria-label="Previous spot"
-            >
-              <ChevronLeft size={28} />
-            </button>
-          )}
-
-          {/* Next arrow */}
-          {currentIndex < items.length - 1 && (
-            <button
-              onClick={goToNext}
-              className="absolute right-1 md:right-4 z-10 p-2 rounded-full bg-black/20 md:bg-black/0 md:hover:bg-black/30 text-white/40 md:text-white/20 md:hover:text-white/70 transition-all backdrop-blur-sm md:backdrop-blur-none"
-              aria-label="Next spot"
-            >
-              <ChevronRight size={28} />
-            </button>
-          )}
-
           <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
             {currentProject.muxPlaybackId ? (
               <MuxPlayer
@@ -913,6 +891,20 @@ export function ScreeningCarousel({
       {/* Bottom bar: thumbnails + action buttons */}
       <div className="relative z-20 border-t border-white/[0.06] bg-[#080808] flex-shrink-0">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2">
+          {/* Prev arrow */}
+          <button
+            onClick={goToPrev}
+            disabled={currentIndex === 0}
+            className={`flex-shrink-0 p-1.5 rounded-full transition-colors ${
+              currentIndex === 0
+                ? "text-white/10 cursor-default"
+                : "text-white/40 hover:text-white/70 hover:bg-white/10"
+            }`}
+            aria-label="Previous spot"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
           {/* Thumbnail strip */}
           <div
             ref={thumbStripRef}
@@ -974,6 +966,20 @@ export function ScreeningCarousel({
               );
             })}
           </div>
+
+          {/* Next arrow */}
+          <button
+            onClick={goToNext}
+            disabled={currentIndex >= items.length - 1}
+            className={`flex-shrink-0 p-1.5 rounded-full transition-colors ${
+              currentIndex >= items.length - 1
+                ? "text-white/10 cursor-default"
+                : "text-white/40 hover:text-white/70 hover:bg-white/10"
+            }`}
+            aria-label="Next spot"
+          >
+            <ChevronRight size={20} />
+          </button>
 
           {/* Action buttons */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
