@@ -178,8 +178,8 @@ export function ScreeningCarousel({
   lookbookItems = [],
   caseStudies = [],
   shortFilms = [],
-  galleryImages = [],
-  reelId,
+  // galleryImages — removed (AI Gallery feature removed)
+  // reelId — removed (was only used by gallery)
   directorsData,
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();

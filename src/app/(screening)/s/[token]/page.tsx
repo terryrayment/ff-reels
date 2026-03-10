@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { getDownloadUrl } from "@/lib/r2/client";
 import { ScreeningTracker } from "@/components/video/screening-tracker";
 import { ScreeningCarousel } from "@/components/video/screening-carousel";
 
@@ -77,7 +76,6 @@ export default async function ScreeningPage({
 
   const reelProjectIds = link.reel.items.map((item) => item.project.id);
   const directorId = link.reel.director.id;
-  const reelId = link.reel.id;
 
   // Detect multi-director reel — collect unique director IDs from items
   const directorIdSet = new Set(link.reel.items.map((item) => item.project.director.id));
@@ -95,7 +93,6 @@ export default async function ScreeningPage({
     lookbookItems,
     caseStudies,
     shortFilms,
-    galleryImages,
   ] = await Promise.all([
     // Portfolio stills (up to 20 thumbnails from projects NOT in this reel)
     prisma.project.findMany({
@@ -220,8 +217,6 @@ export default async function ScreeningPage({
       orderBy: { sortOrder: "asc" },
     }),
 
-    // AI gallery removed — return empty array to keep destructuring
-    Promise.resolve([]),
   ]);
 
   const clientBrands = allDirectorProjects

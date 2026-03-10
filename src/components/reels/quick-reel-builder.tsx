@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Copy,
   Film,
-  GripVertical,
   Loader2,
   Search,
   Share2,
