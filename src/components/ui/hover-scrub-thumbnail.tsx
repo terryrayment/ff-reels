@@ -2,9 +2,9 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 
-// Fallback tile dimensions (Mux default for 16:9 landscape video)
-const DEFAULT_TILE_W = 160;
-const DEFAULT_TILE_H = 90;
+// Fallback tile dimensions (Mux default storyboard tile size)
+const DEFAULT_TILE_W = 284;
+const DEFAULT_TILE_H = 160;
 
 interface HoverScrubThumbnailProps {
   muxPlaybackId: string;
@@ -40,7 +40,7 @@ export function HoverScrubThumbnail({
   const containerRef = useRef<HTMLDivElement>(null);
   const spriteLoadedRef = useRef(false);
 
-  const staticUrl = `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`;
+  const staticUrl = `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=640`;
   const storyboardUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.jpg`;
   const storyboardVttUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.vtt`;
 
@@ -64,15 +64,15 @@ export function HoverScrubThumbnail({
           }),
         ]);
 
-        // Parse tile dimensions from VTT rect parameter (rect=x,y,w,h)
+        // Parse tile dimensions from VTT xywh fragment (e.g. #xywh=0,0,284,160)
         let tileW = DEFAULT_TILE_W;
         let tileH = DEFAULT_TILE_H;
 
         if (vttText) {
-          const rectMatch = vttText.match(/rect=(\d+),(\d+),(\d+),(\d+)/);
-          if (rectMatch) {
-            tileW = parseInt(rectMatch[3], 10);
-            tileH = parseInt(rectMatch[4], 10);
+          const xywhMatch = vttText.match(/#xywh=(\d+),(\d+),(\d+),(\d+)/);
+          if (xywhMatch) {
+            tileW = parseInt(xywhMatch[3], 10);
+            tileH = parseInt(xywhMatch[4], 10);
           }
         }
 

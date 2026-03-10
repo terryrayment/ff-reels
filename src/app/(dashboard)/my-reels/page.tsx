@@ -124,7 +124,7 @@ export default async function MyReelsPage({
             (item) => item.project.muxPlaybackId || item.project.thumbnailUrl
           );
           const heroThumb = heroSpot?.project.muxPlaybackId
-            ? `https://image.mux.com/${heroSpot.project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`
+            ? `https://image.mux.com/${heroSpot.project.muxPlaybackId}/thumbnail.jpg?width=640`
             : heroSpot?.project.thumbnailUrl;
 
           return (
@@ -165,7 +165,7 @@ export default async function MyReelsPage({
                   <div className="flex gap-1 mt-3">
                     {reel.items.slice(0, 5).map((item) => {
                       const thumb = item.project.muxPlaybackId
-                        ? `https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=80&height=45&fit_mode=smartcrop`
+                        ? `https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=96`
                         : item.project.thumbnailUrl;
                       return (
                         <div
