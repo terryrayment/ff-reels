@@ -214,6 +214,9 @@ export default async function AnalyticsPage({
       {/* Hero Stats with Trends */}
       <HeroStats stats={heroStats} />
 
+      {/* Reel Activity Table */}
+      <ReelAnalyticsTable rows={reelRows} />
+
       {/* Views Over Time */}
       <ViewsOverTimeChart data={viewsPerDay} />
 
@@ -222,9 +225,6 @@ export default async function AnalyticsPage({
 
       {/* Top Performing Spots */}
       <TopSpotsTable spots={topSpots} />
-
-      {/* Reel Activity Table (existing) */}
-      <ReelAnalyticsTable rows={reelRows} />
     </div>
   );
 }
