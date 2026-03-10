@@ -68,7 +68,7 @@ export function ViewsOverTimeChart({ data }: { data: DayPoint[] }) {
       <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] mb-6">
         Views Over Time
       </h3>
-      <div className="h-[220px] md:h-[220px] h-[180px]">
+      <div className="h-[180px] md:h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
             <defs>

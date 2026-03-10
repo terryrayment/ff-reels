@@ -205,7 +205,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
     "text-[10px] uppercase tracking-[0.12em] text-[#999] font-medium py-3 px-3 cursor-pointer select-none hover:text-[#1A1A1A] transition-colors whitespace-nowrap";
 
   return (
-    <div>
+    <div className="mb-8">
       {/* Search bar */}
       <div className="flex items-center gap-3 mb-5">
         <div className="relative flex-1 max-w-sm">
