@@ -119,6 +119,7 @@ model Project {
   contentType     String   @default("SPOT")  // SPOT | CASE_STUDY | SHORT_FILM
 
   // Mux video
+  muxUploadId     String?  @unique           // Mux upload ID — bridges upload → asset
   muxAssetId      String?  @unique
   muxPlaybackId   String?
   muxStatus       String?  @default("waiting") // waiting, preparing, ready, errored

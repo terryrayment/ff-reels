@@ -153,7 +153,7 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
   const [copied, setCopied] = useState(false);
 
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
-  const projects = selectedDirector?.projects || [];
+  const projects = useMemo(() => selectedDirector?.projects || [], [selectedDirector]);
 
   // Step progress
   const allSteps: Step[] = ["director", "spots", "details", "done"];

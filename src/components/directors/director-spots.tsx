@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Clock, AlertCircle, Upload, Image, Pencil } from "lucide-react";
+import { Film, Clock, AlertCircle, Upload, Image as ImageIcon, Pencil } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
 
@@ -306,7 +306,7 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
             disabled={settingHero !== null || contextMenu.projectId === heroProjectId}
             className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-[12px] text-[#333] hover:bg-[#F5F4F0] transition-colors disabled:opacity-40 disabled:cursor-default"
           >
-            <Image size={13} className="text-[#999]" />
+            <ImageIcon size={13} className="text-[#999]" />
             {contextMenu.projectId === heroProjectId ? "Already cover" : "Set as cover"}
           </button>
         </div>

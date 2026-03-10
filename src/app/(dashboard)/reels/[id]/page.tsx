@@ -36,7 +36,7 @@ export default async function ReelDetailPage({
       {/* Back */}
       <Link
         href="/reels"
-        className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#999] hover:text-[#1A1A1A] transition-colors mb-6 md:mb-8 block"
+        className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#999] hover:text-[#1A1A1A] transition-colors mb-6 md:mb-8"
       >
         <ArrowLeft size={11} />
         Reels

@@ -363,7 +363,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const router = useRouter();
 
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
-  const availableProjects = selectedDirector?.projects || [];
+  const availableProjects = useMemo(() => selectedDirector?.projects || [], [selectedDirector]);
 
   // Master lookup: all projects across all directors (for the spot order panel)
   const allProjectsMap = useMemo(() => {

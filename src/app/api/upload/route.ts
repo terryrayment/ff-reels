@@ -32,13 +32,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create the project record
+    // Create the project record with Mux upload ID so webhooks can find it
     const project = await prisma.project.create({
       data: {
         directorId,
         title,
         originalFilename: filename,
         fileSizeMb,
+        muxUploadId: upload.id,
         muxStatus: "waiting",
       },
     });
