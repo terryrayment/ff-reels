@@ -504,13 +504,12 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                               {view.avgCompletion}% completion
                                             </span>
                                           )}
-                                          {view.city && (
+                                          {(view.city || view.country) && (
                                             <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
                                               <MapPin size={8} />
-                                              {view.city}
-                                              {view.country
-                                                ? `, ${view.country}`
-                                                : ""}
+                                              {view.city
+                                                ? `${view.city}${view.country ? `, ${view.country}` : ""}`
+                                                : view.country}
                                             </span>
                                           )}
                                         </div>

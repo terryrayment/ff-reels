@@ -225,11 +225,14 @@ export async function getEngagementOverview(
       _count: true,
     }),
 
-    // Top locations
+    // Top locations — include views with city OR country
     prisma.reelView.findMany({
       where: {
         ...viewWhere,
-        viewerCity: { not: null },
+        OR: [
+          { viewerCity: { not: null } },
+          { viewerCountry: { not: null } },
+        ],
       },
       select: { viewerCity: true, viewerCountry: true },
     }),
@@ -244,17 +247,19 @@ export async function getEngagementOverview(
       count: d._count,
     }));
 
-  // Aggregate locations
+  // Aggregate locations — use country as city fallback for carrier IPs
   const locMap = new Map<string, { city: string; country: string; views: number }>();
   for (const v of locationViews) {
-    const key = `${v.viewerCity}|${v.viewerCountry}`;
+    const city = v.viewerCity || "";
+    const country = v.viewerCountry || "";
+    const key = `${city}|${country}`;
     const existing = locMap.get(key);
     if (existing) {
       existing.views++;
     } else {
       locMap.set(key, {
-        city: v.viewerCity || "Unknown",
-        country: v.viewerCountry || "",
+        city,
+        country,
         views: 1,
       });
     }

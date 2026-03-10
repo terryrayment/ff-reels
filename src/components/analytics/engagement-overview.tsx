@@ -154,8 +154,9 @@ export function EngagementOverview({ data }: { data: EngagementData }) {
               >
                 <span className="text-[#444] truncate mr-3">
                   <span className="text-[#999] tabular-nums mr-1.5">{i + 1}.</span>
-                  {loc.city}
-                  {loc.country ? `, ${loc.country}` : ""}
+                  {loc.city
+                    ? `${loc.city}${loc.country ? `, ${loc.country}` : ""}`
+                    : loc.country || "Unknown"}
                 </span>
                 <span className="text-[#999] tabular-nums flex-shrink-0">
                   {loc.views}
