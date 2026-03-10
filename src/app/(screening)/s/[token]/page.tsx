@@ -32,8 +32,10 @@ export async function generateMetadata({
   }
 
   const { reel } = link;
-  const title = reel.brand
-    ? `${reel.title} — ${reel.brand}`
+  // Use reel title as-is; only append director name if brand isn't already in the title
+  const titleAlreadyHasBrand = reel.brand && reel.title.toLowerCase().includes(reel.brand.toLowerCase());
+  const title = titleAlreadyHasBrand || reel.brand
+    ? reel.title
     : `${reel.title} — ${reel.director.name}`;
   const description = `A screening reel by ${reel.director.name} via Friends & Family`;
 
