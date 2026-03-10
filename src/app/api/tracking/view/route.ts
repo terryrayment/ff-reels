@@ -8,10 +8,22 @@ import { extractGeo } from "@/lib/analytics/geo";
  * Record a new ReelView when someone opens a screening page.
  * Public endpoint — no auth required.
  */
+/** Map IANA timezone → approximate metro/region name */
+function timezoneToCity(tz: string | null | undefined): string | null {
+  if (!tz) return null;
+  // Use the city portion of IANA timezone (e.g. "America/New_York" → "New York")
+  const parts = tz.split("/");
+  if (parts.length < 2) return null;
+  const city = parts[parts.length - 1].replace(/_/g, " ");
+  // Filter out overly generic zones
+  if (["UTC", "GMT", "Unknown"].includes(city)) return null;
+  return city;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { screeningLinkId } = body;
+    const { screeningLinkId, timezone } = body;
 
     if (!screeningLinkId) {
       return NextResponse.json(
@@ -81,6 +93,9 @@ export async function POST(req: NextRequest) {
       isForwarded = !!priorView;
     }
 
+    // Derive city from timezone when Vercel geo headers miss (carrier IPs)
+    const viewerCity = geo.city || timezoneToCity(timezone) || null;
+
     // Create the ReelView record
     // Auto-populate viewer identity from the screening link's recipient info
     const view = await prisma.reelView.create({
@@ -89,8 +104,9 @@ export async function POST(req: NextRequest) {
         viewerName: link.recipientName,
         viewerEmail: link.recipientEmail,
         viewerIp: geo.ip,
-        viewerCity: geo.city,
+        viewerCity,
         viewerCountry: geo.country,
+        viewerTimezone: timezone || null,
         userAgent,
         device,
         isForwarded,

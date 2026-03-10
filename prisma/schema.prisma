@@ -288,6 +288,7 @@ model ReelView {
   viewerIp         String?
   viewerCity       String?
   viewerCountry    String?
+  viewerTimezone   String?       // e.g. "America/New_York" — fallback when city is null
   userAgent        String?
   device           String?       // "desktop", "mobile", "tablet"
 

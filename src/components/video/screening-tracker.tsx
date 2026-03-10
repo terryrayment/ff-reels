@@ -42,10 +42,11 @@ export function ScreeningTracker({
 
     async function recordView() {
       try {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || null;
         const res = await fetch("/api/tracking/view", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ screeningLinkId }),
+          body: JSON.stringify({ screeningLinkId, timezone }),
         });
 
         if (res.ok) {
