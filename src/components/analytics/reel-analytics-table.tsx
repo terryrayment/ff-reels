@@ -13,6 +13,7 @@ import {
   Tablet,
   MapPin,
   Flame,
+  Users,
 } from "lucide-react";
 
 export interface ViewDetail {
@@ -45,7 +46,10 @@ export interface ReelRow {
   recipientCount: number;
   recipientContactId: string | null;
   avgCompletionPct: number | null;
-  isHotLead: boolean;
+  engagementScore: number | null;
+  engagementTier: "hot" | "warm" | "cold" | null;
+  committeeCount: number | null;
+  committeeCompany: string | null;
 }
 
 type SortKey =
@@ -57,6 +61,7 @@ type SortKey =
   | "sentByName"
   | "lastViewed"
   | "avgCompletionPct"
+  | "engagementScore"
   | "recipient";
 
 interface Props {
@@ -173,6 +178,9 @@ export function ReelAnalyticsTable({ rows }: Props) {
           break;
         case "avgCompletionPct":
           cmp = (a.avgCompletionPct || 0) - (b.avgCompletionPct || 0);
+          break;
+        case "engagementScore":
+          cmp = (a.engagementScore || 0) - (b.engagementScore || 0);
           break;
         case "lastSent": {
           const aTime = a.lastSent ? new Date(a.lastSent).getTime() : 0;
@@ -337,15 +345,24 @@ export function ReelAnalyticsTable({ rows }: Props) {
                             />
                           )}
                         </td>
-                        {/* Reel title + director + hot lead */}
+                        {/* Reel title + director + engagement score */}
                         <td className="py-3.5 px-3">
                           <div className="flex items-center gap-1.5">
-                            {row.isHotLead && (
-                              <span title="Hot lead — high engagement">
-                                <Flame
-                                  size={13}
-                                  className="text-amber-500 flex-shrink-0"
-                                />
+                            {row.engagementScore !== null && (
+                              <span
+                                title={`Engagement: ${row.engagementScore}/100`}
+                                className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium flex-shrink-0 ${
+                                  row.engagementTier === "hot"
+                                    ? "bg-red-50 text-red-600"
+                                    : row.engagementTier === "warm"
+                                      ? "bg-amber-50 text-amber-600"
+                                      : "bg-slate-100 text-slate-500"
+                                }`}
+                              >
+                                {row.engagementTier === "hot" && (
+                                  <Flame size={9} />
+                                )}
+                                {row.engagementScore}
                               </span>
                             )}
                             <div className="min-w-0">
@@ -442,12 +459,22 @@ export function ReelAnalyticsTable({ rows }: Props) {
                         <tr>
                           <td colSpan={colCount} className="p-0">
                             <div className="bg-[#F9F8F5] border-b border-[#E8E7E3]/30">
-                              {/* View feed header */}
-                              <div className="px-6 pt-4 pb-2">
+                              {/* View feed header + committee badge */}
+                              <div className="px-6 pt-4 pb-2 flex items-center gap-3">
                                 <p className="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium">
                                   {row.views.length} view
                                   {row.views.length !== 1 ? "s" : ""}
                                 </p>
+                                {row.committeeCount && row.committeeCount >= 2 && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 text-blue-600">
+                                    <Users size={9} />
+                                    {row.committeeCount} people
+                                    {row.committeeCompany
+                                      ? ` at ${row.committeeCompany}`
+                                      : ""}{" "}
+                                    viewed
+                                  </span>
+                                )}
                               </div>
                               {/* Individual views */}
                               <div className="divide-y divide-[#E8E7E3]/30">

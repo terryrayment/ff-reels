@@ -3,8 +3,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Smartphone, Monitor, Tablet, MapPin, RotateCcw, SkipForward, Share2, User } from "lucide-react";
+import { ArrowLeft, Smartphone, Monitor, Tablet, MapPin, RotateCcw, SkipForward, Share2, User, Users, Flame, Pause, FastForward, Rewind, Wifi } from "lucide-react";
 import { timeAgo, formatDuration } from "@/lib/utils";
+import { getEngagementScores } from "@/lib/analytics/scoring";
+import { getCommitteeLinks } from "@/lib/analytics/committee";
 
 export default async function LinkDetailPage({
   params,
@@ -49,6 +51,14 @@ export default async function LinkDetailPage({
     return notFound();
   }
 
+  // Engagement score + committee detection
+  const [engagementScoreMap, committeeMap] = await Promise.all([
+    getEngagementScores([link.id]),
+    getCommitteeLinks([link.id]),
+  ]);
+  const engagementScore = engagementScoreMap.get(link.id) ?? null;
+  const committeeInfo = committeeMap.get(link.id) ?? null;
+
   // Aggregate spot engagement across all views
   const spotEngagement = link.reel.items.map((item) => {
     const allSpotViews = link.views.flatMap((v) =>
@@ -66,6 +76,12 @@ export default async function LinkDetailPage({
     const rewatchCount = allSpotViews.filter((sv) => sv.rewatched).length;
     const skipCount = allSpotViews.filter((sv) => sv.skipped).length;
 
+    // Video signal aggregates (Feature 7)
+    const totalPauses = allSpotViews.reduce((s, sv) => s + sv.pauseCount, 0);
+    const totalSeekForward = allSpotViews.reduce((s, sv) => s + sv.seekForwardCount, 0);
+    const totalSeekBackward = allSpotViews.reduce((s, sv) => s + sv.seekBackwardCount, 0);
+    const totalFullscreen = allSpotViews.reduce((s, sv) => s + sv.fullscreenToggleCount, 0);
+
     return {
       project: item.project,
       sortOrder: item.sortOrder,
@@ -73,6 +89,10 @@ export default async function LinkDetailPage({
       avgPercent,
       rewatchCount,
       skipCount,
+      totalPauses,
+      totalSeekForward,
+      totalSeekBackward,
+      totalFullscreen,
     };
   });
 
@@ -182,6 +202,31 @@ export default async function LinkDetailPage({
               </span>
             </div>
           )}
+          {committeeInfo && committeeInfo.distinctViewerCount >= 2 && (
+            <div className="flex items-center">
+              <span className="text-[10px] uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+                <Users size={9} />
+                {committeeInfo.distinctViewerCount} viewers
+                {committeeInfo.company ? ` at ${committeeInfo.company}` : ""}
+              </span>
+            </div>
+          )}
+          {engagementScore && (
+            <div className="flex items-center">
+              <span
+                className={`text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full font-medium flex items-center gap-1 ${
+                  engagementScore.tier === "hot"
+                    ? "text-red-600 bg-red-50"
+                    : engagementScore.tier === "warm"
+                      ? "text-amber-600 bg-amber-50"
+                      : "text-slate-500 bg-slate-100"
+                }`}
+              >
+                {engagementScore.tier === "hot" && <Flame size={9} />}
+                Score: {engagementScore.score}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -233,7 +278,7 @@ export default async function LinkDetailPage({
               </div>
 
               {/* Badges */}
-              <div className="flex items-center gap-2 flex-shrink-0 w-28 justify-end">
+              <div className="flex items-center gap-2 flex-shrink-0 justify-end flex-wrap">
                 {spot.rewatchCount > 0 && (
                   <span className="flex items-center gap-0.5 text-[10px] text-emerald-600" title="Rewatched">
                     <RotateCcw size={9} />
@@ -244,6 +289,29 @@ export default async function LinkDetailPage({
                   <span className="flex items-center gap-0.5 text-[10px] text-red-400" title="Skipped">
                     <SkipForward size={9} />
                     {spot.skipCount}
+                  </span>
+                )}
+                {spot.totalPauses > 0 && (
+                  <span className="flex items-center gap-0.5 text-[10px] text-blue-500" title="Pauses">
+                    <Pause size={9} />
+                    {spot.totalPauses}
+                  </span>
+                )}
+                {spot.totalSeekForward > 0 && (
+                  <span className="flex items-center gap-0.5 text-[10px] text-purple-500" title="Forward seeks">
+                    <FastForward size={9} />
+                    {spot.totalSeekForward}
+                  </span>
+                )}
+                {spot.totalSeekBackward > 0 && (
+                  <span className="flex items-center gap-0.5 text-[10px] text-indigo-500" title="Backward seeks">
+                    <Rewind size={9} />
+                    {spot.totalSeekBackward}
+                  </span>
+                )}
+                {spot.totalFullscreen > 0 && (
+                  <span className="flex items-center gap-0.5 text-[10px] text-cyan-500" title="Fullscreen toggles">
+                    ⛶ {spot.totalFullscreen}
                   </span>
                 )}
                 <span className="text-[10px] text-[#bbb] tabular-nums">
@@ -306,7 +374,7 @@ export default async function LinkDetailPage({
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5">
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                         {view.viewerCity && (
                           <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
                             <MapPin size={8} />
@@ -317,6 +385,20 @@ export default async function LinkDetailPage({
                         <span className="text-[10px] text-[#bbb]">
                           {view.device || "desktop"}
                         </span>
+                        {view.connectionType && (
+                          <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
+                            <Wifi size={8} />
+                            {view.connectionType.toUpperCase()}
+                            {view.connectionDownlink
+                              ? ` ~${view.connectionDownlink}Mbps`
+                              : ""}
+                          </span>
+                        )}
+                        {view.saveData && (
+                          <span className="text-[10px] text-amber-500">
+                            Data Saver
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

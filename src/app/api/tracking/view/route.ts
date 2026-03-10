@@ -23,7 +23,7 @@ function timezoneToCity(tz: string | null | undefined): string | null {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { screeningLinkId, timezone } = body;
+    const { screeningLinkId, timezone, connectionType, connectionDownlink, saveData } = body;
 
     if (!screeningLinkId) {
       return NextResponse.json(
@@ -110,6 +110,10 @@ export async function POST(req: NextRequest) {
         userAgent,
         device,
         isForwarded,
+        // Network context (Feature 8)
+        connectionType: connectionType || null,
+        connectionDownlink: typeof connectionDownlink === "number" ? connectionDownlink : null,
+        saveData: typeof saveData === "boolean" ? saveData : null,
       },
     });
 

@@ -38,3 +38,44 @@ export interface EngagementData {
   devices: DeviceSlice[];
   topLocations: LocationRow[];
 }
+
+/* ─── Engagement Scoring (Feature 6) ──────────────── */
+
+export type EngagementTier = "hot" | "warm" | "cold";
+
+export interface EngagementScore {
+  score: number; // 0-100
+  tier: EngagementTier;
+  components: {
+    completion: number;
+    rewatch: number;
+    frequency: number;
+    timeSpent: number;
+  };
+}
+
+/* ─── Committee Detection (Feature 4) ─────────────── */
+
+export interface CommitteeInfo {
+  distinctViewerCount: number;
+  company: string | null;
+}
+
+/* ─── Video Signals (Feature 7) ───────────────────── */
+
+export interface VideoSignals {
+  pauseCount: number;
+  seekForwardCount: number;
+  seekBackwardCount: number;
+  fullscreenToggleCount: number;
+  playbackRateChanges: number[] | null;
+  videoQuality: string | null;
+}
+
+/* ─── Network Context (Feature 8) ─────────────────── */
+
+export interface NetworkContext {
+  connectionType: string | null;
+  connectionDownlink: number | null;
+  saveData: boolean | null;
+}

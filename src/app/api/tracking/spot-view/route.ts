@@ -18,6 +18,13 @@ export async function POST(req: NextRequest) {
       percentWatched,
       rewatched,
       skipped,
+      // Richer video signals (Feature 7)
+      pauseCount: clientPauseCount,
+      seekForwardCount: clientSeekForward,
+      seekBackwardCount: clientSeekBackward,
+      fullscreenToggleCount: clientFullscreen,
+      playbackRateChanges: clientPlaybackRates,
+      videoQuality: clientVideoQuality,
     } = body;
 
     if (!viewId || !projectId) {
@@ -55,6 +62,13 @@ export async function POST(req: NextRequest) {
           percentWatched: percentWatched ?? existing.percentWatched,
           rewatched: rewatched || existing.rewatched,
           skipped: skipped !== undefined ? skipped : existing.skipped,
+          // Video signals — use max since client sends cumulative values
+          pauseCount: Math.max(clientPauseCount ?? 0, existing.pauseCount),
+          seekForwardCount: Math.max(clientSeekForward ?? 0, existing.seekForwardCount),
+          seekBackwardCount: Math.max(clientSeekBackward ?? 0, existing.seekBackwardCount),
+          fullscreenToggleCount: Math.max(clientFullscreen ?? 0, existing.fullscreenToggleCount),
+          playbackRateChanges: clientPlaybackRates ?? existing.playbackRateChanges,
+          videoQuality: clientVideoQuality ?? existing.videoQuality,
         },
       });
     } else {
@@ -68,6 +82,13 @@ export async function POST(req: NextRequest) {
           percentWatched: percentWatched ?? null,
           rewatched: rewatched ?? false,
           skipped: skipped ?? false,
+          // Video signals
+          pauseCount: clientPauseCount ?? 0,
+          seekForwardCount: clientSeekForward ?? 0,
+          seekBackwardCount: clientSeekBackward ?? 0,
+          fullscreenToggleCount: clientFullscreen ?? 0,
+          playbackRateChanges: clientPlaybackRates ?? null,
+          videoQuality: clientVideoQuality ?? null,
         },
       });
     }

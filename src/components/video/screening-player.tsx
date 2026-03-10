@@ -36,6 +36,15 @@ export function ScreeningPlayer({
   const hasReportedComplete = useRef(false);
   const isPlaying = useRef(false);
 
+  // Richer video signals (Feature 7)
+  const pauseCount = useRef(0);
+  const seekForwardCount = useRef(0);
+  const seekBackwardCount = useRef(0);
+  const fullscreenToggleCount = useRef(0);
+  const playbackRates = useRef<number[]>([]);
+  const lastTimeBeforeSeek = useRef(0);
+  const videoQualityRef = useRef<string | null>(null);
+
   // IntersectionObserver — lazy load player when scrolled into view
   useEffect(() => {
     const el = containerRef.current;
@@ -83,19 +92,31 @@ export function ScreeningPlayer({
           ? Math.min(100, Math.round((watchedSeconds.current / totalDur) * 100))
           : 0);
 
+      const payload = {
+        viewId,
+        projectId,
+        watchDuration: Math.round(watchedSeconds.current),
+        totalDuration: totalDur,
+        percentWatched: pct,
+        rewatched: overrides.rewatched ?? hasRewatched.current,
+        skipped: overrides.skipped ?? false,
+        // Richer video signals
+        pauseCount: pauseCount.current,
+        seekForwardCount: seekForwardCount.current,
+        seekBackwardCount: seekBackwardCount.current,
+        fullscreenToggleCount: fullscreenToggleCount.current,
+        playbackRateChanges:
+          playbackRates.current.length > 0
+            ? JSON.stringify(playbackRates.current)
+            : null,
+        videoQuality: videoQualityRef.current,
+      };
+
       try {
         await fetch("/api/tracking/spot-view", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            viewId,
-            projectId,
-            watchDuration: Math.round(watchedSeconds.current),
-            totalDuration: totalDur,
-            percentWatched: pct,
-            rewatched: overrides.rewatched ?? hasRewatched.current,
-            skipped: overrides.skipped ?? false,
-          }),
+          body: JSON.stringify(payload),
         });
       } catch {
         // Fire-and-forget
@@ -127,7 +148,7 @@ export function ScreeningPlayer({
       if (pct < 25) {
         // User skipped this spot — fire beacon
         if (viewId) {
-          const payload = JSON.stringify({
+          const beaconPayload = JSON.stringify({
             viewId,
             projectId,
             watchDuration: Math.round(watchedSeconds.current),
@@ -135,8 +156,17 @@ export function ScreeningPlayer({
             percentWatched: Math.round(pct),
             rewatched: hasRewatched.current,
             skipped: true,
+            pauseCount: pauseCount.current,
+            seekForwardCount: seekForwardCount.current,
+            seekBackwardCount: seekBackwardCount.current,
+            fullscreenToggleCount: fullscreenToggleCount.current,
+            playbackRateChanges:
+              playbackRates.current.length > 0
+                ? JSON.stringify(playbackRates.current)
+                : null,
+            videoQuality: videoQualityRef.current,
           });
-          navigator.sendBeacon("/api/tracking/spot-view", payload);
+          navigator.sendBeacon("/api/tracking/spot-view", beaconPayload);
         }
       } else {
         // Partial watch — send what we have
@@ -157,6 +187,7 @@ export function ScreeningPlayer({
 
   const handlePause = () => {
     isPlaying.current = false;
+    pauseCount.current++;
     // Send update on pause (user paused to think)
     if (watchedSeconds.current > 0) {
       sendSpotData();
@@ -169,6 +200,9 @@ export function ScreeningPlayer({
 
     const currentTime = player.currentTime;
 
+    // Track position for seek direction classification
+    lastTimeBeforeSeek.current = currentTime;
+
     // Track accumulated watch time (timeupdate fires every ~250ms)
     watchedSeconds.current = currentTime;
 
@@ -179,6 +213,17 @@ export function ScreeningPlayer({
 
     if (currentTime > maxPosition.current) {
       maxPosition.current = currentTime;
+    }
+
+    // Capture video quality from player resolution (videoHeight is on HTMLVideoElement)
+    const videoEl = player as unknown as HTMLVideoElement;
+    if (!videoQualityRef.current && videoEl.videoHeight > 0) {
+      const h = videoEl.videoHeight;
+      if (h >= 2160) videoQualityRef.current = "4k";
+      else if (h >= 1080) videoQualityRef.current = "1080p";
+      else if (h >= 720) videoQualityRef.current = "720p";
+      else if (h >= 480) videoQualityRef.current = "480p";
+      else videoQualityRef.current = "360p";
     }
   };
 
@@ -192,11 +237,38 @@ export function ScreeningPlayer({
     const player = e.target as HTMLMediaElement;
     if (!player) return;
 
-    // If user seeked backward, mark as rewatch
-    if (player.currentTime < maxPosition.current - 2) {
+    const currentTime = player.currentTime;
+    const prevTime = lastTimeBeforeSeek.current;
+
+    // Classify seek direction (2-second buffer to avoid false positives)
+    if (currentTime > prevTime + 2) {
+      seekForwardCount.current++;
+    } else if (currentTime < prevTime - 2) {
+      seekBackwardCount.current++;
       hasRewatched.current = true;
     }
   };
+
+  const handleRateChange = (e: Event) => {
+    const player = e.target as HTMLMediaElement;
+    if (!player) return;
+    const rate = player.playbackRate;
+    const rates = playbackRates.current;
+    if (rates.length === 0 || rates[rates.length - 1] !== rate) {
+      rates.push(rate);
+    }
+  };
+
+  // Track fullscreen toggles
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (document.fullscreenElement) {
+        fullscreenToggleCount.current++;
+      }
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   const thumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.jpg?width=960&height=540&fit_mode=smartcrop`;
 
@@ -220,6 +292,7 @@ export function ScreeningPlayer({
           onTimeUpdate={handleTimeUpdate}
           onEnded={handleEnded}
           onSeeked={handleSeeked}
+          onRateChange={handleRateChange}
         />
       ) : (
         <img

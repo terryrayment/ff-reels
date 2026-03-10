@@ -12,6 +12,8 @@ import {
   getEngagementOverview,
   getTopSpots,
 } from "@/lib/analytics/queries";
+import { getEngagementScores } from "@/lib/analytics/scoring";
+import { getCommitteeLinks } from "@/lib/analytics/committee";
 import { prisma } from "@/lib/db";
 
 export default async function AnalyticsPage({
@@ -97,6 +99,15 @@ export default async function AnalyticsPage({
       }),
     ]);
 
+  // ── Compute engagement scores + committee detection ──
+  const allScreeningLinkIds = reels.flatMap((r) =>
+    r.screeningLinks.map((sl) => sl.id)
+  );
+  const [engagementScoreMap, committeeMap] = await Promise.all([
+    getEngagementScores(allScreeningLinkIds),
+    getCommitteeLinks(allScreeningLinkIds),
+  ]);
+
   // ── Compute per-reel row data ──
   const reelRows: ReelRow[] = reels.map((reel) => {
     const totalViewsForReel = reel.screeningLinks.reduce(
@@ -166,13 +177,27 @@ export default async function AnalyticsPage({
         )
       : null;
 
-    const uniqueViewDays = new Set(
-      allViews.map((v) => v.startedAt.split("T")[0])
-    ).size;
-    const isHotLead =
-      totalViewsForReel >= 3 ||
-      uniqueViewDays >= 2 ||
-      (avgCompletionPct !== null && avgCompletionPct > 70);
+    // Engagement scoring — pick the best score across all links for this reel
+    let bestScore: { score: number; tier: "hot" | "warm" | "cold" } | null = null;
+    for (const link of reel.screeningLinks) {
+      const es = engagementScoreMap.get(link.id);
+      if (es && (!bestScore || es.score > bestScore.score)) {
+        bestScore = { score: es.score, tier: es.tier };
+      }
+    }
+
+    // Committee detection — aggregate across all links
+    let committeeCount: number | null = null;
+    let committeeCompany: string | null = null;
+    for (const link of reel.screeningLinks) {
+      const ci = committeeMap.get(link.id);
+      if (ci) {
+        if (!committeeCount || ci.distinctViewerCount > committeeCount) {
+          committeeCount = ci.distinctViewerCount;
+          committeeCompany = ci.company;
+        }
+      }
+    }
 
     return {
       id: reel.id,
@@ -190,7 +215,10 @@ export default async function AnalyticsPage({
       recipientCount,
       recipientContactId,
       avgCompletionPct,
-      isHotLead,
+      engagementScore: bestScore?.score ?? null,
+      engagementTier: bestScore?.tier ?? null,
+      committeeCount,
+      committeeCompany,
     };
   });
 

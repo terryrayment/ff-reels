@@ -43,10 +43,29 @@ export function ScreeningTracker({
     async function recordView() {
       try {
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || null;
+
+        // Network Information API (Chromium only — graceful fallback)
+        let connectionType: string | null = null;
+        let connectionDownlink: number | null = null;
+        let saveData: boolean | null = null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const conn = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+        if (conn) {
+          connectionType = conn.effectiveType || conn.type || null;
+          connectionDownlink = typeof conn.downlink === "number" ? conn.downlink : null;
+          saveData = typeof conn.saveData === "boolean" ? conn.saveData : null;
+        }
+
         const res = await fetch("/api/tracking/view", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ screeningLinkId, timezone }),
+          body: JSON.stringify({
+            screeningLinkId,
+            timezone,
+            connectionType,
+            connectionDownlink,
+            saveData,
+          }),
         });
 
         if (res.ok) {

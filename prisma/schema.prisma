@@ -302,6 +302,11 @@ model ReelView {
 
   // Forwarding detection
   isForwarded      Boolean       @default(false)
+
+  // Network context (Feature 8)
+  connectionType     String?     // "4g", "wifi", "3g"
+  connectionDownlink Float?      // Estimated Mbps
+  saveData           Boolean?    // Data saver mode
 }
 
 model SpotView {
@@ -316,6 +321,16 @@ model SpotView {
   percentWatched Float?
   rewatched      Boolean  @default(false)
   skipped        Boolean  @default(false)
+
+  // Richer video signals (Feature 7)
+  pauseCount            Int      @default(0)
+  seekForwardCount      Int      @default(0)
+  seekBackwardCount     Int      @default(0)
+  fullscreenToggleCount Int      @default(0)
+  playbackRateChanges   String?  // JSON array e.g. "[1, 1.5, 2]"
+
+  // Video quality context (Feature 8)
+  videoQuality          String?  // e.g. "1080p", "720p"
 
   startedAt      DateTime @default(now())
 }
