@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Film, GripVertical } from "lucide-react";
+import { Film, GripVertical, X } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import {
   DndContext,
@@ -37,9 +37,11 @@ interface SpotItem {
 function SortableSpot({
   item,
   index,
+  onRemove,
 }: {
   item: SpotItem;
   index: number;
+  onRemove: (id: string) => void;
 }) {
   const {
     attributes,
@@ -110,9 +112,19 @@ function SortableSpot({
       </div>
 
       {/* Duration */}
-      <span className="text-[11px] text-[#ccc] tabular-nums">
+      <span className="text-[11px] text-[#ccc] tabular-nums flex-shrink-0">
         {formatDuration(item.duration)}
       </span>
+
+      {/* Remove button */}
+      <button
+        type="button"
+        onClick={() => onRemove(item.id)}
+        className="text-[#ddd] hover:text-red-400 transition-colors flex-shrink-0 p-1 -mr-1"
+        title="Remove from reel"
+      >
+        <X size={14} />
+      </button>
     </div>
   );
 }
@@ -130,6 +142,26 @@ export function ReelSpotList({
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleRemove = useCallback(
+    (itemId: string) => {
+      setSpots((prev) => {
+        const updated = prev.filter((s) => s.id !== itemId);
+
+        // Persist updated list to backend
+        fetch(`/api/reels/${reelId}/items`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            projectIds: updated.map((s) => s.projectId),
+          }),
+        });
+
+        return updated;
+      });
+    },
+    [reelId]
   );
 
   const handleDragEnd = useCallback(
@@ -169,7 +201,7 @@ export function ReelSpotList({
       >
         <div className="divide-y divide-[#E8E8E3]/60">
           {spots.map((item, index) => (
-            <SortableSpot key={item.id} item={item} index={index} />
+            <SortableSpot key={item.id} item={item} index={index} onRemove={handleRemove} />
           ))}
         </div>
       </SortableContext>
