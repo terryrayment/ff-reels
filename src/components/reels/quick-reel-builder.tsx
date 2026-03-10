@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Copy,
   Film,
+  GripVertical,
   Loader2,
   Search,
   Share2,
@@ -15,6 +16,22 @@ import {
 } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { hapticImpact, hapticSelection, hapticNotification, nativeShare } from "@/lib/native";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 /* ──────────────────────────────────────────────── Types ─── */
 
@@ -42,6 +59,72 @@ interface QuickReelBuilderProps {
 }
 
 type Step = "director" | "spots" | "details" | "done";
+
+/* ─────────────────────────── Sortable thumb (bottom strip) ─── */
+
+function SortableSpotThumb({
+  project,
+  index,
+  onRemove,
+}: {
+  project: Project;
+  index: number;
+  onRemove: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: project.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : undefined,
+    opacity: isDragging ? 0.85 : 1,
+  };
+
+  const thumb = project.muxPlaybackId
+    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36`
+    : null;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex-shrink-0 relative group touch-none ${
+        isDragging ? "scale-105" : ""
+      }`}
+      {...attributes}
+      {...listeners}
+    >
+      <div className="w-14 h-9 bg-[#EEEDEA] rounded overflow-hidden">
+        {thumb ? (
+          <img src={thumb} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Film size={8} className="text-[#ccc]" />
+          </div>
+        )}
+      </div>
+      <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-[#1A1A1A] text-[8px] font-bold text-white flex items-center justify-center">
+        {index + 1}
+      </span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove(project.id);
+        }}
+        className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center"
+      >
+        <X size={8} />
+      </button>
+    </div>
+  );
+}
 
 /* ──────────────────────────────────────────────── Main ─── */
 
@@ -125,16 +208,11 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
       : projects;
   }, [projects, spotSearch]);
 
+  // Order matches selectedIds — no auto-sort (slate goes first on insert instead)
   const selectedProjects = useMemo(() => {
-    const list = selectedIds
+    return selectedIds
       .map((id) => projects.find((p) => p.id === id))
       .filter(Boolean) as Project[];
-    // Slate always first
-    return list.sort((a, b) => {
-      const aSlate = a.title.toLowerCase().includes("slate") ? 0 : 1;
-      const bSlate = b.title.toLowerCase().includes("slate") ? 0 : 1;
-      return aSlate - bSlate;
-    });
   }, [selectedIds, projects]);
 
   const totalDuration = selectedProjects.reduce(
@@ -153,15 +231,38 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
 
   const toggleSpot = (id: string) => {
     hapticSelection();
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      // Auto-insert slates at position 0
+      const project = projects.find((p) => p.id === id);
+      if (project && project.title.toLowerCase().includes("slate")) {
+        return [id, ...prev];
+      }
+      return [...prev, id];
+    });
   };
 
   const removeSpot = (id: string) => {
     hapticImpact("light");
     setSelectedIds((prev) => prev.filter((x) => x !== id));
   };
+
+  // Drag-and-drop reorder
+  const dndSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
+  );
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setSelectedIds((prev) => {
+        const oldIndex = prev.indexOf(active.id as string);
+        const newIndex = prev.indexOf(over.id as string);
+        return arrayMove(prev, oldIndex, newIndex);
+      });
+    }
+  }, []);
 
   const handleCreate = async () => {
     if (!selectedDirectorId || selectedIds.length === 0) return;
@@ -447,43 +548,28 @@ export function QuickReelBuilder({ directors }: QuickReelBuilderProps) {
         {/* Bottom action bar — fixed */}
         {selectedIds.length > 0 && (
           <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/70 backdrop-blur-2xl border-t border-white/30 px-5 py-4 safe-area-bottom" style={{ boxShadow: '0 -4px 20px rgba(0,0,0,0.03), 0 -0.5px 0 rgba(255,255,255,0.4) inset' }}>
-            {/* Selected spots strip */}
-            <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-1 scrollbar-none">
-              {selectedProjects.map((p, i) => {
-                const thumb = p.muxPlaybackId
-                  ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=64&height=36&fit_mode=smartcrop`
-                  : null;
-                return (
-                  <div key={p.id} className="flex-shrink-0 relative group">
-                    <div className="w-14 h-9 bg-[#EEEDEA] rounded overflow-hidden">
-                      {thumb ? (
-                        <img
-                          src={thumb}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Film size={8} className="text-[#ccc]" />
-                        </div>
-                      )}
-                    </div>
-                    <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-[#1A1A1A] text-[8px] font-bold text-white flex items-center justify-center">
-                      {i + 1}
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeSpot(p.id);
-                      }}
-                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center"
-                    >
-                      <X size={8} />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+            {/* Selected spots strip — draggable */}
+            <DndContext
+              sensors={dndSensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={selectedProjects.map((p) => p.id)}
+                strategy={horizontalListSortingStrategy}
+              >
+                <div className="flex items-center gap-2 mb-3 overflow-x-auto pb-1 scrollbar-none">
+                  {selectedProjects.map((p, i) => (
+                    <SortableSpotThumb
+                      key={p.id}
+                      project={p}
+                      index={i}
+                      onRemove={removeSpot}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
 
             <button
               onClick={() => setStep("details")}

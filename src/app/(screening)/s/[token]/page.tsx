@@ -220,14 +220,8 @@ export default async function ScreeningPage({
       orderBy: { sortOrder: "asc" },
     }),
 
-    // AI gallery images for this reel
-    prisma.reelGalleryImage.findMany({
-      where: { reelId },
-      orderBy: { sortOrder: "asc" },
-      include: {
-        project: { select: { id: true, title: true, brand: true } },
-      },
-    }),
+    // AI gallery removed — return empty array to keep destructuring
+    Promise.resolve([]),
   ]);
 
   const clientBrands = allDirectorProjects
@@ -326,24 +320,8 @@ export default async function ScreeningPage({
     frameGrabsMap[fg.projectId].push(fg);
   }
 
-  // Generate signed URLs for gallery images
-  const galleryWithUrls = await Promise.all(
-    galleryImages.map(async (img) => ({
-      id: img.id,
-      projectId: img.projectId,
-      projectTitle: img.project.title,
-      projectBrand: img.project.brand,
-      timeOffset: img.timeOffset,
-      aiScore: img.aiScore,
-      width: img.width,
-      height: img.height,
-      sortOrder: img.sortOrder,
-      imageUrl: await getDownloadUrl(img.r2Key, 3600),
-      thumbnailUrl: img.thumbnailR2Key
-        ? await getDownloadUrl(img.thumbnailR2Key, 3600)
-        : await getDownloadUrl(img.r2Key, 3600),
-    })),
-  );
+  // AI gallery removed
+  const galleryWithUrls: never[] = [];
 
   const { reel } = link;
   const { director } = reel;

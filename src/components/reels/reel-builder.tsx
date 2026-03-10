@@ -1,11 +1,29 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, X, ChevronDown, Copy, Check, ExternalLink } from "lucide-react";
+import { Film, X, ChevronDown, Copy, Check, ExternalLink, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { formatDuration } from "@/lib/utils";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Project {
   id: string;
@@ -243,6 +261,90 @@ function DirectorDropdown({
   );
 }
 
+function SortableSpotItem({
+  project,
+  index,
+  isMultiDirector,
+  onRemove,
+}: {
+  project: Project & { directorId: string; directorName: string };
+  index: number;
+  isMultiDirector: boolean;
+  onRemove: (id: string) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: project.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : undefined,
+    opacity: isDragging ? 0.9 : 1,
+  };
+
+  const thumbSrc = project.muxPlaybackId
+    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36`
+    : project.thumbnailUrl || null;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center gap-2.5 p-2 rounded-lg bg-[#F7F6F3]/60 group ${
+        isDragging ? "shadow-lg ring-1 ring-[#E8E7E3] bg-white/90" : ""
+      }`}
+    >
+      <button
+        type="button"
+        className="text-[#ddd] hover:text-[#999] transition-colors cursor-grab active:cursor-grabbing touch-none flex-shrink-0"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical size={12} />
+      </button>
+      <span className="text-[10px] text-[#ccc] w-3 text-right tabular-nums">
+        {index + 1}
+      </span>
+      <div className="w-8 h-5 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
+        {thumbSrc ? (
+          <img src={thumbSrc} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Film size={8} className="text-[#ccc]" />
+          </div>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <span className="text-[12px] text-[#1A1A1A] truncate block">
+          {project.title}
+        </span>
+        {isMultiDirector && project.directorName && (
+          <span className="text-[9px] text-[#bbb] truncate block">
+            {project.directorName}
+          </span>
+        )}
+      </div>
+      {project.duration && (
+        <span className="text-[10px] text-[#ccc] tabular-nums flex-shrink-0">
+          {formatDuration(project.duration)}
+        </span>
+      )}
+      <button
+        onClick={() => onRemove(project.id)}
+        className="text-[#ddd] hover:text-[#999] transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100 flex-shrink-0"
+      >
+        <X size={12} />
+      </button>
+    </div>
+  );
+}
+
 export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [selectedDirectorId, setSelectedDirectorId] = useState("");
   const [title, setTitle] = useState("");
@@ -335,30 +437,46 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     }
   }, [availableProjects, sortMode]);
 
-  // Selected projects resolved from all directors (not just current one)
-  // Slate always first
+  // Selected projects resolved from all directors — order matches selectedProjectIds
   const selectedProjects = useMemo(() => {
-    const projects = selectedProjectIds
+    return selectedProjectIds
       .map((id) => allProjectsMap.get(id))
       .filter(Boolean) as (Project & { directorId: string; directorName: string })[];
-    return projects.sort((a, b) => {
-      const aSlate = a.title.toLowerCase().includes("slate") ? 0 : 1;
-      const bSlate = b.title.toLowerCase().includes("slate") ? 0 : 1;
-      return aSlate - bSlate;
-    });
   }, [selectedProjectIds, allProjectsMap]);
 
   const toggleProject = (projectId: string) => {
-    setSelectedProjectIds((prev) =>
-      prev.includes(projectId)
-        ? prev.filter((id) => id !== projectId)
-        : [...prev, projectId]
-    );
+    setSelectedProjectIds((prev) => {
+      if (prev.includes(projectId)) return prev.filter((id) => id !== projectId);
+      // Auto-insert slates at position 0
+      const project = allProjectsMap.get(projectId);
+      if (project && project.title.toLowerCase().includes("slate")) {
+        return [projectId, ...prev];
+      }
+      return [...prev, projectId];
+    });
   };
 
   const removeProject = (projectId: string) => {
     setSelectedProjectIds((prev) => prev.filter((id) => id !== projectId));
   };
+
+  // Drag-and-drop reorder
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setSelectedProjectIds((prev) => {
+        const oldIndex = prev.indexOf(active.id as string);
+        const newIndex = prev.indexOf(over.id as string);
+        return arrayMove(prev, oldIndex, newIndex);
+      });
+    }
+  }, []);
 
   const handleSelectDirector = (id: string) => {
     setSelectedDirectorId(id);
@@ -681,52 +799,26 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                   Multi-Director Reel · {selectedDirectorIds.size} directors
                 </p>
               )}
-              {selectedProjects.map((project, i) => {
-                const thumbSrc = project.muxPlaybackId
-                  ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36&fit_mode=smartcrop`
-                  : project.thumbnailUrl || null;
-
-                return (
-                  <div
-                    key={project.id}
-                    className="flex items-center gap-2.5 p-2 rounded-lg bg-[#F7F6F3]/60 group"
-                  >
-                    <span className="text-[10px] text-[#ccc] w-3 text-right tabular-nums">
-                      {i + 1}
-                    </span>
-                    <div className="w-8 h-5 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
-                      {thumbSrc ? (
-                        <img src={thumbSrc} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Film size={8} className="text-[#ccc]" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-[12px] text-[#1A1A1A] truncate block">
-                        {project.title}
-                      </span>
-                      {isMultiDirector && (project as Project & { directorName: string }).directorName && (
-                        <span className="text-[9px] text-[#bbb] truncate block">
-                          {(project as Project & { directorName: string }).directorName}
-                        </span>
-                      )}
-                    </div>
-                    {project.duration && (
-                      <span className="text-[10px] text-[#ccc] tabular-nums flex-shrink-0">
-                        {formatDuration(project.duration)}
-                      </span>
-                    )}
-                    <button
-                      onClick={() => removeProject(project.id)}
-                      className="text-[#ddd] hover:text-[#999] transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100 flex-shrink-0"
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                );
-              })}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={selectedProjects.map((p) => p.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {selectedProjects.map((project, i) => (
+                    <SortableSpotItem
+                      key={project.id}
+                      project={project}
+                      index={i}
+                      isMultiDirector={isMultiDirector}
+                      onRemove={removeProject}
+                    />
+                  ))}
+                </SortableContext>
+              </DndContext>
             </div>
           ) : (
             <p className="text-[11px] text-[#ccc] py-4 text-center">

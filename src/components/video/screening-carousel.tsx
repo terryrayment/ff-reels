@@ -21,7 +21,6 @@ import {
   Play,
   Film,
   Globe,
-  Sparkles,
 } from "lucide-react";
 
 interface SpotDirectorInfo {
@@ -974,20 +973,7 @@ export function ScreeningCarousel({
               </button>
             )}
 
-            {/* AI Gallery button — only if gallery images exist */}
-            {galleryImages.length > 0 && (
-              <button
-                onClick={() => openPanel("gallery")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
-                  activePanel === "gallery"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
-                }`}
-              >
-                <Sparkles size={10} />
-                Gallery
-              </button>
-            )}
+            {/* AI Gallery removed */}
 
             {/* Lookbook / Mood Board button — only if director has lookbook items */}
             {activeLookbookItems.length > 0 && (
@@ -1985,91 +1971,7 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* ─── AI GALLERY PANEL ─────────────────────────── */}
-        {galleryImages.length > 0 && (
-        <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
-            activePanel === "gallery" ? "translate-y-0" : "translate-y-full"
-          }`}
-          style={{ maxHeight: "85vh" }}
-        >
-          <div
-            className="max-w-5xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
-            style={{ maxHeight: "85vh" }}
-          >
-            {/* Drag handle */}
-            <div className="flex justify-center mb-6">
-              <div className="w-10 h-1 rounded-full bg-white/10" />
-            </div>
-
-            {/* Close */}
-            <button
-              onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
-            >
-              <X size={16} className="text-white/30" />
-            </button>
-
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
-                  {director.name}
-                </p>
-                <h3 className="text-xl font-light text-white/80 tracking-tight">
-                  Best Frames
-                </h3>
-                <p className="text-[12px] text-white/25 mt-1.5">
-                  {galleryImages.length} AI-selected stills — presentation quality
-                </p>
-              </div>
-              {reelId && (
-                <a
-                  href={`/api/reels/${reelId}/gallery/download${typeof window !== "undefined" ? `?token=${window.location.pathname.split("/").pop()}` : ""}`}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] transition-colors text-[10px] text-white/40 hover:text-white/60 uppercase tracking-[0.15em]"
-                >
-                  <Download size={10} />
-                  Download All
-                </a>
-              )}
-            </div>
-
-            {/* Gallery grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {galleryImages.map((img) => (
-                <button
-                  key={img.id}
-                  onClick={() => setLightboxImage(img.imageUrl)}
-                  className="group relative aspect-[16/9] rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.04] hover:border-white/[0.12] transition-all"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={img.thumbnailUrl}
-                    alt={`${img.projectTitle} — best frame`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
-                  />
-                  {/* Hover overlay with download + info */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-200">
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Download size={20} className="text-white/70" />
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2.5 pt-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <p className="text-[10px] text-white/70 truncate leading-tight">
-                        {img.projectTitle}
-                      </p>
-                      {img.projectBrand && (
-                        <p className="text-[8px] text-white/35 truncate">
-                          {img.projectBrand}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-        )}
+        {/* AI Gallery panel removed */}
 
         {/* ─── CASE STUDIES PANEL ────────────────────────── */}
         {activeCaseStudies.length > 0 && (
