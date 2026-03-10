@@ -791,7 +791,7 @@ export function ScreeningCarousel({
                   </div>
                 </div>
                 <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/25 uppercase tracking-widest">
-                  Video uploading to stream
+                  Video processing
                 </p>
               </div>
             ) : (
