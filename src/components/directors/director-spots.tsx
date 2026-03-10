@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Clock, AlertCircle, Upload, Image } from "lucide-react";
+import { Film, Clock, AlertCircle, Upload, Image, Pencil } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
 
@@ -39,14 +39,58 @@ interface DirectorSpotsProps {
   directorId?: string;
   heroProjectId?: string | null;
   readOnly?: boolean;
+  canEditNames?: boolean;
 }
 
-export function DirectorSpots({ projects, directorId, heroProjectId, readOnly }: DirectorSpotsProps) {
+export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, canEditNames }: DirectorSpotsProps) {
   const [sortBy, setSortBy] = useState<SortKey>("brand");
   const [settingHero, setSettingHero] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{ projectId: string; x: number; y: number } | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  // Focus the input when editing starts
+  useEffect(() => {
+    if (editingId && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingId]);
+
+  const startEditing = (projectId: string, currentTitle: string) => {
+    setEditingId(projectId);
+    setEditValue(currentTitle);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditValue("");
+  };
+
+  const saveTitle = async (projectId: string) => {
+    const trimmed = editValue.trim();
+    const original = projects.find((p) => p.id === projectId)?.title;
+    if (!trimmed || trimmed === original) {
+      cancelEditing();
+      return;
+    }
+    setSavingId(projectId);
+    setEditingId(null);
+    try {
+      await fetch(`/api/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: trimmed }),
+      });
+      router.refresh();
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   const setAsHero = async (projectId: string) => {
     setContextMenu(null);
@@ -190,9 +234,43 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly }:
                   {project.brand}
                 </p>
               )}
-              <p className={`text-[12px] text-[#777] truncate ${project.brand ? "mt-0.5" : ""}`}>
-                {project.title}
-              </p>
+
+              {/* Inline title editing for directors */}
+              {editingId === project.id ? (
+                <div className="flex items-center gap-1 mt-0.5">
+                  <input
+                    ref={editInputRef}
+                    type="text"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") saveTitle(project.id);
+                      if (e.key === "Escape") cancelEditing();
+                    }}
+                    onBlur={() => saveTitle(project.id)}
+                    className="flex-1 min-w-0 text-[12px] text-[#333] bg-white border border-[#ccc] rounded px-1.5 py-0.5 outline-none focus:border-[#999] transition-colors"
+                  />
+                </div>
+              ) : (
+                <div className={`flex items-center gap-1.5 group/title ${project.brand ? "mt-0.5" : ""}`}>
+                  <p className={`text-[12px] truncate ${savingId === project.id ? "text-[#aaa]" : "text-[#777]"}`}>
+                    {savingId === project.id ? "Saving..." : project.title}
+                  </p>
+                  {canEditNames && savingId !== project.id && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEditing(project.id, project.title);
+                      }}
+                      className="opacity-0 group-hover/title:opacity-100 transition-opacity flex-shrink-0 p-0.5 hover:bg-[#F0EFE9] rounded"
+                      title="Rename spot"
+                    >
+                      <Pencil size={10} className="text-[#999]" />
+                    </button>
+                  )}
+                </div>
+              )}
+
               {(project.agency || project.year) && (
                 <p className="text-[11px] text-[#aaa] truncate mt-0.5">
                   {[project.agency, project.year]

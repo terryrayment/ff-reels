@@ -94,12 +94,12 @@ export default async function PortfolioPage() {
         )}
       </div>
 
-      {/* Spots grid — read-only for directors */}
+      {/* Spots grid — directors can rename their spots */}
       <div className="mt-8">
         <h2 className="text-[11px] font-semibold text-[#666] uppercase tracking-wider mb-4">
           Spots ({director.projects.length})
         </h2>
-        <DirectorSpots projects={projectsWithStats} readOnly />
+        <DirectorSpots projects={projectsWithStats} readOnly canEditNames />
       </div>
 
       {/* Reels section */}

@@ -40,11 +40,41 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const body = await req.json();
+
+  // DIRECTOR: can only update title on their own spots
+  if (session.user.role === "DIRECTOR") {
+    const directorId = session.user.directorId;
+    if (!directorId) {
+      return NextResponse.json({ error: "No director profile linked" }, { status: 403 });
+    }
+    const project = await prisma.project.findUnique({
+      where: { id: params.id },
+      select: { directorId: true },
+    });
+    if (!project || project.directorId !== directorId) {
+      return NextResponse.json({ error: "Not your spot" }, { status: 403 });
+    }
+    const { title } = body;
+    if (title === undefined) {
+      return NextResponse.json({ error: "Only title can be updated" }, { status: 400 });
+    }
+    const updated = await prisma.project.update({
+      where: { id: params.id },
+      data: { title },
+    });
+    return NextResponse.json(updated);
+  }
+
+  // ADMIN / REP: full metadata update
+  if (!["ADMIN", "REP"].includes(session.user.role)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const {
     title,
     brand,
