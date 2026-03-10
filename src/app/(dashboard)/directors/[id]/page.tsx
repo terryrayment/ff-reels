@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { DirectorHeader } from "@/components/directors/director-header";
 import { DirectorSpots } from "@/components/directors/director-spots";
 import { UploadButton } from "@/components/directors/upload-button";
+import { Eye } from "lucide-react";
 
 export default async function DirectorDetailPage({
   params,
@@ -70,7 +72,16 @@ export default async function DirectorDetailPage({
           <h2 className="text-[11px] font-semibold text-[#666] uppercase tracking-wider">
             Spots ({director.projects.length})
           </h2>
-          <UploadButton directorId={director.id} directorName={director.name} />
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/portfolio?preview=${director.id}`}
+              className="flex items-center gap-1.5 text-[11px] text-[#999] hover:text-[#666] transition-colors"
+            >
+              <Eye size={12} />
+              Preview Portal
+            </Link>
+            <UploadButton directorId={director.id} directorName={director.name} />
+          </div>
         </div>
 
         <DirectorSpots

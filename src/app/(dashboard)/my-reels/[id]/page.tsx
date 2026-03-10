@@ -7,14 +7,18 @@ import { ScreeningCarousel } from "@/components/video/screening-carousel";
 
 export default async function MyReelViewPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams: { preview?: string };
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
-  if (session.user.role !== "DIRECTOR") redirect("/dashboard");
 
-  const directorId = session.user.directorId;
+  const isPreview = session.user.role === "ADMIN" && searchParams.preview;
+  const directorId = isPreview ? searchParams.preview! : session.user.directorId;
+
+  if (!isPreview && session.user.role !== "DIRECTOR") redirect("/dashboard");
   if (!directorId) redirect("/portfolio");
 
   // Fetch the reel — verify it belongs to this director

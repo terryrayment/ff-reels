@@ -2,14 +2,24 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { DirectorSpots } from "@/components/directors/director-spots";
+import { ArrowLeft, Eye } from "lucide-react";
 
-export default async function PortfolioPage() {
+export default async function PortfolioPage({
+  searchParams,
+}: {
+  searchParams: { preview?: string };
+}) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
-  if (session.user.role !== "DIRECTOR") redirect("/dashboard");
 
-  const directorId = session.user.directorId;
+  // Admin preview mode: ?preview=directorId
+  const isPreview = session.user.role === "ADMIN" && searchParams.preview;
+  const directorId = isPreview ? searchParams.preview! : session.user.directorId;
+
+  if (!isPreview && session.user.role !== "DIRECTOR") redirect("/dashboard");
+
   if (!directorId) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -75,8 +85,27 @@ export default async function PortfolioPage() {
     createdAt: p.createdAt.toISOString(),
   }));
 
+  const previewParam = isPreview ? `?preview=${directorId}` : "";
+
   return (
     <div>
+      {/* Admin preview banner */}
+      {isPreview && (
+        <div className="mb-6 flex items-center gap-3 px-4 py-2.5 bg-amber-50 border border-amber-200/60 rounded-[3px]">
+          <Eye size={13} className="text-amber-500 flex-shrink-0" />
+          <p className="text-[12px] text-amber-700 flex-1">
+            Viewing as <span className="font-medium">{director.name}</span> — this is what they see when they log in.
+          </p>
+          <Link
+            href={`/directors/${directorId}`}
+            className="flex items-center gap-1 text-[11px] text-amber-600 hover:text-amber-800 transition-colors font-medium"
+          >
+            <ArrowLeft size={11} />
+            Back to Admin
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8 md:mb-14">
         <h1 className="text-[42px] md:text-[56px] font-extralight tracking-tight text-[#1A1A1A] leading-[1.05]">
@@ -92,6 +121,18 @@ export default async function PortfolioPage() {
             {director.bio}
           </p>
         )}
+        {/* Preview nav links for admin */}
+        {isPreview && (
+          <div className="mt-5 flex items-center gap-4">
+            <span className="text-[11px] font-medium text-[#1A1A1A] border-b border-[#1A1A1A] pb-0.5">Portfolio</span>
+            <Link href={`/my-reels${previewParam}`} className="text-[11px] text-[#999] hover:text-[#666] transition-colors">
+              My Reels
+            </Link>
+            <Link href={`/my-stats${previewParam}`} className="text-[11px] text-[#999] hover:text-[#666] transition-colors">
+              My Stats
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Spots grid — directors can rename their spots */}
@@ -99,7 +140,7 @@ export default async function PortfolioPage() {
         <h2 className="text-[11px] font-semibold text-[#666] uppercase tracking-wider mb-4">
           Spots ({director.projects.length})
         </h2>
-        <DirectorSpots projects={projectsWithStats} readOnly canEditNames />
+        <DirectorSpots projects={projectsWithStats} readOnly canEditNames={!isPreview} />
       </div>
 
       {/* Reels section */}
@@ -112,7 +153,7 @@ export default async function PortfolioPage() {
             {director.reels.map((reel) => (
               <a
                 key={reel.id}
-                href={`/my-reels/${reel.id}`}
+                href={`/my-reels/${reel.id}${previewParam}`}
                 className="p-3.5 bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all rounded-[3px]"
               >
                 <p className="text-[13px] font-semibold text-[#1A1A1A]">{reel.title}</p>

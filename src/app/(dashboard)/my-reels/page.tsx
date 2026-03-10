@@ -3,14 +3,21 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Film, Play } from "lucide-react";
+import { Film, Play, Eye, ArrowLeft } from "lucide-react";
 
-export default async function MyReelsPage() {
+export default async function MyReelsPage({
+  searchParams,
+}: {
+  searchParams: { preview?: string };
+}) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
-  if (session.user.role !== "DIRECTOR") redirect("/dashboard");
 
-  const directorId = session.user.directorId;
+  const isPreview = session.user.role === "ADMIN" && searchParams.preview;
+  const directorId = isPreview ? searchParams.preview! : session.user.directorId;
+
+  if (!isPreview && session.user.role !== "DIRECTOR") redirect("/dashboard");
+
   if (!directorId) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -19,6 +26,10 @@ export default async function MyReelsPage() {
       </div>
     );
   }
+
+  const directorName = isPreview
+    ? (await prisma.director.findUnique({ where: { id: directorId }, select: { name: true } }))?.name
+    : null;
 
   const reels = await prisma.reel.findMany({
     where: { directorId },
@@ -43,14 +54,46 @@ export default async function MyReelsPage() {
     orderBy: { updatedAt: "desc" },
   });
 
+  const previewParam = isPreview ? `?preview=${directorId}` : "";
+
+  const previewBanner = isPreview && directorName ? (
+    <div className="mb-6 flex items-center gap-3 px-4 py-2.5 bg-amber-50 border border-amber-200/60 rounded-[3px]">
+      <Eye size={13} className="text-amber-500 flex-shrink-0" />
+      <p className="text-[12px] text-amber-700 flex-1">
+        Viewing as <span className="font-medium">{directorName}</span>
+      </p>
+      <Link
+        href={`/directors/${directorId}`}
+        className="flex items-center gap-1 text-[11px] text-amber-600 hover:text-amber-800 transition-colors font-medium"
+      >
+        <ArrowLeft size={11} />
+        Back to Admin
+      </Link>
+    </div>
+  ) : null;
+
+  const previewNav = isPreview ? (
+    <div className="mt-5 flex items-center gap-4">
+      <Link href={`/portfolio${previewParam}`} className="text-[11px] text-[#999] hover:text-[#666] transition-colors">
+        Portfolio
+      </Link>
+      <span className="text-[11px] font-medium text-[#1A1A1A] border-b border-[#1A1A1A] pb-0.5">My Reels</span>
+      <Link href={`/my-stats${previewParam}`} className="text-[11px] text-[#999] hover:text-[#666] transition-colors">
+        My Stats
+      </Link>
+    </div>
+  ) : null;
+
   if (reels.length === 0) {
     return (
       <div>
+        {previewBanner}
         <div className="mb-8 md:mb-14">
           <h1 className="text-[42px] md:text-[56px] font-extralight tracking-tight text-[#1A1A1A] leading-[1.05]">
             My Reels
           </h1>
           <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-[#aaa]">Your curated playlists</p>
+          {previewNav}
         </div>
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <Film size={20} className="text-[#ccc] mb-4" />
@@ -63,6 +106,7 @@ export default async function MyReelsPage() {
 
   return (
     <div>
+      {previewBanner}
       <div className="mb-8 md:mb-14">
         <h1 className="text-[42px] md:text-[56px] font-extralight tracking-tight text-[#1A1A1A] leading-[1.05]">
           My Reels
@@ -70,6 +114,7 @@ export default async function MyReelsPage() {
         <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-[#aaa]">
           {reels.length} reel{reels.length !== 1 ? "s" : ""}
         </p>
+        {previewNav}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -85,7 +130,7 @@ export default async function MyReelsPage() {
           return (
             <Link
               key={reel.id}
-              href={`/my-reels/${reel.id}`}
+              href={`/my-reels/${reel.id}${previewParam}`}
               className="group bg-white border border-[#E8E8E3] hover:border-[#ccc] hover:shadow-sm transition-all rounded-[3px] overflow-hidden"
             >
               {/* Thumbnail */}

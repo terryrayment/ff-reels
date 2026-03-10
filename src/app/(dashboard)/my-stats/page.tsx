@@ -3,14 +3,22 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { formatDuration } from "@/lib/utils";
-import { Eye, TrendingUp, TrendingDown, Minus, BarChart3, Film } from "lucide-react";
+import Link from "next/link";
+import { Eye, TrendingUp, TrendingDown, Minus, BarChart3, Film, ArrowLeft } from "lucide-react";
 
-export default async function MyStatsPage() {
+export default async function MyStatsPage({
+  searchParams,
+}: {
+  searchParams: { preview?: string };
+}) {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
-  if (session.user.role !== "DIRECTOR") redirect("/dashboard");
 
-  const directorId = session.user.directorId;
+  const isPreview = session.user.role === "ADMIN" && searchParams.preview;
+  const directorId = isPreview ? searchParams.preview! : session.user.directorId;
+
+  if (!isPreview && session.user.role !== "DIRECTOR") redirect("/dashboard");
+
   if (!directorId) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -163,8 +171,27 @@ export default async function MyStatsPage() {
     };
   }).sort((a, b) => b.monthlyViewCount - a.monthlyViewCount);
 
+  const previewParam = isPreview ? `?preview=${directorId}` : "";
+
   return (
     <div>
+      {/* Admin preview banner */}
+      {isPreview && (
+        <div className="mb-6 flex items-center gap-3 px-4 py-2.5 bg-amber-50 border border-amber-200/60 rounded-[3px]">
+          <Eye size={13} className="text-amber-500 flex-shrink-0" />
+          <p className="text-[12px] text-amber-700 flex-1">
+            Viewing as <span className="font-medium">{director.name}</span>
+          </p>
+          <Link
+            href={`/directors/${directorId}`}
+            className="flex items-center gap-1 text-[11px] text-amber-600 hover:text-amber-800 transition-colors font-medium"
+          >
+            <ArrowLeft size={11} />
+            Back to Admin
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="mb-8 md:mb-14">
         <h1 className="text-[42px] md:text-[56px] font-extralight tracking-tight text-[#1A1A1A] leading-[1.05]">
@@ -175,6 +202,17 @@ export default async function MyStatsPage() {
           <span className="mx-2 text-[#ddd]">/</span>
           Engagement Overview
         </p>
+        {isPreview && (
+          <div className="mt-5 flex items-center gap-4">
+            <Link href={`/portfolio${previewParam}`} className="text-[11px] text-[#999] hover:text-[#666] transition-colors">
+              Portfolio
+            </Link>
+            <Link href={`/my-reels${previewParam}`} className="text-[11px] text-[#999] hover:text-[#666] transition-colors">
+              My Reels
+            </Link>
+            <span className="text-[11px] font-medium text-[#1A1A1A] border-b border-[#1A1A1A] pb-0.5">My Stats</span>
+          </div>
+        )}
       </div>
 
       {/* Your Week summary card */}
@@ -301,7 +339,7 @@ export default async function MyStatsPage() {
                 {reelStats.map((reel) => (
                   <a
                     key={reel.id}
-                    href={`/my-reels/${reel.id}`}
+                    href={`/my-reels/${reel.id}${previewParam}`}
                     className="flex items-center gap-3 group"
                   >
                     <div className="flex-1 min-w-0">
