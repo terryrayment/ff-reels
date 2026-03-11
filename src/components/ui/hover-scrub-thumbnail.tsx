@@ -12,6 +12,8 @@ interface HoverScrubThumbnailProps {
   alt: string;
   className?: string;
   staticClassName?: string;
+  /** Override the static (non-hover) thumbnail, e.g. a Mux time-based URL from the picker */
+  staticUrlOverride?: string | null;
 }
 
 /**
@@ -25,6 +27,7 @@ export function HoverScrubThumbnail({
   alt,
   className = "",
   staticClassName = "",
+  staticUrlOverride,
 }: HoverScrubThumbnailProps) {
   const [hovering, setHovering] = useState(false);
   const [scrubPct, setScrubPct] = useState(0);
@@ -40,7 +43,7 @@ export function HoverScrubThumbnail({
   const containerRef = useRef<HTMLDivElement>(null);
   const spriteLoadedRef = useRef(false);
 
-  const staticUrl = `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=640`;
+  const staticUrl = staticUrlOverride || `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=640`;
   const storyboardUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.jpg`;
   const storyboardVttUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.vtt`;
 

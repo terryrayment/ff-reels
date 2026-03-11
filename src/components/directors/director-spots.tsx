@@ -2,9 +2,10 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Clock, AlertCircle, Upload, Image as ImageIcon, Pencil } from "lucide-react";
+import { Film, Clock, AlertCircle, Upload, Image as ImageIcon, Pencil, Camera } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
+import { ThumbnailPickerModal } from "@/components/spots/thumbnail-picker-modal";
 
 interface ProjectWithStats {
   id: string;
@@ -46,6 +47,9 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
   const [sortBy, setSortBy] = useState<SortKey>("brand");
   const [settingHero, setSettingHero] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{ projectId: string; x: number; y: number } | null>(null);
+  const [thumbnailPickerProject, setThumbnailPickerProject] = useState<ProjectWithStats | null>(null);
+  const [savingThumbnail, setSavingThumbnail] = useState(false);
+  const [localThumbnailUrls, setLocalThumbnailUrls] = useState<Record<string, string | null>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -102,6 +106,23 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
     });
     router.refresh();
     setSettingHero(null);
+  };
+
+  const saveThumbnail = async (projectId: string, thumbnailUrl: string | null) => {
+    setSavingThumbnail(true);
+    try {
+      await fetch(`/api/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ thumbnailUrl }),
+      });
+      // Optimistically update local state so the grid reflects the new thumbnail immediately
+      setLocalThumbnailUrls((prev) => ({ ...prev, [projectId]: thumbnailUrl }));
+      setThumbnailPickerProject(null);
+      router.refresh();
+    } finally {
+      setSavingThumbnail(false);
+    }
   };
 
   const handleContextMenu = useCallback((e: React.MouseEvent, projectId: string) => {
@@ -190,6 +211,11 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
                   alt={project.title}
                   className="w-full h-full"
                   staticClassName="opacity-95 group-hover:opacity-100 transition-opacity duration-300 ease-out"
+                  staticUrlOverride={
+                    project.id in localThumbnailUrls
+                      ? localThumbnailUrls[project.id]
+                      : project.thumbnailUrl
+                  }
                 />
               ) : project.thumbnailUrl ? (
                 <img
@@ -225,6 +251,21 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                   <span className="text-[11px] text-white/90">Setting cover...</span>
                 </div>
+              )}
+
+              {/* Thumbnail picker button — shown on hover when editable */}
+              {!readOnly && directorId && project.muxPlaybackId && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setThumbnailPickerProject(project);
+                  }}
+                  className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-black/60 hover:bg-black/80 px-2 py-1 rounded text-white text-[10px] backdrop-blur-sm"
+                  title="Set thumbnail"
+                >
+                  <Camera size={10} />
+                  Thumbnail
+                </button>
               )}
             </div>
 
@@ -293,6 +334,16 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
         ))}
       </div>
 
+      {/* Thumbnail picker modal */}
+      {thumbnailPickerProject && (
+        <ThumbnailPickerModal
+          project={thumbnailPickerProject}
+          onClose={() => setThumbnailPickerProject(null)}
+          onSave={saveThumbnail}
+          saving={savingThumbnail}
+        />
+      )}
+
       {/* Right-click context menu */}
       {contextMenu && (
         <div
@@ -309,6 +360,19 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
             <ImageIcon size={13} className="text-[#999]" />
             {contextMenu.projectId === heroProjectId ? "Already cover" : "Set as cover"}
           </button>
+          {sorted.find((p) => p.id === contextMenu.projectId)?.muxPlaybackId && (
+            <button
+              onClick={() => {
+                const p = sorted.find((proj) => proj.id === contextMenu.projectId);
+                if (p) setThumbnailPickerProject(p);
+                setContextMenu(null);
+              }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-[12px] text-[#333] hover:bg-[#F5F4F0] transition-colors"
+            >
+              <Camera size={13} className="text-[#999]" />
+              Set thumbnail
+            </button>
+          )}
         </div>
       )}
     </div>
