@@ -25,6 +25,7 @@ export default async function UsersPage() {
         inviteTokenExpires: true,
         directorId: true,
         director: { select: { name: true } },
+        lastActiveAt: true,
         createdAt: true,
       },
       orderBy: { createdAt: "asc" },
@@ -47,6 +48,7 @@ export default async function UsersPage() {
     inviteExpired: !u.passwordHash && u.inviteTokenExpires
       ? u.inviteTokenExpires < new Date()
       : false,
+    lastActiveAt: u.lastActiveAt?.toISOString() || null,
     createdAt: u.createdAt.toISOString(),
   }));
 

@@ -12,6 +12,7 @@ interface TeamUser {
   status: string;
   invitePending: boolean;
   inviteExpired: boolean;
+  lastActiveAt: string | null;
   createdAt: string;
 }
 
@@ -397,9 +398,15 @@ export function UsersPanel({ initialUsers, currentUserId, directors = [] }: { in
                       </span>
                     )}
 
-                    {/* Joined date */}
-                    <span className="text-[10px] text-[#ccc] w-16 text-right">
-                      {timeAgo(user.createdAt)}
+                    {/* Last active / joined date */}
+                    <span
+                      className="text-[10px] text-[#ccc] w-16 text-right"
+                      title={user.lastActiveAt
+                        ? `Last active: ${new Date(user.lastActiveAt).toLocaleString()}\nJoined: ${new Date(user.createdAt).toLocaleDateString()}`
+                        : `Joined: ${new Date(user.createdAt).toLocaleDateString()}`
+                      }
+                    >
+                      {user.lastActiveAt ? timeAgo(user.lastActiveAt) : timeAgo(user.createdAt)}
                     </span>
 
                     {/* Actions */}

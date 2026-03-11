@@ -87,7 +87,12 @@ export const authOptions: NextAuthOptions = {
         }
       }
       // Refresh role + directorId from DB on every request so changes take effect immediately
+      // Also update lastActiveAt (throttled to once per 5 min to avoid excessive writes)
       if (token.id) {
+        const now = Date.now();
+        const lastPing = (token.lastActivePing as number) || 0;
+        const shouldPing = now - lastPing > 5 * 60 * 1000;
+
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: { role: true, directorId: true },
@@ -95,6 +100,14 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.role = dbUser.role;
           token.directorId = dbUser.directorId;
+        }
+
+        if (shouldPing) {
+          token.lastActivePing = now;
+          await prisma.user.update({
+            where: { id: token.id as string },
+            data: { lastActiveAt: new Date() },
+          });
         }
       }
       return token;

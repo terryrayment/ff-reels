@@ -26,6 +26,7 @@ model User {
   reelViews          ReelView[]
   updates            Update[]
   reels              Reel[]
+  lastActiveAt       DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 }
