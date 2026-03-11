@@ -12,6 +12,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        rememberMe: { label: "Remember Me", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -45,6 +46,7 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             role: user.role,
+            rememberMe: credentials.rememberMe === "true",
           };
         } catch (error) {
           console.error("[Auth] Error during authorize:", error);
@@ -78,6 +80,11 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         // @ts-expect-error — role is on our user object
         token.role = user.role;
+        // @ts-expect-error — rememberMe is on our user object
+        if (!user.rememberMe) {
+          // Session cookie: expire the JWT in 8 hours instead of 90 days
+          token.exp = Math.floor(Date.now() / 1000) + 8 * 60 * 60;
+        }
       }
       // Refresh role + directorId from DB on every request so changes take effect immediately
       if (token.id) {

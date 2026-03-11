@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function LoginPage() {
     const result = await signIn("credentials", {
       email,
       password,
+      rememberMe: String(rememberMe),
       redirect: false,
     });
 
@@ -86,6 +88,29 @@ export default function LoginPage() {
               className="w-full px-0 py-3 bg-transparent border-0 border-b border-[#E0DDD8] text-[#1A1A1A] text-[15px] placeholder:text-[#ccc] focus:outline-none focus:border-[#1A1A1A] transition-colors duration-300"
             />
           </div>
+
+          <label className="flex items-center gap-2.5 cursor-pointer select-none">
+            <div
+              onClick={() => setRememberMe(!rememberMe)}
+              className={`w-4 h-4 rounded border flex items-center justify-center transition-colors duration-200 ${
+                rememberMe
+                  ? "bg-[#1A1A1A] border-[#1A1A1A]"
+                  : "bg-transparent border-[#C8C5C0]"
+              }`}
+            >
+              {rememberMe && (
+                <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                  <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </div>
+            <span
+              onClick={() => setRememberMe(!rememberMe)}
+              className="text-[11px] text-[#999] tracking-[0.05em]"
+            >
+              Stay signed in
+            </span>
+          </label>
 
           {error && (
             <p className="text-[13px] text-[#C44]">{error}</p>
