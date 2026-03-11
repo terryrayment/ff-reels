@@ -39,6 +39,7 @@ export function HoverScrubThumbnail({
     rows: number;
     total: number;
   } | null>(null);
+  const [containerSize, setContainerSize] = useState<{ w: number; h: number } | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const spriteLoadedRef = useRef(false);
@@ -108,7 +109,16 @@ export function HoverScrubThumbnail({
     []
   );
 
-  const handleEnter = useCallback(() => setHovering(true), []);
+  const handleEnter = useCallback(() => {
+    setHovering(true);
+    // Snapshot container dimensions on first hover so we can do pixel-accurate cover math
+    if (containerRef.current) {
+      setContainerSize({
+        w: containerRef.current.offsetWidth,
+        h: containerRef.current.offsetHeight,
+      });
+    }
+  }, []);
   const handleLeave = useCallback(() => {
     setHovering(false);
     setScrubPct(0);
@@ -121,6 +131,27 @@ export function HoverScrubThumbnail({
   const row = spriteSize ? Math.floor(frameIndex / spriteSize.cols) : 0;
 
   const showScrub = hovering && spriteReady && spriteSize;
+
+  // Pixel-accurate cover positioning — matches object-cover/object-center behavior
+  const scrubStyle: React.CSSProperties = (() => {
+    if (!showScrub || !containerSize) return {};
+    const tileW = spriteSize.w / spriteSize.cols;
+    const tileH = spriteSize.h / spriteSize.rows;
+    // Scale so tile covers the container (same as object-cover)
+    const scale = Math.max(containerSize.w / tileW, containerSize.h / tileH);
+    const scaledSpriteW = spriteSize.w * scale;
+    const scaledSpriteH = spriteSize.h * scale;
+    const scaledTileW = tileW * scale;
+    const scaledTileH = tileH * scale;
+    // Center-crop the tile within the container
+    const x = -(col * scaledTileW) - (scaledTileW - containerSize.w) / 2;
+    const y = -(row * scaledTileH) - (scaledTileH - containerSize.h) / 2;
+    return {
+      backgroundImage: `url(${storyboardUrl})`,
+      backgroundSize: `${scaledSpriteW}px ${scaledSpriteH}px`,
+      backgroundPosition: `${x}px ${y}px`,
+    };
+  })();
 
   return (
     <div
@@ -140,14 +171,7 @@ export function HoverScrubThumbnail({
 
       {/* Storyboard scrub layer */}
       {showScrub && (
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${storyboardUrl})`,
-            backgroundSize: `${spriteSize.cols * 100}% ${spriteSize.rows * 100}%`,
-            backgroundPosition: `${spriteSize.cols > 1 ? (col / (spriteSize.cols - 1)) * 100 : 0}% ${spriteSize.rows > 1 ? (row / (spriteSize.rows - 1)) * 100 : 0}%`,
-          }}
-        />
+        <div className="absolute inset-0" style={scrubStyle} />
       )}
 
       {/* Scrub progress bar */}
