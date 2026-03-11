@@ -65,19 +65,25 @@ export class LbbOnlineRss implements SourceAdapter {
         title: string;
         link: string;
         description: string;
+        thumbnailUrl?: string;
       }> = [];
 
       $("item").each((_, el) => {
         const title = $(el).find("title").text().trim();
         const link = $(el).find("link").text().trim();
         const description = $(el).find("description").text().trim();
+        const thumbnailUrl =
+          $(el).find("media\\:thumbnail").attr("url") ||
+          $(el).find("media\\:content[medium='image']").attr("url") ||
+          $(el).find("media\\:content").attr("url") ||
+          undefined;
 
         if (!title || !link) return;
 
         // Skip non-credit articles
         if (LbbOnlineRss.SKIP_PATTERNS.some((p) => p.test(title))) return;
 
-        candidates.push({ title, link, description });
+        candidates.push({ title, link, description, thumbnailUrl });
       });
 
       console.log(`[LBB] ${candidates.length} articles from RSS`);
@@ -105,6 +111,7 @@ export class LbbOnlineRss implements SourceAdapter {
             directorName: director || undefined,
             sourceUrl: candidate.link,
             sourceName: "LBB ONLINE",
+            thumbnailUrl: candidate.thumbnailUrl,
           });
         } else if (isCreditArticle) {
           // Article looks like it has credits but we couldn't parse them —
@@ -115,6 +122,7 @@ export class LbbOnlineRss implements SourceAdapter {
               candidate.title.length <= 120 ? candidate.title : undefined,
             sourceUrl: candidate.link,
             sourceName: "LBB ONLINE",
+            thumbnailUrl: candidate.thumbnailUrl,
             articleText: fullText.slice(0, 4000),
           });
         }

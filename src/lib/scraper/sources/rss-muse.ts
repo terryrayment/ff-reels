@@ -196,6 +196,20 @@ export class MuseByClio implements SourceAdapter {
         const pubDate = $(el).find("pubDate").text().trim();
         const contentEncoded = $(el).find("content\\:encoded").text().trim();
 
+        // Extract thumbnail from content:encoded HTML (images, video posters)
+        let thumbnailUrl: string | undefined;
+        if (contentEncoded) {
+          const $c = cheerio.load(contentEncoded);
+          // Prefer figure images (WordPress block editor), then video posters
+          const imgSrc =
+            $c("figure img").first().attr("src") ||
+            $c("img").first().attr("src") ||
+            $c("video").first().attr("poster");
+          if (imgSrc && imgSrc.startsWith("http")) {
+            thumbnailUrl = imgSrc;
+          }
+        }
+
         if (!title) return;
 
         // ── Collect category tags ──────────────────────────────
@@ -269,6 +283,7 @@ export class MuseByClio implements SourceAdapter {
           category: category?.toLowerCase() || undefined,
           sourceUrl: link || undefined,
           sourceName: "MUSE BY CLIO",
+          thumbnailUrl,
           publishedAt: pubDate ? new Date(pubDate) : undefined,
           articleText: contentEncoded || undefined,
         });

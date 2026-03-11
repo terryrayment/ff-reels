@@ -38,5 +38,5 @@ export async function GET(req: Request) {
   }
 }
 
-// Allow long execution (Vercel Pro: 60s, Enterprise: 300s)
-export const maxDuration = 60;
+// Allow long execution (Vercel Pro + Fluid Compute: up to 300s)
+export const maxDuration = 300;

@@ -111,6 +111,12 @@ export class AdweekRss implements SourceAdapter {
 
           if (articleText.length < 100) return null;
 
+          // Extract og:image for thumbnail
+          const thumbnailUrl =
+            page$("meta[property='og:image']").attr("content") ||
+            page$("meta[name='twitter:image']").attr("content") ||
+            undefined;
+
           // Extract brand from title or categories
           const brand = extractBrandFromTitle(candidate.title) || candidate.categories[0] || "Unknown";
 
@@ -119,6 +125,7 @@ export class AdweekRss implements SourceAdapter {
             campaignName: candidate.title.length <= 120 ? candidate.title : undefined,
             sourceUrl: candidate.link,
             sourceName: "ADWEEK",
+            thumbnailUrl,
             publishedAt: candidate.pubDate ? new Date(candidate.pubDate) : undefined,
             articleText,
           } as ScrapedCredit;

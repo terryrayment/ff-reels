@@ -41,6 +41,10 @@ export class ShotsAdapter implements SourceAdapter {
         const agency =
           $(el).find(".agency, [class*='agency']").first().text().trim() || "";
         const link = $(el).find("a").first().attr("href") || "";
+        const thumbnailUrl =
+          $(el).find("img").first().attr("src") ||
+          $(el).find("img").first().attr("data-src") ||
+          undefined;
 
         // Need at least brand or title to be valid
         if (!brand && !title) return;
@@ -60,6 +64,7 @@ export class ShotsAdapter implements SourceAdapter {
               ? `https://shots.net${link}`
               : undefined,
           sourceName: "SHOTS",
+          thumbnailUrl: thumbnailUrl?.startsWith("http") ? thumbnailUrl : undefined,
         });
       });
     } catch (err) {

@@ -62,6 +62,10 @@ export class CampaignBriefRss implements SourceAdapter {
         const pubDate = $(el).find("pubDate").text().trim();
         const contentEncoded = $(el).find("content\\:encoded").text().trim();
         const description = $(el).find("description").text().trim();
+        const thumbnailUrl =
+          $(el).find("media\\:content[medium='image']").attr("url") ||
+          $(el).find("media\\:content").attr("url") ||
+          undefined;
 
         if (!title) return;
 
@@ -114,6 +118,7 @@ export class CampaignBriefRss implements SourceAdapter {
           directorName: director || undefined,
           sourceUrl: link || undefined,
           sourceName: "CAMPAIGN BRIEF",
+          thumbnailUrl,
           publishedAt: pubDate ? new Date(pubDate) : undefined,
           // Pass article text for AI enrichment if we're missing key fields
           articleText:

@@ -70,6 +70,11 @@ export class AdlandRss implements SourceAdapter {
         const link = $(el).find("link").text().trim();
         const pubDate = $(el).find("pubDate").text().trim();
         const description = $(el).find("description").text().trim();
+        const thumbnailUrl =
+          $(el).find("media\\:content[medium='image']").attr("url") ||
+          $(el).find("media\\:content").attr("url") ||
+          $(el).find("enclosure[type^='image']").attr("url") ||
+          undefined;
 
         if (!title) return;
 
@@ -113,6 +118,7 @@ export class AdlandRss implements SourceAdapter {
           directorName: director || undefined,
           sourceUrl: link || undefined,
           sourceName: "ADLAND",
+          thumbnailUrl,
           publishedAt: pubDate ? new Date(pubDate) : undefined,
           // Pass to AI if we found a brand but no director/prodCo
           articleText:

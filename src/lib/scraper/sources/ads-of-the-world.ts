@@ -47,6 +47,10 @@ export class AdsOfTheWorldAdapter implements SourceAdapter {
           const category =
             $(el).find(".category, .industry, [class*='category'], [class*='industry']").first().text().trim() || "";
           const link = $(el).find("a").first().attr("href") || "";
+          const thumbnailUrl =
+            $(el).find("img").first().attr("src") ||
+            $(el).find("img").first().attr("data-src") ||
+            undefined;
 
           if (!brand && !title) return;
 
@@ -66,6 +70,7 @@ export class AdsOfTheWorldAdapter implements SourceAdapter {
                 ? `https://www.adsoftheworld.com${link}`
                 : undefined,
             sourceName: "ADS OF THE WORLD",
+            thumbnailUrl: thumbnailUrl?.startsWith("http") ? thumbnailUrl : undefined,
           });
         }
       );

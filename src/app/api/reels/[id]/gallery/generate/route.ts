@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { generateReelGallery } from "@/lib/gallery/generate";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 /**
  * POST /api/reels/[id]/gallery/generate

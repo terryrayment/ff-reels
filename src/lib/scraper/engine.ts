@@ -95,6 +95,35 @@ function deduplicateCredits(credits: ScrapedCredit[]): ScrapedCredit[] {
 }
 
 /**
+ * Validate and sanitize a thumbnail URL.
+ * Returns the URL if valid, undefined otherwise.
+ */
+function validateThumbnailUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+
+  // Must be HTTPS (or HTTP which we accept)
+  if (!url.startsWith("https://") && !url.startsWith("http://")) return undefined;
+
+  // Reject data URIs, javascript URIs, or URLs with suspicious patterns
+  if (url.includes("data:") || url.includes("javascript:")) return undefined;
+
+  // Reject tracking pixels and tiny images (common patterns)
+  if (url.includes("1x1") || url.includes("pixel") || url.includes("spacer")) return undefined;
+
+  // Reject absurdly long URLs (likely garbage)
+  if (url.length > 2000) return undefined;
+
+  // Basic URL structure validation
+  try {
+    new URL(url);
+  } catch {
+    return undefined;
+  }
+
+  return url;
+}
+
+/**
  * Check if a credit already exists in the database (last 7 days).
  */
 async function creditExists(credit: ScrapedCredit): Promise<boolean> {
@@ -118,6 +147,9 @@ export interface ScrapeResult {
   newCredits: number;
   duplicatesSkipped: number;
   aiEnriched: number;
+  thumbnailsDiscovered: number;
+  thumbnailsIngested: number;
+  safetyFiltered: number;
   errors: string[];
   sourceBreakdown: Record<string, number>;
 }
@@ -202,6 +234,9 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
     newCredits: 0,
     duplicatesSkipped: 0,
     aiEnriched: 0,
+    thumbnailsDiscovered: 0,
+    thumbnailsIngested: 0,
+    safetyFiltered: 0,
     errors: [],
     sourceBreakdown: {},
   };
@@ -248,19 +283,43 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
     result.errors.push(`AI enrichment failed: ${err}`);
   }
 
+  // Count thumbnail discovery across all unique credits
+  for (const credit of unique) {
+    if (credit.thumbnailUrl) result.thumbnailsDiscovered++;
+  }
+  console.log(`[Scraper] Thumbnails discovered: ${result.thumbnailsDiscovered}/${unique.length}`);
+
   // Insert new credits (skip existing)
   for (const credit of unique) {
     try {
       // Skip entries that are just dashes or empty
-      if (!credit.brand || credit.brand === "—") continue;
+      if (!credit.brand || credit.brand === "—") {
+        result.safetyFiltered++;
+        continue;
+      }
 
       // Data quality: reject entries with HTML fragments, tracking pixels, or absurd lengths
-      if (credit.brand.includes("<") || credit.brand.includes("src=") || credit.brand.length > 100) continue;
-      if (credit.campaignName && (credit.campaignName.includes("<") || credit.campaignName.length > 150)) continue;
-      if (credit.directorName && (credit.directorName.includes("<") || credit.directorName.length > 80)) continue;
-      if (credit.agency && (credit.agency.includes("<") || credit.agency.length > 100)) continue;
+      if (credit.brand.includes("<") || credit.brand.includes("src=") || credit.brand.length > 100) {
+        result.safetyFiltered++;
+        continue;
+      }
+      if (credit.campaignName && (credit.campaignName.includes("<") || credit.campaignName.length > 150)) {
+        result.safetyFiltered++;
+        continue;
+      }
+      if (credit.directorName && (credit.directorName.includes("<") || credit.directorName.length > 80)) {
+        result.safetyFiltered++;
+        continue;
+      }
+      if (credit.agency && (credit.agency.includes("<") || credit.agency.length > 100)) {
+        result.safetyFiltered++;
+        continue;
+      }
       // Skip generic/useless entries
-      if (["recent work", "latest work", "our work", "work", "projects"].includes(credit.brand.toLowerCase())) continue;
+      if (["recent work", "latest work", "our work", "work", "projects"].includes(credit.brand.toLowerCase())) {
+        result.safetyFiltered++;
+        continue;
+      }
 
       const exists = await creditExists(credit);
       if (exists) {
@@ -277,6 +336,9 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
         territory = agencyTerritory(credit.agency) ?? undefined;
       }
 
+      // Validate and sanitize thumbnail URL
+      const validatedThumbnail = validateThumbnailUrl(credit.thumbnailUrl);
+
       const deep = credit as ScrapedCreditWithDeep;
 
       await prisma.industryCredit.create({
@@ -290,7 +352,7 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
           territory: territory,
           sourceUrl: credit.sourceUrl,
           sourceName: credit.sourceName,
-          thumbnailUrl: credit.thumbnailUrl,
+          thumbnailUrl: validatedThumbnail,
           publishedAt: credit.publishedAt,
           // Deep credits (AI-extracted)
           dp: deep._dp,
@@ -301,6 +363,7 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
         },
       });
 
+      if (validatedThumbnail) result.thumbnailsIngested++;
       result.newCredits++;
     } catch (err) {
       result.errors.push(`Insert failed for ${credit.brand}: ${err}`);
@@ -308,7 +371,9 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
   }
 
   console.log(
-    `[Scraper] Complete: ${result.newCredits} new, ${result.aiEnriched} AI-enriched, ${result.duplicatesSkipped} dupes, ${result.errors.length} errors`,
+    `[Scraper] Complete: ${result.newCredits} new, ${result.aiEnriched} AI-enriched, ` +
+    `${result.duplicatesSkipped} dupes, ${result.thumbnailsIngested} thumbnails, ` +
+    `${result.safetyFiltered} filtered, ${result.errors.length} errors`,
   );
 
   return result;
