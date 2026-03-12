@@ -41,7 +41,7 @@ export function ThumbnailPickerModal({
 
   const [selectedTime, setSelectedTime] = useState(initialTime);
   const [previewTime, setPreviewTime] = useState(initialTime);
-  const [isDragging, setIsDragging] = useState(false);
+
   const [spriteData, setSpriteData] = useState<{
     url: string; cols: number; rows: number; total: number; tileW: number; tileH: number;
   } | null>(null);
@@ -129,8 +129,6 @@ export function ThumbnailPickerModal({
     const frameIndex = Math.min(Math.floor(pct * spriteData.total), spriteData.total - 1);
     const col = frameIndex % spriteData.cols;
     const row = Math.floor(frameIndex / spriteData.cols);
-    const scaleX = containerW / spriteData.tileW;
-    const scaleY = containerH / spriteData.tileH;
     return {
       backgroundImage: `url(${spriteData.url})`,
       backgroundSize: `${spriteData.cols * containerW}px ${spriteData.rows * containerH}px`,
@@ -259,8 +257,6 @@ export function ThumbnailPickerModal({
             step={0.5}
             value={selectedTime}
             onChange={handleSliderChange}
-            onMouseDown={() => setIsDragging(true)}
-            onMouseUp={() => setIsDragging(false)}
             className="w-full accent-white cursor-pointer"
             style={{ accentColor: "#fff" }}
           />

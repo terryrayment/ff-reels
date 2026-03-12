@@ -242,7 +242,7 @@ export function ScreeningCarousel({
   }, [isMultiDirector, director, items]);
 
   // Get the active director's secondary data (bio panel content)
-  const activeClientBrands = directorsData?.[currentDirector.id]?.clientBrands ?? clientBrands;
+  // activeClientBrands now handled per-director in allDirectors.map() in the bio panel
   const activeTreatmentSamples = directorsData?.[currentDirector.id]?.treatmentSamples ?? treatmentSamples;
   const activeLookbookItems = directorsData?.[currentDirector.id]?.lookbookItems ?? lookbookItems;
   const activeCaseStudies = directorsData?.[currentDirector.id]?.caseStudies ?? caseStudies;
@@ -735,9 +735,14 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* Spot info — top left, shows when playing */}
+        {/* FF logomark — always visible top left */}
+        <div className="absolute top-4 left-4 md:top-6 md:left-8 z-10 pointer-events-none">
+          <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30" />
+        </div>
+
+        {/* Spot info — top left, shows when playing (offset below logomark) */}
         <div
-          className={`absolute top-4 left-4 md:top-6 md:left-8 z-10 pointer-events-none transition-opacity duration-500 ${
+          className={`absolute top-14 left-4 md:top-16 md:left-8 z-10 pointer-events-none transition-opacity duration-500 ${
             !showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
