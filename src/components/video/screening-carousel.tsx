@@ -197,9 +197,6 @@ export function ScreeningCarousel({
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [hoveredThumb, setHoveredThumb] = useState<{ text: string; x: number; y: number } | null>(null);
   const [playingPanelVideo, setPlayingPanelVideo] = useState<DirectorVideoItem | null>(null);
-  const [showDirectorCard, setShowDirectorCard] = useState(false);
-  const [transitionDirector, setTransitionDirector] = useState<SpotDirectorInfo | null>(null);
-  const [pendingSpotIndex, setPendingSpotIndex] = useState<number | null>(null);
   const thumbStripRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const playerRef = useRef<any>(null);
@@ -400,27 +397,11 @@ export function ScreeningCarousel({
     }
   }, [currentIndex]);
 
-  // Director card auto-dismiss
-  const handleDirectorCardComplete = useCallback(() => {
-    if (pendingSpotIndex !== null) {
-      setCurrentIndex(pendingSpotIndex);
-      setPendingSpotIndex(null);
-    }
-    setShowDirectorCard(false);
-    setTransitionDirector(null);
-  }, [pendingSpotIndex]);
-
-  useEffect(() => {
-    if (!showDirectorCard) return;
-    const timer = setTimeout(handleDirectorCardComplete, 2800);
-    return () => clearTimeout(timer);
-  }, [showDirectorCard, handleDirectorCardComplete]);
-
   // Navigate to a specific spot
   const goToSpot = useCallback(
     (index: number) => {
       if (index === currentIndex || index < 0 || index >= items.length) return;
-      if (isTransitioning || showDirectorCard) return;
+      if (isTransitioning) return;
 
       // Report current spot data before switching
       if (
@@ -440,21 +421,12 @@ export function ScreeningCarousel({
       setIsTransitioning(true);
       resetTracking();
 
-      const needsDirectorCard = isMultiDirector && directorTransitions.has(index);
-
       setTimeout(() => {
-        if (needsDirectorCard) {
-          setTransitionDirector(items[index].project.director);
-          setPendingSpotIndex(index);
-          setShowDirectorCard(true);
-          setIsTransitioning(false);
-        } else {
-          setCurrentIndex(index);
-          setIsTransitioning(false);
-        }
+        setCurrentIndex(index);
+        setIsTransitioning(false);
       }, 400);
     },
-    [currentIndex, items, isTransitioning, showDirectorCard, isMultiDirector, directorTransitions, currentProject, sendSpotData, resetTracking]
+    [currentIndex, items, isTransitioning, currentProject, sendSpotData, resetTracking]
   );
 
   // Prev / Next helpers
@@ -855,41 +827,6 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* Director transition card — between spots from different directors */}
-        {showDirectorCard && transitionDirector && (
-          <div
-            className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0e0e0e]"
-            style={{ animation: "fadeIn 300ms ease-out" }}
-          >
-            {transitionDirector.headshotUrl && (
-              <div className="mb-6 w-20 h-20 rounded-full overflow-hidden ring-1 ring-white/10">
-                <img
-                  src={transitionDirector.headshotUrl}
-                  alt={transitionDirector.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-            <h2 className="text-4xl md:text-5xl font-light tracking-tight text-white/90">
-              {transitionDirector.name}
-            </h2>
-            <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-white/25">
-              Director
-            </p>
-            {pendingSpotIndex !== null && items[pendingSpotIndex] && (
-              <p className="mt-6 text-xs text-white/20">
-                Up next: {items[pendingSpotIndex].project.title}
-              </p>
-            )}
-            {/* Auto-dismiss progress bar */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-32 h-0.5 rounded-full bg-white/10 overflow-hidden">
-              <div
-                className="h-full rounded-full bg-white/30"
-                style={{ animation: "expandWidth 2.5s linear forwards" }}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Floating thumbnail tooltip — rendered outside overflow container */}
