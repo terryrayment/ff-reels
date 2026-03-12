@@ -226,6 +226,24 @@ export function ScreeningCarousel({
     ? items[currentIndex]?.project.director ?? director
     : director;
 
+  // All unique directors in this reel, primary director first
+  const allDirectors = useMemo(() => {
+    if (!isMultiDirector) return [director];
+    const seen = new Set<string>();
+    const result: typeof director[] = [];
+    // Primary director first
+    result.push(director);
+    seen.add(director.id);
+    for (const item of items) {
+      const d = item.project.director;
+      if (!seen.has(d.id)) {
+        seen.add(d.id);
+        result.push(d);
+      }
+    }
+    return result;
+  }, [isMultiDirector, director, items]);
+
   // Get the active director's secondary data (bio panel content)
   const activeClientBrands = directorsData?.[currentDirector.id]?.clientBrands ?? clientBrands;
   const activeTreatmentSamples = directorsData?.[currentDirector.id]?.treatmentSamples ?? treatmentSamples;
@@ -1326,75 +1344,89 @@ export function ScreeningCarousel({
               <X size={16} className="text-white/30" />
             </button>
 
-            {/* Director info */}
-            <div className="flex items-start gap-6 mb-8">
-              {currentDirector.headshotUrl && (
-                <img
-                  src={currentDirector.headshotUrl}
-                  alt={currentDirector.name}
-                  className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
-                />
-              )}
-              <div>
-                <h3 className="text-xl font-light text-white/90 tracking-tight">
-                  {currentDirector.name}
-                </h3>
-                <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-1">
-                  Director
-                </p>
-                {currentDirector.websiteUrl && (
-                  <a
-                    href={currentDirector.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[10px] text-white/30 hover:text-white/60 transition-colors mt-2"
-                  >
-                    <Globe size={10} />
-                    {currentDirector.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                  </a>
-                )}
-              </div>
-            </div>
+            {/* Director(s) — one block per director, stacked for co-director reels */}
+            {allDirectors.map((d, idx) => {
+              const dBrands = directorsData?.[d.id]?.clientBrands ?? (idx === 0 ? clientBrands : []);
+              return (
+                <div key={d.id}>
+                  {/* Divider between directors */}
+                  {idx > 0 && (
+                    <div className="flex items-center gap-3 my-8">
+                      <div className="flex-1 border-t border-white/5" />
+                      <span className="text-[10px] text-white/15 uppercase tracking-[0.2em]">&amp;</span>
+                      <div className="flex-1 border-t border-white/5" />
+                    </div>
+                  )}
 
-            {/* Bio text */}
-            {currentDirector.bio && (
-              <div className="mb-8">
-                <p className="text-[13px] text-white/50 leading-[1.8] whitespace-pre-line">
-                  {currentDirector.bio}
-                </p>
-              </div>
-            )}
+                  {/* Director header */}
+                  <div className={`flex items-start gap-6 ${idx === 0 ? "mb-8" : "mb-8"}`}>
+                    {d.headshotUrl && (
+                      <img
+                        src={d.headshotUrl}
+                        alt={d.name}
+                        className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
+                      />
+                    )}
+                    <div>
+                      <h3 className="text-xl font-light text-white/90 tracking-tight">
+                        {d.name}
+                      </h3>
+                      <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-1">
+                        Director
+                      </p>
+                      {d.websiteUrl && (
+                        <a
+                          href={d.websiteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[10px] text-white/30 hover:text-white/60 transition-colors mt-2"
+                        >
+                          <Globe size={10} />
+                          {d.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                        </a>
+                      )}
+                    </div>
+                  </div>
 
-            {/* Client List */}
-            {activeClientBrands.length > 0 && (
-              <div className="border-t border-white/5 pt-6 mb-8">
-                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                  Client List
-                </p>
-                <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-                  {activeClientBrands.map((brand) => (
-                    <span
-                      key={brand}
-                      className="text-[12px] text-white/30"
-                    >
-                      {brand}
-                    </span>
-                  ))}
+                  {/* Bio */}
+                  {d.bio && (
+                    <div className="mb-8">
+                      <p className="text-[13px] text-white/50 leading-[1.8] whitespace-pre-line">
+                        {d.bio}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Client List */}
+                  {dBrands.length > 0 && (
+                    <div className="border-t border-white/5 pt-6 mb-8">
+                      <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
+                        Client List
+                      </p>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                        {dBrands.map((brand) => (
+                          <span key={brand} className="text-[12px] text-white/30">
+                            {brand}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Statement */}
+                  {d.statement && (
+                    <div className="border-t border-white/5 pt-6 mb-8">
+                      <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
+                        Statement
+                      </p>
+                      <p className="text-[13px] text-white/35 leading-[1.8] italic whitespace-pre-line">
+                        {d.statement}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
-
-            {/* Statement */}
-            {currentDirector.statement && (
-              <div className="border-t border-white/5 pt-6 mb-8">
-                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                  Statement
-                </p>
-                <p className="text-[13px] text-white/35 leading-[1.8] italic whitespace-pre-line">
-                  {currentDirector.statement}
-                </p>
-              </div>
-            )}
+              );
+            })}
 
             {/* Downloadable reel gallery */}
             <div className="border-t border-white/5 pt-6">
