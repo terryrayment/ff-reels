@@ -354,7 +354,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [campaignName, setCampaignName] = useState("");
   const [producer, setProducer] = useState("");
   const [titleManuallyEdited] = useState(false);
-  const [sortMode, setSortMode] = useState<SortMode>("default");
+  const [sortMode, setSortMode] = useState<SortMode>("brand");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [createdUrl, setCreatedUrl] = useState("");
@@ -481,7 +481,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const handleSelectDirector = (id: string) => {
     setSelectedDirectorId(id);
     // Don't clear selections — allow multi-director reels
-    setSortMode("default");
+    setSortMode("brand");
   };
 
   const handleSave = async () => {
