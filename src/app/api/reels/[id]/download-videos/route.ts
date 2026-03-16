@@ -125,13 +125,12 @@ export async function GET(
 
           // Fall back to Mux static rendition
           if (!response && project.muxPlaybackId) {
-            const muxUrl = `https://stream.mux.com/${project.muxPlaybackId}/high.mp4`;
-            response = await fetch(muxUrl);
-            if (!response.ok) {
-              // Try medium quality if high isn't available
-              const medUrl = `https://stream.mux.com/${project.muxPlaybackId}/medium.mp4`;
-              response = await fetch(medUrl);
-              if (!response.ok) response = null;
+            // Try resolutions from highest to lowest
+            for (const res of ["1080p", "720p", "540p", "480p"]) {
+              const muxUrl = `https://stream.mux.com/${project.muxPlaybackId}/${res}.mp4`;
+              response = await fetch(muxUrl);
+              if (response.ok) break;
+              response = null;
             }
           }
 

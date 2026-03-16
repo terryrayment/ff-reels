@@ -72,9 +72,15 @@ export async function GET(
   }
 
   // Option 2: Mux static rendition (MP4) — public playback, no signing needed
+  // Try resolutions from highest to lowest, redirect to whichever is available
   if (project.muxPlaybackId) {
-    const mp4Url = `https://stream.mux.com/${project.muxPlaybackId}/high.mp4?download=${encodeURIComponent(`${baseName}.mp4`)}`;
-    return NextResponse.redirect(mp4Url);
+    for (const res of ["1080p", "720p", "540p", "480p"]) {
+      const muxUrl = `https://stream.mux.com/${project.muxPlaybackId}/${res}.mp4`;
+      const check = await fetch(muxUrl, { method: "HEAD" });
+      if (check.ok) {
+        return NextResponse.redirect(`${muxUrl}?download=${encodeURIComponent(`${baseName}.mp4`)}`);
+      }
+    }
   }
 
   return NextResponse.json(
