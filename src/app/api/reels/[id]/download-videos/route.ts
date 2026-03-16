@@ -110,12 +110,17 @@ export async function GET(
 
         try {
           let response: Response | null = null;
+          let fromR2 = false;
 
           // Try R2 first (original quality)
           if (project.r2Key) {
             const signedUrl = await getDownloadUrl(project.r2Key, 300);
             response = await fetch(signedUrl);
-            if (!response.ok) response = null;
+            if (response.ok) {
+              fromR2 = true;
+            } else {
+              response = null;
+            }
           }
 
           // Fall back to Mux static rendition
@@ -132,10 +137,11 @@ export async function GET(
 
           if (!response?.body) continue;
 
-          const ext = project.r2Key && project.originalFilename
+          // Use original extension only if the file actually came from R2
+          const ext = fromR2 && project.originalFilename
             ? project.originalFilename.split(".").pop() ?? "mp4"
             : "mp4";
-          const safeName = project.title
+          const safeName = (project.title || "video")
             .replace(/[^a-zA-Z0-9\s\-_]/g, "")
             .replace(/\s+/g, "_")
             .trim();

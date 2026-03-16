@@ -56,10 +56,10 @@ export async function GET(
   }
 
   // Build a clean download filename
-  const baseName = project.title
+  const baseName = (project.title || "video")
     .replace(/[^a-zA-Z0-9\s\-_]/g, "")
     .replace(/\s+/g, "_")
-    .trim();
+    .trim() || "video";
 
   // Option 1: R2 original file (best quality)
   if (project.r2Key) {

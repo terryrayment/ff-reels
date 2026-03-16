@@ -27,7 +27,12 @@ export async function GET(
   // Validate screening token if no session
   if (!session && token) {
     const link = await prisma.screeningLink.findFirst({
-      where: { token, isActive: true, reel: { id: params.id } },
+      where: {
+        token,
+        isActive: true,
+        reel: { id: params.id },
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+      },
     });
     if (!link) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
