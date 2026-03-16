@@ -631,24 +631,44 @@ export function ScreeningCarousel({
   };
 
   // === Download helpers ===
-  const handleDownloadSpot = (item: SpotItem) => {
-    // Use our server-side download route which serves the original file from R2
-    // with proper Content-Disposition headers. Screening token is passed for auth.
+  const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  const handleDownloadSpot = async (item: SpotItem) => {
     const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
     const url = `/api/projects/${item.project.id}/download${qs}`;
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${item.project.title || "video"}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+
+    setDownloadingIds((prev) => new Set(prev).add(item.project.id));
+    setDownloadError(null);
+
+    try {
+      // Check availability before triggering the download
+      const res = await fetch(url, { method: "HEAD", redirect: "manual" });
+      if (res.status >= 400) {
+        setDownloadError(`"${item.project.title}" is not available for download.`);
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = url;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch {
+      setDownloadError(`Could not download "${item.project.title}". Please try again.`);
+    } finally {
+      setDownloadingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(item.project.id);
+        return next;
+      });
+    }
   };
 
   const handleDownloadAll = () => {
     const downloadable = items.filter((i) => i.project.muxPlaybackId);
     downloadable.forEach((item, idx) => {
       // Stagger downloads to avoid browser blocking
-      setTimeout(() => handleDownloadSpot(item), idx * 500);
+      setTimeout(() => handleDownloadSpot(item), idx * 600);
     });
   };
 
@@ -1387,15 +1407,27 @@ export function ScreeningCarousel({
                   Download All
                 </button>
               </div>
+              {/* Error toast */}
+              {downloadError && (
+                <div className="mb-3 flex items-center justify-between gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                  <p className="text-[11px] text-red-400">{downloadError}</p>
+                  <button onClick={() => setDownloadError(null)} className="text-red-400/60 hover:text-red-400 flex-shrink-0">
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {items.map((item, i) => {
                   const thumb = getThumbUrl(item, "large");
                   const canDownload = !!item.project.muxPlaybackId;
+                  const isDownloading = downloadingIds.has(item.project.id);
                   return (
                     <button
                       key={item.id}
                       onClick={() => canDownload ? handleDownloadSpot(item) : goToSpot(i)}
-                      className="group relative aspect-video rounded-md overflow-hidden bg-white/[0.04]"
+                      disabled={isDownloading}
+                      className="group relative aspect-video rounded-md overflow-hidden bg-white/[0.04] disabled:cursor-wait"
                     >
                       {thumb ? (
                         <img
@@ -1410,10 +1442,13 @@ export function ScreeningCarousel({
                       )}
                       {/* Hover overlay with download cue */}
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-200 flex items-center justify-center">
-                        {canDownload && (
+                        {canDownload && !isDownloading && (
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                             <Download size={18} className="text-white/80" />
                           </div>
+                        )}
+                        {isDownloading && (
+                          <div className="w-4 h-4 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
                         )}
                       </div>
                       {/* Title bar at bottom */}
@@ -1426,7 +1461,7 @@ export function ScreeningCarousel({
                         </p>
                       </div>
                       {/* Download badge */}
-                      {canDownload && (
+                      {canDownload && !isDownloading && (
                         <div className="absolute top-1.5 right-1.5">
                           <Download size={10} className="text-white/25" />
                         </div>
