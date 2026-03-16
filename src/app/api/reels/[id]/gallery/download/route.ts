@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { getDownloadUrl } from "@/lib/r2/client";
 import archiver from "archiver";
+import { Readable } from "stream";
 
 export const maxDuration = 30;
 
@@ -63,26 +64,18 @@ export async function GET(
         .replace(/\s+/g, "_")
     : `gallery-${params.id}.zip`;
 
-  // Stream ZIP response
-  const { readable, writable } = new TransformStream();
-  const writer = writable.getWriter();
+  const archive = archiver("zip", { zlib: { level: 5 } });
 
-  // Build ZIP in background
-  (async () => {
+  archive.on("warning", (err) => {
+    console.warn("[Gallery Download] Archive warning:", err);
+  });
+  archive.on("error", (err) => {
+    console.error("[Gallery Download] Archive error:", err);
+    archive.destroy(err);
+  });
+
+  void (async () => {
     try {
-      const archive = archiver("zip", { zlib: { level: 5 } });
-
-      archive.on("data", (chunk: Buffer) => {
-        writer.write(chunk).catch(() => { archive.abort(); });
-      });
-      archive.on("end", () => {
-        writer.close().catch(() => {});
-      });
-      archive.on("error", (err) => {
-        console.error("[Gallery Download] Archive error:", err);
-        writer.close().catch(() => {});
-      });
-
       for (const img of images) {
         const url = await getDownloadUrl(img.r2Key, 300);
         const response = await fetch(url);
@@ -100,14 +93,14 @@ export async function GET(
         archive.append(buffer, { name: filename });
       }
 
-      archive.finalize();
+      await archive.finalize();
     } catch (err) {
       console.error("[Gallery Download] ZIP generation failed:", err);
-      writer.close().catch(() => {});
+      archive.destroy(err instanceof Error ? err : new Error("ZIP generation failed."));
     }
   })();
 
-  return new Response(readable, {
+  return new Response(Readable.toWeb(archive) as ReadableStream, {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${zipFilename}"`,

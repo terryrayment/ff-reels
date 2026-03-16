@@ -5,8 +5,9 @@ import { prisma } from "@/lib/db";
 import { resolveProjectDownload } from "@/lib/mux/downloads";
 import archiver from "archiver";
 import { Readable } from "stream";
+import { finished } from "stream/promises";
 
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 function buildArchiveFilename(
   project: {
@@ -87,6 +88,28 @@ async function resolveReelItems(
   }
 
   return results;
+}
+
+async function appendRemoteVideoToArchive(params: {
+  archive: archiver.Archiver;
+  url: string;
+  archiveFilename: string;
+}) {
+  const response = await fetch(params.url);
+  if (!response.ok) {
+    throw new Error(`Source fetch failed with ${response.status}.`);
+  }
+
+  if (!response.body) {
+    throw new Error("Source returned no body.");
+  }
+
+  const nodeStream = Readable.fromWeb(
+    response.body as import("stream/web").ReadableStream,
+  );
+
+  params.archive.append(nodeStream, { name: params.archiveFilename });
+  await finished(nodeStream);
 }
 
 /**
@@ -205,25 +228,21 @@ export async function GET(
     .replace(/\s+/g, "_")
     .trim() + ".zip";
 
-  // Stream the ZIP
-  const { readable, writable } = new TransformStream();
-  const writer = writable.getWriter();
+  const archive = archiver("zip", {
+    store: true,
+    forceZip64: true,
+  });
 
-  (async () => {
+  archive.on("warning", (err) => {
+    console.warn("[Download Videos] Archive warning:", err);
+  });
+  archive.on("error", (err) => {
+    console.error("[Download Videos] Archive error:", err);
+    archive.destroy(err);
+  });
+
+  void (async () => {
     try {
-      const archive = archiver("zip", { zlib: { level: 0 } }); // store only — videos are already compressed
-
-      archive.on("data", (chunk: Buffer) => {
-        writer.write(chunk).catch(() => { archive.abort(); });
-      });
-      archive.on("end", () => {
-        writer.close().catch(() => {});
-      });
-      archive.on("error", (err) => {
-        console.error("[Download Videos] Archive error:", err);
-        writer.close().catch(() => {});
-      });
-
       const statusLines: string[] = [];
 
       for (const item of pendingItems) {
@@ -242,26 +261,17 @@ export async function GET(
         const { archiveFilename, resolution, title } = item;
 
         try {
-          const response = await fetch(resolution.url);
-          if (!response.ok) {
-            statusLines.push(
-              `${String(item.sortOrder + 1).padStart(2, "0")} ${title || "Untitled"}: Source fetch failed with ${response.status}.`,
-            );
-            continue;
-          }
-          if (!response.body) {
-            statusLines.push(
-              `${String(item.sortOrder + 1).padStart(2, "0")} ${title || "Untitled"}: Source returned no body.`,
-            );
-            continue;
-          }
-
-          const nodeStream = Readable.fromWeb(response.body as import("stream/web").ReadableStream);
-          archive.append(nodeStream, { name: archiveFilename });
+          await appendRemoteVideoToArchive({
+            archive,
+            url: resolution.url,
+            archiveFilename,
+          });
         } catch (err) {
           console.error(`[Download Videos] Skipping ${title}:`, err);
           statusLines.push(
-            `${String(item.sortOrder + 1).padStart(2, "0")} ${title || "Untitled"}: Fetch failed during ZIP creation.`,
+            `${String(item.sortOrder + 1).padStart(2, "0")} ${title || "Untitled"}: ${
+              err instanceof Error ? err.message : "Fetch failed during ZIP creation."
+            }`,
           );
         }
       }
@@ -275,14 +285,14 @@ export async function GET(
         archive.append(report, { name: "DOWNLOAD_STATUS.txt" });
       }
 
-      archive.finalize();
+      await archive.finalize();
     } catch (err) {
       console.error("[Download Videos] ZIP generation failed:", err);
-      writer.close().catch(() => {});
+      archive.destroy(err instanceof Error ? err : new Error("ZIP generation failed."));
     }
   })();
 
-  return new Response(readable, {
+  return new Response(Readable.toWeb(archive) as ReadableStream, {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="${zipFilename}"`,
