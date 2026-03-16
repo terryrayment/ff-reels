@@ -143,6 +143,7 @@ interface ScreeningCarouselProps {
   shortFilms?: DirectorVideoItem[];
   galleryImages?: GalleryImageInfo[];
   reelId?: string;
+  screeningToken?: string;
   directorsData?: Record<string, {
     portfolioStills: PortfolioStill[];
     clientBrands: string[];
@@ -182,6 +183,7 @@ export function ScreeningCarousel({
   shortFilms = [],
   // galleryImages — removed (AI Gallery feature removed)
   // reelId — removed (was only used by gallery)
+  screeningToken,
   directorsData,
 }: ScreeningCarouselProps) {
   const { viewId } = useViewContext();
@@ -630,13 +632,13 @@ export function ScreeningCarousel({
 
   // === Download helpers ===
   const handleDownloadSpot = (item: SpotItem) => {
-    if (!item.project.muxPlaybackId) return;
-    const url = `https://stream.mux.com/${item.project.muxPlaybackId}/high.mp4?download=${encodeURIComponent(item.project.title || "video")}.mp4`;
+    // Use our server-side download route which serves the original file from R2
+    // with proper Content-Disposition headers. Screening token is passed for auth.
+    const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
+    const url = `/api/projects/${item.project.id}/download${qs}`;
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${item.project.title || "video"}.mp4`;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
+    a.download = `${item.project.title || "video"}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

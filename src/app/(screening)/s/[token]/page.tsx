@@ -401,6 +401,7 @@ export default async function ScreeningPage({
         shortFilms={shortFilms}
         galleryImages={galleryWithUrls}
         reelId={reel.id}
+        screeningToken={params.token}
         directorsData={isMultiDirector ? directorsData : undefined}
       />
     </ScreeningTracker>
