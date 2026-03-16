@@ -666,29 +666,20 @@ export function ScreeningCarousel({
 
   const [zipping, setZipping] = useState(false);
 
-  const handleDownloadAll = async () => {
+  const handleDownloadAll = () => {
     if (!reelId || zipping) return;
     setZipping(true);
     setDownloadError(null);
-    try {
-      const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
-      const url = `/api/reels/${reelId}/download-videos${qs}`;
-      // Verify available before triggering download
-      const check = await fetch(url, { method: "HEAD", redirect: "manual" });
-      if (check.status >= 400) {
-        setDownloadError("No downloadable files are available for this reel.");
-        return;
-      }
-      const a = document.createElement("a");
-      a.href = url;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch {
-      setDownloadError("Could not start download. Please try again.");
-    } finally {
-      setZipping(false);
-    }
+    const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
+    const url = `/api/reels/${reelId}/download-videos${qs}`;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    // Reset spinner after a moment — the browser handles the actual download
+    setTimeout(() => setZipping(false), 3000);
   };
 
   if (!currentProject) return null;
