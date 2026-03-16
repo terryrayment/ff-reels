@@ -642,12 +642,23 @@ export function ScreeningCarousel({
     setDownloadError(null);
 
     try {
-      // Check availability before triggering the download
-      const res = await fetch(url, { method: "HEAD", redirect: "manual" });
-      if (res.status >= 400) {
-        setDownloadError(`"${item.project.title}" is not available for download.`);
+      // Use GET with redirect:manual to check for errors vs redirects
+      const res = await fetch(url, { redirect: "manual" });
+      if (res.status === 202) {
+        const data = await res.json();
+        setDownloadError(data.error || "Download is being prepared. Please try again shortly.");
         return;
       }
+      if (res.status >= 400) {
+        try {
+          const data = await res.json();
+          setDownloadError(data.error || `"${item.project.title}" is not available for download.`);
+        } catch {
+          setDownloadError(`"${item.project.title}" is not available for download.`);
+        }
+        return;
+      }
+      // Success — redirect or direct download. Open in new approach.
       const a = document.createElement("a");
       a.href = url;
       document.body.appendChild(a);
@@ -666,20 +677,41 @@ export function ScreeningCarousel({
 
   const [zipping, setZipping] = useState(false);
 
-  const handleDownloadAll = () => {
+  const handleDownloadAll = async () => {
     if (!reelId || zipping) return;
     setZipping(true);
     setDownloadError(null);
     const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
     const url = `/api/reels/${reelId}/download-videos${qs}`;
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    // Reset spinner after a moment — the browser handles the actual download
-    setTimeout(() => setZipping(false), 3000);
+
+    try {
+      // First check if downloads are ready (handles 202 "preparing" response)
+      const res = await fetch(url);
+      const contentType = res.headers.get("content-type") || "";
+
+      if (contentType.includes("application/json")) {
+        // Error or preparing response
+        const data = await res.json();
+        setDownloadError(data.error || "Downloads are being prepared. Please try again shortly.");
+        setZipping(false);
+        return;
+      }
+
+      // It's a ZIP — trigger download via blob
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = "";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch {
+      setDownloadError("Download failed. Please try again.");
+    } finally {
+      setZipping(false);
+    }
   };
 
   if (!currentProject) return null;

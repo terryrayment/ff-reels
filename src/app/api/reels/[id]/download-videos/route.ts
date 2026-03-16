@@ -3,16 +3,18 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { getDownloadUrl } from "@/lib/r2/client";
+import { getMux } from "@/lib/mux/client";
 import archiver from "archiver";
 import { Readable } from "stream";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 /**
  * GET /api/reels/[id]/download-videos?token=<screeningToken>
  *
- * Streams a ZIP of all original video files for every spot in the reel.
- * Spots without an r2Key are skipped silently.
+ * Streams a ZIP of all video files for every spot in the reel.
+ * Download source priority: R2 original → Mux static rendition (high.mp4).
+ * Spots without any downloadable source are skipped silently.
  * Auth: valid session OR valid screening link token.
  */
 export async function GET(
@@ -55,6 +57,8 @@ export async function GET(
               brand: true,
               r2Key: true,
               originalFilename: true,
+              muxAssetId: true,
+              muxPlaybackId: true,
             },
           },
         },
@@ -67,12 +71,61 @@ export async function GET(
     return NextResponse.json({ error: "Reel not found" }, { status: 404 });
   }
 
-  const downloadableItems = reel.items.filter((item) => item.project.r2Key);
+  // Items that have either an R2 key or a Mux playback ID
+  const downloadableItems = reel.items.filter(
+    (item) => item.project.r2Key || item.project.muxPlaybackId
+  );
 
   if (downloadableItems.length === 0) {
     return NextResponse.json(
       { error: "No downloadable files available for this reel" },
       { status: 404 }
+    );
+  }
+
+  // Check Mux assets for mp4_support and enable if needed
+  const mux = getMux();
+  let preparingCount = 0;
+  const assetStatuses = new Map<string, { mp4Ready: boolean }>();
+
+  for (const item of downloadableItems) {
+    const { project } = item;
+    if (project.r2Key) {
+      // R2 is always ready
+      assetStatuses.set(project.id, { mp4Ready: true });
+      continue;
+    }
+    if (project.muxAssetId && project.muxPlaybackId) {
+      try {
+        const asset = await mux.video.assets.retrieve(project.muxAssetId);
+        if (asset.mp4_support !== "standard") {
+          await mux.video.assets.updateMP4Support(project.muxAssetId, { mp4_support: "standard" });
+          preparingCount++;
+          assetStatuses.set(project.id, { mp4Ready: false });
+        } else if (asset.static_renditions?.status === "ready") {
+          assetStatuses.set(project.id, { mp4Ready: true });
+        } else {
+          preparingCount++;
+          assetStatuses.set(project.id, { mp4Ready: false });
+        }
+      } catch {
+        assetStatuses.set(project.id, { mp4Ready: false });
+      }
+    }
+  }
+
+  // If more than half aren't ready, tell the user to wait
+  const readyItems = downloadableItems.filter(
+    (item) => assetStatuses.get(item.project.id)?.mp4Ready
+  );
+
+  if (readyItems.length === 0) {
+    return NextResponse.json(
+      {
+        error: `Downloads are being prepared for ${preparingCount} video${preparingCount === 1 ? "" : "s"}. Please try again in a minute or two.`,
+        preparing: preparingCount,
+      },
+      { status: 202 }
     );
   }
 
@@ -87,7 +140,7 @@ export async function GET(
 
   (async () => {
     try {
-      const archive = archiver("zip", { zlib: { level: 1 } }); // level 1 = fast, videos are already compressed
+      const archive = archiver("zip", { zlib: { level: 1 } });
 
       archive.on("data", (chunk: Buffer) => {
         writer.write(chunk).catch(() => { archive.abort(); });
@@ -100,16 +153,26 @@ export async function GET(
         writer.close().catch(() => {});
       });
 
-      for (let i = 0; i < downloadableItems.length; i++) {
-        const { project, sortOrder } = downloadableItems[i];
-        if (!project.r2Key) continue;
+      for (let i = 0; i < readyItems.length; i++) {
+        const { project, sortOrder } = readyItems[i];
 
         try {
-          const signedUrl = await getDownloadUrl(project.r2Key, 300);
-          const response = await fetch(signedUrl);
+          let downloadUrl: string;
+
+          if (project.r2Key) {
+            // Download from R2
+            downloadUrl = await getDownloadUrl(project.r2Key, 300);
+          } else if (project.muxPlaybackId) {
+            // Download from Mux static rendition
+            downloadUrl = `https://stream.mux.com/${project.muxPlaybackId}/high.mp4`;
+          } else {
+            continue;
+          }
+
+          const response = await fetch(downloadUrl);
           if (!response.ok || !response.body) continue;
 
-          const ext = project.originalFilename
+          const ext = project.r2Key && project.originalFilename
             ? project.originalFilename.split(".").pop() ?? "mp4"
             : "mp4";
           const safeName = project.title
@@ -122,7 +185,6 @@ export async function GET(
           const num = String(sortOrder + 1).padStart(2, "0");
           const filename = `${num}_${safeName}${brand}.${ext}`;
 
-          // Stream directly from R2 into the archive without buffering the whole file
           const nodeStream = Readable.fromWeb(response.body as import("stream/web").ReadableStream);
           archive.append(nodeStream, { name: filename });
         } catch (err) {
