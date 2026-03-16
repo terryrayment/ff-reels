@@ -67,12 +67,8 @@ export async function GET(
     try {
       const archive = archiver("zip", { zlib: { level: 5 } });
 
-      archive.on("data", async (chunk: Buffer) => {
-        try {
-          await writer.write(chunk);
-        } catch {
-          archive.abort();
-        }
+      archive.on("data", (chunk: Buffer) => {
+        writer.write(chunk).catch(() => { archive.abort(); });
       });
       archive.on("end", () => {
         writer.close().catch(() => {});

@@ -89,12 +89,8 @@ export async function GET(
     try {
       const archive = archiver("zip", { zlib: { level: 1 } }); // level 1 = fast, videos are already compressed
 
-      archive.on("data", async (chunk: Buffer) => {
-        try {
-          await writer.write(chunk);
-        } catch {
-          archive.abort();
-        }
+      archive.on("data", (chunk: Buffer) => {
+        writer.write(chunk).catch(() => { archive.abort(); });
       });
       archive.on("end", () => {
         writer.close().catch(() => {});
