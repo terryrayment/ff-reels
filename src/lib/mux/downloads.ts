@@ -13,7 +13,7 @@ type DownloadableProject = {
 type DownloadResolution =
   | {
       status: "ready";
-      source: "r2" | "mux";
+      source: "r2" | "mux" | "mux-master";
       url: string;
       extension: string;
       muxFilename?: string;
@@ -107,6 +107,18 @@ async function requestHighestRendition(assetId: string) {
     });
   } catch (error) {
     console.warn(`[Mux downloads] Could not request highest rendition for ${assetId}:`, error);
+    return null;
+  }
+}
+
+async function requestMasterAccess(assetId: string) {
+  const mux = getMux();
+  try {
+    return await mux.video.assets.updateMasterAccess(assetId, {
+      master_access: "temporary",
+    });
+  } catch (error) {
+    console.warn(`[Mux downloads] Could not enable master access for ${assetId}:`, error);
     return null;
   }
 }
@@ -209,6 +221,36 @@ export async function resolveProjectDownload(
   try {
     const mux = getMux();
     const asset = await mux.video.assets.retrieve(project.muxAssetId);
+
+    if (asset.master?.status === "ready" && asset.master.url) {
+      return {
+        status: "ready",
+        source: "mux-master",
+        url: asset.master.url,
+        extension: "mp4",
+      };
+    }
+
+    let masterPreparing = asset.master?.status === "preparing";
+    let requestedMaster = false;
+
+    if (!asset.master?.url) {
+      const shouldRefreshMaster = asset.master_access !== "temporary" || !asset.master;
+      if (shouldRefreshMaster) {
+        const masterEnabled = await requestMasterAccess(project.muxAssetId);
+        requestedMaster = !!masterEnabled;
+        if (masterEnabled?.master?.status === "ready" && masterEnabled.master.url) {
+          return {
+            status: "ready",
+            source: "mux-master",
+            url: masterEnabled.master.url,
+            extension: "mp4",
+          };
+        }
+        masterPreparing = masterPreparing || masterEnabled?.master?.status === "preparing";
+      }
+    }
+
     const files = asset.static_renditions?.files ?? [];
 
     const readyFile = chooseBestReadyFile(files);
@@ -222,11 +264,14 @@ export async function resolveProjectDownload(
       };
     }
 
-    if (files.some(isPreparingMp4) || asset.status !== "ready") {
+    if (masterPreparing || files.some(isPreparingMp4) || asset.status !== "ready") {
       return {
         status: "preparing",
-        message: "MP4 download is still being prepared by Mux. Try again shortly.",
-        requested: false,
+        message:
+          masterPreparing
+            ? "Higher-quality master download is still being prepared by Mux. Try again shortly."
+            : "MP4 download is still being prepared by Mux. Try again shortly.",
+        requested: requestedMaster,
       };
     }
 
