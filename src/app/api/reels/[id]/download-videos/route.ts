@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { getDownloadUrl } from "@/lib/r2/client";
-import { getMux } from "@/lib/mux/client";
 import archiver from "archiver";
 import { Readable } from "stream";
 
@@ -57,7 +56,6 @@ export async function GET(
               brand: true,
               r2Key: true,
               originalFilename: true,
-              muxAssetId: true,
               muxPlaybackId: true,
             },
           },
@@ -83,52 +81,6 @@ export async function GET(
     );
   }
 
-  // Check Mux assets for mp4_support and enable if needed
-  const mux = getMux();
-  let preparingCount = 0;
-  const assetStatuses = new Map<string, { mp4Ready: boolean }>();
-
-  for (const item of downloadableItems) {
-    const { project } = item;
-    if (project.r2Key) {
-      // R2 is always ready
-      assetStatuses.set(project.id, { mp4Ready: true });
-      continue;
-    }
-    if (project.muxAssetId && project.muxPlaybackId) {
-      try {
-        const asset = await mux.video.assets.retrieve(project.muxAssetId);
-        if (asset.mp4_support !== "standard") {
-          await mux.video.assets.updateMP4Support(project.muxAssetId, { mp4_support: "standard" });
-          preparingCount++;
-          assetStatuses.set(project.id, { mp4Ready: false });
-        } else if (asset.static_renditions?.status === "ready") {
-          assetStatuses.set(project.id, { mp4Ready: true });
-        } else {
-          preparingCount++;
-          assetStatuses.set(project.id, { mp4Ready: false });
-        }
-      } catch {
-        assetStatuses.set(project.id, { mp4Ready: false });
-      }
-    }
-  }
-
-  // If more than half aren't ready, tell the user to wait
-  const readyItems = downloadableItems.filter(
-    (item) => assetStatuses.get(item.project.id)?.mp4Ready
-  );
-
-  if (readyItems.length === 0) {
-    return NextResponse.json(
-      {
-        error: `Downloads are being prepared for ${preparingCount} video${preparingCount === 1 ? "" : "s"}. Please try again in a minute or two.`,
-        preparing: preparingCount,
-      },
-      { status: 202 }
-    );
-  }
-
   const zipFilename = `${reel.director.name} - ${reel.title}`
     .replace(/[^a-zA-Z0-9\s\-_.]/g, "")
     .replace(/\s+/g, "_")
@@ -140,7 +92,7 @@ export async function GET(
 
   (async () => {
     try {
-      const archive = archiver("zip", { zlib: { level: 1 } });
+      const archive = archiver("zip", { zlib: { level: 0 } }); // store only — videos are already compressed
 
       archive.on("data", (chunk: Buffer) => {
         writer.write(chunk).catch(() => { archive.abort(); });
@@ -153,24 +105,32 @@ export async function GET(
         writer.close().catch(() => {});
       });
 
-      for (let i = 0; i < readyItems.length; i++) {
-        const { project, sortOrder } = readyItems[i];
+      for (let i = 0; i < downloadableItems.length; i++) {
+        const { project, sortOrder } = downloadableItems[i];
 
         try {
-          let downloadUrl: string;
+          let response: Response | null = null;
 
+          // Try R2 first (original quality)
           if (project.r2Key) {
-            // Download from R2
-            downloadUrl = await getDownloadUrl(project.r2Key, 300);
-          } else if (project.muxPlaybackId) {
-            // Download from Mux static rendition
-            downloadUrl = `https://stream.mux.com/${project.muxPlaybackId}/high.mp4`;
-          } else {
-            continue;
+            const signedUrl = await getDownloadUrl(project.r2Key, 300);
+            response = await fetch(signedUrl);
+            if (!response.ok) response = null;
           }
 
-          const response = await fetch(downloadUrl);
-          if (!response.ok || !response.body) continue;
+          // Fall back to Mux static rendition
+          if (!response && project.muxPlaybackId) {
+            const muxUrl = `https://stream.mux.com/${project.muxPlaybackId}/high.mp4`;
+            response = await fetch(muxUrl);
+            if (!response.ok) {
+              // Try medium quality if high isn't available
+              const medUrl = `https://stream.mux.com/${project.muxPlaybackId}/medium.mp4`;
+              response = await fetch(medUrl);
+              if (!response.ok) response = null;
+            }
+          }
+
+          if (!response?.body) continue;
 
           const ext = project.r2Key && project.originalFilename
             ? project.originalFilename.split(".").pop() ?? "mp4"

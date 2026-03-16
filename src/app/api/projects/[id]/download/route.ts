@@ -3,12 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { getDownloadUrl } from "@/lib/r2/client";
-import { getMux } from "@/lib/mux/client";
 
 /**
  * GET /api/projects/[id]/download?token=<screeningToken>
  *
- * Redirects to a downloadable MP4 URL.
+ * Redirects to a downloadable video URL.
  * Priority: R2 original file → Mux static rendition (high.mp4).
  * Auth: valid session OR a valid (active, unexpired) screening link token.
  */
@@ -48,7 +47,6 @@ export async function GET(
       r2Key: true,
       originalFilename: true,
       title: true,
-      muxAssetId: true,
       muxPlaybackId: true,
     },
   });
@@ -73,39 +71,14 @@ export async function GET(
     return NextResponse.redirect(signedUrl);
   }
 
-  // Option 2: Mux static rendition (MP4)
-  if (project.muxPlaybackId && project.muxAssetId) {
-    try {
-      const mux = getMux();
-      const asset = await mux.video.assets.retrieve(project.muxAssetId);
-
-      // Enable mp4_support if not already
-      if (asset.mp4_support !== "standard") {
-        await mux.video.assets.updateMP4Support(project.muxAssetId, { mp4_support: "standard" });
-        return NextResponse.json(
-          { error: "Download is being prepared. Please try again in a minute." },
-          { status: 202 }
-        );
-      }
-
-      // Check if renditions are ready
-      if (asset.static_renditions?.status !== "ready") {
-        return NextResponse.json(
-          { error: "Download is being prepared. Please try again in a minute." },
-          { status: 202 }
-        );
-      }
-
-      // Use the highest quality available
-      const mp4Url = `https://stream.mux.com/${project.muxPlaybackId}/high.mp4?download=${encodeURIComponent(`${baseName}.mp4`)}`;
-      return NextResponse.redirect(mp4Url);
-    } catch (err) {
-      console.error("[Download] Mux MP4 error:", err);
-    }
+  // Option 2: Mux static rendition (MP4) — public playback, no signing needed
+  if (project.muxPlaybackId) {
+    const mp4Url = `https://stream.mux.com/${project.muxPlaybackId}/high.mp4?download=${encodeURIComponent(`${baseName}.mp4`)}`;
+    return NextResponse.redirect(mp4Url);
   }
 
   return NextResponse.json(
-    { error: "This spot is not available for download yet. Please try again shortly." },
+    { error: "This spot is not available for download." },
     { status: 404 }
   );
 }
