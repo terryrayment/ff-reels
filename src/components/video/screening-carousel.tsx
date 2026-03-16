@@ -182,7 +182,7 @@ export function ScreeningCarousel({
   caseStudies = [],
   shortFilms = [],
   // galleryImages — removed (AI Gallery feature removed)
-  // reelId — removed (was only used by gallery)
+  reelId,
   screeningToken,
   directorsData,
 }: ScreeningCarouselProps) {
@@ -664,12 +664,31 @@ export function ScreeningCarousel({
     }
   };
 
-  const handleDownloadAll = () => {
-    const downloadable = items.filter((i) => i.project.muxPlaybackId);
-    downloadable.forEach((item, idx) => {
-      // Stagger downloads to avoid browser blocking
-      setTimeout(() => handleDownloadSpot(item), idx * 600);
-    });
+  const [zipping, setZipping] = useState(false);
+
+  const handleDownloadAll = async () => {
+    if (!reelId || zipping) return;
+    setZipping(true);
+    setDownloadError(null);
+    try {
+      const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
+      const url = `/api/reels/${reelId}/download-videos${qs}`;
+      // Verify available before triggering download
+      const check = await fetch(url, { method: "HEAD", redirect: "manual" });
+      if (check.status >= 400) {
+        setDownloadError("No downloadable files are available for this reel.");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = url;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch {
+      setDownloadError("Could not start download. Please try again.");
+    } finally {
+      setZipping(false);
+    }
   };
 
   if (!currentProject) return null;
@@ -1400,11 +1419,14 @@ export function ScreeningCarousel({
                 </p>
                 <button
                   onClick={handleDownloadAll}
-                  disabled={!items.some((i) => i.project.muxPlaybackId)}
+                  disabled={!items.some((i) => i.project.muxPlaybackId) || zipping}
                   className="flex items-center gap-1.5 text-[10px] text-white/25 hover:text-white/50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  <Download size={10} />
-                  Download All
+                  {zipping
+                    ? <div className="w-2.5 h-2.5 border border-white/20 border-t-white/50 rounded-full animate-spin" />
+                    : <Download size={10} />
+                  }
+                  {zipping ? "Preparing ZIP…" : "Download All"}
                 </button>
               </div>
               {/* Error toast */}
@@ -1708,15 +1730,18 @@ export function ScreeningCarousel({
             {/* Download All Spots — always visible */}
             <button
               onClick={handleDownloadAll}
-              disabled={!items.some((i) => i.project.muxPlaybackId)}
+              disabled={!items.some((i) => i.project.muxPlaybackId) || zipping}
               className="w-full flex items-center gap-4 px-5 py-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] hover:border-white/[0.15] transition-all group mb-6 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
-                <Download size={16} className="text-white/50 group-hover:text-white/70 transition-colors" />
+                {zipping
+                  ? <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                  : <Download size={16} className="text-white/50 group-hover:text-white/70 transition-colors" />
+                }
               </div>
               <div className="text-left">
                 <p className="text-[14px] text-white/70 group-hover:text-white/90 transition-colors font-medium">
-                  Download All Spots
+                  {zipping ? "Preparing ZIP…" : "Download All Spots"}
                 </p>
                 <p className="text-[11px] text-white/25">
                   {items.filter((i) => i.project.muxPlaybackId).length} of {items.length} videos as MP4
