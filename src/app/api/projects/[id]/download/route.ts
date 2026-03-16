@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
-import { getDownloadUrl } from "@/lib/r2/client";
+import { resolveProjectDownload } from "@/lib/mux/downloads";
 
 /**
  * GET /api/projects/[id]/download?token=<screeningToken>
  *
  * Redirects to a downloadable video URL.
- * Priority: R2 original file → Mux static rendition (high.mp4).
+ * Priority: R2 original file → ready Mux static rendition.
  * Auth: valid session OR a valid (active, unexpired) screening link token.
  */
 export async function GET(
@@ -17,6 +17,7 @@ export async function GET(
 ) {
   const session = await getServerSession(authOptions);
   const token = req.nextUrl.searchParams.get("token");
+  const preflight = req.nextUrl.searchParams.get("preflight") === "1";
 
   if (!session && !token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -44,9 +45,11 @@ export async function GET(
   const project = await prisma.project.findUnique({
     where: { id: params.id },
     select: {
+      id: true,
       r2Key: true,
       originalFilename: true,
       title: true,
+      muxAssetId: true,
       muxPlaybackId: true,
     },
   });
@@ -60,31 +63,30 @@ export async function GET(
     .replace(/[^a-zA-Z0-9\s\-_]/g, "")
     .replace(/\s+/g, "_")
     .trim() || "video";
+  const originalExt = project.originalFilename?.split(".").pop() ?? "mp4";
+  const downloadFilename = project.r2Key
+    ? `${baseName}.${originalExt}`
+    : `${baseName}.mp4`;
+  const resolution = await resolveProjectDownload(project, downloadFilename);
 
-  // Option 1: R2 original file (best quality)
-  if (project.r2Key) {
-    const ext = project.originalFilename
-      ? project.originalFilename.split(".").pop() ?? "mp4"
-      : "mp4";
-    const filename = `${baseName}.${ext}`;
-    const signedUrl = await getDownloadUrl(project.r2Key, 3600, `attachment; filename="${filename}"`);
-    return NextResponse.redirect(signedUrl);
-  }
-
-  // Option 2: Mux static rendition (MP4) — public playback, no signing needed
-  // Try resolutions from highest to lowest, redirect to whichever is available
-  if (project.muxPlaybackId) {
-    for (const res of ["1080p", "720p", "540p", "480p"]) {
-      const muxUrl = `https://stream.mux.com/${project.muxPlaybackId}/${res}.mp4`;
-      const check = await fetch(muxUrl, { method: "HEAD" });
-      if (check.ok) {
-        return NextResponse.redirect(`${muxUrl}?download=${encodeURIComponent(`${baseName}.mp4`)}`);
-      }
+  if (resolution.status === "ready") {
+    if (preflight) {
+      return NextResponse.json({
+        status: "ready",
+        downloadUrl: resolution.url,
+        extension: resolution.extension,
+        source: resolution.source,
+      });
     }
+    return NextResponse.redirect(resolution.url);
   }
 
-  return NextResponse.json(
-    { error: "This spot is not available for download." },
-    { status: 404 }
-  );
+  if (resolution.status === "preparing") {
+    return NextResponse.json(
+      { error: resolution.message, status: "preparing", requested: resolution.requested },
+      { status: 409 },
+    );
+  }
+
+  return NextResponse.json({ error: resolution.message }, { status: 404 });
 }

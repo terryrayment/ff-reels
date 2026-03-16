@@ -77,12 +77,13 @@ export async function POST(req: NextRequest) {
           console.warn(`[Mux webhook] No project found for asset ${assetId} — may have been deleted`);
         }
 
-        // Create a static MP4 rendition for downloads
+        // Create a static MP4 rendition for downloads.
+        // `highest` works across mixed source resolutions better than a fixed 720p target.
         if (assetId) {
           try {
             const muxClient = getMux();
-            await muxClient.video.assets.createStaticRendition(assetId, { resolution: "720p" });
-            console.log(`[Mux webhook] Requested 720p static rendition for asset ${assetId}`);
+            await muxClient.video.assets.createStaticRendition(assetId, { resolution: "highest" });
+            console.log(`[Mux webhook] Requested highest static rendition for asset ${assetId}`);
           } catch (e) {
             console.warn(`[Mux webhook] Could not create static rendition for ${assetId}:`, e);
           }

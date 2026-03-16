@@ -634,22 +634,39 @@ export function ScreeningCarousel({
   const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
+  const triggerDownload = (url: string) => {
+    const a = document.createElement("a");
+    a.href = url;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const handleDownloadSpot = async (item: SpotItem) => {
     const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
     const url = `/api/projects/${item.project.id}/download${qs}`;
+    const preflightUrl = `${url}${qs ? "&" : "?"}preflight=1`;
 
     setDownloadingIds((prev) => new Set(prev).add(item.project.id));
     setDownloadError(null);
 
     try {
-      // Trigger the download directly — the server returns a redirect to the file
-      const a = document.createElement("a");
-      a.href = url;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch {
-      setDownloadError(`Could not download "${item.project.title}". Please try again.`);
+      const res = await fetch(preflightUrl, { cache: "no-store" });
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data?.downloadUrl) {
+        throw new Error(
+          data?.error || `Could not download "${item.project.title}". Please try again.`,
+        );
+      }
+
+      triggerDownload(data.downloadUrl);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : `Could not download "${item.project.title}". Please try again.`;
+      setDownloadError(message);
     } finally {
       setDownloadingIds((prev) => {
         const next = new Set(prev);
@@ -661,21 +678,38 @@ export function ScreeningCarousel({
 
   const [zipping, setZipping] = useState(false);
 
-  const handleDownloadAll = () => {
+  const handleDownloadAll = async () => {
     if (!reelId || zipping) return;
     setZipping(true);
     setDownloadError(null);
     const qs = screeningToken ? `?token=${encodeURIComponent(screeningToken)}` : "";
     const url = `/api/reels/${reelId}/download-videos${qs}`;
-    // Stream directly to browser download manager — no blob buffering
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    // Reset spinner after a moment — the browser handles the actual download
-    setTimeout(() => setZipping(false), 3000);
+    const preflightUrl = `${url}${qs ? "&" : "?"}preflight=1`;
+
+    try {
+      const res = await fetch(preflightUrl, { cache: "no-store" });
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(
+          data?.error || "The reel ZIP is not ready yet. Please try again shortly.",
+        );
+      }
+
+      if (!data?.readyCount) {
+        throw new Error("No videos in this reel are ready to download yet.");
+      }
+
+      triggerDownload(url);
+      window.setTimeout(() => setZipping(false), 3000);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "The reel ZIP is not ready yet. Please try again shortly.";
+      setDownloadError(message);
+      setZipping(false);
+    }
   };
 
   if (!currentProject) return null;
