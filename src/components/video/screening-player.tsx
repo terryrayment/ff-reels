@@ -278,6 +278,9 @@ export function ScreeningPlayer({
         <MuxPlayer
           playbackId={playbackId}
           streamType="on-demand"
+          preferPlayback="mse"
+          maxResolution="2160p"
+          minResolution="1080p"
           metadata={{
             video_id: projectId,
             video_title: title,
