@@ -67,11 +67,19 @@ export async function GET(
     try {
       const archive = archiver("zip", { zlib: { level: 5 } });
 
-      archive.on("data", (chunk: Buffer) => writer.write(chunk));
-      archive.on("end", () => writer.close());
+      archive.on("data", async (chunk: Buffer) => {
+        try {
+          await writer.write(chunk);
+        } catch {
+          archive.abort();
+        }
+      });
+      archive.on("end", () => {
+        writer.close().catch(() => {});
+      });
       archive.on("error", (err) => {
         console.error("[Gallery Download] Archive error:", err);
-        writer.close();
+        writer.close().catch(() => {});
       });
 
       for (const img of images) {
@@ -94,7 +102,7 @@ export async function GET(
       archive.finalize();
     } catch (err) {
       console.error("[Gallery Download] ZIP generation failed:", err);
-      writer.close();
+      writer.close().catch(() => {});
     }
   })();
 

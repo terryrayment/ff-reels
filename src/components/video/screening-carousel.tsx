@@ -1740,6 +1740,15 @@ export function ScreeningCarousel({
               </div>
             </button>
 
+            {downloadError && (
+              <div className="mb-3 flex items-center justify-between gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                <p className="text-[11px] text-red-400">{downloadError}</p>
+                <button onClick={() => setDownloadError(null)} className="text-red-400/60 hover:text-red-400 flex-shrink-0">
+                  <X size={12} />
+                </button>
+              </div>
+            )}
+
             {/* Individual spots */}
             <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-3">
               Individual spots

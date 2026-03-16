@@ -30,6 +30,11 @@ export async function GET(
         token,
         isActive: true,
         OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+        reel: {
+          items: {
+            some: { projectId: params.id },
+          },
+        },
       },
     });
     if (!link) {
@@ -64,12 +69,8 @@ export async function GET(
   const filename = `${baseName}.${ext}`;
 
   // Sign for 1 hour — enough time to start a large download
-  const signedUrl = await getDownloadUrl(project.r2Key, 3600);
+  const signedUrl = await getDownloadUrl(project.r2Key, 3600, `attachment; filename="${filename}"`);
 
   // Redirect directly to R2 — no proxying, so large files stream straight from R2
-  return NextResponse.redirect(signedUrl, {
-    headers: {
-      "Content-Disposition": `attachment; filename="${filename}"`,
-    },
-  });
+  return NextResponse.redirect(signedUrl);
 }

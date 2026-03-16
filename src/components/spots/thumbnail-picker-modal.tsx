@@ -143,6 +143,13 @@ export function ThumbnailPickerModal({
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
   const handleSave = () => {
     const url = `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${selectedTime.toFixed(2)}&width=640&fit_mode=smartcrop`;
     onSave(project.id, url);
@@ -155,6 +162,19 @@ export function ThumbnailPickerModal({
   // The filmstrip hover preview time
   const filmstripHoverTime = filmstripPct * duration;
   const FILMSTRIP_H = 48;
+
+  // Guard: if no playbackId, show a message instead of broken URLs
+  if (!playbackId) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+        <div className="bg-[#1A1A1A] rounded-lg overflow-hidden w-full max-w-sm shadow-2xl p-8 text-center">
+          <p className="text-[13px] text-white/60 mb-4">This spot hasn&apos;t finished processing yet.</p>
+          <button onClick={onClose} className="text-[12px] text-white/50 hover:text-white/80">Close</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -212,8 +232,8 @@ export function ThumbnailPickerModal({
                 className="absolute inset-0"
                 style={{
                   backgroundImage: `url(${spriteData.url})`,
-                  backgroundSize: `${spriteData.cols * (FILMSTRIP_H * spriteData.tileW / spriteData.tileH)}px ${spriteData.rows * FILMSTRIP_H}px`,
-                  backgroundRepeat: "repeat-x",
+                  backgroundSize: `100% ${spriteData.rows * FILMSTRIP_H}px`,
+                  backgroundRepeat: "no-repeat",
                   backgroundPosition: "0 0",
                 }}
               />

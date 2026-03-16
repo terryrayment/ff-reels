@@ -36,10 +36,11 @@ export async function getUploadUrl(key: string, contentType: string, expiresIn =
 /**
  * Generate a presigned URL for downloading a file from R2.
  */
-export async function getDownloadUrl(key: string, expiresIn = 3600) {
+export async function getDownloadUrl(key: string, expiresIn = 3600, responseContentDisposition?: string) {
   const command = new GetObjectCommand({
     Bucket: R2_BUCKET,
     Key: key,
+    ...(responseContentDisposition && { ResponseContentDisposition: responseContentDisposition }),
   });
   return getSignedUrl(r2, command, { expiresIn });
 }
