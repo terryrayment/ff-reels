@@ -912,7 +912,7 @@ export function ScreeningCarousel({
 
       {/* Bottom bar: thumbnails + action buttons */}
       <div className="relative z-20 border-t border-white/[0.06] bg-[#080808] flex-shrink-0">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-2">
           {/* Prev arrow */}
           <button
             onClick={goToPrev}
@@ -930,7 +930,7 @@ export function ScreeningCarousel({
           {/* Thumbnail strip */}
           <div
             ref={thumbStripRef}
-            className="flex-1 flex items-center gap-2 overflow-x-auto py-1 pl-1"
+            className="flex-1 flex items-center gap-2.5 overflow-x-auto py-1 pl-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {items.map((item, i) => {
@@ -943,7 +943,7 @@ export function ScreeningCarousel({
                 <React.Fragment key={item.id}>
                   {/* Director group separator */}
                   {isTransitionPoint && (
-                    <div className="flex-shrink-0 w-px h-[40px] bg-white/10 mx-1" />
+                    <div className="flex-shrink-0 w-px h-[56px] bg-white/10 mx-1" />
                   )}
                   <button
                     onClick={() => goToSpot(i)}
@@ -954,15 +954,15 @@ export function ScreeningCarousel({
                     }}
                     onMouseLeave={() => setHoveredThumb(null)}
                     title={item.project.title}
-                    className={`flex-shrink-0 group relative transition-all duration-300 rounded-[4px] overflow-hidden ${
+                    className={`flex-shrink-0 group relative transition-all duration-300 rounded-[5px] overflow-hidden ${
                       isActive
-                        ? "ring-1 ring-white/50 scale-105"
+                        ? "ring-2 ring-white/60 scale-[1.04]"
                         : isPast
-                          ? "opacity-50 hover:opacity-75"
-                          : "opacity-35 hover:opacity-60"
+                          ? "opacity-50 hover:opacity-80"
+                          : "opacity-40 hover:opacity-70"
                     }`}
                   >
-                    <div className="w-[72px] h-[40px] bg-white/[0.04]">
+                    <div className="w-[100px] h-[56px] bg-white/[0.04]">
                       {thumb ? (
                         <img
                           src={thumb}
@@ -972,16 +972,20 @@ export function ScreeningCarousel({
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-[8px] text-white/15 tabular-nums">
+                          <span className="text-[9px] text-white/15 tabular-nums">
                             {i + 1}
                           </span>
                         </div>
                       )}
                     </div>
 
-                    {/* Active dot */}
+                    {/* Active play indicator */}
                     {isActive && (
-                      <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-white/60" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                          <div className="w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[8px] border-l-white/90 ml-0.5" />
+                        </div>
+                      </div>
                     )}
                   </button>
                 </React.Fragment>
