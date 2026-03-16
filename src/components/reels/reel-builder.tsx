@@ -642,9 +642,26 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                   {opt.label}
                 </button>
               ))}
-              <span className="ml-auto text-[10px] text-[#ccc]">
-                {availableProjects.length} spot{availableProjects.length !== 1 ? "s" : ""}
-              </span>
+              <div className="ml-auto flex items-center gap-3">
+                <span className="text-[10px] text-[#ccc]">
+                  {availableProjects.length} spot{availableProjects.length !== 1 ? "s" : ""}
+                </span>
+                {sortedProjects.length > 0 && (
+                  <button
+                    onClick={() => {
+                      const newIds = sortedProjects
+                        .map((p) => p.id)
+                        .filter((id) => !selectedProjectIds.includes(id));
+                      if (newIds.length > 0) {
+                        setSelectedProjectIds((prev) => [...prev, ...newIds]);
+                      }
+                    }}
+                    className="text-[10px] text-[#999] hover:text-[#333] transition-colors underline underline-offset-2"
+                  >
+                    Add all
+                  </button>
+                )}
+              </div>
             </div>
 
             {sortedProjects.length > 0 ? (
