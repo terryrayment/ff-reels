@@ -24,12 +24,89 @@ const concurrencyFlag = args.indexOf("--concurrency");
 const limit = limitFlag >= 0 ? parseInt(args[limitFlag + 1], 10) || 0 : 0;
 const concurrency = concurrencyFlag >= 0 ? parseInt(args[concurrencyFlag + 1], 10) || 3 : 3;
 
+const ADVANCED_RESOLUTION_CANDIDATES: Record<string, string[]> = {
+  SD: ["480p", "360p", "270p"],
+  HD: ["720p", "540p", "480p", "360p", "270p"],
+  FHD: ["1080p", "720p", "540p", "480p", "360p", "270p"],
+  UHD: ["2160p", "1440p", "1080p", "720p", "540p", "480p", "360p", "270p"],
+};
+
 function hasReadyMp4(files: Array<{ ext?: string; status?: string }>) {
   return files.some((file) => file.ext === "mp4" && file.status === "ready");
 }
 
 function hasPreparingMp4(files: Array<{ ext?: string; status?: string }>) {
   return files.some((file) => file.ext === "mp4" && file.status === "preparing");
+}
+
+function chooseAdvancedCandidates(
+  files: Array<{ name?: string }>,
+  maxStoredResolution?: string,
+  resolutionTier?: string,
+) {
+  const existingNames = new Set(
+    files
+      .map((file) => file.name)
+      .filter((name): name is string => typeof name === "string"),
+  );
+
+  const tierKey =
+    maxStoredResolution ||
+    (resolutionTier === "2160p"
+      ? "UHD"
+      : resolutionTier === "1440p"
+        ? "UHD"
+        : resolutionTier === "1080p"
+          ? "FHD"
+          : resolutionTier === "720p"
+            ? "HD"
+            : "SD");
+
+  const candidates =
+    ADVANCED_RESOLUTION_CANDIDATES[tierKey] ??
+    ["720p", "540p", "480p", "360p", "270p"];
+
+  return candidates.filter((resolution) => !existingNames.has(`${resolution}.mp4`));
+}
+
+async function requestBestRendition(asset: Awaited<ReturnType<typeof mux.video.assets.retrieve>>) {
+  const files = asset.static_renditions?.files ?? [];
+  const usesAdvancedRenditions = files.some((file) => file.type === "advanced");
+
+  if (!usesAdvancedRenditions) {
+    return mux.video.assets.createStaticRendition(asset.id, {
+      resolution: "highest",
+    });
+  }
+
+  const candidates = chooseAdvancedCandidates(
+    files,
+    asset.max_stored_resolution,
+    asset.resolution_tier,
+  );
+
+  for (const resolution of candidates) {
+    try {
+      const rendition = await mux.video.assets.createStaticRendition(asset.id, {
+        resolution: resolution as
+          | "2160p"
+          | "1440p"
+          | "1080p"
+          | "720p"
+          | "540p"
+          | "480p"
+          | "360p"
+          | "270p",
+      });
+      if (rendition.status === "ready" || rendition.status === "preparing") {
+        return rendition;
+      }
+    } catch {
+      // Try the next lower advanced resolution.
+    }
+  }
+
+  return null;
 }
 
 async function main() {
@@ -87,13 +164,16 @@ async function main() {
 
       if (dryRun) {
         requested++;
-        console.log(`• ${project.title} — would request highest.mp4`);
+        console.log(`• ${project.title} — would request a compatible MP4 rendition`);
         return;
       }
 
-      const rendition = await mux.video.assets.createStaticRendition(project.muxAssetId!, {
-        resolution: "highest",
-      });
+      const rendition = await requestBestRendition(asset);
+      if (!rendition) {
+        failed++;
+        console.log(`✗ ${project.title} — no compatible rendition could be requested`);
+        return;
+      }
 
       requested++;
       console.log(`↑ ${project.title} — requested ${rendition.name} (${rendition.status})`);

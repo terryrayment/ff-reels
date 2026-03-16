@@ -49,6 +49,14 @@ type StaticRenditionFile = {
   ext?: string;
   status?: string;
   resolution?: string;
+  type?: string;
+};
+
+const ADVANCED_RESOLUTION_CANDIDATES: Record<string, string[]> = {
+  SD: ["480p", "360p", "270p"],
+  HD: ["720p", "540p", "480p", "360p", "270p"],
+  FHD: ["1080p", "720p", "540p", "480p", "360p", "270p"],
+  UHD: ["2160p", "1440p", "1080p", "720p", "540p", "480p", "360p", "270p"],
 };
 
 function buildMuxStaticUrl(
@@ -103,6 +111,76 @@ async function requestHighestRendition(assetId: string) {
   }
 }
 
+function chooseAdvancedCandidates(
+  files: StaticRenditionFile[],
+  maxStoredResolution?: string,
+  resolutionTier?: string,
+): string[] {
+  const existingNames = new Set(
+    files
+      .map((file) => file.name)
+      .filter((name): name is string => typeof name === "string"),
+  );
+
+  const tierKey =
+    maxStoredResolution ||
+    (resolutionTier === "2160p"
+      ? "UHD"
+      : resolutionTier === "1440p"
+        ? "UHD"
+        : resolutionTier === "1080p"
+          ? "FHD"
+          : resolutionTier === "720p"
+            ? "HD"
+            : "SD");
+
+  const candidates =
+    ADVANCED_RESOLUTION_CANDIDATES[tierKey] ??
+    ["720p", "540p", "480p", "360p", "270p"];
+
+  return candidates.filter((resolution) => !existingNames.has(`${resolution}.mp4`));
+}
+
+async function requestAdvancedFallbackRendition(
+  assetId: string,
+  files: StaticRenditionFile[],
+  maxStoredResolution?: string,
+  resolutionTier?: string,
+) {
+  const mux = getMux();
+  const candidates = chooseAdvancedCandidates(
+    files,
+    maxStoredResolution,
+    resolutionTier,
+  );
+
+  for (const resolution of candidates) {
+    try {
+      const rendition = await mux.video.assets.createStaticRendition(assetId, {
+        resolution: resolution as
+          | "2160p"
+          | "1440p"
+          | "1080p"
+          | "720p"
+          | "540p"
+          | "480p"
+          | "360p"
+          | "270p",
+      });
+      if (rendition.status === "ready" || rendition.status === "preparing") {
+        return rendition;
+      }
+    } catch (error) {
+      console.warn(
+        `[Mux downloads] Could not request ${resolution} rendition for ${assetId}:`,
+        error,
+      );
+    }
+  }
+
+  return null;
+}
+
 export async function resolveProjectDownload(
   project: DownloadableProject,
   downloadFilename?: string,
@@ -152,7 +230,15 @@ export async function resolveProjectDownload(
       };
     }
 
-    const requested = await requestHighestRendition(project.muxAssetId);
+    const usesAdvancedRenditions = files.some((file) => file.type === "advanced");
+    const requested = usesAdvancedRenditions
+      ? await requestAdvancedFallbackRendition(
+          project.muxAssetId,
+          files,
+          asset.max_stored_resolution,
+          asset.resolution_tier,
+        )
+      : await requestHighestRendition(project.muxAssetId);
     if (requested?.status === "ready" && requested.name) {
       return {
         status: "ready",
@@ -165,7 +251,9 @@ export async function resolveProjectDownload(
 
     return {
       status: "preparing",
-      message: "MP4 download is being prepared by Mux. Please retry in a minute.",
+      message: usesAdvancedRenditions
+        ? "A lower-resolution MP4 is being prepared by Mux. Please retry in a minute."
+        : "MP4 download is being prepared by Mux. Please retry in a minute.",
       requested: true,
     };
   } catch (error) {
