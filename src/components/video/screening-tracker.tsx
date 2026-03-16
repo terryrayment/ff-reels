@@ -13,7 +13,7 @@ interface ViewContextValue {
   viewId: string | null;
 }
 
-const ViewContext = createContext<ViewContextValue>({ viewId: null });
+export const ViewContext = createContext<ViewContextValue>({ viewId: null });
 
 export function useViewContext() {
   return useContext(ViewContext);

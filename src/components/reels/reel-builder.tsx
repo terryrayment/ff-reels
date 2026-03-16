@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, X, ChevronDown, Copy, Check, ExternalLink, GripVertical } from "lucide-react";
+import { Film, X, ChevronDown, Copy, Check, ExternalLink, GripVertical, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { formatDuration } from "@/lib/utils";
@@ -357,6 +357,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [sortMode, setSortMode] = useState<SortMode>("brand");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [previewing, setPreviewing] = useState(false);
   const [createdUrl, setCreatedUrl] = useState("");
   const [createdReelId, setCreatedReelId] = useState("");
   const [copied, setCopied] = useState(false);
@@ -515,6 +516,36 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
       }
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handlePreview = async () => {
+    if (!primaryDirectorId || !title || selectedProjectIds.length === 0) return;
+    setPreviewing(true);
+
+    const orderedIds = selectedProjects.map((p) => p.id);
+
+    try {
+      const res = await fetch("/api/reels/preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          directorId: primaryDirectorId,
+          projectIds: orderedIds,
+          title,
+          brand: brand || undefined,
+          curatorialNote: curatorialNote || undefined,
+          agencyName: agencyName || undefined,
+          campaignName: campaignName || undefined,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        window.open(data.previewUrl, "_blank");
+      }
+    } finally {
+      setPreviewing(false);
     }
   };
 
@@ -781,13 +812,24 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
             rows={2}
           />
 
-          {/* Create Reel — under curatorial note */}
-          <div className="pt-2">
+          {/* Create Reel + Preview — under curatorial note */}
+          <div className="pt-2 flex gap-2">
+            <Button
+              variant="secondary"
+              onClick={handlePreview}
+              loading={previewing}
+              disabled={!primaryDirectorId || !title || selectedProjectIds.length === 0}
+              size="lg"
+              className="flex items-center gap-1.5"
+            >
+              <Eye size={14} />
+              Preview
+            </Button>
             <Button
               onClick={handleSave}
               loading={saving}
               disabled={!primaryDirectorId || !title || selectedProjectIds.length === 0}
-              className="w-full"
+              className="flex-1"
               size="lg"
             >
               Create Reel ({selectedProjects.length} spot{selectedProjects.length !== 1 ? "s" : ""})
