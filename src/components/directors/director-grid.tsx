@@ -38,10 +38,9 @@ interface SpotOption {
 function getThumbSrc(
   spot: { muxPlaybackId: string | null; thumbnailUrl: string | null },
   width = 320,
-  height = 200
 ) {
   if (spot.muxPlaybackId) {
-    return `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=${width}&height=${height}&fit_mode=smartcrop&time=3`;
+    return `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=${width}&time=3`;
   }
   return spot.thumbnailUrl || null;
 }
@@ -94,7 +93,7 @@ function ThumbnailPickerModal({
       if (spot.muxPlaybackId) {
         setPreviewError(false);
         setPreviewUrl(
-          `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=3`
+          `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=880&time=3`
         );
       }
     },
@@ -108,7 +107,7 @@ function ThumbnailPickerModal({
       if (spot?.muxPlaybackId) {
         setPreviewError(false);
         setPreviewUrl(
-          `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=${time}`
+          `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=880&time=${time}`
         );
       }
     },
@@ -116,15 +115,20 @@ function ThumbnailPickerModal({
   );
 
   const handleSave = useCallback(async () => {
-    if (!selectedSpotId || !previewUrl) return;
+    if (!selectedSpotId) return;
     setSaving(true);
+    const spot = spots?.find((s) => s.id === selectedSpotId);
+    // Save time-only URL so each display context can add its own sizing
+    const saveUrl = spot?.muxPlaybackId
+      ? `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?time=${selectedTime.toFixed(2)}`
+      : previewUrl;
     try {
       await fetch(`/api/directors/${director.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           heroProjectId: selectedSpotId,
-          heroThumbnailUrl: previewUrl,
+          heroThumbnailUrl: saveUrl,
         }),
       });
       router.refresh();
@@ -239,7 +243,7 @@ function ThumbnailPickerModal({
           ) : (
             <div className="grid grid-cols-4 gap-2">
               {spots.map((spot) => {
-                const thumb = getThumbSrc(spot, 240, 150);
+                const thumb = getThumbSrc(spot, 240);
                 const isSelected = spot.id === selectedSpotId;
                 return (
                   <button
@@ -320,9 +324,11 @@ function DirectorCard({ director }: { director: DirectorWithProjects }) {
 
   const hero = director.projects[0];
   const heroSrc = director.heroThumbnailUrl
-    ? director.heroThumbnailUrl
+    ? (director.heroThumbnailUrl.includes("width=")
+        ? director.heroThumbnailUrl
+        : `${director.heroThumbnailUrl}${director.heroThumbnailUrl.includes("?") ? "&" : "?"}width=640`)
     : hero?.muxPlaybackId
-      ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=3`
+      ? `https://image.mux.com/${hero.muxPlaybackId}/thumbnail.jpg?width=640&time=3`
       : hero?.thumbnailUrl || null;
 
   return (
