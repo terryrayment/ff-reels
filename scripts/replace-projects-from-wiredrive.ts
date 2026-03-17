@@ -13,12 +13,15 @@
  *   --director     Director name in FF Reels
  *   --dry-run      Match only, no Mux or DB writes
  *   --concurrency  Parallel replacement count (default: 2)
+ *   --skip-updated-within-minutes  Skip projects updated in the last N minutes
+ *   --only-project-ids  Comma-separated list of project IDs to update
  */
 
 import { PrismaClient } from "@prisma/client";
 import Mux from "@mux/mux-node";
 import * as fs from "fs";
 import * as path from "path";
+import { uploadBuffer } from "../src/lib/r2/client";
 
 const prisma = new PrismaClient();
 
@@ -34,6 +37,19 @@ const DIRECTOR_NAME = getArg("director");
 const DRY_RUN = hasFlag("dry-run");
 const concurrencyFlag = getArg("concurrency");
 const CONCURRENCY = concurrencyFlag ? parseInt(concurrencyFlag, 10) || 2 : 2;
+const skipUpdatedWithinMinutesFlag = getArg("skip-updated-within-minutes");
+const SKIP_UPDATED_WITHIN_MINUTES = skipUpdatedWithinMinutesFlag
+  ? Math.max(0, parseInt(skipUpdatedWithinMinutesFlag, 10) || 0)
+  : 0;
+const onlyProjectIdsFlag = getArg("only-project-ids");
+const ONLY_PROJECT_IDS = onlyProjectIdsFlag
+  ? new Set(
+      onlyProjectIdsFlag
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean),
+    )
+  : null;
 
 if (!PRESENTATION_URL || !DIRECTOR_NAME) {
   console.error(
@@ -75,6 +91,7 @@ interface ParsedAsset {
   sizeBytes: number | null;
   extension: string;
   downloadUrl: string;
+  thumbnailUrl: string | null;
   key: string;
 }
 
@@ -85,6 +102,8 @@ type ProjectRecord = {
   duration: number | null;
   muxAssetId: string | null;
   muxPlaybackId: string | null;
+  thumbnailUrl: string | null;
+  updatedAt: Date;
   key: string;
 };
 
@@ -160,6 +179,56 @@ function getDownloadUrl(asset: WiredriveAsset): string | null {
   return asset.file?.download?.url || asset.file?.primary?.url || asset.file?.web?.url || null;
 }
 
+function getThumbnailUrl(asset: WiredriveAsset): string | null {
+  return (
+    asset.file?.large?.url ||
+    asset.file?.max?.url ||
+    asset.file?.small?.url ||
+    asset.file?.tiny?.url ||
+    null
+  );
+}
+
+function isWiredriveUrl(url: string | null | undefined) {
+  return (
+    typeof url === "string" &&
+    /(^https?:\/\/)?(([^/]+\.)?wiredrive\.com|wdrv\.it)\//i.test(url)
+  );
+}
+
+function extensionFromContentType(contentType: string | null, fallbackUrl: string) {
+  if (contentType?.includes("png")) return "png";
+  if (contentType?.includes("webp")) return "webp";
+  if (contentType?.includes("gif")) return "gif";
+
+  const pathname = new URL(fallbackUrl).pathname.toLowerCase();
+  if (pathname.endsWith(".png")) return "png";
+  if (pathname.endsWith(".webp")) return "webp";
+  if (pathname.endsWith(".gif")) return "gif";
+  return "jpg";
+}
+
+async function mirrorThumbnailToR2(
+  projectId: string,
+  wiredriveAssetId: number,
+  thumbnailUrl: string | null,
+) {
+  if (!thumbnailUrl) return null;
+
+  const response = await fetch(thumbnailUrl);
+  if (!response.ok) {
+    throw new Error(`Thumbnail fetch failed with ${response.status}.`);
+  }
+
+  const contentType = response.headers.get("content-type") || "image/jpeg";
+  const buffer = Buffer.from(await response.arrayBuffer());
+  const ext = extensionFromContentType(contentType, thumbnailUrl);
+  const r2Key = `thumbnails/${projectId}/wiredrive-${wiredriveAssetId}.${ext}`;
+
+  await uploadBuffer(r2Key, buffer, contentType);
+  return `/api/projects/${projectId}/thumbnail?key=${encodeURIComponent(r2Key)}`;
+}
+
 async function fetchPresentation(url: string): Promise<ParsedAsset[]> {
   const res = await fetch(url, {
     headers: {
@@ -207,6 +276,7 @@ async function fetchPresentation(url: string): Promise<ParsedAsset[]> {
         sizeBytes: asset.size || null,
         extension: (asset.extension || "mp4").toLowerCase(),
         downloadUrl,
+        thumbnailUrl: getThumbnailUrl(asset),
         key: buildKey(brand, title),
       };
     });
@@ -322,7 +392,14 @@ async function main() {
   console.log(`Director: ${DIRECTOR_NAME}`);
   console.log(`Presentation: ${PRESENTATION_URL}`);
   console.log(`Mode: ${DRY_RUN ? "DRY RUN" : "LIVE"}`);
-  console.log(`Concurrency: ${CONCURRENCY}\n`);
+  console.log(`Concurrency: ${CONCURRENCY}`);
+  if (SKIP_UPDATED_WITHIN_MINUTES > 0) {
+    console.log(`Skip updated within: ${SKIP_UPDATED_WITHIN_MINUTES} minutes`);
+  }
+  if (ONLY_PROJECT_IDS) {
+    console.log(`Only project IDs: ${ONLY_PROJECT_IDS.size}`);
+  }
+  console.log("");
 
   const assets = await fetchPresentation(PRESENTATION_URL!);
   const director = await prisma.director.findFirst({
@@ -338,6 +415,8 @@ async function main() {
           duration: true,
           muxAssetId: true,
           muxPlaybackId: true,
+          thumbnailUrl: true,
+          updatedAt: true,
         },
         orderBy: [{ brand: "asc" }, { title: "asc" }],
       },
@@ -348,10 +427,15 @@ async function main() {
     throw new Error(`Director not found: ${DIRECTOR_NAME}`);
   }
 
+  const projectCutoff =
+    SKIP_UPDATED_WITHIN_MINUTES > 0
+      ? new Date(Date.now() - SKIP_UPDATED_WITHIN_MINUTES * 60 * 1000)
+      : null;
+
   const projects: ProjectRecord[] = director.projects.map((project) => ({
-    ...project,
-    key: buildKey(project.brand, project.title),
-  }));
+      ...project,
+      key: buildKey(project.brand, project.title),
+    }));
 
   const assetsByKey = groupByKey(assets);
   const projectsByKey = groupByKey(projects);
@@ -398,6 +482,15 @@ async function main() {
     }
   }
 
+  const queuedMatchPlans = projectCutoff
+    ? matchPlans.filter((plan) => plan.project.updatedAt < projectCutoff)
+    : matchPlans;
+  const scopedMatchPlans = ONLY_PROJECT_IDS
+    ? queuedMatchPlans.filter((plan) => ONLY_PROJECT_IDS.has(plan.project.id))
+    : queuedMatchPlans;
+  const skippedRecentPlans = matchPlans.length - queuedMatchPlans.length;
+  const skippedByProjectScope = queuedMatchPlans.length - scopedMatchPlans.length;
+
   const audit = {
     director: DIRECTOR_NAME,
     presentationUrl: PRESENTATION_URL,
@@ -405,12 +498,14 @@ async function main() {
     summary: {
       assetsFound: assets.length,
       projectsFound: projects.length,
-      matchesPlanned: matchPlans.length,
+      matchesPlanned: scopedMatchPlans.length,
+      skippedRecentlyUpdated: skippedRecentPlans,
+      skippedOutsideProjectScope: skippedByProjectScope,
       unmatchedAssets: unmatchedAssets.length,
       unmatchedProjects: unmatchedProjects.length,
       ambiguousGroups: ambiguousGroups.length,
     },
-    matches: matchPlans.map((plan) => ({
+    matches: scopedMatchPlans.map((plan) => ({
       projectId: plan.project.id,
       brand: plan.project.brand,
       title: plan.project.title,
@@ -421,6 +516,7 @@ async function main() {
       oldMuxPlaybackId: plan.project.muxPlaybackId,
       wiredriveId: plan.asset.wiredriveId,
       wiredriveLabel: plan.asset.label,
+      wiredriveThumbnailUrl: plan.asset.thumbnailUrl,
     })),
     unmatchedAssets: unmatchedAssets.map((asset) => ({
       wiredriveId: asset.wiredriveId,
@@ -454,7 +550,13 @@ async function main() {
   const auditPath = writeAuditLog(audit);
   console.log(`Assets found: ${assets.length}`);
   console.log(`Projects found: ${projects.length}`);
-  console.log(`Planned replacements: ${matchPlans.length}`);
+  console.log(`Planned replacements: ${scopedMatchPlans.length}`);
+  if (skippedRecentPlans > 0) {
+    console.log(`Skipped recently updated: ${skippedRecentPlans}`);
+  }
+  if (skippedByProjectScope > 0) {
+    console.log(`Skipped outside project scope: ${skippedByProjectScope}`);
+  }
   console.log(`Unmatched assets: ${unmatchedAssets.length}`);
   console.log(`Unmatched projects: ${unmatchedProjects.length}`);
   console.log(`Ambiguous groups: ${ambiguousGroups.length}`);
@@ -483,11 +585,32 @@ async function main() {
     error?: string;
   }> = [];
 
-  const queue = [...matchPlans];
+  const queue = [...scopedMatchPlans];
   async function processOne(plan: MatchPlan) {
     try {
       console.log(`Replacing ${plan.project.brand || "Unknown"} | ${plan.project.title}`);
       const created = await createMuxAssetFromUrl(plan.asset.downloadUrl);
+      let mirroredThumbnailUrl: string | null | undefined = undefined;
+
+      if (plan.asset.thumbnailUrl) {
+        try {
+          mirroredThumbnailUrl = await mirrorThumbnailToR2(
+            plan.project.id,
+            plan.asset.wiredriveId,
+            plan.asset.thumbnailUrl,
+          );
+        } catch (error) {
+          console.warn(
+            `  Thumbnail mirror failed for ${plan.project.title}: ${
+              error instanceof Error ? error.message : String(error)
+            }`,
+          );
+          mirroredThumbnailUrl = isWiredriveUrl(plan.project.thumbnailUrl) ? null : undefined;
+        }
+      } else if (isWiredriveUrl(plan.project.thumbnailUrl)) {
+        mirroredThumbnailUrl = null;
+      }
+
       await prisma.project.update({
         where: { id: plan.project.id },
         data: {
@@ -497,6 +620,7 @@ async function main() {
           duration: created.duration,
           aspectRatio: created.aspectRatio,
           fileSizeMb: plan.asset.sizeBytes ? plan.asset.sizeBytes / (1024 * 1024) : undefined,
+          thumbnailUrl: mirroredThumbnailUrl,
         },
       });
 

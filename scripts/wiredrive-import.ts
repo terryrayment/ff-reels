@@ -22,6 +22,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as https from "https";
 import * as http from "http";
+import { uploadBuffer } from "../src/lib/r2/client";
 
 const prisma = new PrismaClient();
 
@@ -62,6 +63,49 @@ interface WdAsset {
   status: string;
   file: Record<string, { url: string }>;
   metadata: Array<{ category: string; value: string }>;
+}
+
+function getThumbnailUrl(asset: WdAsset): string | null {
+  return (
+    asset.file?.large?.url ||
+    asset.file?.max?.url ||
+    asset.file?.small?.url ||
+    asset.file?.tiny?.url ||
+    null
+  );
+}
+
+function extensionFromContentType(contentType: string | null, fallbackUrl: string) {
+  if (contentType?.includes("png")) return "png";
+  if (contentType?.includes("webp")) return "webp";
+  if (contentType?.includes("gif")) return "gif";
+
+  const pathname = new URL(fallbackUrl).pathname.toLowerCase();
+  if (pathname.endsWith(".png")) return "png";
+  if (pathname.endsWith(".webp")) return "webp";
+  if (pathname.endsWith(".gif")) return "gif";
+  return "jpg";
+}
+
+async function mirrorThumbnailToR2(
+  projectId: string,
+  wiredriveAssetId: number,
+  thumbnailUrl: string | null
+) {
+  if (!thumbnailUrl) return null;
+
+  const response = await fetch(thumbnailUrl);
+  if (!response.ok) {
+    throw new Error(`Thumbnail fetch failed with ${response.status}`);
+  }
+
+  const contentType = response.headers.get("content-type") || "image/jpeg";
+  const buffer = Buffer.from(await response.arrayBuffer());
+  const ext = extensionFromContentType(contentType, thumbnailUrl);
+  const r2Key = `thumbnails/${projectId}/wiredrive-${wiredriveAssetId}.${ext}`;
+
+  await uploadBuffer(r2Key, buffer, contentType);
+  return `/api/projects/${projectId}/thumbnail?key=${encodeURIComponent(r2Key)}`;
 }
 
 // ── Extract JSON array using bracket balancing ──────────────
@@ -229,7 +273,7 @@ function parseLabel(label: string): { brand: string; title: string } {
       title: parts.slice(1).join(" | "), // rejoin if multiple pipes
     };
   }
-  return { brand: "", title: label };
+  return { brand: "", title: label.trim() };
 }
 
 // ── Main ─────────────────────────────────────────────────────
@@ -372,7 +416,8 @@ async function main() {
         const muxAsset = await mux.video.assets.create({
           inputs: [{ url: downloadUrl }],
           playback_policy: ["public"],
-          encoding_tier: "smart",
+          video_quality: "plus",
+          max_resolution_tier: "2160p",
         });
 
         muxAssetId = muxAsset.id;
@@ -423,19 +468,13 @@ async function main() {
       }
     }
 
-    // Get thumbnail URL from Wiredrive (large or small variant)
-    const thumbnailUrl =
-      asset.file?.large?.url ||
-      asset.file?.max?.url ||
-      asset.file?.small?.url ||
-      asset.file?.tiny?.url ||
-      null;
+    const thumbnailUrl = getThumbnailUrl(asset);
 
     // Create Project record
     const duration = parseFloat(asset.numericDuration || "0") || null;
     const fileSizeMb = asset.size ? asset.size / (1024 * 1024) : null;
 
-    await prisma.project.create({
+    const project = await prisma.project.create({
       data: {
         directorId: director.id,
         title: title || asset.label,
@@ -447,10 +486,31 @@ async function main() {
         r2Key: r2Key || null,
         originalFilename: `${safeName}.${ext}`,
         fileSizeMb,
-        thumbnailUrl: thumbnailUrl || null,
+        thumbnailUrl: null,
         isPublished: true,
       },
+      select: { id: true },
     });
+
+    if (thumbnailUrl) {
+      try {
+        const proxiedThumbnailUrl = await mirrorThumbnailToR2(
+          project.id,
+          asset.id,
+          thumbnailUrl
+        );
+
+        if (proxiedThumbnailUrl) {
+          await prisma.project.update({
+            where: { id: project.id },
+            data: { thumbnailUrl: proxiedThumbnailUrl },
+          });
+          console.log(`  ✅  Thumbnail mirrored to R2`);
+        }
+      } catch (err) {
+        console.log(`  ⚠  Thumbnail mirror failed: ${err}`);
+      }
+    }
 
     console.log(`  ✅  Project record created`);
     imported++;
