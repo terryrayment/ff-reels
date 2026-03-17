@@ -96,27 +96,26 @@ async function appendRemoteVideoToArchive(params: {
   archiveFilename: string;
 }) {
   const controller = new AbortController();
+  // Timeout covers entire fetch + body stream, not just initial response
   const timeout = setTimeout(() => controller.abort(), 120_000); // 2 min per video
-  let response: Response;
   try {
-    response = await fetch(params.url, { signal: controller.signal });
+    const response = await fetch(params.url, { signal: controller.signal });
+    if (!response.ok) {
+      throw new Error(`Source fetch failed with ${response.status}.`);
+    }
+    if (!response.body) {
+      throw new Error("Source returned no body.");
+    }
+
+    const nodeStream = Readable.fromWeb(
+      response.body as import("stream/web").ReadableStream,
+    );
+
+    params.archive.append(nodeStream, { name: params.archiveFilename });
+    await finished(nodeStream);
   } finally {
     clearTimeout(timeout);
   }
-  if (!response.ok) {
-    throw new Error(`Source fetch failed with ${response.status}.`);
-  }
-
-  if (!response.body) {
-    throw new Error("Source returned no body.");
-  }
-
-  const nodeStream = Readable.fromWeb(
-    response.body as import("stream/web").ReadableStream,
-  );
-
-  params.archive.append(nodeStream, { name: params.archiveFilename });
-  await finished(nodeStream);
 }
 
 /**

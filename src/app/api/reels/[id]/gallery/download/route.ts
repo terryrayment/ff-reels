@@ -81,35 +81,41 @@ export async function GET(
         const url = await getDownloadUrl(img.r2Key, 300);
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 30_000);
-        let response: Response;
         try {
-          response = await fetch(url, { signal: controller.signal });
+          const response = await fetch(url, { signal: controller.signal });
+          if (!response.ok) {
+            skipped.push(`${img.project.title || "unknown"} — HTTP ${response.status}`);
+            continue;
+          }
+          // Timeout stays alive through body download
+          const buffer = Buffer.from(await response.arrayBuffer());
+          const safeName = (img.project.title || "frame")
+            .replace(/[^a-zA-Z0-9\s\-_.]/g, "")
+            .replace(/\s+/g, "_");
+          const brand = img.project.brand
+            ? `_${img.project.brand.replace(/[^a-zA-Z0-9]/g, "")}`
+            : "";
+          const filename = `${String(img.sortOrder + 1).padStart(2, "0")}_${safeName}${brand}.png`;
+
+          archive.append(buffer, { name: filename });
         } catch {
           skipped.push(`${img.project.title || "unknown"} — fetch timeout`);
-          continue;
         } finally {
           clearTimeout(timeout);
         }
-        if (!response.ok) {
-          skipped.push(`${img.project.title || "unknown"} — HTTP ${response.status}`);
-          continue;
-        }
-
-        const buffer = Buffer.from(await response.arrayBuffer());
-        const safeName = (img.project.title || "frame")
-          .replace(/[^a-zA-Z0-9\s\-_.]/g, "")
-          .replace(/\s+/g, "_");
-        const brand = img.project.brand
-          ? `_${img.project.brand.replace(/[^a-zA-Z0-9]/g, "")}`
-          : "";
-        const filename = `${String(img.sortOrder + 1).padStart(2, "0")}_${safeName}${brand}.png`;
-
-        archive.append(buffer, { name: filename });
       }
 
+      const downloadedCount = images.length - skipped.length;
+
       if (skipped.length > 0) {
-        const report = `Gallery Download Status\n${"=".repeat(40)}\n\nSkipped ${skipped.length} of ${images.length} images:\n${skipped.map(s => `  - ${s}`).join("\n")}\n`;
+        const report = `Gallery Download Status\n${"=".repeat(40)}\n\nDownloaded: ${downloadedCount} of ${images.length}\nSkipped: ${skipped.length}\n\n${skipped.map(s => `  - ${s}`).join("\n")}\n`;
         archive.append(Buffer.from(report, "utf-8"), { name: "DOWNLOAD_STATUS.txt" });
+      }
+
+      if (downloadedCount === 0) {
+        // Nothing was actually downloaded — abort the archive
+        archive.abort();
+        return;
       }
 
       await archive.finalize();
