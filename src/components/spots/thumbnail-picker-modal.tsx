@@ -151,7 +151,8 @@ export function ThumbnailPickerModal({
   }, []);
 
   const handleSave = () => {
-    const url = `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${selectedTime.toFixed(2)}&width=640&fit_mode=smartcrop`;
+    // Save only time param — each display context adds its own width/height/fit
+    const url = `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${selectedTime.toFixed(2)}`;
     onSave(project.id, url);
   };
 

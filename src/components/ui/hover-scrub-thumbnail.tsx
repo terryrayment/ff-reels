@@ -44,7 +44,13 @@ export function HoverScrubThumbnail({
   const containerRef = useRef<HTMLDivElement>(null);
   const spriteLoadedRef = useRef(false);
 
-  const staticUrl = staticUrlOverride || `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=640`;
+  // If override has a time param but no width, append width for consistent sizing
+  const staticUrl = (() => {
+    if (!staticUrlOverride) return `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=640`;
+    if (staticUrlOverride.includes("width=")) return staticUrlOverride;
+    const sep = staticUrlOverride.includes("?") ? "&" : "?";
+    return `${staticUrlOverride}${sep}width=640`;
+  })();
   const storyboardUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.jpg`;
   const storyboardVttUrl = `https://image.mux.com/${muxPlaybackId}/storyboard.vtt`;
 
