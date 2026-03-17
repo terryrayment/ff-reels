@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Film, Camera, Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -64,9 +64,10 @@ function ThumbnailPickerModal({
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState(3);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentHeroUrl);
+  const [previewError, setPreviewError] = useState(false);
 
   // Fetch all spots on mount
-  useState(() => {
+  useEffect(() => {
     fetch(`/api/directors/${director.id}`)
       .then((r) => r.json())
       .then((data) => {
@@ -84,13 +85,14 @@ function ThumbnailPickerModal({
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  });
+  }, [director.id]);
 
   const handleSelectSpot = useCallback(
     (spot: SpotOption) => {
       setSelectedSpotId(spot.id);
       setSelectedTime(3);
       if (spot.muxPlaybackId) {
+        setPreviewError(false);
         setPreviewUrl(
           `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=3`
         );
@@ -104,6 +106,7 @@ function ThumbnailPickerModal({
       setSelectedTime(time);
       const spot = spots?.find((s) => s.id === selectedSpotId);
       if (spot?.muxPlaybackId) {
+        setPreviewError(false);
         setPreviewUrl(
           `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?width=640&height=400&fit_mode=smartcrop&time=${time}`
         );
@@ -173,11 +176,21 @@ function ThumbnailPickerModal({
         {/* Preview */}
         <div className="px-5 pt-4">
           <div className="aspect-[16/10] bg-[#EEEDEA] rounded-lg overflow-hidden">
-            {previewUrl ? (
+            {previewUrl && !previewError ? (
               <img
                 src={previewUrl}
                 alt="Preview"
                 className="w-full h-full object-cover"
+                onError={() => {
+                  // Retry once with a cache-bust param
+                  if (!previewError) {
+                    setPreviewError(true);
+                    setTimeout(() => {
+                      setPreviewError(false);
+                      setPreviewUrl(previewUrl + "&_r=1");
+                    }, 1000);
+                  }
+                }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-[#ccc]">
