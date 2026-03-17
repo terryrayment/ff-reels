@@ -286,9 +286,9 @@ export function ScreeningCarousel({
   // Get thumbnail for a spot — prefer Mux thumbnail, fall back to stored URL
   const getThumbUrl = (item: SpotItem, size: "small" | "large" = "small") => {
     if (item.project.muxPlaybackId) {
-      const w = size === "large" ? 1920 : 160;
-      const h = size === "large" ? 1080 : 90;
-      return `https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=${w}&height=${h}&fit_mode=smartcrop`;
+      const w = size === "large" ? 1920 : 200;
+      const h = size === "large" ? 1080 : 112;
+      return `https://image.mux.com/${item.project.muxPlaybackId}/thumbnail.jpg?width=${w}&height=${h}`;
     }
     return item.project.thumbnailUrl;
   };
@@ -943,7 +943,7 @@ export function ScreeningCarousel({
                 <React.Fragment key={item.id}>
                   {/* Director group separator */}
                   {isTransitionPoint && (
-                    <div className="flex-shrink-0 w-px h-[70px] bg-white/10 mx-1" />
+                    <div className="flex-shrink-0 w-px h-[88px] bg-white/10 mx-1" />
                   )}
                   <button
                     onClick={() => goToSpot(i)}
@@ -962,7 +962,7 @@ export function ScreeningCarousel({
                           : "opacity-40 hover:opacity-70"
                     }`}
                   >
-                    <div className="w-[125px] h-[70px] bg-white/[0.04] relative">
+                    <div className="w-[156px] h-[88px] bg-white/[0.04] relative">
                       {thumb ? (
                         <img
                           src={thumb}
@@ -972,15 +972,20 @@ export function ScreeningCarousel({
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-[9px] text-white/15 tabular-nums">
+                          <span className="text-[10px] text-white/15 tabular-nums">
                             {i + 1}
                           </span>
                         </div>
                       )}
-                      {/* Client name overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-1.5 pb-1 pt-3">
-                        <p className="text-[8px] font-medium text-white/80 leading-tight truncate">
-                          {item.project.brand || item.project.title}
+                      {/* Client + title overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 pb-1.5 pt-4">
+                        {item.project.brand && (
+                          <p className="text-[9px] font-semibold text-white/90 leading-tight truncate uppercase tracking-wide">
+                            {item.project.brand}
+                          </p>
+                        )}
+                        <p className="text-[8px] font-medium text-white/60 leading-tight truncate">
+                          {item.project.title}
                         </p>
                       </div>
                     </div>
