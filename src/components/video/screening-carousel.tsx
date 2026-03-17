@@ -943,13 +943,13 @@ export function ScreeningCarousel({
                 <React.Fragment key={item.id}>
                   {/* Director group separator */}
                   {isTransitionPoint && (
-                    <div className="flex-shrink-0 w-px h-[56px] bg-white/10 mx-1" />
+                    <div className="flex-shrink-0 w-px h-[70px] bg-white/10 mx-1" />
                   )}
                   <button
                     onClick={() => goToSpot(i)}
                     onMouseEnter={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect();
-                      const label = (isMultiDirector ? `${item.project.director.name} · ` : "") + item.project.title + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
+                      const label = (item.project.brand ? `${item.project.brand} · ` : "") + (isMultiDirector ? `${item.project.director.name} · ` : "") + `"${item.project.title}"` + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
                       setHoveredThumb({ text: label, x: rect.left + rect.width / 2, y: rect.top });
                     }}
                     onMouseLeave={() => setHoveredThumb(null)}
@@ -962,7 +962,7 @@ export function ScreeningCarousel({
                           : "opacity-40 hover:opacity-70"
                     }`}
                   >
-                    <div className="w-[100px] h-[56px] bg-white/[0.04]">
+                    <div className="w-[125px] h-[70px] bg-white/[0.04] relative">
                       {thumb ? (
                         <img
                           src={thumb}
@@ -977,6 +977,12 @@ export function ScreeningCarousel({
                           </span>
                         </div>
                       )}
+                      {/* Client name overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-1.5 pb-1 pt-3">
+                        <p className="text-[8px] font-medium text-white/80 leading-tight truncate">
+                          {item.project.brand || item.project.title}
+                        </p>
+                      </div>
                     </div>
 
                     {/* Active play indicator */}

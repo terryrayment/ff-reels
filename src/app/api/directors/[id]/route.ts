@@ -56,7 +56,7 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { name, bio, statement, categories, isActive, sortOrder, rosterStatus, heroProjectId, heroThumbnailUrl } = body;
+  const { name, bio, statement, categories, isActive, sortOrder, rosterStatus, heroProjectId, heroThumbnailUrl, headshotUrl } = body;
 
   const director = await prisma.director.update({
     where: { id: params.id },
@@ -70,6 +70,7 @@ export async function PATCH(
       ...(rosterStatus !== undefined && { rosterStatus }),
       ...(heroProjectId !== undefined && { heroProjectId }),
       ...(heroThumbnailUrl !== undefined && { heroThumbnailUrl }),
+      ...(headshotUrl !== undefined && { headshotUrl }),
     },
   });
 
