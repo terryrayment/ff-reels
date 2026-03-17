@@ -136,7 +136,7 @@ function ThumbnailPickerModal({
     } catch {
       setSaving(false);
     }
-  }, [director.id, selectedSpotId, previewUrl, router, onClose]);
+  }, [director.id, selectedSpotId, selectedTime, spots, previewUrl, router, onClose]);
 
   const handleReset = useCallback(async () => {
     setSaving(true);

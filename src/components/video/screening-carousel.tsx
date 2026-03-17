@@ -1367,7 +1367,7 @@ export function ScreeningCarousel({
                   )}
 
                   {/* Director header */}
-                  <div className={`flex items-start gap-6 ${idx === 0 ? "mb-8" : "mb-8"}`}>
+                  <div className="flex items-start gap-6 mb-8">
                     {d.headshotUrl && (
                       <img
                         src={d.headshotUrl}
