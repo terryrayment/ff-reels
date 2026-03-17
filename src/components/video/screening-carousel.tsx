@@ -1035,8 +1035,8 @@ export function ScreeningCarousel({
               Bio
             </button>
 
-            {/* Download button */}
-            <button
+            {/* Download button — hidden in preview mode (no reelId) */}
+            {reelId && <button
               onClick={() => openPanel("download")}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "download"
@@ -1045,7 +1045,7 @@ export function ScreeningCarousel({
               }`}
             >
               <Download size={10} />
-            </button>
+            </button>}
 
             {/* Frame Grabs button — only if any project has frame grabs */}
             {hasFrameGrabs && (
@@ -1442,7 +1442,7 @@ export function ScreeningCarousel({
                 <p className="text-[10px] text-white/15 uppercase tracking-[0.2em]">
                   This Reel
                 </p>
-                <button
+                {reelId && <button
                   onClick={handleDownloadAll}
                   disabled={!items.some((i) => i.project.muxPlaybackId) || zipping}
                   className="flex items-center gap-1.5 text-[10px] text-white/25 hover:text-white/50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
@@ -1452,7 +1452,7 @@ export function ScreeningCarousel({
                     : <Download size={10} />
                   }
                   {zipping ? "Preparing ZIP…" : "Download All"}
-                </button>
+                </button>}
               </div>
               {/* Error toast */}
               {downloadError && (

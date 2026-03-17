@@ -52,6 +52,22 @@ export async function GET(
     return NextResponse.json({ error: "No gallery images" }, { status: 404 });
   }
 
+  // Preflight: verify at least one image is fetchable before starting the stream
+  let reachableCount = 0;
+  for (const img of images.slice(0, 3)) {
+    try {
+      const url = await getDownloadUrl(img.r2Key, 300);
+      const check = await fetch(url, { method: "HEAD" });
+      if (check.ok) reachableCount++;
+    } catch { /* skip */ }
+  }
+  if (reachableCount === 0) {
+    return NextResponse.json(
+      { error: "Gallery images are temporarily unavailable. Please try again." },
+      { status: 503 },
+    );
+  }
+
   // Get reel title for ZIP filename
   const reel = await prisma.reel.findUnique({
     where: { id: params.id },
