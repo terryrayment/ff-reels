@@ -1472,7 +1472,7 @@ export function ScreeningCarousel({
                   return (
                     <button
                       key={item.id}
-                      onClick={() => canDownload ? handleDownloadSpot(item) : goToSpot(i)}
+                      onClick={() => (canDownload && reelId) ? handleDownloadSpot(item) : goToSpot(i)}
                       disabled={isDownloading}
                       className="group relative aspect-video rounded-md overflow-hidden bg-white/[0.04] disabled:cursor-wait"
                     >
