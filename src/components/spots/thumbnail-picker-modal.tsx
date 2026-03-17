@@ -57,7 +57,7 @@ export function ThumbnailPickerModal({
   const storyboardVttUrl = `https://image.mux.com/${playbackId}/storyboard.vtt`;
 
   const getPreviewUrl = (t: number) =>
-    `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${t.toFixed(2)}&width=880&fit_mode=smartcrop`;
+    `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${t.toFixed(2)}&width=880&height=495&fit_mode=smartcrop`;
 
   // Load storyboard sprite + VTT for the filmstrip
   useEffect(() => {
@@ -206,7 +206,7 @@ export function ThumbnailPickerModal({
             key={previewTime}
             src={getPreviewUrl(previewTime)}
             alt={project.title}
-            className={`w-full h-full object-contain transition-opacity duration-150 ${previewLoaded ? "opacity-100" : "opacity-0"}`}
+            className={`w-full h-full object-cover transition-opacity duration-150 ${previewLoaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setPreviewLoaded(true)}
           />
           {/* Time badge */}
