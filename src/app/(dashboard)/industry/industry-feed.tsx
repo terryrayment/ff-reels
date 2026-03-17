@@ -9,10 +9,18 @@ interface SerializedCredit {
   agency: string | null;
   productionCompany: string | null;
   directorName: string | null;
+  agencyCanonical: string | null;
+  productionCompanyCanonical: string | null;
+  directorNameCanonical: string | null;
   category: string | null;
   territory: string | null;
+  agencyTerritory: string | null;
   sourceUrl: string | null;
   sourceName: string | null;
+  sourceTrust: string;
+  confidence: number | null;
+  alertEligible: boolean;
+  alertRejectedReason: string | null;
   thumbnailUrl: string | null;
   isVerified: boolean;
   isHidden: boolean;
@@ -46,6 +54,7 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
   const [filter, setFilter] = useState<"all" | "EAST" | "MIDWEST" | "WEST">("all");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [search, setSearch] = useState("");
 
   // Form state
@@ -62,16 +71,15 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
   });
 
   const filteredCredits = credits.filter((c) => {
-    if (filter !== "all" && c.territory !== filter) return false;
+    if (filter !== "all" && c.agencyTerritory !== filter) return false;
     if (search) {
       const q = search.toLowerCase();
       return (
-        c.brand.toLowerCase().includes(q) ||
-        c.campaignName?.toLowerCase().includes(q) ||
-        c.agency?.toLowerCase().includes(q) ||
-        c.productionCompany?.toLowerCase().includes(q) ||
-        c.directorName?.toLowerCase().includes(q) ||
-        c.category?.toLowerCase().includes(q) ||
+        c.brand?.toLowerCase().includes(q) ||
+        c.agencyCanonical?.toLowerCase().includes(q) ||
+        c.productionCompanyCanonical?.toLowerCase().includes(q) ||
+        c.directorNameCanonical?.toLowerCase().includes(q) ||
+        c.sourceName?.toLowerCase().includes(q) ||
         false
       );
     }
@@ -82,6 +90,7 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
     e.preventDefault();
     setSaving(true);
     setError(null);
+    setNotice(null);
 
     try {
       const res = await fetch("/api/industry-credits", {
@@ -100,15 +109,19 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
 
       const newCredit = await res.json();
       // Add to top of list with serialized dates
-      setCredits([
-        {
-          ...newCredit,
-          createdAt: newCredit.createdAt || new Date().toISOString(),
-          scrapedAt: newCredit.scrapedAt || new Date().toISOString(),
-          publishedAt: newCredit.publishedAt || null,
-        },
-        ...credits,
-      ]);
+      if (newCredit.alertEligible) {
+        setCredits([
+          {
+            ...newCredit,
+            createdAt: newCredit.createdAt || new Date().toISOString(),
+            scrapedAt: newCredit.scrapedAt || new Date().toISOString(),
+            publishedAt: newCredit.publishedAt || null,
+          },
+          ...credits,
+        ]);
+      } else {
+        setNotice("Saved to raw intake, but it is not qualified for the alert feed yet.");
+      }
 
       // Reset form
       setForm({
@@ -302,6 +315,9 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
           {error && (
             <p className="text-[12px] text-red-500 mb-4">{error}</p>
           )}
+          {notice && (
+            <p className="text-[12px] text-[#666] mb-4">{notice}</p>
+          )}
 
           <button
             type="submit"
@@ -317,7 +333,7 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
       <div className="rounded-2xl bg-white/70 backdrop-blur-sm border border-[#E8E7E3]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="px-7 pt-6 pb-3 flex items-center justify-between border-b border-[#F0F0EC]">
           <p className="text-[10px] text-[#bbb] uppercase tracking-[0.15em]">
-            {filteredCredits.length} credit{filteredCredits.length !== 1 ? "s" : ""}
+            {filteredCredits.length} alert{filteredCredits.length !== 1 ? "s" : ""}
             {filter !== "all" && ` in ${filter}`}
             {search && ` matching "${search}"`}
           </p>
@@ -326,33 +342,62 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
         <div className="divide-y divide-[#F0F0EC]">
           {filteredCredits.map((credit) => (
             <div key={credit.id} className="px-7 py-4 group hover:bg-[#fafaf9] transition-colors">
-              {/* Credit line */}
-              <p className="text-[13px] text-[#1A1A1A] leading-relaxed">
-                {[
-                  credit.brand,
-                  credit.campaignName,
-                  credit.agency,
-                  credit.productionCompany,
-                  credit.directorName,
-                ]
-                  .filter(Boolean)
-                  .join(" / ")}
-              </p>
+              {/* Brand headline */}
+              <div className="mb-2">
+                <p className="text-[14px] font-medium text-[#1A1A1A] leading-snug">
+                  {credit.brand}
+                  {credit.campaignName && credit.campaignName !== credit.brand && (
+                    <span className="text-[#999] font-normal"> — {credit.campaignName}</span>
+                  )}
+                </p>
+              </div>
+
+              <div className="grid gap-2 md:grid-cols-[1fr_1fr_1fr] md:items-center">
+                <div>
+                  <p className="text-[9px] text-[#bbb] uppercase tracking-[0.14em] mb-0.5">
+                    Production Company
+                  </p>
+                  <p className="text-[13px] text-[#1A1A1A] leading-relaxed">
+                    {credit.productionCompanyCanonical || "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[9px] text-[#bbb] uppercase tracking-[0.14em] mb-0.5">
+                    Director
+                  </p>
+                  <p className="text-[13px] text-[#1A1A1A] leading-relaxed">
+                    {credit.directorNameCanonical || "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[9px] text-[#bbb] uppercase tracking-[0.14em] mb-0.5">
+                    Agency
+                  </p>
+                  <p className="text-[13px] text-[#1A1A1A] leading-relaxed">
+                    {credit.agencyCanonical || "—"}
+                  </p>
+                </div>
+              </div>
 
               {/* Meta row */}
               <div className="flex items-center gap-3 mt-1.5">
-                {credit.territory && (
+                {credit.agencyTerritory && (
                   <span className={`text-[9px] font-semibold uppercase tracking-[0.12em] px-1.5 py-0.5 rounded ${
-                    credit.territory === "WEST" ? "text-blue-500/70 bg-blue-50" :
-                    credit.territory === "EAST" ? "text-emerald-500/70 bg-emerald-50" :
+                    credit.agencyTerritory === "WEST" ? "text-blue-500/70 bg-blue-50" :
+                    credit.agencyTerritory === "EAST" ? "text-emerald-500/70 bg-emerald-50" :
                     "text-amber-500/70 bg-amber-50"
                   }`}>
-                    {credit.territory}
+                    {credit.agencyTerritory}
                   </span>
                 )}
-                {credit.category && (
+                {credit.sourceTrust && (
                   <span className="text-[10px] text-[#ccc] uppercase tracking-wider">
-                    {credit.category}
+                    {credit.sourceTrust}
+                  </span>
+                )}
+                {typeof credit.confidence === "number" && (
+                  <span className="text-[10px] text-[#ccc] uppercase tracking-wider">
+                    {Math.round(credit.confidence * 100)}%
                   </span>
                 )}
                 {credit.sourceName && (
@@ -388,7 +433,7 @@ export function IndustryFeed({ initialCredits }: IndustryFeedProps) {
         {filteredCredits.length === 0 && (
           <div className="px-7 py-12 text-center">
             <p className="text-[13px] text-[#999]">
-              {search ? `No credits matching "${search}"` : "No credits yet."}
+              {search ? `No alerts matching "${search}"` : "No qualified alerts yet."}
             </p>
           </div>
         )}
