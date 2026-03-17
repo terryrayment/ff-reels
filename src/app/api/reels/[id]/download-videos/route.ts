@@ -95,7 +95,14 @@ async function appendRemoteVideoToArchive(params: {
   url: string;
   archiveFilename: string;
 }) {
-  const response = await fetch(params.url);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 120_000); // 2 min per video
+  let response: Response;
+  try {
+    response = await fetch(params.url, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!response.ok) {
     throw new Error(`Source fetch failed with ${response.status}.`);
   }

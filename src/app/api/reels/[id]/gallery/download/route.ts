@@ -75,11 +75,25 @@ export async function GET(
   });
 
   void (async () => {
+    const skipped: string[] = [];
     try {
       for (const img of images) {
         const url = await getDownloadUrl(img.r2Key, 300);
-        const response = await fetch(url);
-        if (!response.ok) continue;
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30_000);
+        let response: Response;
+        try {
+          response = await fetch(url, { signal: controller.signal });
+        } catch {
+          skipped.push(`${img.project.title || "unknown"} — fetch timeout`);
+          continue;
+        } finally {
+          clearTimeout(timeout);
+        }
+        if (!response.ok) {
+          skipped.push(`${img.project.title || "unknown"} — HTTP ${response.status}`);
+          continue;
+        }
 
         const buffer = Buffer.from(await response.arrayBuffer());
         const safeName = (img.project.title || "frame")
@@ -91,6 +105,11 @@ export async function GET(
         const filename = `${String(img.sortOrder + 1).padStart(2, "0")}_${safeName}${brand}.png`;
 
         archive.append(buffer, { name: filename });
+      }
+
+      if (skipped.length > 0) {
+        const report = `Gallery Download Status\n${"=".repeat(40)}\n\nSkipped ${skipped.length} of ${images.length} images:\n${skipped.map(s => `  - ${s}`).join("\n")}\n`;
+        archive.append(Buffer.from(report, "utf-8"), { name: "DOWNLOAD_STATUS.txt" });
       }
 
       await archive.finalize();

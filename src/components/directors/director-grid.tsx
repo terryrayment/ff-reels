@@ -114,16 +114,19 @@ function ThumbnailPickerModal({
     [spots, selectedSpotId]
   );
 
+  const [saveError, setSaveError] = useState(false);
+
   const handleSave = useCallback(async () => {
     if (!selectedSpotId) return;
     setSaving(true);
+    setSaveError(false);
     const spot = spots?.find((s) => s.id === selectedSpotId);
     // Save time-only URL so each display context can add its own sizing
     const saveUrl = spot?.muxPlaybackId
       ? `https://image.mux.com/${spot.muxPlaybackId}/thumbnail.jpg?time=${selectedTime.toFixed(2)}`
       : previewUrl;
     try {
-      await fetch(`/api/directors/${director.id}`, {
+      const res = await fetch(`/api/directors/${director.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -131,17 +134,20 @@ function ThumbnailPickerModal({
           heroThumbnailUrl: saveUrl,
         }),
       });
+      if (!res.ok) throw new Error("Save failed");
       router.refresh();
       onClose();
     } catch {
       setSaving(false);
+      setSaveError(true);
     }
   }, [director.id, selectedSpotId, selectedTime, spots, previewUrl, router, onClose]);
 
   const handleReset = useCallback(async () => {
     setSaving(true);
+    setSaveError(false);
     try {
-      await fetch(`/api/directors/${director.id}`, {
+      const res = await fetch(`/api/directors/${director.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -149,10 +155,12 @@ function ThumbnailPickerModal({
           heroThumbnailUrl: null,
         }),
       });
+      if (!res.ok) throw new Error("Reset failed");
       router.refresh();
       onClose();
     } catch {
       setSaving(false);
+      setSaveError(true);
     }
   }, [director.id, router, onClose]);
 
@@ -288,6 +296,11 @@ function ThumbnailPickerModal({
         </div>
 
         {/* Footer */}
+        {saveError && (
+          <div className="mx-5 mb-2 px-3 py-2 rounded-md bg-red-50 text-red-600 text-[11px]">
+            Failed to save. Please try again.
+          </div>
+        )}
         <div className="flex items-center justify-between px-5 py-3.5 border-t border-[#eee] bg-[#fafafa]">
           <button
             onClick={handleReset}
