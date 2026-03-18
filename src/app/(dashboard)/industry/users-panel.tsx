@@ -412,16 +412,14 @@ export function UsersPanel({ initialUsers, currentUserId, directors = [] }: { in
                     {/* Actions */}
                     {!isSelf && (
                       <div className="flex items-center gap-1 ml-2">
-                        {user.invitePending && (
-                          <button
-                            onClick={() => handleResendInvite(user.id)}
-                            disabled={resendingId === user.id}
-                            className="p-1.5 rounded-lg hover:bg-[#F0EFE9] transition-colors text-[#bbb] hover:text-[#666]"
-                            title="Resend invite"
-                          >
-                            <RotateCcw size={12} className={resendingId === user.id ? "animate-spin" : ""} />
-                          </button>
-                        )}
+                        <button
+                          onClick={() => handleResendInvite(user.id)}
+                          disabled={resendingId === user.id}
+                          className="p-1.5 rounded-lg hover:bg-[#F0EFE9] transition-colors text-[#bbb] hover:text-[#666]"
+                          title={user.invitePending ? "Resend invite" : "Reset password"}
+                        >
+                          <RotateCcw size={12} className={resendingId === user.id ? "animate-spin" : ""} />
+                        </button>
                         <button
                           onClick={() => handleRemove(user.id)}
                           disabled={removingId === user.id}
