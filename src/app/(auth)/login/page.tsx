@@ -112,6 +112,15 @@ export default function LoginPage() {
             </span>
           </label>
 
+          <div className="flex items-center justify-end -mt-2">
+            <a
+              href="/forgot-password"
+              className="text-[11px] text-[#999] hover:text-[#666] transition-colors"
+            >
+              Forgot password?
+            </a>
+          </div>
+
           {error && (
             <p className="text-[13px] text-[#C44]">{error}</p>
           )}

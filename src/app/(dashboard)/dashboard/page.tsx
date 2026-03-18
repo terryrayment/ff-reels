@@ -47,7 +47,6 @@ export default async function DashboardPage({
     linkCount,
     recentViews,
     updates,
-    industryFeed,
     // Weekly digest
     weeklyViewCount,
     weeklyWatchTime,
@@ -95,17 +94,7 @@ export default async function DashboardPage({
         author: { select: { id: true, name: true, email: true } },
       },
     }),
-    prisma.industryCredit.findMany({
-      take: 25,
-      where: {
-        isHidden: false,
-        OR: [
-          { directorName: { not: null } },
-          { productionCompany: { not: null } },
-        ],
-      },
-      orderBy: { createdAt: "desc" },
-    }),
+    [] as never[], // Industry Pulse archived
     // Weekly view count
     prisma.reelView.count({
       where: { startedAt: { gte: startOfWeek }, ...viewOwnerFilter },
@@ -550,62 +539,6 @@ export default async function DashboardPage({
             )}
           </div>
 
-          {/* Industry Pulse */}
-          <div className="data-card p-5 md:p-9">
-            <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium mb-6">
-              Industry Pulse
-              <span className="ml-1.5 text-[8px] font-semibold tracking-[0.08em] text-[#bbb] uppercase">Beta</span>
-            </h2>
-
-            {industryFeed.length > 0 ? (
-              <div className="max-h-[380px] overflow-y-auto pr-2 space-y-4">
-                {industryFeed.map((credit) => (
-                  <div key={credit.id}>
-                    {credit.directorName && (
-                      <p className="text-[13px] font-medium text-[#1A1A1A]">
-                        {credit.directorName}
-                      </p>
-                    )}
-                    <p className="text-[12px] text-[#888] mt-0.5 leading-relaxed">
-                      {[
-                        credit.productionCompany,
-                        credit.brand &&
-                          (credit.campaignName
-                            ? `${credit.brand} \u2014 \u201C${credit.campaignName}\u201D`
-                            : credit.brand),
-                      ]
-                        .filter(Boolean)
-                        .join(" \u00B7 ")}
-                    </p>
-                    <div className="flex items-center gap-3 mt-1">
-                      {credit.territory && (
-                        <span className="text-[9px] font-medium text-[#bbb] uppercase tracking-[0.12em]">
-                          {credit.territory}
-                        </span>
-                      )}
-                      {credit.category && (
-                        <span className="text-[9px] text-[#ccc] uppercase tracking-wider">
-                          {credit.category}
-                        </span>
-                      )}
-                      {credit.sourceName && (
-                        <span className="text-[10px] text-[#ccc]">
-                          via {credit.sourceName}
-                        </span>
-                      )}
-                      <span className="text-[10px] text-[#ccc] uppercase tracking-[0.1em] ml-auto flex-shrink-0">
-                        {timeAgo(credit.createdAt)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-[13px] text-[#aaa] py-8 text-center">
-                Industry feed populates nightly. Check back tomorrow.
-              </p>
-            )}
-          </div>
         </div>
 
         {/* RIGHT COLUMN — Directors + Leaderboard */}
