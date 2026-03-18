@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
-import { UsersPanel } from "../industry/users-panel";
+import { UsersPanel } from "./users-panel";
 
 export default async function UsersPage() {
   const session = await getServerSession(authOptions);
