@@ -94,7 +94,6 @@ export default async function DashboardPage({
         author: { select: { id: true, name: true, email: true } },
       },
     }),
-    [] as never[], // Industry Pulse archived
     // Weekly view count
     prisma.reelView.count({
       where: { startedAt: { gte: startOfWeek }, ...viewOwnerFilter },
