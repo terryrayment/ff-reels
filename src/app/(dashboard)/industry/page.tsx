@@ -14,36 +14,50 @@ export default async function IndustryPage() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
+  const alertWhere = { isHidden: false, alertEligible: true } as const;
+
   // Run all queries in parallel to avoid sequential Neon round-trips
-  const [credits, totalCredits, thisWeek, aiEnriched, territoryBreakdown, sourceBreakdown] =
+  const [credits, totalAlerts, thisWeek, highTrust, territoryBreakdown, sourceBreakdown] =
     await Promise.all([
       prisma.industryCredit.findMany({
-        where: { isHidden: false },
+        where: alertWhere,
         orderBy: { createdAt: "desc" },
         take: 200,
+        select: {
+          id: true, brand: true, campaignName: true, agency: true,
+          productionCompany: true, directorName: true, category: true,
+          territory: true, sourceUrl: true, sourceName: true,
+          thumbnailUrl: true, isVerified: true, isHidden: true,
+          isAiExtracted: true, createdAt: true, scrapedAt: true,
+          publishedAt: true,
+          agencyCanonical: true, productionCompanyCanonical: true,
+          directorNameCanonical: true, agencyTerritory: true,
+          sourceTrust: true, confidence: true, alertEligible: true,
+          alertRejectedReason: true,
+        },
       }),
-      prisma.industryCredit.count({ where: { isHidden: false } }),
+      prisma.industryCredit.count({ where: alertWhere }),
       prisma.industryCredit.count({
-        where: { isHidden: false, createdAt: { gte: sevenDaysAgo } },
+        where: { ...alertWhere, createdAt: { gte: sevenDaysAgo } },
       }),
       prisma.industryCredit.count({
-        where: { isHidden: false, isAiExtracted: true },
+        where: { ...alertWhere, sourceTrust: "HIGH" },
       }),
       prisma.industryCredit.groupBy({
-        by: ["territory"],
-        where: { isHidden: false, territory: { not: null } },
+        by: ["agencyTerritory"],
+        where: { ...alertWhere, agencyTerritory: { not: null } },
         _count: true,
       }),
       prisma.industryCredit.groupBy({
         by: ["sourceName"],
-        where: { isHidden: false, sourceName: { not: null } },
+        where: { ...alertWhere, sourceName: { not: null } },
         _count: true,
       }),
     ]);
 
   const territories = territoryBreakdown.reduce(
     (acc, t) => {
-      if (t.territory) acc[t.territory] = t._count;
+      if (t.agencyTerritory) acc[t.agencyTerritory] = t._count;
       return acc;
     },
     {} as Record<string, number>
@@ -69,13 +83,13 @@ export default async function IndustryPage() {
             <span className="ml-2 text-[9px] font-semibold tracking-[0.1em] text-[#bbb] uppercase align-middle">Beta</span>
           </h1>
           <p className="text-[12px] text-[#999] mt-1">
-            Commercial production credits from across the industry
+            Qualified production alerts: production company, director, agency, agency territory
           </p>
         </div>
         <div className="flex items-center gap-6">
           <div className="text-right">
-            <p className="text-[20px] font-light text-[#1A1A1A] tabular-nums">{totalCredits}</p>
-            <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em]">Total</p>
+            <p className="text-[20px] font-light text-[#1A1A1A] tabular-nums">{totalAlerts}</p>
+            <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em]">Qualified</p>
           </div>
           <div className="text-right">
             <p className="text-[20px] font-light text-[#1A1A1A] tabular-nums">{thisWeek}</p>
@@ -86,8 +100,8 @@ export default async function IndustryPage() {
             <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em]">Sources</p>
           </div>
           <div className="text-right">
-            <p className="text-[20px] font-light text-[#1A1A1A] tabular-nums">{aiEnriched}</p>
-            <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em]">AI Enriched</p>
+            <p className="text-[20px] font-light text-[#1A1A1A] tabular-nums">{highTrust}</p>
+            <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em]">High Trust</p>
           </div>
         </div>
       </div>
