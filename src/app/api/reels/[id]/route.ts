@@ -54,7 +54,10 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { title, description, curatorialNote, reelType } = body;
+  const { title, description, curatorialNote, reelType, brand, agencyName, campaignName, producer } = body;
+
+  // Helper: empty string → null (clears the field)
+  const opt = (v: string | null | undefined): string | null => (!v || v.trim() === "" ? null : v.trim());
 
   const reel = await prisma.reel.update({
     where: { id: params.id },
@@ -63,6 +66,10 @@ export async function PATCH(
       ...(description !== undefined && { description }),
       ...(curatorialNote !== undefined && { curatorialNote }),
       ...(reelType !== undefined && { reelType }),
+      ...(brand !== undefined && { brand: opt(brand) }),
+      ...(agencyName !== undefined && { agencyName: opt(agencyName) }),
+      ...(campaignName !== undefined && { campaignName: opt(campaignName) }),
+      ...(producer !== undefined && { producer: opt(producer) }),
     },
   });
 

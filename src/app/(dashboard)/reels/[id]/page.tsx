@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { ScreeningLinksPanel } from "@/components/reels/screening-links-panel";
 import { ReelSpotList } from "@/components/reels/reel-spot-list";
 import { EditableReelTitle } from "@/components/reels/editable-reel-title";
+import { EditableReelMeta } from "@/components/reels/editable-reel-meta";
 
 export default async function ReelDetailPage({
   params,
@@ -61,14 +62,13 @@ export default async function ReelDetailPage({
             </Link>{" "}
             · {reel.items.length} spot{reel.items.length !== 1 ? "s" : ""}
           </p>
-          {(reel.brand || reel.agencyName || reel.campaignName || reel.producer) && (
-            <div className="flex items-center gap-4 mt-3 text-[11px] text-[#999]">
-              {reel.brand && <span>{reel.brand}</span>}
-              {reel.agencyName && <><span className="text-[#ddd]">·</span><span>{reel.agencyName}</span></>}
-              {reel.campaignName && <><span className="text-[#ddd]">·</span><span>{reel.campaignName}</span></>}
-              {reel.producer && <><span className="text-[#ddd]">·</span><span>Prod: {reel.producer}</span></>}
-            </div>
-          )}
+          <EditableReelMeta
+            reelId={reel.id}
+            initialBrand={reel.brand}
+            initialAgencyName={reel.agencyName}
+            initialCampaignName={reel.campaignName}
+            initialProducer={reel.producer}
+          />
           {reel.curatorialNote && (
             <p className="text-[13px] text-[#999] mt-4 italic max-w-xl leading-relaxed">
               &ldquo;{reel.curatorialNote}&rdquo;
