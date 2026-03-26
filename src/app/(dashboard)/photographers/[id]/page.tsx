@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
 import { PhotographerGallery } from "@/components/photographers/photographer-gallery";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -9,6 +11,9 @@ export default async function PhotographerDetailPage({
 }: {
   params: { id: string };
 }) {
+  const session = await getServerSession(authOptions);
+  const isAdmin = session?.user?.role === "ADMIN";
+
   const photographer = await prisma.director.findUnique({
     where: { id: params.id },
     include: {
@@ -88,7 +93,7 @@ export default async function PhotographerDetailPage({
           Gallery ({images.length})
         </h2>
         {images.length > 0 ? (
-          <PhotographerGallery images={images} />
+          <PhotographerGallery images={images} editable={isAdmin} />
         ) : (
           <div className="py-16 text-center">
             <p className="text-[13px] text-[#bbb]">No photos uploaded yet.</p>
