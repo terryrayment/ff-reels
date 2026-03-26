@@ -1025,6 +1025,14 @@ export function ScreeningCarousel({
             <ChevronRight size={20} />
           </button>
 
+          {/* Persistent reel title — always visible */}
+          <div className="flex-shrink-0 mr-1 hidden md:block">
+            <p className="text-[11px] text-white/30 truncate max-w-[200px]">
+              <span className="font-medium text-white/40">{director.name}</span>
+              {brand && <span> · {brand}</span>}
+            </p>
+          </div>
+
           {/* Action buttons */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             {/* Share button */}
