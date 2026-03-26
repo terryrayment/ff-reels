@@ -886,13 +886,13 @@ export function ScreeningCarousel({
         </div>
       )}
 
-      {/* Title block — below player, 40px gap */}
+      {/* Title block — vertically centered between player and thumbnail strip */}
       <div
-        className={`flex-shrink-0 px-4 md:px-8 mt-[40px] transition-opacity duration-700 ${
+        className={`flex-shrink-0 h-[140px] flex items-center px-4 md:px-8 transition-opacity duration-700 ${
           showInfo ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto w-full">
           <h1 className="text-2xl md:text-3xl font-light tracking-tight">
             <span className="font-semibold">{director.name}</span>
             {brand && <span className="text-white/60"> for {brand}</span>}
