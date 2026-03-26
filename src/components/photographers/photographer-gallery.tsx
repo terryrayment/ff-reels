@@ -46,23 +46,23 @@ function GalleryThumbnail({
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="relative break-inside-avoid group/card">
+    <div className="relative group/card">
       <button
         onClick={onClick}
-        className="block w-full overflow-hidden rounded-xl group"
+        className="block w-full overflow-hidden rounded-xl group aspect-square"
       >
-        <div className="relative bg-white/[0.03]">
+        <div className="relative bg-white/[0.03] w-full h-full">
           <img
             src={img.url}
             alt={img.caption || ""}
-            className={`w-full object-cover group-hover:scale-[1.02] transition-all duration-500 ${
+            className={`w-full h-full object-cover group-hover:scale-[1.02] transition-all duration-500 ${
               loaded ? "opacity-100" : "opacity-0"
             }`}
             loading="lazy"
             onLoad={() => setLoaded(true)}
           />
           {!loaded && (
-            <div className="aspect-[3/4] w-full bg-white/[0.04] animate-pulse rounded-xl" />
+            <div className="absolute inset-0 bg-white/[0.04] animate-pulse rounded-xl" />
           )}
           {loaded && (
             <>
@@ -304,7 +304,7 @@ export function PhotographerGallery({
       ) : (
         <>
           {/* View mode — masonry */}
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {visibleImages.map((img, i) => (
               <GalleryThumbnail
                 key={img.id}

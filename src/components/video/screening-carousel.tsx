@@ -2173,19 +2173,19 @@ export function ScreeningCarousel({
               </p>
             </div>
 
-            {/* Masonry grid */}
-            <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
+            {/* Grid — left-to-right order matching admin reorder */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {photoGallery.map((photo) => (
                 <button
                   key={photo.id}
                   onClick={() => setLightboxImage(photo.url)}
-                  className="group relative w-full rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.04] hover:border-white/[0.12] transition-all break-inside-avoid block"
+                  className="group relative aspect-square rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.04] hover:border-white/[0.12] transition-all block"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={photo.url}
                     alt={photo.caption || "Photography"}
-                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                     loading="lazy"
                   />
                   {(photo.brand || photo.caption) && (
