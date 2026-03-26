@@ -774,13 +774,13 @@ export function ScreeningCarousel({
             showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-6 pt-24">
+          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-8 pt-32">
             <div className="max-w-3xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-light tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-light tracking-tight">
                 {titleDisplay}
               </h1>
-              <p className="text-sm text-white/40 mt-2">{subtitle}</p>
-              <div className="flex items-center gap-3 mt-2 text-xs text-white/20">
+              <p className="text-[13px] text-white/40 mt-2">{subtitle}</p>
+              <div className="flex items-center gap-3 mt-1.5 text-xs text-white/20">
                 <span>
                   {items.length} spot{items.length !== 1 ? "s" : ""}
                 </span>
