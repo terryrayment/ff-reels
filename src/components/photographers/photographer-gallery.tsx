@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { X, ChevronLeft, ChevronRight, Trash2, GripVertical, ArrowUpDown, Check } from "lucide-react";
 import {
   DndContext,
@@ -160,6 +161,7 @@ export function PhotographerGallery({
   editable?: boolean;
   directorId?: string;
 }) {
+  const router = useRouter();
   const [images, setImages] = useState(initialImages);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
@@ -224,9 +226,10 @@ export function PhotographerGallery({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageIds: images.map((img) => img.id) }),
       });
+      setReorderMode(false);
+      router.refresh();
     } finally {
       setSaving(false);
-      setReorderMode(false);
     }
   }
 
