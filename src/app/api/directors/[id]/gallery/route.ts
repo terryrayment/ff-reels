@@ -70,7 +70,7 @@ export async function POST(
  */
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  _context: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") {
