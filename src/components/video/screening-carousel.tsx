@@ -23,6 +23,7 @@ import {
   Play,
   Film,
   Globe,
+  Camera,
 } from "lucide-react";
 
 interface SpotDirectorInfo {
@@ -142,6 +143,7 @@ interface ScreeningCarouselProps {
   caseStudies?: DirectorVideoItem[];
   shortFilms?: DirectorVideoItem[];
   galleryImages?: GalleryImageInfo[];
+  photoGallery?: { id: string; url: string; caption: string | null; brand: string | null }[];
   reelId?: string;
   screeningToken?: string;
   directorsData?: Record<string, {
@@ -182,6 +184,7 @@ export function ScreeningCarousel({
   caseStudies = [],
   shortFilms = [],
   // galleryImages — removed (AI Gallery feature removed)
+  photoGallery = [],
   reelId,
   screeningToken,
   directorsData,
@@ -1102,6 +1105,21 @@ export function ScreeningCarousel({
               >
                 <FileText size={10} />
                 Treatments
+              </button>
+            )}
+
+            {/* Photo Gallery button — only if director has gallery images */}
+            {photoGallery.length > 0 && (
+              <button
+                onClick={() => openPanel("gallery")}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  activePanel === "gallery"
+                    ? "bg-white/10 border-white/20 text-white/60"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                }`}
+              >
+                <Camera size={10} />
+                Photo Gallery
               </button>
             )}
 
@@ -2115,7 +2133,76 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* AI Gallery panel removed */}
+        {/* ─── PHOTO GALLERY PANEL ────────────────── */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
+            activePanel === "gallery" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "90vh" }}
+        >
+          <div
+            className="max-w-6xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
+            style={{ maxHeight: "90vh" }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center mb-6">
+              <div className="w-10 h-1 rounded-full bg-white/10" />
+            </div>
+
+            {/* Close */}
+            <button
+              onClick={closePanel}
+              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+            >
+              <X size={16} className="text-white/30" />
+            </button>
+
+            <div className="mb-8">
+              <p className="text-[10px] text-white/15 uppercase tracking-[0.25em] mb-2">
+                {director.name}
+              </p>
+              <h3 className="text-xl font-light text-white/80 tracking-tight">
+                Photo Gallery
+              </h3>
+              <p className="text-[12px] text-white/25 mt-1.5">
+                {photoGallery.length} photograph{photoGallery.length !== 1 ? "s" : ""}
+              </p>
+            </div>
+
+            {/* Masonry grid */}
+            <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
+              {photoGallery.map((photo) => (
+                <button
+                  key={photo.id}
+                  onClick={() => setLightboxImage(photo.url)}
+                  className="group relative w-full rounded-lg overflow-hidden bg-white/[0.03] border border-white/[0.04] hover:border-white/[0.12] transition-all break-inside-avoid block"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={photo.url}
+                    alt={photo.caption || "Photography"}
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    loading="lazy"
+                  />
+                  {(photo.brand || photo.caption) && (
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 pt-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {photo.brand && (
+                        <p className="text-[10px] font-semibold text-white/90 uppercase tracking-wide">
+                          {photo.brand}
+                        </p>
+                      )}
+                      {photo.caption && (
+                        <p className="text-[11px] text-white/70 leading-relaxed mt-0.5">
+                          {photo.caption}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* ─── CASE STUDIES PANEL ────────────────────────── */}
         {activeCaseStudies.length > 0 && (

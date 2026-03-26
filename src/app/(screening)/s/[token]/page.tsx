@@ -279,6 +279,13 @@ export default async function ScreeningPage({
 
   ]);
 
+  // Photo gallery (photographer stills) — separate query since it's a new feature
+  const photoGallery = await prisma.directorGalleryImage.findMany({
+    where: { directorId },
+    select: { id: true, url: true, caption: true, brand: true, sortOrder: true },
+    orderBy: { sortOrder: "asc" },
+  });
+
   const clientBrands = allDirectorProjects
     .map((p) => p.brand)
     .filter((b): b is string => b !== null);
@@ -375,7 +382,7 @@ export default async function ScreeningPage({
     frameGrabsMap[fg.projectId].push(fg);
   }
 
-  // AI gallery removed
+  // AI gallery removed (replaced by photo gallery)
   const galleryWithUrls: never[] = [];
 
   const { reel } = link;
@@ -400,6 +407,7 @@ export default async function ScreeningPage({
         caseStudies={caseStudies}
         shortFilms={shortFilms}
         galleryImages={galleryWithUrls}
+        photoGallery={photoGallery}
         reelId={reel.id}
         screeningToken={params.token}
         directorsData={isMultiDirector ? directorsData : undefined}
