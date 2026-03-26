@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { X, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 
 interface GalleryImage {
@@ -91,8 +90,7 @@ export function PhotographerGallery({
   const [images, setImages] = useState(initialImages);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
-  const [deleting, setDeleting] = useState<string | null>(null);
-  const router = useRouter();
+  const [deleting, setDeleting] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const visibleImages = images.slice(0, visibleCount);
   const hasMore = visibleCount < images.length;
