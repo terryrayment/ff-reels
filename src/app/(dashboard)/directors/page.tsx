@@ -50,7 +50,7 @@ export default async function DirectorsPage() {
   });
 
   const rosterDirectors = directorsWithHero.filter(
-    (d) => d.rosterStatus !== "OFF_ROSTER"
+    (d) => d.rosterStatus === "ROSTER"
   );
   const offRosterDirectors = directorsWithHero.filter(
     (d) => d.rosterStatus === "OFF_ROSTER"

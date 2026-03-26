@@ -88,7 +88,7 @@ model Director {
   awards         Json?               // Structured awards data
   pressLinks     Json?               // Links to press features
   clientLogos    String[]            // URLs to client logo images
-  rosterStatus   String   @default("ROSTER")  // "ROSTER" | "OFF_ROSTER"
+  rosterStatus   String   @default("ROSTER")  // "ROSTER" | "OFF_ROSTER" | "PHOTOGRAPHER"
   heroProjectId      String?             // Curated thumbnail — points to a Project ID
   heroThumbnailUrl   String?             // Custom thumbnail URL (overrides Mux auto-thumbnail)
   isActive       Boolean  @default(true)
@@ -99,6 +99,7 @@ model Director {
   treatmentSamples   TreatmentSample[]
   updates            Update[]
   users              User[]              // Director-role users linked to this director
+  galleryImages      DirectorGalleryImage[]
   createdAt          DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
@@ -431,4 +432,19 @@ model ReelGalleryImage {
   createdAt      DateTime @default(now())
 
   @@index([reelId])
+}
+
+// ─── Director Gallery (Photography / Stills) ─────────────
+
+model DirectorGalleryImage {
+  id          String   @id @default(cuid())
+  directorId  String
+  director    Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  url         String               // External image URL or R2 key
+  caption     String?
+  brand       String?              // Client/brand for this image
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([directorId])
 }

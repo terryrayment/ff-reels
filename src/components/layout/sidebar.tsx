@@ -19,6 +19,7 @@ const navItems: NavItem[] = [
   { href: "/analytics", label: "Analytics", roles: ["ADMIN", "PRODUCER", "REP"] },
   { href: "/contacts", label: "Contacts", roles: ["ADMIN", "PRODUCER", "REP"] },
   { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER"] },
+  { href: "/photographers", label: "Photographers", roles: ["ADMIN", "PRODUCER", "REP"] },
   { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"] },
   { href: "/users", label: "Users", roles: ["ADMIN"] },
   // Director-only pages
