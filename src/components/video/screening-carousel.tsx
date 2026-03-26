@@ -718,10 +718,8 @@ export function ScreeningCarousel({
   if (!currentProject) return null;
 
   const subtitle = brand
-    ? [agencyName, campaignName].filter(Boolean).join(" \u00B7 ") ||
-      `Directed by ${director.name}`
+    ? [campaignName, agencyName].filter(Boolean).join(" \u00B7 ") || reelTitle
     : reelTitle;
-  const titleDisplay = brand ? reelTitle : director.name;
 
   // Current background still from portfolio
   const currentBgStill = portfolioStills[bgStillIndex]?.thumbnailUrl;
@@ -774,10 +772,11 @@ export function ScreeningCarousel({
             showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-8 pt-44">
-            <div className="max-w-3xl mx-auto mt-6">
-              <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">
-                {titleDisplay}
+          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-8 pt-16">
+            <div className="max-w-3xl mx-auto mt-16">
+              <h1 className="text-2xl md:text-3xl font-light tracking-tight">
+                <span className="font-semibold">{director.name}</span>
+                {brand && <span className="text-white/60"> for {brand}</span>}
               </h1>
               <p className="text-[13px] text-white/40 mt-2">{subtitle}</p>
               <div className="flex items-center gap-3 mt-1.5 text-xs text-white/20">
