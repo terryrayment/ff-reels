@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { generateToken } from "@/lib/utils";
 
 /**
  * POST /api/reels/[id]/duplicate
@@ -57,6 +58,7 @@ export async function POST(
   const screeningLink = await prisma.screeningLink.create({
     data: {
       reelId: clone.id,
+      token: generateToken(),
       expiresAt: new Date(Date.now() + 30 * 86400000),
     },
   });

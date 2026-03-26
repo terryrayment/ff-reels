@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { generateToken } from "@/lib/utils";
 
 /**
  * POST /api/reels/[id]/screening-links
@@ -52,6 +53,7 @@ export async function POST(
   const link = await prisma.screeningLink.create({
     data: {
       reelId: params.id,
+      token: generateToken(),
       recipientName: recipientName || null,
       recipientEmail: recipientEmail || null,
       recipientCompany: recipientCompany || null,

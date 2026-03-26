@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { generateToken } from "@/lib/utils";
 
 /**
  * GET /api/reels
@@ -84,6 +85,7 @@ export async function POST(req: NextRequest) {
   const screeningLink = await prisma.screeningLink.create({
     data: {
       reelId: reel.id,
+      token: generateToken(),
       expiresAt: new Date(Date.now() + 30 * 86400000), // 30 days
     },
   });

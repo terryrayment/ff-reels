@@ -50,3 +50,13 @@ export function slugify(text: string): string {
     .replace(/[\s_]+/g, "-")
     .replace(/-+/g, "-");
 }
+
+/**
+ * Generate a short URL-safe token (10 chars, ~60 bits of entropy).
+ * e.g. "k7Gx2mPqNw" — yields links like reels.friendsandfamily.tv/s/k7Gx2mPqNw
+ */
+export function generateToken(length = 10): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (b) => chars[b % chars.length]).join("");
+}
