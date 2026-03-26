@@ -766,38 +766,12 @@ export function ScreeningCarousel({
           </div>
         )}
 
-        {/* Info overlay — shows initially, fades when playing */}
+        {/* Gradient fade at bottom of player */}
         <div
-          className={`absolute inset-0 z-10 flex items-end pointer-events-none transition-opacity duration-700 ${
+          className={`absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-[#0e0e0e] to-transparent pointer-events-none transition-opacity duration-700 ${
             showInfo ? "opacity-100" : "opacity-0"
           }`}
-        >
-          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-24 pt-16">
-            <div className="max-w-3xl mx-auto">
-              <h1 className="text-2xl md:text-3xl font-light tracking-tight">
-                <span className="font-semibold">{director.name}</span>
-                {brand && <span className="text-white/60"> for {brand}</span>}
-              </h1>
-              <p className="text-[13px] text-white/40 mt-2">{subtitle}</p>
-              <div className="flex items-center gap-3 mt-1.5 text-xs text-white/20">
-                <span>
-                  {items.length} spot{items.length !== 1 ? "s" : ""}
-                </span>
-                {totalDuration > 0 && (
-                  <>
-                    <span className="text-white/10">&middot;</span>
-                    <span>{formatDuration(totalDuration)} total</span>
-                  </>
-                )}
-              </div>
-              {curatorialNote && (
-                <p className="text-sm text-white/35 italic mt-4 max-w-xl leading-relaxed">
-                  {curatorialNote}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
+        />
 
         {/* FF logomark — always visible top left */}
         <div className="absolute top-4 left-4 md:top-6 md:left-8 z-10 pointer-events-none">
@@ -911,6 +885,37 @@ export function ScreeningCarousel({
           {hoveredThumb.text}
         </div>
       )}
+
+      {/* Title block — below player, 40px gap */}
+      <div
+        className={`flex-shrink-0 px-4 md:px-8 mt-[40px] transition-opacity duration-700 ${
+          showInfo ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-2xl md:text-3xl font-light tracking-tight">
+            <span className="font-semibold">{director.name}</span>
+            {brand && <span className="text-white/60"> for {brand}</span>}
+          </h1>
+          <p className="text-[13px] text-white/40 mt-2">{subtitle}</p>
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-white/20">
+            <span>
+              {items.length} spot{items.length !== 1 ? "s" : ""}
+            </span>
+            {totalDuration > 0 && (
+              <>
+                <span className="text-white/10">&middot;</span>
+                <span>{formatDuration(totalDuration)} total</span>
+              </>
+            )}
+          </div>
+          {curatorialNote && (
+            <p className="text-sm text-white/35 italic mt-4 max-w-xl leading-relaxed">
+              {curatorialNote}
+            </p>
+          )}
+        </div>
+      </div>
 
       {/* Bottom bar: thumbnails + action buttons */}
       <div className="relative z-20 border-t border-white/[0.06] bg-[#080808] flex-shrink-0">
