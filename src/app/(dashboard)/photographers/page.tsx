@@ -9,8 +9,9 @@ export default async function PhotographersPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
+  // Show any director who has gallery images — regardless of roster status
   const photographers = await prisma.director.findMany({
-    where: { rosterStatus: "PHOTOGRAPHER", isActive: true },
+    where: { isActive: true, galleryImages: { some: {} } },
     orderBy: { name: "asc" },
     include: {
       galleryImages: {

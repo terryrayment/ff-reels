@@ -18,7 +18,7 @@ export default async function PhotographerDetailPage({
     },
   });
 
-  if (!photographer || photographer.rosterStatus !== "PHOTOGRAPHER") {
+  if (!photographer || photographer.galleryImages.length === 0) {
     return notFound();
   }
 
