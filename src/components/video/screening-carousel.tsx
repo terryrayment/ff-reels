@@ -741,9 +741,9 @@ export function ScreeningCarousel({
   };
 
   return (
-    <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-[#0e0e0e] text-white flex flex-col justify-center overflow-hidden">
       {/* Main player area */}
-      <div className="flex-1 relative flex items-center justify-center min-h-0">
+      <div className="relative flex items-center justify-center" style={{ height: "60vh" }}>
         {/* Ambient portfolio stills — crossfade behind player */}
         {portfolioStills.length > 0 && showInfo && (
           <div className="absolute inset-0 z-0">
