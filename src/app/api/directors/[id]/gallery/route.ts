@@ -68,10 +68,8 @@ export async function POST(
  * PUT /api/directors/[id]/gallery
  * Reorder gallery images. Body: { imageIds: string[] }
  */
-export async function PUT(
-  req: NextRequest,
-  _context: { params: { id: string } }
-) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function PUT(req: NextRequest, _ctx: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
