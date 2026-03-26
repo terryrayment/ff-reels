@@ -1,7 +1,25 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Trash2, GripVertical, ArrowUpDown, Check } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface GalleryImage {
   id: string;
@@ -12,6 +30,7 @@ interface GalleryImage {
 
 const BATCH_SIZE = 40;
 
+// ─── View mode thumbnail ───────────────────────────────
 function GalleryThumbnail({
   img,
   onClick,
@@ -63,7 +82,6 @@ function GalleryThumbnail({
           )}
         </div>
       </button>
-      {/* Delete button for admins — always visible */}
       {editable && loaded && (
         <button
           onClick={(e) => {
@@ -80,20 +98,83 @@ function GalleryThumbnail({
   );
 }
 
+// ─── Sortable thumbnail for reorder mode ───────────────
+function SortableImage({ img }: { img: GalleryImage }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: img.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`relative aspect-square rounded-lg overflow-hidden ${
+        isDragging ? "opacity-80 shadow-xl ring-2 ring-[#C45A2D]" : ""
+      }`}
+    >
+      <img
+        src={img.url}
+        alt={img.caption || ""}
+        className="w-full h-full object-cover"
+        loading="lazy"
+      />
+      {/* Drag handle overlay */}
+      <div
+        className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/20 transition-colors cursor-grab active:cursor-grabbing touch-none"
+        {...attributes}
+        {...listeners}
+      >
+        <div className="w-8 h-8 rounded-full bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+          <GripVertical size={14} className="text-white" />
+        </div>
+      </div>
+      {img.brand && (
+        <div className="absolute bottom-0 inset-x-0 px-1.5 pb-1 pt-4 bg-gradient-to-t from-black/60 to-transparent">
+          <p className="text-[8px] font-semibold text-white/80 uppercase tracking-wide truncate">
+            {img.brand}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main gallery component ────────────────────────────
 export function PhotographerGallery({
   images: initialImages,
   editable = false,
+  directorId,
 }: {
   images: GalleryImage[];
   editable?: boolean;
+  directorId?: string;
 }) {
   const [images, setImages] = useState(initialImages);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
-  const [deleting, setDeleting] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [reorderMode, setReorderMode] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const visibleImages = images.slice(0, visibleCount);
-  const hasMore = visibleCount < images.length;
+  const visibleImages = reorderMode ? images : images.slice(0, visibleCount);
+  const hasMore = !reorderMode && visibleCount < images.length;
+
+  // dnd-kit sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   const openLightbox = useCallback((idx: number) => setLightboxIdx(idx), []);
   const closeLightbox = useCallback(() => setLightboxIdx(null), []);
@@ -117,14 +198,35 @@ export function PhotographerGallery({
   }
 
   async function handleDelete(id: string) {
-    setDeleting(id);
+    const res = await fetch(`/api/gallery-images/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setImages((prev) => prev.filter((img) => img.id !== id));
+    }
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setImages((prev) => {
+      const oldIndex = prev.findIndex((img) => img.id === active.id);
+      const newIndex = prev.findIndex((img) => img.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  }
+
+  async function handleSaveOrder() {
+    if (!directorId) return;
+    setSaving(true);
     try {
-      const res = await fetch(`/api/gallery-images/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        setImages((prev) => prev.filter((img) => img.id !== id));
-      }
+      await fetch(`/api/directors/${directorId}/gallery`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageIds: images.map((img) => img.id) }),
+      });
     } finally {
-      setDeleting(null);
+      setSaving(false);
+      setReorderMode(false);
     }
   }
 
@@ -132,33 +234,96 @@ export function PhotographerGallery({
 
   return (
     <>
-      {/* Grid */}
-      <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
-        {visibleImages.map((img, i) => (
-          <GalleryThumbnail
-            key={img.id}
-            img={img}
-            onClick={() => openLightbox(i)}
-            editable={editable}
-            onDelete={() => handleDelete(img.id)}
-          />
-        ))}
-      </div>
-
-      {/* Load more */}
-      {hasMore && (
-        <div className="flex justify-center mt-8">
-          <button
-            onClick={() => setVisibleCount((c) => c + BATCH_SIZE)}
-            className="px-6 py-2.5 rounded-xl border border-[#E8E7E3] hover:border-[#ccc] text-[12px] text-[#999] hover:text-[#666] transition-all"
-          >
-            Load more ({images.length - visibleCount} remaining)
-          </button>
+      {/* Toolbar */}
+      {editable && directorId && (
+        <div className="flex items-center gap-2 mb-4">
+          {reorderMode ? (
+            <>
+              <button
+                onClick={handleSaveOrder}
+                disabled={saving}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1A1A1A] text-white text-[12px] font-medium hover:bg-[#333] transition-colors"
+              >
+                {saving ? (
+                  <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Check size={13} />
+                )}
+                {saving ? "Saving..." : "Done"}
+              </button>
+              <button
+                onClick={() => {
+                  setImages(initialImages);
+                  setReorderMode(false);
+                }}
+                className="px-4 py-2 rounded-xl border border-[#E8E7E3] text-[12px] text-[#999] hover:text-[#666] hover:border-[#ccc] transition-all"
+              >
+                Cancel
+              </button>
+              <span className="text-[11px] text-[#bbb] ml-2">
+                Drag photos to reorder
+              </span>
+            </>
+          ) : (
+            <button
+              onClick={() => setReorderMode(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#E8E7E3] text-[12px] text-[#999] hover:text-[#666] hover:border-[#ccc] transition-all"
+            >
+              <ArrowUpDown size={13} />
+              Reorder
+            </button>
+          )}
         </div>
       )}
 
-      {/* Lightbox */}
-      {activeImage && (
+      {/* Reorder mode — uniform grid with drag */}
+      {reorderMode ? (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={images.map((img) => img.id)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+              {images.map((img) => (
+                <SortableImage key={img.id} img={img} />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      ) : (
+        <>
+          {/* View mode — masonry */}
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
+            {visibleImages.map((img, i) => (
+              <GalleryThumbnail
+                key={img.id}
+                img={img}
+                onClick={() => openLightbox(i)}
+                editable={editable}
+                onDelete={() => handleDelete(img.id)}
+              />
+            ))}
+          </div>
+
+          {hasMore && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setVisibleCount((c) => c + BATCH_SIZE)}
+                className="px-6 py-2.5 rounded-xl border border-[#E8E7E3] hover:border-[#ccc] text-[12px] text-[#999] hover:text-[#666] transition-all"
+              >
+                Load more ({images.length - visibleCount} remaining)
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Lightbox — only in view mode */}
+      {!reorderMode && activeImage && (
         <div
           className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
           onClick={closeLightbox}
@@ -207,7 +372,6 @@ export function PhotographerGallery({
               </div>
             )}
 
-            {/* Delete in lightbox for admins */}
             {editable && (
               <button
                 onClick={() => {

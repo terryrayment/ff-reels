@@ -93,7 +93,7 @@ export default async function PhotographerDetailPage({
           Gallery ({images.length})
         </h2>
         {images.length > 0 ? (
-          <PhotographerGallery images={images} editable={isAdmin} />
+          <PhotographerGallery images={images} editable={isAdmin} directorId={photographer.id} />
         ) : (
           <div className="py-16 text-center">
             <p className="text-[13px] text-[#bbb]">No photos uploaded yet.</p>

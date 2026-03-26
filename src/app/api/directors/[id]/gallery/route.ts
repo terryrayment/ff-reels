@@ -63,3 +63,36 @@ export async function POST(
 
   return NextResponse.json({ created: created.count }, { status: 201 });
 }
+
+/**
+ * PUT /api/directors/[id]/gallery
+ * Reorder gallery images. Body: { imageIds: string[] }
+ */
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json();
+  const { imageIds } = body;
+
+  if (!Array.isArray(imageIds) || imageIds.length === 0) {
+    return NextResponse.json({ error: "imageIds array required" }, { status: 400 });
+  }
+
+  // Update sort orders in a transaction
+  await prisma.$transaction(
+    imageIds.map((id: string, index: number) =>
+      prisma.directorGalleryImage.update({
+        where: { id },
+        data: { sortOrder: index },
+      })
+    )
+  );
+
+  return NextResponse.json({ reordered: imageIds.length });
+}
