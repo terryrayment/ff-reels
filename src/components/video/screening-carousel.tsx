@@ -772,8 +772,8 @@ export function ScreeningCarousel({
             showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-8 pt-16">
-            <div className="max-w-3xl mx-auto mt-16">
+          <div className="w-full bg-gradient-to-t from-[#0e0e0e] via-[#0e0e0e]/80 to-transparent px-4 md:px-8 pb-24 pt-16">
+            <div className="max-w-3xl mx-auto">
               <h1 className="text-2xl md:text-3xl font-light tracking-tight">
                 <span className="font-semibold">{director.name}</span>
                 {brand && <span className="text-white/60"> for {brand}</span>}
