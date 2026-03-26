@@ -741,9 +741,9 @@ export function ScreeningCarousel({
   };
 
   return (
-    <div className="min-h-screen bg-[#0e0e0e] text-white flex flex-col justify-center overflow-hidden">
-      {/* Main player area */}
-      <div className="relative flex items-center justify-center" style={{ height: "60vh" }}>
+    <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
+      {/* Main player area — flex-1 fills space, centers video vertically */}
+      <div className="flex-1 relative flex items-center justify-center min-h-0">
         {/* Ambient portfolio stills — crossfade behind player */}
         {portfolioStills.length > 0 && showInfo && (
           <div className="absolute inset-0 z-0">
@@ -888,7 +888,7 @@ export function ScreeningCarousel({
 
       {/* Title block — vertically centered between player and thumbnail strip */}
       <div
-        className={`flex-shrink-0 h-[140px] flex items-center px-4 md:px-8 transition-opacity duration-700 ${
+        className={`flex-shrink-0 h-[80px] flex items-center px-4 md:px-8 transition-opacity duration-700 ${
           showInfo ? "opacity-100" : "opacity-0"
         }`}
       >
