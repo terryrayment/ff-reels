@@ -221,11 +221,15 @@ export function PhotographerGallery({
     if (!directorId) return;
     setSaving(true);
     try {
-      await fetch(`/api/directors/${directorId}/gallery`, {
+      const res = await fetch(`/api/directors/${directorId}/gallery`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageIds: images.map((img) => img.id) }),
       });
+      if (!res.ok) {
+        console.error("Reorder failed:", res.status, await res.text());
+        return;
+      }
       setReorderMode(false);
       router.refresh();
     } finally {

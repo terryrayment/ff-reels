@@ -82,14 +82,17 @@ export async function PUT(req: NextRequest, _ctx: { params: { id: string } }) {
     return NextResponse.json({ error: "imageIds array required" }, { status: 400 });
   }
 
-  // Update sort orders in a transaction
-  await prisma.$transaction(
-    imageIds.map((id: string, index: number) =>
-      prisma.directorGalleryImage.update({
-        where: { id },
-        data: { sortOrder: index },
-      })
-    )
+  // Update sort orders with a single raw SQL query (avoids Neon timeout with 100+ updates)
+  // Builds: UPDATE ... SET "sortOrder" = CASE id WHEN 'x' THEN 0 WHEN 'y' THEN 1 ... END
+  const cases = imageIds
+    .map((id: string, i: number) => `WHEN '${id.replace(/'/g, "''")}' THEN ${i}`)
+    .join(" ");
+  const idList = imageIds
+    .map((id: string) => `'${id.replace(/'/g, "''")}'`)
+    .join(",");
+
+  await prisma.$executeRawUnsafe(
+    `UPDATE "DirectorGalleryImage" SET "sortOrder" = CASE "id" ${cases} END WHERE "id" IN (${idList})`
   );
 
   return NextResponse.json({ reordered: imageIds.length });
