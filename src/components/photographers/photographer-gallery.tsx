@@ -64,14 +64,14 @@ function GalleryThumbnail({
           )}
         </div>
       </button>
-      {/* Delete button for admins */}
+      {/* Delete button for admins — always visible */}
       {editable && loaded && (
         <button
           onClick={(e) => {
             e.stopPropagation();
             onDelete?.();
           }}
-          className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-red-500/80 hover:bg-red-500 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity z-10"
+          className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-red-500 hover:bg-red-600 flex items-center justify-center shadow-md z-10"
           title="Remove photo"
         >
           <Trash2 size={12} className="text-white" />
