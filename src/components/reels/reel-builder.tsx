@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, X, ChevronDown, Copy, Check, ExternalLink, GripVertical, Eye, Play } from "lucide-react";
+import { Film, X, ChevronDown, Copy, Check, ExternalLink, GripVertical, Eye, Play, Search } from "lucide-react";
 import MuxPlayer from "@mux/mux-player-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
@@ -356,6 +356,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [producer, setProducer] = useState("");
   const [titleManuallyEdited] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>("brand");
+  const [spotSearch, setSpotSearch] = useState("");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [previewing, setPreviewing] = useState(false);
@@ -440,6 +441,18 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     }
   }, [availableProjects, sortMode]);
 
+  // Apply search filter on top of sort
+  const filteredProjects = useMemo(() => {
+    if (!spotSearch.trim()) return sortedProjects;
+    const q = spotSearch.toLowerCase();
+    return sortedProjects.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        (p.brand && p.brand.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q))
+    );
+  }, [sortedProjects, spotSearch]);
+
   // Selected projects resolved from all directors — order matches selectedProjectIds
   const selectedProjects = useMemo(() => {
     return selectedProjectIds
@@ -485,6 +498,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     setSelectedDirectorId(id);
     // Don't clear selections — allow multi-director reels
     setSortMode("brand");
+    setSpotSearch("");
   };
 
   const handleSave = async () => {
@@ -629,9 +643,10 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     <div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-6">
       {/* Left — director select + video preview + spot grid */}
       <div>
-        {/* Video Preview Player — compact sticky so it stays visible while scrolling */}
+        {/* Video Preview Player — push-down with clear divider */}
         {previewProject && previewProject.muxPlaybackId && (
-          <div className="mb-4 rounded-xl overflow-hidden bg-black relative sticky top-4 z-20 shadow-xl max-w-lg">
+          <div className="mb-5 pb-5 border-b border-[#E8E7E3]">
+          <div className="rounded-xl overflow-hidden bg-black relative max-w-lg shadow-md">
             <button
               type="button"
               onClick={() => setPreviewProject(null)}
@@ -666,6 +681,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               )}
             </div>
           </div>
+          </div>
         )}
 
         <DirectorDropdown
@@ -699,6 +715,18 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               return null;
             })()}
 
+            {/* Search bar */}
+            <div className="relative mb-3">
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#bbb]" />
+              <input
+                type="text"
+                placeholder="Search spots by title, brand, or category..."
+                value={spotSearch}
+                onChange={(e) => setSpotSearch(e.target.value)}
+                className="w-full pl-8 pr-3 py-2 rounded-lg border border-[#E8E7E3] bg-white text-[12px] text-[#1A1A1A] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#1A1A1A]/10 focus:border-[#ccc] transition-all"
+              />
+            </div>
+
             {/* Filter bar */}
             <div className="flex items-center gap-1.5 mb-4 flex-wrap">
               {SORT_OPTIONS.map((opt) => (
@@ -718,10 +746,10 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                 <span className="text-[10px] text-[#ccc]">
                   {availableProjects.length} spot{availableProjects.length !== 1 ? "s" : ""}
                 </span>
-                {sortedProjects.length > 0 && (
+                {filteredProjects.length > 0 && (
                   <button
                     onClick={() => {
-                      const newIds = sortedProjects
+                      const newIds = filteredProjects
                         .map((p) => p.id)
                         .filter((id) => !selectedProjectIds.includes(id));
                       if (newIds.length > 0) {
@@ -736,9 +764,9 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               </div>
             </div>
 
-            {sortedProjects.length > 0 ? (
+            {filteredProjects.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {sortedProjects.map((project) => {
+                {filteredProjects.map((project) => {
                   const isSelected = selectedProjectIds.includes(project.id);
                   const thumbSrc = project.muxPlaybackId
                     ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=320&height=180&fit_mode=smartcrop`
