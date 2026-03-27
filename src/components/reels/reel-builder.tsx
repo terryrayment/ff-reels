@@ -643,10 +643,10 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     <div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-6">
       {/* Left — director select + video preview + spot grid */}
       <div>
-        {/* Video Preview Player — push-down with clear divider */}
+        {/* Video Preview Player — sticky with solid shelf/buffer */}
         {previewProject && previewProject.muxPlaybackId && (
-          <div className="mb-5 pb-5 border-b border-[#E8E7E3]">
-          <div className="rounded-xl overflow-hidden bg-black relative max-w-lg shadow-md">
+          <div className="sticky top-0 z-20 bg-[#F7F6F3] pb-4 mb-4 border-b border-[#E8E7E3] shadow-[0_4px_12px_-4px_rgba(0,0,0,0.08)]">
+          <div className="rounded-xl overflow-hidden bg-black relative max-w-lg">
             <button
               type="button"
               onClick={() => setPreviewProject(null)}
@@ -660,14 +660,14 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               streamType="on-demand"
               style={{ aspectRatio: "16/9", width: "100%" }}
             />
-            <div className="px-4 py-3 bg-[#1A1A1A] flex items-center justify-between">
+            <div className="px-3 py-2 bg-[#1A1A1A] flex items-center justify-between">
               <div className="min-w-0">
-                <p className="text-[13px] font-medium text-white truncate">
+                <p className="text-[11px] font-medium text-white truncate">
                   {previewProject.title}
-                </p>
-                <p className="text-[11px] text-white/50 truncate">
-                  {previewProject.brand || "\u2014"}
-                  {previewProject.duration ? ` · ${formatDuration(previewProject.duration)}` : ""}
+                  <span className="text-white/40 font-normal ml-1.5">
+                    {previewProject.brand || "\u2014"}
+                    {previewProject.duration ? ` · ${formatDuration(previewProject.duration)}` : ""}
+                  </span>
                 </p>
               </div>
               {!selectedProjectIds.includes(previewProject.id) && (
