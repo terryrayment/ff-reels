@@ -629,9 +629,9 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     <div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-6">
       {/* Left — director select + video preview + spot grid */}
       <div>
-        {/* Video Preview Player */}
+        {/* Video Preview Player — sticky so it stays visible while scrolling */}
         {previewProject && previewProject.muxPlaybackId && (
-          <div className="mb-5 rounded-xl overflow-hidden bg-black relative">
+          <div className="mb-5 rounded-xl overflow-hidden bg-black relative sticky top-4 z-20 shadow-xl">
             <button
               type="button"
               onClick={() => setPreviewProject(null)}
