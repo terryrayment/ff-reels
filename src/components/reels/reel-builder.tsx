@@ -643,47 +643,6 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     <div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-6">
       {/* Left — director select + video preview + spot grid */}
       <div>
-        {/* Video Preview Player — sticky with solid shelf/buffer */}
-        {previewProject && previewProject.muxPlaybackId && (
-          <div className="sticky top-0 z-20 bg-[#F7F6F3] pb-4 mb-4 border-b border-[#E8E7E3] shadow-[0_4px_12px_-4px_rgba(0,0,0,0.08)]">
-          <div className="rounded-xl overflow-hidden bg-black relative max-w-lg">
-            <button
-              type="button"
-              onClick={() => setPreviewProject(null)}
-              className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center transition-colors"
-            >
-              <X size={16} className="text-white" />
-            </button>
-            <MuxPlayer
-              playbackId={previewProject.muxPlaybackId}
-              autoPlay
-              streamType="on-demand"
-              style={{ aspectRatio: "16/9", width: "100%" }}
-            />
-            <div className="px-3 py-2 bg-[#1A1A1A] flex items-center justify-between">
-              <div className="min-w-0">
-                <p className="text-[11px] font-medium text-white truncate">
-                  {previewProject.title}
-                  <span className="text-white/40 font-normal ml-1.5">
-                    {previewProject.brand || "\u2014"}
-                    {previewProject.duration ? ` · ${formatDuration(previewProject.duration)}` : ""}
-                  </span>
-                </p>
-              </div>
-              {!selectedProjectIds.includes(previewProject.id) && (
-                <button
-                  type="button"
-                  onClick={() => toggleProject(previewProject.id)}
-                  className="flex-shrink-0 ml-3 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-[11px] text-white font-medium transition-colors"
-                >
-                  Add to Reel
-                </button>
-              )}
-            </div>
-          </div>
-          </div>
-        )}
-
         <DirectorDropdown
           directors={directors}
           selectedId={selectedDirectorId}
@@ -856,8 +815,48 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         )}
       </div>
 
-      {/* Right — reel details + spot order */}
+      {/* Right — video preview + reel details + spot order */}
       <div className="space-y-3 lg:sticky lg:top-8 lg:self-start">
+        {/* Video Preview Player */}
+        {previewProject && previewProject.muxPlaybackId && (
+          <div className="rounded-xl overflow-hidden bg-black">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setPreviewProject(null)}
+                className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center transition-colors"
+              >
+                <X size={14} className="text-white" />
+              </button>
+              <MuxPlayer
+                playbackId={previewProject.muxPlaybackId}
+                autoPlay
+                streamType="on-demand"
+                style={{ aspectRatio: "16/9", width: "100%" }}
+              />
+            </div>
+            <div className="px-3 py-2 bg-[#1A1A1A] flex items-center justify-between">
+              <div className="min-w-0">
+                <p className="text-[11px] font-medium text-white truncate">
+                  {previewProject.title}
+                  <span className="text-white/40 font-normal ml-1.5">
+                    {previewProject.brand || "\u2014"}
+                    {previewProject.duration ? ` · ${formatDuration(previewProject.duration)}` : ""}
+                  </span>
+                </p>
+              </div>
+              {!selectedProjectIds.includes(previewProject.id) && (
+                <button
+                  type="button"
+                  onClick={() => toggleProject(previewProject.id)}
+                  className="flex-shrink-0 ml-2 px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-[10px] text-white font-medium transition-colors"
+                >
+                  Add to Reel
+                </button>
+              )}
+            </div>
+          </div>
+        )}
         <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5 space-y-3">
           <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
             Reel Details
