@@ -66,6 +66,129 @@ body {
 }
 
 /* ------------------------------------------------
+   Dark mode — global color overrides
+   Remaps hardcoded Tailwind colors so every component
+   adapts without per-file changes.
+   ------------------------------------------------ */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Text colors */
+[data-theme="dark"] .text-\[\#1A1A1A\] { color: #E8E8E8 !important; }
+[data-theme="dark"] .text-\[\#333\] { color: #ccc !important; }
+[data-theme="dark"] .text-\[\#666\] { color: #aaa !important; }
+[data-theme="dark"] .text-\[\#777\] { color: #999 !important; }
+[data-theme="dark"] .text-\[\#999\] { color: #888 !important; }
+[data-theme="dark"] .text-\[\#aaa\] { color: #777 !important; }
+[data-theme="dark"] .text-\[\#bbb\] { color: #666 !important; }
+[data-theme="dark"] .text-\[\#ccc\] { color: #555 !important; }
+[data-theme="dark"] .text-\[\#ddd\] { color: #444 !important; }
+[data-theme="dark"] .text-black { color: #E8E8E8 !important; }
+
+/* Hover text */
+[data-theme="dark"] .hover\:text-\[\#1A1A1A\]:hover { color: #fff !important; }
+[data-theme="dark"] .hover\:text-\[\#333\]:hover { color: #ddd !important; }
+[data-theme="dark"] .hover\:text-\[\#666\]:hover { color: #bbb !important; }
+[data-theme="dark"] .hover\:text-\[\#999\]:hover { color: #aaa !important; }
+[data-theme="dark"] .hover\:text-black:hover { color: #fff !important; }
+[data-theme="dark"] .group-hover\:text-black:hover { color: #fff !important; }
+[data-theme="dark"] .group:hover .group-hover\:text-black { color: #fff !important; }
+
+/* Background colors */
+[data-theme="dark"] .bg-\[\#F5F4F0\] { background-color: #141414 !important; }
+[data-theme="dark"] .bg-\[\#F7F6F3\] { background-color: #1A1A1A !important; }
+[data-theme="dark"] .bg-\[\#EEEDEA\] { background-color: #222 !important; }
+[data-theme="dark"] .bg-white { background-color: #1E1E1E !important; }
+[data-theme="dark"] .bg-white\/40 { background: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .bg-white\/45 { background: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .bg-white\/55 { background: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .bg-white\/60 { background: rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .bg-white\/80 { background: rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .bg-white\/90 { background: rgba(255,255,255,0.12) !important; }
+[data-theme="dark"] .bg-white\/35 { background: rgba(255,255,255,0.04) !important; }
+[data-theme="dark"] .bg-\[\#F7F6F3\]\/50 { background: rgba(30,30,30,0.5) !important; }
+[data-theme="dark"] .bg-\[\#F7F6F3\]\/80 { background: rgba(30,30,30,0.8) !important; }
+[data-theme="dark"] .bg-\[\#EEEDEA\]\/60 { background: rgba(34,34,34,0.6) !important; }
+
+/* Hover backgrounds */
+[data-theme="dark"] .hover\:bg-white\/35:hover { background: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .hover\:bg-white\/40:hover { background: rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .hover\:bg-white\/60:hover { background: rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .hover\:bg-white\/80:hover { background: rgba(255,255,255,0.12) !important; }
+[data-theme="dark"] .hover\:bg-\[\#F7F6F3\]\/80:hover { background: rgba(30,30,30,0.8) !important; }
+[data-theme="dark"] .hover\:bg-\[\#EEEDEA\]:hover { background: #2a2a2a !important; }
+[data-theme="dark"] .hover\:bg-\[\#F0F0EC\]\/50:hover { background: rgba(34,34,34,0.5) !important; }
+[data-theme="dark"] .hover\:bg-\[\#333\]:hover { background: #333 !important; }
+[data-theme="dark"] .hover\:bg-\[\#444\]:hover { background: #444 !important; }
+
+/* Border colors */
+[data-theme="dark"] .border-\[\#E8E7E3\] { border-color: #2A2A2A !important; }
+[data-theme="dark"] .border-\[\#E8E7E3\]\/50 { border-color: rgba(42,42,42,0.5) !important; }
+[data-theme="dark"] .border-\[\#E8E7E3\]\/60 { border-color: rgba(42,42,42,0.6) !important; }
+[data-theme="dark"] .border-\[\#E8E7E3\]\/40 { border-color: rgba(42,42,42,0.4) !important; }
+[data-theme="dark"] .border-\[\#E8E7E3\]\/30 { border-color: rgba(42,42,42,0.3) !important; }
+[data-theme="dark"] .border-\[\#E0DDD8\] { border-color: #333 !important; }
+[data-theme="dark"] .border-white\/20 { border-color: rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .border-white\/30 { border-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .border-white\/40 { border-color: rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .hover\:border-\[\#ccc\]:hover { border-color: #444 !important; }
+
+/* Ring colors */
+[data-theme="dark"] .ring-white\/50 { --tw-ring-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .ring-white\/60 { --tw-ring-color: rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .ring-\[\#E8E7E3\] { --tw-ring-color: #2A2A2A !important; }
+
+/* Input/form backgrounds */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: #1E1E1E !important;
+  color: #E8E8E8 !important;
+  border-color: #333 !important;
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #555 !important;
+}
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: #555 !important;
+}
+
+/* Scrollbar in dark mode */
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Focus ring */
+[data-theme="dark"] *:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Pill tag */
+[data-theme="dark"] .pill-tag {
+  border-color: #333 !important;
+  color: #888 !important;
+}
+[data-theme="dark"] .pill-tag:hover {
+  border-color: #555 !important;
+  color: #ccc !important;
+  background: rgba(255,255,255,0.06) !important;
+}
+
+/* Sidebar mobile */
+[data-theme="dark"] .bg-\[\#F7F6F3\].backdrop-blur-2xl { background-color: #1A1A1A !important; }
+
+/* Logo invert for dark mode */
+[data-theme="dark"] img[src="/logo.svg"] {
+  filter: invert(1);
+}
+
+/* ------------------------------------------------
    Global border softening
    ------------------------------------------------ */
 *,
