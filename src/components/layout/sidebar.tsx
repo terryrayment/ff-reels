@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Menu, X, Eye, ArrowLeft } from "lucide-react";
+import { ThemeToggle } from "./theme-toggle";
 
 interface NavItem {
   href: string;
@@ -175,12 +176,14 @@ export function Sidebar({ user }: SidebarProps) {
               {isPreview ? "Previewing" : getRoleDisplayName(role)}
             </p>
           </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="text-[#ccc] hover:text-[#666] transition-colors duration-300 ml-3 shrink-0 p-1"
-            title="Sign out"
-            aria-label="Sign out"
-          >
+          <div className="flex items-center gap-1 ml-3 shrink-0">
+            <ThemeToggle />
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="text-[#ccc] hover:text-[#666] transition-colors duration-300 p-1"
+              title="Sign out"
+              aria-label="Sign out"
+            >
             <svg
               width="18"
               height="18"
@@ -195,7 +198,8 @@ export function Sidebar({ user }: SidebarProps) {
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-          </button>
+            </button>
+          </div>
         </div>
       </div>
     </>
@@ -213,7 +217,7 @@ export function Sidebar({ user }: SidebarProps) {
       </button>
 
       {/* Desktop sidebar — hidden on mobile */}
-      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[220px] bg-white/35 backdrop-blur-3xl border-r border-white/20 flex-col z-40" style={{ boxShadow: '1px 0 12px rgba(0,0,0,0.015), 0 0.5px 0 rgba(255,255,255,0.3) inset' }}>
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[220px] backdrop-blur-3xl flex-col z-40" style={{ background: 'var(--surface-nav)', borderRight: '1px solid var(--border)', boxShadow: '1px 0 12px rgba(0,0,0,0.015)' }}>
         {sidebarContent}
       </aside>
 

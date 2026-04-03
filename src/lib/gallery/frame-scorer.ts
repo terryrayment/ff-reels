@@ -169,6 +169,40 @@ async function scoreBatch(
 }
 
 /**
+ * Pick the single best thumbnail for a project.
+ * Returns the highest-scored frame's Mux URL + metadata, or null on failure.
+ */
+export async function pickBestThumbnail(project: {
+  id: string;
+  muxPlaybackId: string;
+  duration: number;
+}): Promise<{ url: string; time: number; score: number; candidateCount: number } | null> {
+  const interval = project.duration < 4 ? 1 : 2;
+  const timestamps = getCandidateTimestamps(project.duration, interval);
+
+  const candidates = timestamps.map((t) => ({
+    projectId: project.id,
+    muxPlaybackId: project.muxPlaybackId,
+    timeOffset: t,
+    url: buildMuxFrameUrl(project.muxPlaybackId, t, 960),
+  }));
+
+  if (candidates.length === 0) return null;
+
+  const scored = await scoreFrames(candidates);
+  if (scored.length === 0) return null;
+
+  const best = scored.reduce((a, b) => (b.score > a.score ? b : a));
+
+  return {
+    url: `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?time=${best.timeOffset}`,
+    time: best.timeOffset,
+    score: best.score,
+    candidateCount: candidates.length,
+  };
+}
+
+/**
  * Build candidate frames for all projects in a reel.
  */
 export function buildCandidates(

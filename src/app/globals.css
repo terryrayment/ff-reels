@@ -9,9 +9,42 @@
   --border-subtle: #EEEDEA;
   --muted: #999;
   --accent: #C45A2D;
+  --surface: rgba(255, 255, 255, 0.55);
+  --surface-hover: rgba(255, 255, 255, 0.65);
+  --surface-active: rgba(255, 255, 255, 0.6);
+  --surface-nav: rgba(255, 255, 255, 0.35);
+  --surface-user: rgba(255, 255, 255, 0.4);
+  --text-primary: #1A1A1A;
+  --text-secondary: #999;
+  --text-tertiary: #bbb;
+  --text-quaternary: #ccc;
+  --shadow-card: 0 0.5px 0 rgba(255, 255, 255, 0.4) inset, 0 1px 4px rgba(0, 0, 0, 0.015), 0 8px 28px rgba(0, 0, 0, 0.025), 0 20px 60px rgba(0, 0, 0, 0.015);
+  --shadow-content: 0 0.5px 0 rgba(255, 255, 255, 0.35) inset, 0 1px 3px rgba(0, 0, 0, 0.012), 0 6px 20px rgba(0, 0, 0, 0.018);
+  --inset-glow: 0 0.5px 0 rgba(255, 255, 255, 0.5) inset;
   --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-base: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.15s ease;
+}
+
+[data-theme="dark"] {
+  --background: #141414;
+  --foreground: #E8E8E8;
+  --border: #2A2A2A;
+  --border-subtle: #222;
+  --muted: #888;
+  --accent: #E0734A;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-hover: rgba(255, 255, 255, 0.1);
+  --surface-active: rgba(255, 255, 255, 0.08);
+  --surface-nav: rgba(255, 255, 255, 0.05);
+  --surface-user: rgba(255, 255, 255, 0.06);
+  --text-primary: #E8E8E8;
+  --text-secondary: #888;
+  --text-tertiary: #666;
+  --text-quaternary: #555;
+  --shadow-card: 0 0.5px 0 rgba(255, 255, 255, 0.04) inset, 0 1px 4px rgba(0, 0, 0, 0.2), 0 8px 28px rgba(0, 0, 0, 0.15);
+  --shadow-content: 0 0.5px 0 rgba(255, 255, 255, 0.03) inset, 0 1px 3px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(0, 0, 0, 0.1);
+  --inset-glow: 0 0.5px 0 rgba(255, 255, 255, 0.06) inset;
 }
 
 body {
@@ -25,6 +58,11 @@ body {
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] body {
+  background-image: none;
 }
 
 /* ------------------------------------------------
@@ -51,7 +89,10 @@ button {
    ------------------------------------------------ */
 ::selection {
   background: rgba(26, 26, 26, 0.08);
-  color: #1A1A1A;
+  color: var(--text-primary);
+}
+[data-theme="dark"] ::selection {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* ------------------------------------------------
@@ -121,11 +162,10 @@ mux-player {
 
   /* Frosted glass card — iPad-inspired translucent surface */
   .glass-card {
-    @apply rounded-[20px] bg-white/55 backdrop-blur-2xl border border-white/40;
-    box-shadow:
-      0 0.5px 0 rgba(255, 255, 255, 0.5) inset,
-      0 1px 4px rgba(0, 0, 0, 0.02),
-      0 8px 28px rgba(0, 0, 0, 0.025);
+    @apply rounded-[20px] backdrop-blur-2xl;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
   }
 
   /* Safe area bottom padding for iPhone home indicator */
@@ -144,30 +184,23 @@ mux-player {
 
   /* Data card — frosted surface, iPad-style float */
   .data-card {
-    @apply rounded-[22px] bg-white/55 backdrop-blur-2xl border border-white/30;
-    box-shadow:
-      0 0.5px 0 rgba(255, 255, 255, 0.4) inset,
-      0 1px 4px rgba(0, 0, 0, 0.015),
-      0 8px 28px rgba(0, 0, 0, 0.025),
-      0 20px 60px rgba(0, 0, 0, 0.015);
+    @apply rounded-[22px] backdrop-blur-2xl;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
     transition: box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Content card — lighter version for list items */
   .content-card {
-    @apply rounded-2xl bg-white/45 backdrop-blur-xl;
-    box-shadow:
-      0 0.5px 0 rgba(255, 255, 255, 0.35) inset,
-      0 1px 3px rgba(0, 0, 0, 0.012),
-      0 6px 20px rgba(0, 0, 0, 0.018);
+    @apply rounded-2xl backdrop-blur-xl;
+    background: var(--surface);
+    box-shadow: var(--shadow-content);
     transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
   }
   .content-card:hover {
-    @apply bg-white/60;
-    box-shadow:
-      0 0.5px 0 rgba(255, 255, 255, 0.5) inset,
-      0 2px 6px rgba(0, 0, 0, 0.02),
-      0 10px 28px rgba(0, 0, 0, 0.025);
+    background: var(--surface-hover);
+    box-shadow: var(--shadow-card);
   }
 
   /* FEDL-inspired pill tag — rounded capsule with subtle border */
