@@ -736,7 +736,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                   return (
                     <div
                       key={project.id}
-                      className={`text-left overflow-hidden rounded-lg transition-all duration-200 ${
+                      className={`text-left overflow-hidden rounded-[4px] transition-all duration-200 ${
                         isPreviewing
                           ? "ring-2 ring-[#C45A2D] shadow-md"
                           : isSelected
