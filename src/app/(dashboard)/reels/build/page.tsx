@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { ReelBuilder } from "@/components/reels/reel-builder";
 
+export const dynamic = "force-dynamic";
+
 export default async function ReelBuildPage() {
   const [directors, spotViewCounts] = await Promise.all([
     prisma.director.findMany({
