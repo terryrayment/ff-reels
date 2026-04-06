@@ -103,17 +103,23 @@ export async function scoreFrames(
   return results;
 }
 
-const SCORING_PROMPT = `You are evaluating video frames for a professional presentation gallery. A producer will use these as stills in pitch decks and presentations.
+const SCORING_PROMPT = `You are selecting the single best thumbnail for a commercial video spot. The thumbnail must make someone want to click and watch.
 
-Score each frame 1-10 on these criteria:
-- Composition: Well-framed, cinematic, interesting angles
-- Visual Impact: Striking, memorable, would stop someone scrolling
-- Clarity: Sharp focus, no motion blur, no artifacts
-- Production Value: Lighting quality, set design, color grade
-- Storytelling: Captures an emotional or narrative moment
+Score each frame 1-10 based on:
+- PEOPLE & ACTION: Frames with real people, faces, emotion, or physical action score highest. A person's face or body in motion is almost always better than an object or landscape.
+- CINEMATIC QUALITY: Beautiful lighting, interesting camera angles, shallow depth of field, rich color grade.
+- STORYTELLING: Captures a compelling narrative moment — tension, joy, surprise, intimacy.
+- CLARITY: Sharp focus, no motion blur, no compression artifacts.
 
-Be selective. Only give 8+ to truly exceptional frames. Most frames should score 4-6.
-Frame numbers correspond to the order of images provided (1-indexed).
+AUTOMATIC LOW SCORES (score 1-2):
+- Title cards, text overlays, brand logos, end cards, or any frame dominated by typography
+- Solid color backgrounds, gradients, or graphic design elements
+- Slates, countdowns, black frames, or production markers
+- Product shots with no people (unless exceptionally beautiful)
+
+The best thumbnail is almost always a HUMAN MOMENT — a face showing emotion, a person mid-action, an intimate or dramatic scene. Prefer these over everything else.
+
+Be very selective. Only give 8+ to truly exceptional frames with real people. Most frames should score 4-6.
 
 Return JSON: { "scores": [{ "frame": 1, "score": 7 }, { "frame": 2, "score": 4 }, ...] }`;
 
