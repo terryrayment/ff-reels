@@ -289,9 +289,11 @@ function SortableSpotItem({
     opacity: isDragging ? 0.9 : 1,
   };
 
-  const thumbSrc = project.muxPlaybackId
-    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36`
-    : project.thumbnailUrl || null;
+  const thumbSrc = project.thumbnailUrl
+    ? `${project.thumbnailUrl}${project.thumbnailUrl.includes('?') ? '&' : '?'}width=64&height=36`
+    : project.muxPlaybackId
+      ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36`
+      : null;
 
   return (
     <div
@@ -727,9 +729,11 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {filteredProjects.map((project) => {
                   const isSelected = selectedProjectIds.includes(project.id);
-                  const thumbSrc = project.muxPlaybackId
-                    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=320&height=180&fit_mode=smartcrop`
-                    : project.thumbnailUrl || null;
+                  const thumbSrc = project.thumbnailUrl
+                    ? `${project.thumbnailUrl}${project.thumbnailUrl.includes('?') ? '&' : '?'}width=320&height=180`
+                    : project.muxPlaybackId
+                      ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=320&height=180`
+                      : null;
 
                   const isPreviewing = previewProject?.id === project.id;
 
