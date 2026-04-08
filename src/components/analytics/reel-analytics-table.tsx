@@ -252,14 +252,6 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-left min-w-[120px] hidden md:table-cell`}
-                    onClick={() => handleSort("recipient")}
-                  >
-                    <span className="inline-flex items-center gap-1">
-                      Recipient <SortIcon col="recipient" />
-                    </span>
-                  </th>
-                  <th
                     className={`${headerClass} text-right`}
                     onClick={() => handleSort("totalViews")}
                   >
@@ -308,11 +300,19 @@ export function ReelAnalyticsTable({ rows }: Props) {
                     </span>
                   </th>
                   <th
-                    className={`${headerClass} text-left pr-5 hidden md:table-cell`}
+                    className={`${headerClass} text-left hidden md:table-cell`}
                     onClick={() => handleSort("sentByName")}
                   >
                     <span className="inline-flex items-center gap-1">
                       Sent By <SortIcon col="sentByName" />
+                    </span>
+                  </th>
+                  <th
+                    className={`${headerClass} text-right pr-5 min-w-[120px] hidden md:table-cell`}
+                    onClick={() => handleSort("recipient")}
+                  >
+                    <span className="inline-flex items-center gap-1 justify-end">
+                      Recipient <SortIcon col="recipient" />
                     </span>
                   </th>
                 </tr>
@@ -385,31 +385,6 @@ export function ReelAnalyticsTable({ rows }: Props) {
                             </div>
                           </div>
                         </td>
-                        {/* Recipient */}
-                        <td className="py-3.5 px-3 text-[12px] text-[#999] hidden md:table-cell">
-                          {row.recipient ? (
-                            <div className="min-w-0">
-                              {row.recipientContactId ? (
-                                <Link
-                                  href={`/contacts/${row.recipientContactId}`}
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="truncate max-w-[150px] block text-[#1A1A1A] hover:underline"
-                                >
-                                  {row.recipient}
-                                </Link>
-                              ) : (
-                                <p className="truncate max-w-[150px]">{row.recipient}</p>
-                              )}
-                              {row.recipientCount > 1 && (
-                                <p className="text-[10px] text-[#ccc] mt-0.5">
-                                  +{row.recipientCount - 1} more
-                                </p>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-[#ccc]">{"\u2014"}</span>
-                          )}
-                        </td>
                         {/* Views */}
                         <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A]">
                           {row.totalViews}
@@ -445,12 +420,37 @@ export function ReelAnalyticsTable({ rows }: Props) {
                           {formatDate(row.lastSent)}
                         </td>
                         {/* Last Viewed */}
-                        <td className="py-3.5 px-3 text-right text-[12px] text-[#999] whitespace-nowrap">
+                        <td className="py-3.5 px-3 text-right text-[12px] text-[#1A1A1A] whitespace-nowrap">
                           {formatDate(row.lastViewed)}
                         </td>
                         {/* Sent By */}
-                        <td className="py-3.5 px-3 pr-5 text-[12px] text-[#999] truncate max-w-[130px] hidden md:table-cell">
+                        <td className="py-3.5 px-3 text-[12px] text-[#999] truncate max-w-[130px] hidden md:table-cell">
                           {row.sentByName || "\u2014"}
+                        </td>
+                        {/* Recipient — right-most column */}
+                        <td className="py-3.5 px-3 pr-5 text-[12px] text-[#999] text-right hidden md:table-cell">
+                          {row.recipient ? (
+                            <div className="min-w-0">
+                              {row.recipientContactId ? (
+                                <Link
+                                  href={`/contacts/${row.recipientContactId}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="truncate max-w-[150px] block text-[#1A1A1A] hover:underline ml-auto"
+                                >
+                                  {row.recipient}
+                                </Link>
+                              ) : (
+                                <p className="truncate max-w-[150px] ml-auto">{row.recipient}</p>
+                              )}
+                              {row.recipientCount > 1 && (
+                                <p className="text-[10px] text-[#ccc] mt-0.5">
+                                  +{row.recipientCount - 1} more
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-[#ccc]">{"\u2014"}</span>
+                          )}
                         </td>
                       </tr>
 
