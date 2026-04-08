@@ -239,9 +239,6 @@ export default async function AnalyticsPage({
         <DateRangePicker />
       </div>
 
-      {/* Hero Stats with Trends */}
-      <HeroStats stats={heroStats} />
-
       {/* Reel Activity Table */}
       <ReelAnalyticsTable rows={reelRows} />
 
