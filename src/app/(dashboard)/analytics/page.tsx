@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { DateRangePicker } from "@/components/analytics/date-range-picker";
 import { ReelAnalyticsTable, type ReelRow } from "@/components/analytics/reel-analytics-table";
-import { HeroStats } from "@/components/analytics/hero-stats";
 import { ViewsOverTimeChart } from "@/components/analytics/views-over-time-chart";
 import { EngagementOverview } from "@/components/analytics/engagement-overview";
 import { TopSpotsTable } from "@/components/analytics/top-spots-table";
@@ -48,7 +47,7 @@ export default async function AnalyticsPage({
   const ownerFilter = isAdmin ? {} : { reel: { createdById: userId } };
 
   // ── Fetch all dashboard data in parallel ──
-  const [heroStats, viewsPerDay, engagement, topSpots, reels] =
+  const [, viewsPerDay, engagement, topSpots, reels] =
     await Promise.all([
       getHeroStats(dateFilter, hasDateFilter, viewOwnerFilter, ownerFilter, fromDate, toDate),
       getViewsPerDay(dateFilter, hasDateFilter, viewOwnerFilter, fromDate, toDate),
