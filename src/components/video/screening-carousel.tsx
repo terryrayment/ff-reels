@@ -83,6 +83,7 @@ interface PortfolioStill {
 interface RosterHighlight {
   id: string;
   name: string;
+  slug: string;
   headshotUrl: string | null;
   categories: string[];
 }
@@ -1679,7 +1680,13 @@ export function ScreeningCarousel({
                   </p>
                   <div className="grid grid-cols-2 gap-x-16 gap-y-4">
                     {rosterHighlights.map((d) => (
-                      <div key={d.id} className="flex items-center gap-4 group">
+                      <a
+                        key={d.id}
+                        href={`https://reels.friendsandfamily.tv/directors/${d.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 group cursor-pointer"
+                      >
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-white/[0.04] flex-shrink-0">
                           {d.headshotUrl ? (
                             <img
@@ -1705,7 +1712,7 @@ export function ScreeningCarousel({
                             </p>
                           )}
                         </div>
-                      </div>
+                      </a>
                     ))}
                   </div>
                 </div>

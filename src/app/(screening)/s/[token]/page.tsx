@@ -175,7 +175,7 @@ export default async function ScreeningPage({
         id: { not: directorId },
         headshotUrl: { not: null },
       },
-      select: { id: true, name: true, headshotUrl: true, categories: true },
+      select: { id: true, name: true, slug: true, headshotUrl: true, categories: true },
       take: 8,
       orderBy: { sortOrder: "asc" },
     }),
