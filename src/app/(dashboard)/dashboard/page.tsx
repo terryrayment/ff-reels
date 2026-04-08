@@ -328,7 +328,7 @@ export default async function DashboardPage({
           <MyActivityToggle />
           <Link
             href="/reels/build"
-            className="group flex items-center gap-2 md:gap-2.5 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-[#C45A2D] text-white hover:bg-[#A84B24] shadow-[0_2px_12px_rgba(196,90,45,0.3)] hover:shadow-[0_4px_20px_rgba(196,90,45,0.4)] transition-all duration-300"
+            className="group flex items-center gap-2 md:gap-2.5 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-[#0000FF] text-white hover:bg-[#0000CC] transition-all duration-300"
           >
             <span className="text-[12px] md:text-[13px] font-semibold tracking-wide">
               Build Reel

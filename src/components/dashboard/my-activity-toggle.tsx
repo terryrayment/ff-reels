@@ -23,8 +23,8 @@ export function MyActivityToggle() {
       onClick={toggle}
       className={`text-[11px] uppercase tracking-[0.12em] px-4 py-2 rounded-xl border transition-all duration-300 ${
         isMine
-          ? "bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-[0_2px_6px_rgba(0,0,0,0.12)]"
-          : "bg-white/60 text-[#999] border-white/80 hover:border-[#ccc] hover:text-[#666] hover:bg-white/80"
+          ? "bg-[#1A1A1A] text-white border-[#1A1A1A]"
+          : "bg-white text-[#999] border-[#E8E7E3] hover:border-[#ccc] hover:text-[#666]"
       }`}
     >
       {isMine ? "My Activity" : "All Activity"}
