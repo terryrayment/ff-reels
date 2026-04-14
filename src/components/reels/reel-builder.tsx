@@ -820,7 +820,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
       </div>
 
       {/* Right — video preview + reel details + spot order */}
-      <div className="space-y-3 lg:sticky lg:top-8 lg:self-start">
+      <div className="space-y-3 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto lg:scrollbar-none">
         {/* Video Preview Player */}
         {previewProject && previewProject.muxPlaybackId && (
           <div className="rounded-xl overflow-hidden bg-black">
