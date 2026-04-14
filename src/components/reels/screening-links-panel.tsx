@@ -31,11 +31,12 @@ interface ScreeningLinkData {
 
 interface ScreeningLinksPanelProps {
   reelId: string;
+  reelTitle?: string;
   links: ScreeningLinkData[];
   screeningDomain: string;
 }
 
-export function ScreeningLinksPanel({ reelId, links, screeningDomain }: ScreeningLinksPanelProps) {
+export function ScreeningLinksPanel({ reelId, reelTitle, links, screeningDomain }: ScreeningLinksPanelProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [createdUrl, setCreatedUrl] = useState("");
@@ -156,7 +157,7 @@ export function ScreeningLinksPanel({ reelId, links, screeningDomain }: Screenin
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] text-[#1A1A1A] truncate">
-                    {link.recipientName || link.recipientEmail || "Untitled link"}
+                    {link.recipientName || link.recipientEmail || reelTitle || "Untitled link"}
                   </p>
                   <p className="text-[11px] text-[#999] truncate">
                     {link.recipientCompany || "\u2014"} · {timeAgo(link.createdAt)}

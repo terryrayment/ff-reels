@@ -102,6 +102,7 @@ export default async function ReelDetailPage({
       {/* Screening Links */}
       <ScreeningLinksPanel
         reelId={reel.id}
+        reelTitle={reel.title}
         links={reel.screeningLinks.map((l) => ({
           id: l.id,
           token: l.token,
