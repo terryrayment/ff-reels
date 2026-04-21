@@ -50,6 +50,13 @@ export default async function TreatmentPage({
 
   if (!treatment) notFound();
 
+  // Adobe InDesign publish: rewrite /view/ to /embed/ (chromeless).
+  // For other URLs, use as-is.
+  const embedUrl = treatment.previewUrl.replace(
+    /^(https:\/\/indd\.adobe\.com\/)view\//i,
+    "$1embed/"
+  );
+
   return (
     <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
       {/* Top bar */}
@@ -84,14 +91,15 @@ export default async function TreatmentPage({
         </a>
       </header>
 
-      {/* Iframe — 50px black margins left/right */}
-      <div className="flex-1 bg-black relative" style={{ padding: "0 50px" }}>
+      {/* Iframe — 50px black margins left/right, chromeless Adobe embed */}
+      <div className="flex-1 bg-black relative overflow-hidden" style={{ padding: "0 50px" }}>
         <iframe
-          src={treatment.previewUrl}
+          src={embedUrl}
           className="w-full h-full border-0 block"
           title={treatment.title}
           allow="fullscreen"
           referrerPolicy="no-referrer-when-downgrade"
+          style={{ backgroundColor: "#000" }}
         />
       </div>
     </div>
