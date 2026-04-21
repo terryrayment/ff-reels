@@ -1,24 +1,42 @@
 import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
 import Link from "next/link";
 import { ExternalLink, FileText } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
+import { AddTreatmentBar } from "@/components/treatments/add-treatment-bar";
+import { DeleteTreatmentButton } from "@/components/treatments/delete-treatment-button";
+
+export const dynamic = "force-dynamic";
 
 export default async function TreatmentsPage() {
-  // Get all directors that have treatment samples, grouped by director
-  const directors = await prisma.director.findMany({
-    where: {
-      treatmentSamples: { some: {} },
-    },
-    orderBy: { name: "asc" },
-    include: {
-      treatmentSamples: {
-        orderBy: { createdAt: "desc" },
-        take: 50,
-      },
-    },
-  });
+  const session = await getServerSession(authOptions);
+  const canManage =
+    !!session &&
+    (session.user.role === "ADMIN" || session.user.role === "PRODUCER");
 
-  // Also get ungrouped view for "all treatments" count
+  // Get all directors that have treatment samples, grouped by director
+  const [directors, allDirectors] = await Promise.all([
+    prisma.director.findMany({
+      where: { treatmentSamples: { some: {} } },
+      orderBy: { name: "asc" },
+      include: {
+        treatmentSamples: {
+          orderBy: { createdAt: "desc" },
+          take: 50,
+        },
+      },
+    }),
+    // All directors for the "add treatment" picker
+    canManage
+      ? prisma.director.findMany({
+          where: { isActive: true },
+          orderBy: { name: "asc" },
+          select: { id: true, name: true },
+        })
+      : Promise.resolve([]),
+  ]);
+
   const totalCount = directors.reduce(
     (sum, d) => sum + d.treatmentSamples.length,
     0
@@ -26,7 +44,7 @@ export default async function TreatmentsPage() {
 
   return (
     <div>
-      <div className="mb-12">
+      <div className="mb-8">
         <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
           Treatments
         </h1>
@@ -35,6 +53,9 @@ export default async function TreatmentsPage() {
           {directors.length} director{directors.length !== 1 ? "s" : ""}
         </p>
       </div>
+
+      {/* Admin: add treatment bar */}
+      {canManage && <AddTreatmentBar directors={allDirectors} />}
 
       {directors.length > 0 ? (
         <div className="space-y-14">
@@ -51,50 +72,59 @@ export default async function TreatmentsPage() {
               {/* Treatment links */}
               <div className="mt-4">
                 {director.treatmentSamples.map((treatment, i) => (
-                  <a
+                  <div
                     key={treatment.id}
-                    href={treatment.previewUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className={`flex items-center justify-between py-3.5 group ${
                       i < director.treatmentSamples.length - 1
                         ? "border-b border-[#F0F0EC]"
                         : ""
                     }`}
                   >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[14px] text-[#1A1A1A] group-hover:text-[#666] transition-colors truncate">
-                        {treatment.title}
-                      </p>
-                      <div className="flex items-center gap-3 mt-0.5">
-                        {treatment.brand && (
-                          <span className="text-[11px] text-[#999]">
-                            {treatment.brand}
-                          </span>
-                        )}
-                        {treatment.pageCount && (
-                          <span className="text-[11px] text-[#ccc]">
-                            {treatment.pageCount} page
-                            {treatment.pageCount !== 1 ? "s" : ""}
-                          </span>
-                        )}
-                        {treatment.isRedacted && (
-                          <span className="text-[10px] text-amber-500 uppercase tracking-wider">
-                            Redacted
-                          </span>
-                        )}
+                    <a
+                      href={treatment.previewUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 min-w-0 flex items-center justify-between gap-4"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[14px] text-[#1A1A1A] group-hover:text-[#666] transition-colors truncate">
+                          {treatment.title}
+                        </p>
+                        <div className="flex items-center gap-3 mt-0.5">
+                          {treatment.brand && (
+                            <span className="text-[11px] text-[#999]">
+                              {treatment.brand}
+                            </span>
+                          )}
+                          {treatment.pageCount && (
+                            <span className="text-[11px] text-[#ccc]">
+                              {treatment.pageCount} page
+                              {treatment.pageCount !== 1 ? "s" : ""}
+                            </span>
+                          )}
+                          {treatment.isRedacted && (
+                            <span className="text-[10px] text-amber-500 uppercase tracking-wider">
+                              Redacted
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-4 flex-shrink-0 ml-4">
-                      <span className="text-[10px] text-[#ccc] uppercase tracking-wider">
-                        {timeAgo(treatment.createdAt)}
-                      </span>
-                      <ExternalLink
-                        size={12}
-                        className="text-[#ccc] group-hover:text-[#666] transition-colors"
-                      />
-                    </div>
-                  </a>
+                      <div className="flex items-center gap-4 flex-shrink-0">
+                        <span className="text-[10px] text-[#ccc] uppercase tracking-wider">
+                          {timeAgo(treatment.createdAt)}
+                        </span>
+                        <ExternalLink
+                          size={12}
+                          className="text-[#ccc] group-hover:text-[#666] transition-colors"
+                        />
+                      </div>
+                    </a>
+                    {canManage && (
+                      <div className="ml-2 flex-shrink-0">
+                        <DeleteTreatmentButton id={treatment.id} title={treatment.title} />
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -107,7 +137,9 @@ export default async function TreatmentsPage() {
             No treatments yet
           </h3>
           <p className="text-[12px] text-[#999] mt-1 max-w-sm">
-            Treatment samples will appear here once added to director profiles.
+            {canManage
+              ? "Paste an InDesign published URL above to add your first treatment."
+              : "Treatment samples will appear here once added to director profiles."}
           </p>
         </div>
       )}
