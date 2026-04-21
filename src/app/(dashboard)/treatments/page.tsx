@@ -2,10 +2,11 @@ import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import Link from "next/link";
-import { ExternalLink, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import { AddTreatmentBar } from "@/components/treatments/add-treatment-bar";
 import { DeleteTreatmentButton } from "@/components/treatments/delete-treatment-button";
+import { CopyTreatmentLinkButton } from "@/components/treatments/copy-link-button";
 
 export const dynamic = "force-dynamic";
 
@@ -74,17 +75,18 @@ export default async function TreatmentsPage() {
                 {director.treatmentSamples.map((treatment, i) => (
                   <div
                     key={treatment.id}
-                    className={`flex items-center justify-between py-3.5 group ${
+                    className={`flex items-center justify-between gap-4 py-3.5 group ${
                       i < director.treatmentSamples.length - 1
                         ? "border-b border-[#F0F0EC]"
                         : ""
                     }`}
                   >
+                    {/* Left: title + metadata */}
                     <a
-                      href={treatment.previewUrl}
+                      href={treatment.token ? `/t/${treatment.token}` : treatment.previewUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 min-w-0 flex items-center justify-between gap-4"
+                      className="flex-1 min-w-0 flex items-center gap-4"
                     >
                       <div className="min-w-0 flex-1">
                         <p className="text-[14px] text-[#1A1A1A] group-hover:text-[#666] transition-colors truncate">
@@ -109,21 +111,20 @@ export default async function TreatmentsPage() {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-4 flex-shrink-0">
-                        <span className="text-[10px] text-[#ccc] uppercase tracking-wider">
-                          {timeAgo(treatment.createdAt)}
-                        </span>
-                        <ExternalLink
-                          size={12}
-                          className="text-[#ccc] group-hover:text-[#666] transition-colors"
-                        />
-                      </div>
                     </a>
-                    {canManage && (
-                      <div className="ml-2 flex-shrink-0">
+
+                    {/* Right: branded link pill + timestamp + delete */}
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      {treatment.token && (
+                        <CopyTreatmentLinkButton token={treatment.token} />
+                      )}
+                      <span className="hidden md:inline text-[10px] text-[#ccc] uppercase tracking-wider whitespace-nowrap">
+                        {timeAgo(treatment.createdAt)}
+                      </span>
+                      {canManage && (
                         <DeleteTreatmentButton id={treatment.id} title={treatment.title} />
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

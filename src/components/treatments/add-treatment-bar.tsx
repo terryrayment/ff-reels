@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Link2, Check, X, ChevronDown, Search } from "lucide-react";
+import { Link2, Check, X, ChevronDown, Search, Copy, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -25,6 +25,8 @@ export function AddTreatmentBar({ directors }: AddTreatmentBarProps) {
   const [brand, setBrand] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [lastShareUrl, setLastShareUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -94,6 +96,8 @@ export function AddTreatmentBar({ directors }: AddTreatmentBarProps) {
         setError(data.error || "Failed to create treatment");
         return;
       }
+      const data = await res.json();
+      if (data.shareUrl) setLastShareUrl(data.shareUrl);
       reset();
       router.refresh();
     } finally {
@@ -101,8 +105,53 @@ export function AddTreatmentBar({ directors }: AddTreatmentBarProps) {
     }
   }
 
+  function copyShareUrl() {
+    if (!lastShareUrl) return;
+    navigator.clipboard.writeText(lastShareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
   return (
     <div className="mb-10">
+      {/* Success banner — shows last created share URL */}
+      {lastShareUrl && (
+        <div className="mb-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center gap-3">
+          <Check size={14} className="text-emerald-600 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] uppercase tracking-wider text-emerald-700 font-medium">
+              Treatment link created
+            </p>
+            <p className="text-[12px] text-emerald-900 font-mono truncate mt-0.5">
+              {lastShareUrl.replace(/^https?:\/\//, "")}
+            </p>
+          </div>
+          <button
+            onClick={copyShareUrl}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-medium transition-colors flex-shrink-0"
+          >
+            {copied ? <Check size={11} /> : <Copy size={11} />}
+            {copied ? "Copied" : "Copy Link"}
+          </button>
+          <a
+            href={lastShareUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-[11px] text-emerald-700 hover:text-emerald-900 transition-colors flex-shrink-0"
+          >
+            <ExternalLink size={11} />
+            Open
+          </a>
+          <button
+            onClick={() => setLastShareUrl(null)}
+            className="text-emerald-600/50 hover:text-emerald-800 transition-colors flex-shrink-0 p-1"
+            title="Dismiss"
+          >
+            <X size={12} />
+          </button>
+        </div>
+      )}
+
       {/* URL bar */}
       <div className="relative">
         <Link2

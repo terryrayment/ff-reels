@@ -408,7 +408,8 @@ model TreatmentSample {
   director    Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
   title       String
   brand       String?
-  previewUrl  String
+  previewUrl  String                // Original InDesign URL (embedded in iframe on /t/{token})
+  token       String?  @unique      // Short share token for branded F&F link (backfilled then set NOT NULL)
   pageCount   Int?
   isRedacted  Boolean  @default(false)
   createdAt   DateTime @default(now())

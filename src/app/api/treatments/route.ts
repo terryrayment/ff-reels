@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { generateToken } from "@/lib/utils";
 
 /**
  * POST /api/treatments
- * Create a new treatment sample for a director.
+ * Create a new treatment sample for a director. Generates a short share token
+ * so the treatment is accessible at reels.friendsandfamily.tv/t/{token}.
  * Body: { directorId, title, previewUrl, brand?, pageCount?, isRedacted? }
  */
 export async function POST(req: NextRequest) {
@@ -24,16 +26,40 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const treatment = await prisma.treatmentSample.create({
-    data: {
-      directorId,
-      title,
-      previewUrl,
-      brand: brand || null,
-      pageCount: pageCount || null,
-      isRedacted: isRedacted || false,
-    },
-  });
+  // Generate unique short token (retry up to 5x on unlikely collision)
+  let treatment = null;
+  let attempts = 0;
+  while (attempts < 5) {
+    try {
+      treatment = await prisma.treatmentSample.create({
+        data: {
+          directorId,
+          title,
+          previewUrl,
+          token: generateToken(),
+          brand: brand || null,
+          pageCount: pageCount || null,
+          isRedacted: isRedacted || false,
+        },
+      });
+      break;
+    } catch (err) {
+      attempts++;
+      if (attempts >= 5) throw err;
+    }
+  }
 
-  return NextResponse.json(treatment, { status: 201 });
+  if (!treatment) {
+    return NextResponse.json(
+      { error: "Failed to create treatment" },
+      { status: 500 }
+    );
+  }
+
+  const base =
+    process.env.NEXT_PUBLIC_SCREENING_URL ||
+    "https://reels.friendsandfamily.tv";
+  const shareUrl = `${base}/t/${treatment.token}`;
+
+  return NextResponse.json({ ...treatment, shareUrl }, { status: 201 });
 }
