@@ -51,9 +51,9 @@ export default async function TreatmentPage({
   if (!treatment) notFound();
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#0e0e0e] text-white overflow-hidden">
+    <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
       {/* Top bar */}
-      <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 py-3 bg-[#0e0e0e] border-b border-white/[0.06]">
+      <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 py-3 bg-black border-b border-white/[0.06]">
         <div className="flex items-center gap-4 min-w-0">
           <img
             src="/logo.svg"
@@ -84,11 +84,11 @@ export default async function TreatmentPage({
         </a>
       </header>
 
-      {/* Iframe */}
-      <div className="flex-1 bg-[#0e0e0e] relative">
+      {/* Iframe — 50px black margins left/right */}
+      <div className="flex-1 bg-black relative" style={{ padding: "0 50px" }}>
         <iframe
           src={treatment.previewUrl}
-          className="absolute inset-0 w-full h-full border-0"
+          className="w-full h-full border-0 block"
           title={treatment.title}
           allow="fullscreen"
           referrerPolicy="no-referrer-when-downgrade"
