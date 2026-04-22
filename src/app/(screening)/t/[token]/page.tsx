@@ -88,16 +88,19 @@ export default async function TreatmentPage({
         </a>
       </header>
 
-      {/* Iframe — for InDesign, wrap in a 16:9 box centered in the viewport.
-          The box is made ~100px taller than 16:9 so Adobe's chrome lives in
-          that overflow region, which is cropped by overflow:hidden. The black
-          page background fills the remaining viewport space around the box. */}
-      <div className="flex-1 bg-black flex items-center justify-center">
+      {/* Iframe — for InDesign, wrap in a 16:9 box centered in the viewport
+          with 50px horizontal margins. Transform-scale pushes Adobe's grey
+          chrome + letterbox off the edges; overflow:hidden crops them. Thick
+          black safety bars on top/bottom hide any remaining grey leakage. */}
+      <div
+        className="flex-1 bg-black flex items-center justify-center"
+        style={{ padding: "0 50px" }}
+      >
         {isInDesign ? (
           <div
             className="relative bg-black overflow-hidden"
             style={{
-              width: "min(100%, calc((100vh - 32px) * 16 / 9))",
+              width: "min(100%, calc((100vh - 16px) * 16 / 9))",
               aspectRatio: "16 / 9",
             }}
           >
@@ -106,15 +109,16 @@ export default async function TreatmentPage({
               title={treatment.title}
               allow="fullscreen"
               referrerPolicy="no-referrer-when-downgrade"
-              className="absolute border-0 block"
+              className="absolute inset-0 w-full h-full border-0 block"
               style={{
-                top: "-60px",
-                left: 0,
-                width: "100%",
-                height: "calc(100% + 120px)",
                 backgroundColor: "#000",
+                transform: "scale(1.14)",
+                transformOrigin: "center center",
               }}
             />
+            {/* Safety-net black bars — hide any remaining grey chrome/letterbox */}
+            <div className="absolute top-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
+            <div className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
           </div>
         ) : (
           <iframe
