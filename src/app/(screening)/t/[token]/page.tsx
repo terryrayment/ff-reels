@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { TreatmentPdfViewer } from "@/components/treatments/pdf-viewer";
+import { TreatmentTracker } from "@/components/treatments/treatment-tracker";
+import { ArrowUpRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -45,15 +47,20 @@ export default async function TreatmentPage({
   const treatment = await prisma.treatmentSample.findUnique({
     where: { token: params.token },
     include: {
-      director: { select: { name: true, slug: true } },
+      director: { select: { name: true, slug: true, websiteUrl: true } },
     },
   });
 
   if (!treatment) notFound();
 
   const hasPdf = !!treatment.pdfR2Key;
+  // Director reel link target: prefer their own website, fall back to marketing site
+  const reelLinkHref =
+    treatment.director.websiteUrl ||
+    `https://www.friendsandfamily.tv/directors/${treatment.director.slug}`;
 
   return (
+    <TreatmentTracker treatmentId={treatment.id}>
     <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
       {/* Top bar */}
       <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 py-3 bg-black border-b border-white/[0.06]">
@@ -72,8 +79,18 @@ export default async function TreatmentPage({
               )}
               {treatment.title}
             </p>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-white/30 mt-0.5">
-              {treatment.director.name} · Treatment
+            <p className="text-[10px] uppercase tracking-[0.18em] text-white/30 mt-0.5 flex items-center gap-2">
+              <span>{treatment.director.name} · Treatment</span>
+              <a
+                href={reelLinkHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-0.5 text-white/40 hover:text-white/90 transition-colors"
+                title={`View ${treatment.director.name}'s reel`}
+              >
+                <span>View Reel</span>
+                <ArrowUpRight size={10} />
+              </a>
             </p>
           </div>
         </div>
@@ -148,5 +165,6 @@ export default async function TreatmentPage({
         </div>
       )}
     </div>
+    </TreatmentTracker>
   );
 }

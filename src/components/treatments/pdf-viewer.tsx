@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Document, Page, Thumbnail, pdfjs } from "react-pdf";
+import { ChevronLeft, ChevronRight, LayoutGrid, Download, X } from "lucide-react";
+import { useTreatmentTracker } from "./treatment-tracker";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -21,7 +22,15 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
   const [pageHeight, setPageHeight] = useState<number | null>(null);
   const [viewportW, setViewportW] = useState(0);
   const [viewportH, setViewportH] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const tracker = useTreatmentTracker();
+
+  // Report the current page to the tracker whenever it changes
+  useEffect(() => {
+    tracker.notePage(pageNumber);
+  }, [pageNumber, tracker]);
 
   // Track viewport
   useEffect(() => {
@@ -34,7 +43,7 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
     onResize();
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, []);
+  }, [sidebarOpen]);
 
   const goPrev = useCallback(() => {
     setPageNumber((p) => Math.max(1, p - 1));
@@ -100,70 +109,144 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
     return { width: w, height: h };
   }
 
+  function downloadCurrentPage() {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    try {
+      const dataUrl = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      const safeTitle = title.replace(/[^a-zA-Z0-9._-]/g, "_") || "treatment";
+      a.download = `${safeTitle}-page-${pageNumber}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error("[Treatment] Page export failed", err);
+    }
+  }
+
   const size = renderSize();
+  const fileUrl = `/api/treatments/${treatmentId}/pdf`;
 
   return (
-    <div
-      ref={containerRef}
-      className="flex-1 bg-black flex items-center justify-center relative overflow-hidden select-none"
-    >
+    <div className="flex-1 flex min-h-0 bg-black">
       <Document
-        file={`/api/treatments/${treatmentId}/pdf`}
+        file={fileUrl}
         onLoadSuccess={(pdf) => setNumPages(pdf.numPages)}
         loading={
-          <div className="text-white/40 text-[12px] uppercase tracking-[0.2em]">
-            Loading…
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-white/40 text-[12px] uppercase tracking-[0.2em]">
+              Loading…
+            </div>
           </div>
         }
         error={
-          <div className="text-white/50 text-[13px]">Unable to load PDF.</div>
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-white/50 text-[13px]">Unable to load PDF.</div>
+          </div>
         }
+        className="flex flex-1 min-h-0"
       >
-        {numPages !== null && (
-          <Page
-            pageNumber={pageNumber}
-            width={size.width}
-            height={size.height}
-            renderTextLayer={false}
-            renderAnnotationLayer={false}
-            onLoadSuccess={(p) => {
-              setPageWidth(p.originalWidth);
-              setPageHeight(p.originalHeight);
-            }}
-            loading={null}
-          />
+        {/* Sidebar: page thumbnails */}
+        {sidebarOpen && numPages !== null && (
+          <aside className="flex-shrink-0 w-[140px] h-full overflow-y-auto border-r border-white/[0.06] bg-black/80 py-4 px-2 space-y-2 scrollbar-none">
+            {Array.from({ length: numPages }, (_, i) => i + 1).map((n) => (
+              <button
+                key={n}
+                onClick={() => setPageNumber(n)}
+                className={`block w-full overflow-hidden rounded-sm transition-all ${
+                  n === pageNumber
+                    ? "ring-2 ring-white/80"
+                    : "ring-1 ring-white/[0.08] hover:ring-white/30 opacity-60 hover:opacity-100"
+                }`}
+                title={`Page ${n}`}
+              >
+                <Thumbnail pageNumber={n} width={120} />
+                <span className="block text-[9px] text-white/40 tabular-nums text-center py-1">
+                  {n}
+                </span>
+              </button>
+            ))}
+          </aside>
         )}
-      </Document>
 
-      {/* Prev arrow */}
-      {numPages !== null && pageNumber > 1 && (
-        <button
-          onClick={goPrev}
-          aria-label="Previous page"
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition-all"
+        {/* Main viewer */}
+        <div
+          ref={containerRef}
+          className="flex-1 relative flex items-center justify-center overflow-hidden select-none group/viewer"
         >
-          <ChevronLeft size={20} />
-        </button>
-      )}
+          {numPages !== null && (
+            <div className="relative">
+              <Page
+                pageNumber={pageNumber}
+                width={size.width}
+                height={size.height}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                canvasRef={canvasRef}
+                onLoadSuccess={(p) => {
+                  setPageWidth(p.originalWidth);
+                  setPageHeight(p.originalHeight);
+                }}
+                loading={null}
+              />
+              {/* Per-page PNG export — hover-only */}
+              <button
+                onClick={downloadCurrentPage}
+                title={`Save page ${pageNumber} as PNG`}
+                className="absolute top-2 right-2 opacity-0 group-hover/viewer:opacity-100 focus:opacity-100 transition-opacity inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-black/60 hover:bg-black/80 backdrop-blur-sm text-white/80 hover:text-white text-[10px] uppercase tracking-[0.12em]"
+              >
+                <Download size={11} />
+                Save
+              </button>
+            </div>
+          )}
 
-      {/* Next arrow */}
-      {numPages !== null && pageNumber < numPages && (
-        <button
-          onClick={goNext}
-          aria-label="Next page"
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition-all"
-        >
-          <ChevronRight size={20} />
-        </button>
-      )}
+          {/* Sidebar toggle — top-left of the viewer area */}
+          {numPages !== null && (
+            <button
+              onClick={() => setSidebarOpen((v) => !v)}
+              title={sidebarOpen ? "Close pages" : "Show pages"}
+              aria-label={sidebarOpen ? "Close page list" : "Show page list"}
+              className="absolute top-3 left-3 w-8 h-8 rounded-md bg-white/5 hover:bg-white/15 text-white/50 hover:text-white flex items-center justify-center transition-all"
+            >
+              {sidebarOpen ? <X size={14} /> : <LayoutGrid size={13} />}
+            </button>
+          )}
 
-      {/* Page counter */}
-      {numPages !== null && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/35 tabular-nums tracking-[0.18em] uppercase">
-          {pageNumber} / {numPages}{title ? " · " : ""}
-          <span className="text-white/20">{title}</span>
+          {/* Prev arrow */}
+          {numPages !== null && pageNumber > 1 && (
+            <button
+              onClick={goPrev}
+              aria-label="Previous page"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition-all"
+            >
+              <ChevronLeft size={20} />
+            </button>
+          )}
+
+          {/* Next arrow */}
+          {numPages !== null && pageNumber < numPages && (
+            <button
+              onClick={goNext}
+              aria-label="Next page"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition-all"
+            >
+              <ChevronRight size={20} />
+            </button>
+          )}
+
+          {/* Page counter */}
+          {numPages !== null && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/35 tabular-nums tracking-[0.18em] uppercase">
+              {pageNumber} / {numPages}
+              {title ? " · " : ""}
+              <span className="text-white/20">{title}</span>
+            </div>
+          )}
         </div>
-      )}
+      </Document>
     </div>
   );
 }

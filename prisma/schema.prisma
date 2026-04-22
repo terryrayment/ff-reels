@@ -414,6 +414,27 @@ model TreatmentSample {
   pageCount   Int?
   isRedacted  Boolean  @default(false)
   createdAt   DateTime @default(now())
+  views       TreatmentView[]
+}
+
+model TreatmentView {
+  id             String   @id @default(cuid())
+  treatmentId    String
+  treatment      TreatmentSample @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+  startedAt      DateTime @default(now())
+  endedAt        DateTime?
+  totalDuration  Int?              // seconds
+  pagesViewed    Int[]             // unique page numbers visited
+  maxPageReached Int?
+  viewerIp       String?
+  viewerCity     String?
+  viewerCountry  String?
+  device         String   @default("desktop")
+  userAgent      String?
+  referer        String?
+
+  @@index([treatmentId])
+  @@index([startedAt])
 }
 
 // ─── AI Gallery (Best Frames from Reels) ────────────────

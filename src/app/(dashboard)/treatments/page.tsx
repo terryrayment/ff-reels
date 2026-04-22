@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import Link from "next/link";
-import { FileText } from "lucide-react";
+import { FileText, Eye } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import { AddTreatmentBar } from "@/components/treatments/add-treatment-bar";
 import { DeleteTreatmentButton } from "@/components/treatments/delete-treatment-button";
@@ -25,6 +25,14 @@ export default async function TreatmentsPage() {
         treatmentSamples: {
           orderBy: { createdAt: "desc" },
           take: 50,
+          include: {
+            _count: { select: { views: true } },
+            views: {
+              orderBy: { startedAt: "desc" },
+              take: 1,
+              select: { startedAt: true },
+            },
+          },
         },
       },
     }),
@@ -113,8 +121,26 @@ export default async function TreatmentsPage() {
                       </div>
                     </a>
 
-                    {/* Right: branded link pill + timestamp + delete */}
+                    {/* Right: view count + branded link pill + timestamp + delete */}
                     <div className="flex items-center gap-3 flex-shrink-0">
+                      {treatment._count.views > 0 && (
+                        <span
+                          className="hidden md:inline-flex items-center gap-1 text-[10px] text-[#999] tabular-nums"
+                          title={
+                            treatment.views[0]?.startedAt
+                              ? `Last viewed ${timeAgo(treatment.views[0].startedAt)}`
+                              : undefined
+                          }
+                        >
+                          <Eye size={10} className="text-[#bbb]" />
+                          {treatment._count.views}
+                          {treatment.views[0]?.startedAt && (
+                            <span className="text-[#ccc] ml-1">
+                              · {timeAgo(treatment.views[0].startedAt)}
+                            </span>
+                          )}
+                        </span>
+                      )}
                       {treatment.token && (
                         <CopyTreatmentLinkButton token={treatment.token} />
                       )}
