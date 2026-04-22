@@ -109,11 +109,10 @@ export default async function TreatmentPage({
             className="absolute inset-0 w-full h-full border-0 block"
             style={{ backgroundColor: "#000" }}
           />
-          {/* Mask: centered 1.9:1 hole, black everywhere else (box-shadow). */}
-          <div
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
-            style={{ padding: "0 50px" }}
-          >
+          {/* Mask: centered 1.9:1 hole, black everywhere else (box-shadow).
+              No horizontal padding — window extends to the full iframe width
+              to avoid clipping the deck content on left/right. */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div
               style={{
                 aspectRatio: "1900 / 1000",
