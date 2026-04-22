@@ -94,16 +94,15 @@ export default async function TreatmentPage({
           title={treatment.title}
         />
       ) : (
-        // Legacy InDesign/URL fallback — plain iframe with 60px black bars
-        // over Adobe's chrome (top/bottom strips). Chrome is a fixed pixel
-        // height so these don't touch the content.
-        <div className="flex-1 bg-black relative">
+        // Legacy InDesign/URL fallback — plain iframe with black bars:
+        // 60px top/bottom over Adobe's chrome, 50px left/right margin.
+        <div className="flex-1 bg-black relative" style={{ padding: "0 50px" }}>
           <iframe
             src={treatment.previewUrl ?? undefined}
             title={treatment.title}
             allow="fullscreen"
             referrerPolicy="no-referrer-when-downgrade"
-            className="absolute inset-0 w-full h-full border-0 block"
+            className="w-full h-full border-0 block"
             style={{ backgroundColor: "#000" }}
           />
           {/* Cover Adobe's ~60px top + bottom chrome with opaque black */}
