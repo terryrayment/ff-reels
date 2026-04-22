@@ -92,7 +92,7 @@ interface TreatmentSampleInfo {
   id: string;
   title: string;
   brand: string | null;
-  previewUrl: string;
+  previewUrl: string | null;
   pageCount: number | null;
   isRedacted: boolean;
 }
@@ -1950,7 +1950,7 @@ export function ScreeningCarousel({
                     <div className="mt-2 rounded-xl overflow-hidden border border-white/[0.08] bg-black">
                       <div className="relative" style={{ maxHeight: "40vh" }}>
                         <iframe
-                          src={t.previewUrl}
+                          src={t.previewUrl ?? undefined}
                           className="w-full border-0"
                           style={{ height: "40vh" }}
                           title={`Treatment preview: ${t.title}`}
@@ -1963,7 +1963,7 @@ export function ScreeningCarousel({
                           {t.isRedacted ? "Client details redacted" : "Treatment preview"}
                         </p>
                         <a
-                          href={t.previewUrl}
+                          href={t.previewUrl ?? "#"}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[10px] text-white/30 hover:text-white/50 transition-colors flex items-center gap-1"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { TreatmentPdfViewer } from "@/components/treatments/pdf-viewer";
 
 export const dynamic = "force-dynamic";
 
@@ -50,9 +51,11 @@ export default async function TreatmentPage({
 
   if (!treatment) notFound();
 
-  // Detect Adobe InDesign publish URLs — they have a known grey chrome
-  // (header + footer strips) that we need to crop with overflow:hidden.
-  const isInDesign = /^https:\/\/indd\.adobe\.com\//i.test(treatment.previewUrl);
+  const hasPdf = !!treatment.pdfR2Key;
+  // For legacy InDesign URL flow: detect grey chrome so we can crop it
+  const isInDesign =
+    !!treatment.previewUrl &&
+    /^https:\/\/indd\.adobe\.com\//i.test(treatment.previewUrl);
 
   return (
     <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
@@ -88,49 +91,53 @@ export default async function TreatmentPage({
         </a>
       </header>
 
-      {/* Iframe — for InDesign, wrap in a 16:9 box centered in the viewport
-          with 50px horizontal margins. Transform-scale pushes Adobe's grey
-          chrome + letterbox off the edges; overflow:hidden crops them. Thick
-          black safety bars on top/bottom hide any remaining grey leakage. */}
-      <div
-        className="flex-1 bg-black flex items-center justify-center"
-        style={{ padding: "0 50px" }}
-      >
-        {isInDesign ? (
-          <div
-            className="relative bg-black overflow-hidden"
-            style={{
-              width: "min(100%, calc((100vh - 16px) * 16 / 9))",
-              aspectRatio: "16 / 9",
-            }}
-          >
+      {hasPdf ? (
+        // PDF flow — custom viewer, pure black, fully branded
+        <TreatmentPdfViewer
+          treatmentId={treatment.id}
+          title={treatment.title}
+        />
+      ) : (
+        // Legacy InDesign URL flow — iframe with chrome crop workaround
+        <div
+          className="flex-1 bg-black flex items-center justify-center"
+          style={{ padding: "0 50px" }}
+        >
+          {isInDesign ? (
+            <div
+              className="relative bg-black overflow-hidden"
+              style={{
+                width: "min(100%, calc((100vh - 16px) * 16 / 9))",
+                aspectRatio: "16 / 9",
+              }}
+            >
+              <iframe
+                src={treatment.previewUrl ?? undefined}
+                title={treatment.title}
+                allow="fullscreen"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="absolute inset-0 w-full h-full border-0 block"
+                style={{
+                  backgroundColor: "#000",
+                  transform: "scale(1.14)",
+                  transformOrigin: "center center",
+                }}
+              />
+              <div className="absolute top-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
+              <div className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
+            </div>
+          ) : (
             <iframe
-              src={treatment.previewUrl}
+              src={treatment.previewUrl ?? undefined}
               title={treatment.title}
               allow="fullscreen"
               referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 w-full h-full border-0 block"
-              style={{
-                backgroundColor: "#000",
-                transform: "scale(1.14)",
-                transformOrigin: "center center",
-              }}
+              className="w-full h-full border-0 block"
+              style={{ backgroundColor: "#000" }}
             />
-            {/* Safety-net black bars — hide any remaining grey chrome/letterbox */}
-            <div className="absolute top-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
-            <div className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
-          </div>
-        ) : (
-          <iframe
-            src={treatment.previewUrl}
-            title={treatment.title}
-            allow="fullscreen"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="w-full h-full border-0 block"
-            style={{ backgroundColor: "#000" }}
-          />
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

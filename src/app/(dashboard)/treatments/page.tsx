@@ -83,7 +83,7 @@ export default async function TreatmentsPage() {
                   >
                     {/* Left: title + metadata */}
                     <a
-                      href={treatment.token ? `/t/${treatment.token}` : treatment.previewUrl}
+                      href={treatment.token ? `/t/${treatment.token}` : treatment.previewUrl || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 min-w-0 flex items-center gap-4"

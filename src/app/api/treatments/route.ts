@@ -8,7 +8,9 @@ import { generateToken } from "@/lib/utils";
  * POST /api/treatments
  * Create a new treatment sample for a director. Generates a short share token
  * so the treatment is accessible at reels.friendsandfamily.tv/t/{token}.
- * Body: { directorId, title, previewUrl, brand?, pageCount?, isRedacted? }
+ * Body: { directorId, title, brand?, pageCount?, isRedacted?,
+ *         previewUrl? (InDesign URL), pdfR2Key? (uploaded PDF) }
+ * Exactly one of previewUrl or pdfR2Key must be provided.
  */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -17,11 +19,18 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { directorId, title, previewUrl, brand, pageCount, isRedacted } = body;
+  const { directorId, title, previewUrl, pdfR2Key, brand, pageCount, isRedacted } = body;
 
-  if (!directorId || !title || !previewUrl) {
+  if (!directorId || !title) {
     return NextResponse.json(
-      { error: "directorId, title, and previewUrl are required" },
+      { error: "directorId and title are required" },
+      { status: 400 }
+    );
+  }
+
+  if (!previewUrl && !pdfR2Key) {
+    return NextResponse.json(
+      { error: "Either previewUrl or pdfR2Key is required" },
       { status: 400 }
     );
   }
@@ -35,7 +44,8 @@ export async function POST(req: NextRequest) {
         data: {
           directorId,
           title,
-          previewUrl,
+          previewUrl: previewUrl || null,
+          pdfR2Key: pdfR2Key || null,
           token: generateToken(),
           brand: brand || null,
           pageCount: pageCount || null,
