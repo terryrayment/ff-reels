@@ -50,12 +50,9 @@ export default async function TreatmentPage({
 
   if (!treatment) notFound();
 
-  // Adobe InDesign publish: rewrite /view/ to /embed/ (chromeless).
-  // For other URLs, use as-is.
-  const embedUrl = treatment.previewUrl.replace(
-    /^(https:\/\/indd\.adobe\.com\/)view\//i,
-    "$1embed/"
-  );
+  // Detect Adobe InDesign publish URLs — they have a known grey chrome
+  // (header + footer strips) that we need to crop with overflow:hidden.
+  const isInDesign = /^https:\/\/indd\.adobe\.com\//i.test(treatment.previewUrl);
 
   return (
     <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
@@ -91,15 +88,38 @@ export default async function TreatmentPage({
         </a>
       </header>
 
-      {/* Iframe — 50px black margins left/right, chromeless Adobe embed */}
-      <div className="flex-1 bg-black relative overflow-hidden" style={{ padding: "0 50px" }}>
+      {/* Iframe — 50px black margins left/right.
+          For Adobe InDesign: iframe extends ~80px above + below the container,
+          with overflow:hidden cropping the grey chrome (header/footer strips). */}
+      <div
+        className="flex-1 bg-black relative overflow-hidden"
+        style={{ padding: "0 50px" }}
+      >
         <iframe
-          src={embedUrl}
-          className="w-full h-full border-0 block"
+          src={treatment.previewUrl}
           title={treatment.title}
           allow="fullscreen"
           referrerPolicy="no-referrer-when-downgrade"
-          style={{ backgroundColor: "#000" }}
+          className="absolute border-0 block"
+          style={
+            isInDesign
+              ? {
+                  // Extend beyond container top/bottom so grey chrome is cropped
+                  top: -80,
+                  bottom: -80,
+                  left: 50,
+                  right: 50,
+                  width: "calc(100% - 100px)",
+                  height: "calc(100% + 160px)",
+                  backgroundColor: "#000",
+                }
+              : {
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "#000",
+                }
+          }
         />
       </div>
     </div>
