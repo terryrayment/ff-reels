@@ -15,8 +15,11 @@ export function CopyTreatmentLinkButton({
   shareDomain?: string;
 }) {
   const [copied, setCopied] = useState(false);
-  const base = shareDomain || "https://reels.friendsandfamily.tv";
-  const shareUrl = `${base}/t/${token}`;
+  // Prefer the treatments.* subdomain, fall back to reels.*/t/...
+  const treatmentsBase = process.env.NEXT_PUBLIC_TREATMENTS_URL;
+  const shareUrl = treatmentsBase
+    ? `${treatmentsBase}/${token}`
+    : `${shareDomain || "https://reels.friendsandfamily.tv"}/t/${token}`;
   // Display the URL without the protocol for a cleaner look
   const displayUrl = shareUrl.replace(/^https?:\/\//, "");
 

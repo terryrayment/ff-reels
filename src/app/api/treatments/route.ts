@@ -66,10 +66,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const base =
-    process.env.NEXT_PUBLIC_SCREENING_URL ||
-    "https://reels.friendsandfamily.tv";
-  const shareUrl = `${base}/t/${treatment.token}`;
+  // Prefer the branded treatments subdomain. Falls back to reels.* if the
+  // env var isn't set (e.g. local dev). Both URLs resolve to the same page.
+  const treatmentsBase = process.env.NEXT_PUBLIC_TREATMENTS_URL;
+  const shareUrl = treatmentsBase
+    ? `${treatmentsBase}/${treatment.token}`
+    : `${process.env.NEXT_PUBLIC_SCREENING_URL || "https://reels.friendsandfamily.tv"}/t/${treatment.token}`;
 
   return NextResponse.json({ ...treatment, shareUrl }, { status: 201 });
 }
