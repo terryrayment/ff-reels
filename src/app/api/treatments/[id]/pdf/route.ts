@@ -11,17 +11,19 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
  * that actually have a pdfR2Key — no other gating beyond valid id + matching key.
  */
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const treatment = await prisma.treatmentSample.findUnique({
     where: { id: params.id },
-    select: { pdfR2Key: true },
+    select: { pdfR2Key: true, title: true },
   });
 
   if (!treatment || !treatment.pdfR2Key) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+
+  const isDownload = req.nextUrl.searchParams.get("download") === "1";
 
   try {
     const object = await r2.send(
@@ -36,12 +38,16 @@ export async function GET(
     }
 
     const buffer = Buffer.from(await object.Body.transformToByteArray());
+    const safeName = treatment.title.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const disposition = isDownload
+      ? `attachment; filename="${safeName}.pdf"`
+      : "inline";
 
     return new Response(buffer, {
       headers: {
         "Content-Type": "application/pdf",
         "Cache-Control": "public, max-age=31536000, immutable",
-        "Content-Disposition": "inline",
+        "Content-Disposition": disposition,
       },
     });
   } catch (err) {

@@ -110,8 +110,8 @@ export default async function TreatmentPage({
             style={{ backgroundColor: "#000" }}
           />
           {/* Mask: centered 1.9:1 hole, black everywhere else (box-shadow).
-              No horizontal padding — window extends to the full iframe width
-              to avoid clipping the deck content on left/right. */}
+              2px top/bottom borders cover the thin white seam at the window
+              edges. No horizontal padding so the deck isn't clipped. */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div
               style={{
@@ -120,9 +120,31 @@ export default async function TreatmentPage({
                 maxHeight: "100%",
                 maxWidth: "100%",
                 boxShadow: "0 0 0 100vmax #000",
+                borderTop: "2px solid #000",
+                borderBottom: "2px solid #000",
               }}
             />
           </div>
+
+          {/* Download PDF button — floats bottom-center */}
+          <a
+            href={
+              treatment.pdfR2Key
+                ? `/api/treatments/${treatment.id}/pdf?download=1`
+                : treatment.previewUrl ?? "#"
+            }
+            target={treatment.pdfR2Key ? undefined : "_blank"}
+            rel="noopener noreferrer"
+            download={treatment.pdfR2Key ? `${treatment.title}.pdf` : undefined}
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 text-white/70 hover:text-white text-[10px] uppercase tracking-[0.18em] font-medium transition-all backdrop-blur-sm"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download PDF
+          </a>
         </div>
       )}
     </div>
