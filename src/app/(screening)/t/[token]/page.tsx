@@ -94,26 +94,36 @@ export default async function TreatmentPage({
           title={treatment.title}
         />
       ) : (
-        // Legacy InDesign/URL fallback — plain iframe with black bars:
-        // 60px top/bottom over Adobe's chrome, 50px left/right margin.
-        <div className="flex-1 bg-black relative" style={{ padding: "0 50px" }}>
+        // Legacy InDesign/URL fallback. The iframe fills the full area; an
+        // overlay masks everything except a centered 1900:1000 (1.9:1)
+        // content window — the exact aspect ratio of InDesign pages. This
+        // eliminates Adobe's grey chrome + letterbox completely while
+        // keeping clicks pass-through (pointer-events: none) so Adobe's
+        // side nav still works.
+        <div className="flex-1 bg-black relative overflow-hidden">
           <iframe
             src={treatment.previewUrl ?? undefined}
             title={treatment.title}
             allow="fullscreen"
             referrerPolicy="no-referrer-when-downgrade"
-            className="w-full h-full border-0 block"
+            className="absolute inset-0 w-full h-full border-0 block"
             style={{ backgroundColor: "#000" }}
           />
-          {/* Cover Adobe's ~60px top + bottom chrome with opaque black */}
+          {/* Mask: centered 1.9:1 hole, black everywhere else (box-shadow). */}
           <div
-            className="absolute top-0 left-0 right-0 bg-black pointer-events-none"
-            style={{ height: "60px" }}
-          />
-          <div
-            className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none"
-            style={{ height: "60px" }}
-          />
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            style={{ padding: "0 50px" }}
+          >
+            <div
+              style={{
+                aspectRatio: "1900 / 1000",
+                width: "100%",
+                maxHeight: "100%",
+                maxWidth: "100%",
+                boxShadow: "0 0 0 100vmax #000",
+              }}
+            />
+          </div>
         </div>
       )}
     </div>
