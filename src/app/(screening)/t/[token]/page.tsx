@@ -94,17 +94,26 @@ export default async function TreatmentPage({
           title={treatment.title}
         />
       ) : (
-        // Legacy InDesign/URL fallback — plain iframe, no cropping tricks.
-        // (Grey chrome is inevitable for cross-origin iframes. Re-upload as PDF
-        // for the fully-branded experience.)
-        <div className="flex-1 bg-black">
+        // Legacy InDesign/URL fallback — plain iframe with 60px black bars
+        // over Adobe's chrome (top/bottom strips). Chrome is a fixed pixel
+        // height so these don't touch the content.
+        <div className="flex-1 bg-black relative">
           <iframe
             src={treatment.previewUrl ?? undefined}
             title={treatment.title}
             allow="fullscreen"
             referrerPolicy="no-referrer-when-downgrade"
-            className="w-full h-full border-0 block"
+            className="absolute inset-0 w-full h-full border-0 block"
             style={{ backgroundColor: "#000" }}
+          />
+          {/* Cover Adobe's ~60px top + bottom chrome with opaque black */}
+          <div
+            className="absolute top-0 left-0 right-0 bg-black pointer-events-none"
+            style={{ height: "60px" }}
+          />
+          <div
+            className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none"
+            style={{ height: "60px" }}
           />
         </div>
       )}
