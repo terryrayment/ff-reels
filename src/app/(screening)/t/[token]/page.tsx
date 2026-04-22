@@ -88,44 +88,43 @@ export default async function TreatmentPage({
         </a>
       </header>
 
-      {/* Iframe — 50px black margins left/right.
-          For Adobe InDesign: iframe extends 140px above + below; outer container
-          overflow:hidden crops Adobe's grey chrome. Extra black overlay bars
-          cover any remaining grey (letterboxing / chrome remnants). */}
-      <div
-        className="flex-1 bg-black relative overflow-hidden"
-        style={{ padding: "0 50px" }}
-      >
-        <iframe
-          src={treatment.previewUrl}
-          title={treatment.title}
-          allow="fullscreen"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="absolute border-0 block"
-          style={
-            isInDesign
-              ? {
-                  top: -140,
-                  left: 50,
-                  right: 50,
-                  width: "calc(100% - 100px)",
-                  height: "calc(100% + 280px)",
-                  backgroundColor: "#000",
-                }
-              : {
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "#000",
-                }
-          }
-        />
-        {/* Black bars to hide any remaining grey (Adobe chrome + letterbox) */}
-        {isInDesign && (
-          <>
-            <div className="absolute top-0 left-0 right-0 h-8 bg-black pointer-events-none" />
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-black pointer-events-none" />
-          </>
+      {/* Iframe — for InDesign, wrap in a 16:9 box centered in the viewport.
+          The box is made ~100px taller than 16:9 so Adobe's chrome lives in
+          that overflow region, which is cropped by overflow:hidden. The black
+          page background fills the remaining viewport space around the box. */}
+      <div className="flex-1 bg-black flex items-center justify-center">
+        {isInDesign ? (
+          <div
+            className="relative bg-black overflow-hidden"
+            style={{
+              width: "min(100%, calc((100vh - 32px) * 16 / 9))",
+              aspectRatio: "16 / 9",
+            }}
+          >
+            <iframe
+              src={treatment.previewUrl}
+              title={treatment.title}
+              allow="fullscreen"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute border-0 block"
+              style={{
+                top: "-60px",
+                left: 0,
+                width: "100%",
+                height: "calc(100% + 120px)",
+                backgroundColor: "#000",
+              }}
+            />
+          </div>
+        ) : (
+          <iframe
+            src={treatment.previewUrl}
+            title={treatment.title}
+            allow="fullscreen"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-full border-0 block"
+            style={{ backgroundColor: "#000" }}
+          />
         )}
       </div>
     </div>
