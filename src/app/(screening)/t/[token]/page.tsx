@@ -89,8 +89,9 @@ export default async function TreatmentPage({
       </header>
 
       {/* Iframe — 50px black margins left/right.
-          For Adobe InDesign: iframe extends ~80px above + below the container,
-          with overflow:hidden cropping the grey chrome (header/footer strips). */}
+          For Adobe InDesign: iframe extends 140px above + below; outer container
+          overflow:hidden crops Adobe's grey chrome. Extra black overlay bars
+          cover any remaining grey (letterboxing / chrome remnants). */}
       <div
         className="flex-1 bg-black relative overflow-hidden"
         style={{ padding: "0 50px" }}
@@ -104,13 +105,11 @@ export default async function TreatmentPage({
           style={
             isInDesign
               ? {
-                  // Extend beyond container top/bottom so grey chrome is cropped
-                  top: -80,
-                  bottom: -80,
+                  top: -140,
                   left: 50,
                   right: 50,
                   width: "calc(100% - 100px)",
-                  height: "calc(100% + 160px)",
+                  height: "calc(100% + 280px)",
                   backgroundColor: "#000",
                 }
               : {
@@ -121,6 +120,13 @@ export default async function TreatmentPage({
                 }
           }
         />
+        {/* Black bars to hide any remaining grey (Adobe chrome + letterbox) */}
+        {isInDesign && (
+          <>
+            <div className="absolute top-0 left-0 right-0 h-8 bg-black pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-black pointer-events-none" />
+          </>
+        )}
       </div>
     </div>
   );
