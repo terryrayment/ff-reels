@@ -52,10 +52,6 @@ export default async function TreatmentPage({
   if (!treatment) notFound();
 
   const hasPdf = !!treatment.pdfR2Key;
-  // For legacy InDesign URL flow: detect grey chrome so we can crop it
-  const isInDesign =
-    !!treatment.previewUrl &&
-    /^https:\/\/indd\.adobe\.com\//i.test(treatment.previewUrl);
 
   return (
     <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
@@ -98,44 +94,18 @@ export default async function TreatmentPage({
           title={treatment.title}
         />
       ) : (
-        // Legacy InDesign URL flow — iframe with chrome crop workaround
-        <div
-          className="flex-1 bg-black flex items-center justify-center"
-          style={{ padding: "0 50px" }}
-        >
-          {isInDesign ? (
-            <div
-              className="relative bg-black overflow-hidden"
-              style={{
-                width: "min(100%, calc((100vh - 16px) * 16 / 9))",
-                aspectRatio: "16 / 9",
-              }}
-            >
-              <iframe
-                src={treatment.previewUrl ?? undefined}
-                title={treatment.title}
-                allow="fullscreen"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="absolute inset-0 w-full h-full border-0 block"
-                style={{
-                  backgroundColor: "#000",
-                  transform: "scale(1.14)",
-                  transformOrigin: "center center",
-                }}
-              />
-              <div className="absolute top-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
-              <div className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none" style={{ height: "7%" }} />
-            </div>
-          ) : (
-            <iframe
-              src={treatment.previewUrl ?? undefined}
-              title={treatment.title}
-              allow="fullscreen"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-full border-0 block"
-              style={{ backgroundColor: "#000" }}
-            />
-          )}
+        // Legacy InDesign/URL fallback — plain iframe, no cropping tricks.
+        // (Grey chrome is inevitable for cross-origin iframes. Re-upload as PDF
+        // for the fully-branded experience.)
+        <div className="flex-1 bg-black">
+          <iframe
+            src={treatment.previewUrl ?? undefined}
+            title={treatment.title}
+            allow="fullscreen"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-full border-0 block"
+            style={{ backgroundColor: "#000" }}
+          />
         </div>
       )}
     </div>
