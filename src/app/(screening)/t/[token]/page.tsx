@@ -127,18 +127,19 @@ export default async function TreatmentPage({
             style={{ backgroundColor: "#000" }}
           />
           {/* Mask: centered 1.9:1 hole, black everywhere else (box-shadow).
-              maxHeight subtracts ~100px to account for Adobe's top+bottom
-              chrome strips (each ~50px) — Adobe centers the content within
-              (iframeHeight - chrome), so the visible content area is shorter
-              than the iframe itself. Without this offset, grey leaks above
-              and below the content. */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              The outer flex wrapper has 50px gaps top/bottom to match Adobe's
+              chrome strips. The inner mask box then uses aspect-ratio plus
+              max-width/max-height so flex sizes it naturally inside the
+              remaining area — no fighting between width/height constraints. */}
+          <div
+            className="absolute left-0 right-0 flex items-center justify-center pointer-events-none"
+            style={{ top: "50px", bottom: "50px" }}
+          >
             <div
               style={{
                 aspectRatio: "1900 / 1000",
-                width: "100%",
-                maxHeight: "calc(100% - 100px)",
                 maxWidth: "100%",
+                maxHeight: "100%",
                 boxShadow: "0 0 0 100vmax #000",
                 borderTop: "2px solid #000",
                 borderBottom: "2px solid #000",
