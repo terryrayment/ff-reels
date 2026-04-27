@@ -111,25 +111,22 @@ export default async function TreatmentPage({
           title={treatment.title}
         />
       ) : (
-        // Legacy InDesign/URL fallback. The iframe fills the full area; an
-        // overlay masks everything except a centered 1900:1000 (1.9:1)
-        // content window — the exact aspect ratio of InDesign pages. This
-        // eliminates Adobe's grey chrome + letterbox completely while
-        // keeping clicks pass-through (pointer-events: none) so Adobe's
-        // side nav still works.
+        // Legacy InDesign/URL fallback. We size the iframe so that the visible
+        // 1.9:1 deck area is exactly the wrapper width × wrapper width / 1.9,
+        // plus a generous chrome buffer (160px = 80 top + 80 bottom). Two black
+        // mask strips at top and bottom hide Adobe's chrome AND any grey letter-
+        // box bars Adobe might add above/below the deck inside its content area.
+        // Side grey is impossible because the iframe width = deck width exactly.
         <div className="flex-1 bg-black flex items-center justify-center overflow-hidden">
-          {/* Iframe constrained to content aspect ratio + chrome height.
-              Adobe = ~50px chrome top + 1900x1000 content + ~50px chrome bottom,
-              so the iframe's natural ratio is 1900 : (1000 + 100) = 1900:1100.
-              At this size Adobe fits the deck width-perfect with NO letterbox. */}
+          {/* Width = 75% of the largest possible deck (so we have margins).
+              Largest deck: width=100vw OR (height-216) * 1.9, whichever is smaller.
+              Wrapper height = deck_height + 160 chrome buffer. */}
           <div
-            className="relative bg-black"
+            className="relative bg-black overflow-hidden"
             style={{
-              aspectRatio: "1900 / 1100",
-              // Width = the smaller of: parent width (100%) or viewport height
-              //   minus 56px header times the aspect ratio. Guarantees the box
-              //   fits in both axes while always maintaining aspect ratio.
-              width: "min(100%, calc((100vh - 56px) * 1900 / 1100))",
+              width: "calc(min(100vw, (100vh - 216px) * 1.9) * 0.75)",
+              height: "calc(min(100vw, (100vh - 216px) * 1.9) * 0.75 / 1.9 + 160px)",
+              maxWidth: "100%",
             }}
           >
             <iframe
@@ -140,15 +137,16 @@ export default async function TreatmentPage({
               className="absolute inset-0 w-full h-full border-0 block"
               style={{ backgroundColor: "#000" }}
             />
-            {/* Mask: cover Adobe's 50px chrome strips at top + bottom only.
-                Sides are content-flush so no horizontal grey can appear. */}
+            {/* Top mask: 80px black strip covers Adobe's ~50px chrome + ~30px
+                potential grey letterbox bar above the deck. */}
             <div
               className="absolute top-0 left-0 right-0 bg-black pointer-events-none"
-              style={{ height: "52px" }}
+              style={{ height: "80px" }}
             />
+            {/* Bottom mask: same, on the bottom. */}
             <div
               className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none"
-              style={{ height: "52px" }}
+              style={{ height: "80px" }}
             />
           </div>
 
