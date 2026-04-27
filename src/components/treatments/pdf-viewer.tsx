@@ -23,6 +23,7 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
   const [viewportW, setViewportW] = useState(0);
   const [viewportH, setViewportH] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tracker = useTreatmentTracker();
@@ -32,17 +33,22 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
     tracker.notePage(pageNumber);
   }, [pageNumber, tracker]);
 
-  // Track viewport
+  // Track viewport + mobile breakpoint
   useEffect(() => {
     function onResize() {
       if (containerRef.current) {
         setViewportW(containerRef.current.offsetWidth);
         setViewportH(containerRef.current.offsetHeight);
       }
+      setIsMobile(window.innerWidth < 768);
     }
     onResize();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
+    };
   }, [sidebarOpen]);
 
   const goPrev = useCallback(() => {
@@ -53,7 +59,7 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
     setPageNumber((p) => (numPages ? Math.min(numPages, p + 1) : p));
   }, [numPages]);
 
-  // Keyboard navigation
+  // Keyboard navigation (desktop)
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
@@ -68,38 +74,59 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [goNext, goPrev]);
 
-  // Touch swipe
+  // Touch swipe — only single-touch, ignore swipes that started on a button or
+  // link, and require horizontal-dominant motion. This avoids conflicts with
+  // pinch-zoom (multi-touch) and tap-to-press button behavior.
   useEffect(() => {
     let startX = 0;
+    let startY = 0;
+    let valid = false;
+
+    function isInteractive(target: EventTarget | null) {
+      if (!(target instanceof Element)) return false;
+      return !!target.closest("button, a, [role='button']");
+    }
+
     function onTouchStart(e: TouchEvent) {
-      startX = e.touches[0].clientX;
-    }
-    function onTouchEnd(e: TouchEvent) {
-      const dx = e.changedTouches[0].clientX - startX;
-      if (Math.abs(dx) > 50) {
-        if (dx < 0) goNext();
-        else goPrev();
+      if (e.touches.length !== 1 || isInteractive(e.target)) {
+        valid = false;
+        return;
       }
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      valid = true;
     }
-    window.addEventListener("touchstart", onTouchStart);
-    window.addEventListener("touchend", onTouchEnd);
+
+    function onTouchEnd(e: TouchEvent) {
+      if (!valid) return;
+      valid = false;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      // Horizontal-dominant swipe of at least 50px
+      if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) goNext();
+      else goPrev();
+    }
+
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
     return () => {
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
     };
   }, [goNext, goPrev]);
 
-  // Compute rendered page size to fit the viewport while preserving aspect ratio
+  // Compute rendered page size to fit the viewport while preserving aspect ratio.
+  // Mobile gets near-zero side margins so the deck fills the phone screen.
   function renderSize() {
     if (!pageWidth || !pageHeight || !viewportW || !viewportH) {
       return { width: undefined, height: undefined };
     }
-    const MARGIN_X = 100; // 50px each side
-    const MARGIN_Y = 48; // 24px each side
-    const availW = Math.max(320, viewportW - MARGIN_X);
+    const MARGIN_X = isMobile ? 8 : 100; // 4px each side on mobile
+    const MARGIN_Y = isMobile ? 80 : 48; // mobile leaves room for bottom toolbar
+    const availW = Math.max(280, viewportW - MARGIN_X);
     const availH = Math.max(240, viewportH - MARGIN_Y);
     const aspect = pageWidth / pageHeight;
-    // Fit inside both dimensions
     let w = availW;
     let h = w / aspect;
     if (h > availH) {
@@ -148,8 +175,8 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
         }
         className="flex flex-1 min-h-0"
       >
-        {/* Sidebar: page thumbnails */}
-        {sidebarOpen && numPages !== null && (
+        {/* Desktop sidebar: fixed-width column */}
+        {sidebarOpen && numPages !== null && !isMobile && (
           <aside className="flex-shrink-0 w-[140px] h-full overflow-y-auto border-r border-white/[0.06] bg-black/80 py-4 px-2 space-y-2 scrollbar-none">
             {Array.from({ length: numPages }, (_, i) => i + 1).map((n) => (
               <button
@@ -169,6 +196,51 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
               </button>
             ))}
           </aside>
+        )}
+
+        {/* Mobile sidebar: full-screen overlay sheet */}
+        {sidebarOpen && numPages !== null && isMobile && (
+          <div
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-white/[0.08]">
+              <span className="text-white/60 text-[11px] uppercase tracking-[0.18em]">
+                {numPages} pages
+              </span>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                aria-label="Close page list"
+                className="w-10 h-10 -mr-2 rounded-md text-white/70 flex items-center justify-center active:bg-white/10"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div
+              className="flex-1 overflow-y-auto p-3 grid grid-cols-3 gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {Array.from({ length: numPages }, (_, i) => i + 1).map((n) => (
+                <button
+                  key={n}
+                  onClick={() => {
+                    setPageNumber(n);
+                    setSidebarOpen(false);
+                  }}
+                  className={`block w-full overflow-hidden rounded-sm transition-all ${
+                    n === pageNumber
+                      ? "ring-2 ring-white/80"
+                      : "ring-1 ring-white/[0.08] opacity-70 active:opacity-100"
+                  }`}
+                >
+                  <Thumbnail pageNumber={n} width={140} />
+                  <span className="block text-[10px] text-white/50 tabular-nums text-center py-1">
+                    {n}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Main viewer */}
@@ -191,20 +263,22 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
                 }}
                 loading={null}
               />
-              {/* Per-page PNG export — hover-only */}
-              <button
-                onClick={downloadCurrentPage}
-                title={`Save page ${pageNumber} as PNG`}
-                className="absolute top-2 right-2 opacity-0 group-hover/viewer:opacity-100 focus:opacity-100 transition-opacity inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-black/60 hover:bg-black/80 backdrop-blur-sm text-white/80 hover:text-white text-[10px] uppercase tracking-[0.12em]"
-              >
-                <Download size={11} />
-                Save
-              </button>
+              {/* Desktop only: hover-to-reveal save-page-as-PNG button */}
+              {!isMobile && (
+                <button
+                  onClick={downloadCurrentPage}
+                  title={`Save page ${pageNumber} as PNG`}
+                  className="absolute top-2 right-2 opacity-0 group-hover/viewer:opacity-100 focus:opacity-100 transition-opacity inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-black/60 hover:bg-black/80 backdrop-blur-sm text-white/80 hover:text-white text-[10px] uppercase tracking-[0.12em]"
+                >
+                  <Download size={11} />
+                  Save
+                </button>
+              )}
             </div>
           )}
 
-          {/* Sidebar toggle — top-left of the viewer area */}
-          {numPages !== null && (
+          {/* Desktop sidebar toggle — top-left of the viewer area */}
+          {numPages !== null && !isMobile && (
             <button
               onClick={() => setSidebarOpen((v) => !v)}
               title={sidebarOpen ? "Close pages" : "Show pages"}
@@ -215,8 +289,8 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
             </button>
           )}
 
-          {/* Prev arrow */}
-          {numPages !== null && pageNumber > 1 && (
+          {/* Desktop prev arrow */}
+          {numPages !== null && pageNumber > 1 && !isMobile && (
             <button
               onClick={goPrev}
               aria-label="Previous page"
@@ -226,8 +300,8 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
             </button>
           )}
 
-          {/* Next arrow */}
-          {numPages !== null && pageNumber < numPages && (
+          {/* Desktop next arrow */}
+          {numPages !== null && pageNumber < numPages && !isMobile && (
             <button
               onClick={goNext}
               aria-label="Next page"
@@ -237,12 +311,58 @@ export function TreatmentPdfViewer({ treatmentId, title }: Props) {
             </button>
           )}
 
-          {/* Page counter */}
-          {numPages !== null && (
+          {/* Desktop page counter */}
+          {numPages !== null && !isMobile && (
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] text-white/35 tabular-nums tracking-[0.18em] uppercase">
               {pageNumber} / {numPages}
               {title ? " · " : ""}
               <span className="text-white/20">{title}</span>
+            </div>
+          )}
+
+          {/* Mobile bottom toolbar — pages | prev | counter | next | save */}
+          {numPages !== null && isMobile && (
+            <div
+              className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-between gap-2 px-3 pt-3 bg-gradient-to-t from-black via-black/85 to-transparent"
+              style={{
+                paddingBottom: "max(10px, env(safe-area-inset-bottom))",
+              }}
+            >
+              <button
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Show all pages"
+                className="w-11 h-11 rounded-md bg-white/10 text-white/85 flex items-center justify-center active:bg-white/25"
+              >
+                <LayoutGrid size={16} />
+              </button>
+              <div className="flex-1 flex items-center justify-center gap-2">
+                <button
+                  onClick={goPrev}
+                  disabled={pageNumber <= 1}
+                  aria-label="Previous page"
+                  className="w-12 h-12 rounded-full bg-white/10 text-white/85 flex items-center justify-center active:bg-white/25 disabled:opacity-25"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <span className="text-[12px] text-white/70 tabular-nums tracking-[0.15em] min-w-[58px] text-center">
+                  {pageNumber} / {numPages}
+                </span>
+                <button
+                  onClick={goNext}
+                  disabled={pageNumber >= numPages}
+                  aria-label="Next page"
+                  className="w-12 h-12 rounded-full bg-white/10 text-white/85 flex items-center justify-center active:bg-white/25 disabled:opacity-25"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              </div>
+              <button
+                onClick={downloadCurrentPage}
+                aria-label="Save page as PNG"
+                className="w-11 h-11 rounded-md bg-white/10 text-white/85 flex items-center justify-center active:bg-white/25"
+              >
+                <Download size={16} />
+              </button>
             </div>
           )}
         </div>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { TreatmentPdfViewer } from "@/components/treatments/pdf-viewer";
@@ -6,6 +6,16 @@ import { TreatmentTracker } from "@/components/treatments/treatment-tracker";
 import { ArrowUpRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+
+// Override the root layout's `userScalable: false` — recipients open treatments
+// on phones and need to pinch-zoom into deck details.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#000000",
+};
 
 export async function generateMetadata({
   params,
@@ -63,7 +73,7 @@ export default async function TreatmentPage({
     <TreatmentTracker treatmentId={treatment.id}>
     <div className="h-screen w-screen flex flex-col bg-black text-white overflow-hidden">
       {/* Top bar */}
-      <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 py-3 bg-black border-b border-white/[0.06]">
+      <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 pt-3 pb-2.5 bg-black border-b border-white/[0.06]">
         <div className="flex items-center gap-4 min-w-0">
           <img
             src="/logo.svg"
@@ -118,14 +128,21 @@ export default async function TreatmentPage({
         // box bars Adobe might add above/below the deck inside its content area.
         // Side grey is impossible because the iframe width = deck width exactly.
         <div className="flex-1 bg-black flex items-center justify-center overflow-hidden">
-          {/* Width = 75% of the largest possible deck (so we have margins).
-              Largest deck: width=100vw OR (height-216) * 1.9, whichever is smaller.
-              Wrapper height = deck_height + 160 chrome buffer. */}
+          {/* Scale: 0.825 on desktop (~10% bigger than the prior 0.75), 1.0 on
+              mobile so the deck fills the phone viewport edge-to-edge. */}
+          <style>{`
+            .ff-iframe-deck { --ff-deck-scale: 0.825; }
+            @media (max-width: 767px) {
+              .ff-iframe-deck { --ff-deck-scale: 1; }
+            }
+          `}</style>
           <div
-            className="relative bg-black overflow-hidden"
+            className="ff-iframe-deck relative bg-black overflow-hidden"
             style={{
-              width: "calc(min(100vw, (100vh - 216px) * 1.9) * 0.75)",
-              height: "calc(min(100vw, (100vh - 216px) * 1.9) * 0.75 / 1.9 + 160px)",
+              width:
+                "calc(min(100vw, (100vh - 216px) * 1.9) * var(--ff-deck-scale))",
+              height:
+                "calc(min(100vw, (100vh - 216px) * 1.9) * var(--ff-deck-scale) / 1.9 + 160px)",
               maxWidth: "100%",
             }}
           >
@@ -137,16 +154,16 @@ export default async function TreatmentPage({
               className="absolute inset-0 w-full h-full border-0 block"
               style={{ backgroundColor: "#000" }}
             />
-            {/* Top mask: 80px black strip covers Adobe's ~50px chrome + ~30px
+            {/* Top mask: 78px black strip covers Adobe's ~50px chrome + ~28px
                 potential grey letterbox bar above the deck. */}
             <div
               className="absolute top-0 left-0 right-0 bg-black pointer-events-none"
-              style={{ height: "80px" }}
+              style={{ height: "78px" }}
             />
             {/* Bottom mask: same, on the bottom. */}
             <div
               className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none"
-              style={{ height: "80px" }}
+              style={{ height: "78px" }}
             />
           </div>
 
