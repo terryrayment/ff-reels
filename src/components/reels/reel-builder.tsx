@@ -311,7 +311,7 @@ function SortableSpotItem({
       >
         <GripVertical size={12} />
       </button>
-      <span className="text-[10px] text-[#ccc] w-3 text-right tabular-nums">
+      <span className="text-[10px] text-black w-3 text-right tabular-nums">
         {index + 1}
       </span>
       <div className="w-8 h-5 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
@@ -324,17 +324,17 @@ function SortableSpotItem({
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <span className="text-[12px] text-[#1A1A1A] truncate block">
+        <span className="text-[12px] text-black truncate block">
           {project.title}
         </span>
         {isMultiDirector && project.directorName && (
-          <span className="text-[9px] text-[#bbb] truncate block">
+          <span className="text-[9px] text-black truncate block">
             {project.directorName}
           </span>
         )}
       </div>
       {project.duration && (
-        <span className="text-[10px] text-[#ccc] tabular-nums flex-shrink-0">
+        <span className="text-[10px] text-black tabular-nums flex-shrink-0">
           {formatDuration(project.duration)}
         </span>
       )}
@@ -936,11 +936,11 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         {/* Spot order */}
         <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
+            <h3 className="text-[10px] uppercase tracking-[0.15em] text-black font-medium">
               Spot Order
             </h3>
             {selectedProjects.length > 0 && (
-              <span className="text-[10px] text-[#ccc]">
+              <span className="text-[10px] text-black">
                 {selectedProjects.length} spot{selectedProjects.length !== 1 ? "s" : ""}
                 {totalDuration > 0 && ` · ${formatDuration(totalDuration)}`}
               </span>
