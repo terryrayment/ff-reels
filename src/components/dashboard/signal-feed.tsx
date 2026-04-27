@@ -120,11 +120,11 @@ export function SignalFeed({
     return (
       <div>
         {displayUpdates.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
             {displayUpdates.map((update) => (
               <div
                 key={update.id}
-                className="group/item relative rounded-xl bg-[#F7F6F3]/50 px-4 py-3 hover:bg-[#F0F0EC]/50 transition-all duration-300"
+                className="group/item relative rounded-xl bg-[#F7F6F3]/60 px-3.5 py-2.5 hover:bg-[#F0F0EC]/60 transition-all duration-300"
               >
                 {update.isPinned && (
                   <span className="text-[8px] uppercase tracking-[0.12em] text-amber-600 font-semibold">
@@ -150,7 +150,7 @@ export function SignalFeed({
                     </button>
                     <button
                       onClick={() => setEditingId(null)}
-                      className="text-[#ccc] hover:text-[#999] transition-colors p-0.5"
+                      className="text-[#888] hover:text-[#1A1A1A] transition-colors p-0.5"
                     >
                       <X size={10} />
                     </button>
@@ -162,14 +162,14 @@ export function SignalFeed({
                 )}
 
                 {(update.director || update.project) && (
-                  <p className="text-[10px] text-[#999] mt-1 truncate">
+                  <p className="text-[10px] text-[#555] mt-1 truncate">
                     {update.director?.name}
                     {update.director && update.project && " / "}
                     {update.project?.title}
                   </p>
                 )}
 
-                <p className="text-[9px] uppercase tracking-[0.12em] text-[#ccc] mt-1.5">
+                <p className="text-[9px] uppercase tracking-[0.12em] text-[#888] mt-1.5">
                   {update.author?.name || "System"} · {timeAgoClient(update.createdAt)}
                 </p>
 
@@ -178,13 +178,13 @@ export function SignalFeed({
                   <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-100 md:opacity-0 md:group-hover/item:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleEdit(update)}
-                      className="text-[#ccc] hover:text-[#999] transition-colors p-2 rounded hover:bg-white/60"
+                      className="text-[#888] hover:text-[#1A1A1A] transition-colors p-2 rounded hover:bg-white/60"
                     >
                       <Pencil size={14} className="md:w-[9px] md:h-[9px]" />
                     </button>
                     <button
                       onClick={() => handleDelete(update.id)}
-                      className="text-[#ccc] hover:text-red-400 transition-colors p-2 rounded hover:bg-red-50/60"
+                      className="text-[#888] hover:text-red-400 transition-colors p-2 rounded hover:bg-red-50/60"
                     >
                       <Trash2 size={14} className="md:w-[9px] md:h-[9px]" />
                     </button>
@@ -194,7 +194,7 @@ export function SignalFeed({
             ))}
           </div>
         ) : (
-          <p className="text-[13px] text-[#999] py-4">
+          <p className="text-[13px] text-[#777] py-4">
             No updates yet. Post the first one.
           </p>
         )}

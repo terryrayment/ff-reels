@@ -40,15 +40,15 @@ export function ComposeUpdate() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Write something..."
-        className="flex-1 bg-transparent border-b border-[#E0E0E0] text-[13px] text-[#1A1A1A] placeholder:text-[#ccc] py-2 focus:outline-none focus:border-[#999] transition-colors"
+        className="flex-1 bg-transparent border-b border-[#D8D7D2] text-[13px] text-[#1A1A1A] placeholder:text-[#888] py-1.5 focus:outline-none focus:border-[#1A1A1A] transition-colors"
         required
       />
       <button
         type="submit"
         disabled={!hasContent || loading}
-        className={`text-[11px] uppercase tracking-[0.12em] transition-all duration-200 flex-shrink-0 ${
+        className={`text-[11px] uppercase tracking-[0.12em] font-medium transition-all duration-200 flex-shrink-0 ${
           hasContent
-            ? "text-[#999] hover:text-[#1A1A1A]"
+            ? "text-[#1A1A1A] hover:text-black"
             : "text-transparent pointer-events-none"
         } disabled:cursor-not-allowed`}
       >
