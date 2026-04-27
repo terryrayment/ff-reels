@@ -127,14 +127,17 @@ export default async function TreatmentPage({
             style={{ backgroundColor: "#000" }}
           />
           {/* Mask: centered 1.9:1 hole, black everywhere else (box-shadow).
-              2px top/bottom borders cover the thin white seam at the window
-              edges. No horizontal padding so the deck isn't clipped. */}
+              maxHeight subtracts ~100px to account for Adobe's top+bottom
+              chrome strips (each ~50px) — Adobe centers the content within
+              (iframeHeight - chrome), so the visible content area is shorter
+              than the iframe itself. Without this offset, grey leaks above
+              and below the content. */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div
               style={{
                 aspectRatio: "1900 / 1000",
                 width: "100%",
-                maxHeight: "100%",
+                maxHeight: "calc(100% - 100px)",
                 maxWidth: "100%",
                 boxShadow: "0 0 0 100vmax #000",
                 borderTop: "2px solid #000",
