@@ -117,33 +117,38 @@ export default async function TreatmentPage({
         // eliminates Adobe's grey chrome + letterbox completely while
         // keeping clicks pass-through (pointer-events: none) so Adobe's
         // side nav still works.
-        <div className="flex-1 bg-black relative overflow-hidden">
-          <iframe
-            src={treatment.previewUrl ?? undefined}
-            title={treatment.title}
-            allow="fullscreen"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="absolute inset-0 w-full h-full border-0 block"
-            style={{ backgroundColor: "#000" }}
-          />
-          {/* Mask: centered 1.9:1 hole, black everywhere else (box-shadow).
-              The outer flex wrapper has 50px gaps top/bottom to match Adobe's
-              chrome strips. The inner mask box then uses aspect-ratio plus
-              max-width/max-height so flex sizes it naturally inside the
-              remaining area — no fighting between width/height constraints. */}
+        <div className="flex-1 bg-black flex items-center justify-center overflow-hidden">
+          {/* Iframe constrained to content aspect ratio + chrome height.
+              Adobe = ~50px chrome top + 1900x1000 content + ~50px chrome bottom,
+              so the iframe's natural ratio is 1900 : (1000 + 100) = 1900:1100.
+              At this size Adobe fits the deck width-perfect with NO letterbox. */}
           <div
-            className="absolute left-0 right-0 flex items-center justify-center pointer-events-none"
-            style={{ top: "50px", bottom: "50px" }}
+            className="relative bg-black"
+            style={{
+              aspectRatio: "1900 / 1100",
+              // Width = the smaller of: parent width (100%) or viewport height
+              //   minus 56px header times the aspect ratio. Guarantees the box
+              //   fits in both axes while always maintaining aspect ratio.
+              width: "min(100%, calc((100vh - 56px) * 1900 / 1100))",
+            }}
           >
+            <iframe
+              src={treatment.previewUrl ?? undefined}
+              title={treatment.title}
+              allow="fullscreen"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute inset-0 w-full h-full border-0 block"
+              style={{ backgroundColor: "#000" }}
+            />
+            {/* Mask: cover Adobe's 50px chrome strips at top + bottom only.
+                Sides are content-flush so no horizontal grey can appear. */}
             <div
-              style={{
-                aspectRatio: "1900 / 1000",
-                maxWidth: "100%",
-                maxHeight: "100%",
-                boxShadow: "0 0 0 100vmax #000",
-                borderTop: "2px solid #000",
-                borderBottom: "2px solid #000",
-              }}
+              className="absolute top-0 left-0 right-0 bg-black pointer-events-none"
+              style={{ height: "52px" }}
+            />
+            <div
+              className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none"
+              style={{ height: "52px" }}
             />
           </div>
 
