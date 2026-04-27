@@ -154,16 +154,16 @@ export default async function TreatmentPage({
               className="absolute inset-0 w-full h-full border-0 block"
               style={{ backgroundColor: "#000" }}
             />
-            {/* Top mask: 78px black strip covers Adobe's ~50px chrome + ~28px
-                potential grey letterbox bar above the deck. */}
+            {/* Top mask: 81px black strip covers Adobe's ~50px chrome + ~28px
+                potential grey letterbox bar + 3px deck crop. */}
             <div
               className="absolute top-0 left-0 right-0 bg-black pointer-events-none"
-              style={{ height: "78px" }}
+              style={{ height: "81px" }}
             />
             {/* Bottom mask: same, on the bottom. */}
             <div
               className="absolute bottom-0 left-0 right-0 bg-black pointer-events-none"
-              style={{ height: "78px" }}
+              style={{ height: "81px" }}
             />
           </div>
 
