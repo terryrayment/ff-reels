@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { TreatmentPdfViewer } from "@/components/treatments/pdf-viewer";
 import { TreatmentTracker } from "@/components/treatments/treatment-tracker";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Download } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +64,8 @@ export default async function TreatmentPage({
   if (!treatment) notFound();
 
   const hasPdf = !!treatment.pdfR2Key;
+  const hasPreviewUrl = !!treatment.previewUrl;
+  const usePdfViewer = hasPdf && !hasPreviewUrl;
   // Director reel link target: prefer their own website, fall back to marketing site
   const reelLinkHref =
     treatment.director.websiteUrl ||
@@ -114,8 +116,8 @@ export default async function TreatmentPage({
         </a>
       </header>
 
-      {hasPdf ? (
-        // PDF flow — custom viewer, pure black, fully branded
+      {usePdfViewer ? (
+        // PDF-only flow — custom viewer, pure black, fully branded
         <TreatmentPdfViewer
           treatmentId={treatment.id}
           title={treatment.title}
@@ -167,24 +169,29 @@ export default async function TreatmentPage({
             />
           </div>
 
-          {/* Download PDF button — floats bottom-center */}
+          {/* Download the uploaded PDF when available; otherwise open the source. */}
           <a
             href={
-              treatment.pdfR2Key
+              hasPdf
                 ? `/api/treatments/${treatment.id}/pdf?download=1`
                 : treatment.previewUrl ?? "#"
             }
-            target={treatment.pdfR2Key ? undefined : "_blank"}
+            target={hasPdf ? undefined : "_blank"}
             rel="noopener noreferrer"
-            download={treatment.pdfR2Key ? `${treatment.title}.pdf` : undefined}
+            download={hasPdf ? `${treatment.title}.pdf` : undefined}
             className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 text-white/70 hover:text-white text-[10px] uppercase tracking-[0.18em] font-medium transition-all backdrop-blur-sm"
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Download PDF
+            {hasPdf ? (
+              <>
+                <Download size={11} />
+                Download PDF
+              </>
+            ) : (
+              <>
+                <ArrowUpRight size={11} />
+                Open Original
+              </>
+            )}
           </a>
         </div>
       )}
