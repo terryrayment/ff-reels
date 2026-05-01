@@ -378,9 +378,13 @@ export function ReelAnalyticsTable({ rows }: Props) {
                               </span>
                             )}
                             <div className="min-w-0">
-                              <p className="text-[13px] font-medium text-[#1A1A1A] group-hover:text-black transition-colors truncate max-w-[280px]">
+                              <Link
+                                href={`/analytics/reel/${row.id}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="block text-[13px] font-medium text-[#1A1A1A] group-hover:text-black transition-colors truncate max-w-[280px] hover:underline"
+                              >
                                 {row.title}
-                              </p>
+                              </Link>
                               <p className="text-[11px] text-[#999] mt-0.5">
                                 {row.directorName}
                                 <span className="text-[#ccc]">
