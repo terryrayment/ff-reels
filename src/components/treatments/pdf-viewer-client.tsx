@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Document, Page, Thumbnail, pdfjs } from "react-pdf";
 import { ChevronLeft, ChevronRight, LayoutGrid, Download, FileDown, X } from "lucide-react";
+import { PdfDownloadLink } from "./pdf-download-link";
 import { useTreatmentTracker } from "./treatment-tracker";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -162,16 +163,16 @@ export function TreatmentPdfViewerClient({ treatmentId, title, pdfVersion }: Pro
 
   return (
     <div className="flex-1 flex min-h-0 bg-black relative">
-      <a
+      <PdfDownloadLink
         href={downloadUrl}
         download={`${safeTitle}.pdf`}
         title="Download PDF"
-        aria-label="Download PDF"
+        ariaLabel="Download PDF"
         className="absolute top-3 right-3 z-20 inline-flex items-center gap-1.5 px-3 py-2 rounded-md bg-white/5 hover:bg-white/15 text-white/55 hover:text-white border border-white/[0.06] hover:border-white/[0.14] transition-all text-[10px] uppercase tracking-[0.14em]"
       >
         <FileDown size={12} />
         Download PDF
-      </a>
+      </PdfDownloadLink>
       <Document
         file={fileUrl}
         onLoadSuccess={(pdf) => setNumPages(pdf.numPages)}
