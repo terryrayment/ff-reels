@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 interface Props {
   treatmentId: string;
   title: string;
+  pdfVersion?: string;
 }
 
 const TreatmentPdfViewerClient = dynamic(

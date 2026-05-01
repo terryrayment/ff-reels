@@ -13,9 +13,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 interface Props {
   treatmentId: string;
   title: string;
+  pdfVersion?: string;
 }
 
-export function TreatmentPdfViewerClient({ treatmentId, title }: Props) {
+export function TreatmentPdfViewerClient({ treatmentId, title, pdfVersion }: Props) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageWidth, setPageWidth] = useState<number | null>(null);
@@ -154,9 +155,10 @@ export function TreatmentPdfViewerClient({ treatmentId, title }: Props) {
   }
 
   const size = renderSize();
-  const fileUrl = `/api/treatments/${treatmentId}/pdf`;
+  const versionParam = pdfVersion ? `?v=${encodeURIComponent(pdfVersion)}` : "";
+  const fileUrl = `/api/treatments/${treatmentId}/pdf${versionParam}`;
   const safeTitle = title.replace(/[^a-zA-Z0-9._-]/g, "_") || "treatment";
-  const downloadUrl = `${fileUrl}?download=1`;
+  const downloadUrl = `/api/treatments/${treatmentId}/pdf?download=1${pdfVersion ? `&v=${encodeURIComponent(pdfVersion)}` : ""}`;
 
   return (
     <div className="flex-1 flex min-h-0 bg-black relative">

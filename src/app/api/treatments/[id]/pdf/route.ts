@@ -46,7 +46,7 @@ export async function GET(
     return new Response(buffer, {
       headers: {
         "Content-Type": "application/pdf",
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": "no-store",
         "Content-Disposition": disposition,
       },
     });

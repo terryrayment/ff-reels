@@ -66,6 +66,9 @@ export default async function TreatmentPage({
   const hasPdf = !!treatment.pdfR2Key;
   const hasPreviewUrl = !!treatment.previewUrl;
   const usePdfViewer = hasPdf && !hasPreviewUrl;
+  const pdfUrl = hasPdf
+    ? `/api/treatments/${treatment.id}/pdf?download=1&v=${encodeURIComponent(treatment.pdfR2Key!)}`
+    : null;
   // Director reel link target: prefer their own website, fall back to marketing site
   const reelLinkHref =
     treatment.director.websiteUrl ||
@@ -121,6 +124,7 @@ export default async function TreatmentPage({
         <TreatmentPdfViewer
           treatmentId={treatment.id}
           title={treatment.title}
+          pdfVersion={treatment.pdfR2Key ?? undefined}
         />
       ) : (
         // Legacy InDesign/URL fallback. We size the iframe so that the visible
@@ -173,7 +177,7 @@ export default async function TreatmentPage({
           <a
             href={
               hasPdf
-                ? `/api/treatments/${treatment.id}/pdf?download=1`
+                ? pdfUrl!
                 : treatment.previewUrl ?? "#"
             }
             target={hasPdf ? undefined : "_blank"}
