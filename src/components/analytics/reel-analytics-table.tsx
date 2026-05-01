@@ -497,75 +497,70 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                 {row.views.map((view) => (
                                   <div
                                     key={view.id}
-                                    className="flex items-center justify-between gap-4 px-6 py-3 hover:bg-white/40 transition-colors"
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-white/40 transition-colors"
                                   >
-                                    <div className="flex items-center gap-3 min-w-0">
-                                      {/* Device icon */}
-                                      <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 text-[#ccc]">
-                                        <DeviceIcon device={view.device} />
-                                      </div>
-                                      {/* Viewer info */}
-                                      <div className="min-w-0">
-                                        <p className="text-[12px] text-[#1A1A1A] truncate">
-                                          {view.contactId ? (
-                                            <Link
-                                              href={`/contacts/${view.contactId}`}
-                                              className="font-medium hover:underline"
-                                            >
-                                              {view.viewerName}
-                                            </Link>
-                                          ) : (
-                                            <span className="font-medium">
-                                              {view.viewerName}
-                                            </span>
-                                          )}
-                                          {view.company && (
-                                            <span className="text-[#999]">
-                                              {" "}
-                                              ({view.company})
-                                            </span>
-                                          )}
-                                        </p>
-                                        <div className="flex items-center gap-2.5 mt-0.5">
-                                          {view.duration != null &&
-                                            view.duration > 0 && (
-                                              <span className="text-[10px] text-[#bbb]">
-                                                Watched{" "}
-                                                {formatDurationShort(
-                                                  view.duration
-                                                )}
-                                              </span>
-                                            )}
-                                          {view.avgCompletion !== null && (
-                                            <span
-                                              className={`text-[10px] ${
-                                                view.avgCompletion >= 70
-                                                  ? "text-emerald-600"
-                                                  : "text-[#bbb]"
-                                              }`}
-                                            >
-                                              {view.avgCompletion}% completion
-                                            </span>
-                                          )}
-                                          {(view.city || view.country) && (
-                                            <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
-                                              <MapPin size={8} />
-                                              {view.city
-                                                ? `${view.city}${view.country ? `, ${view.country}` : ""}`
-                                                : view.country}
-                                            </span>
-                                          )}
-                                        </div>
-                                      </div>
+                                    {/* Device icon */}
+                                    <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 text-[#ccc]">
+                                      <DeviceIcon device={view.device} />
                                     </div>
-                                    {/* Exact watched time */}
-                                    <div className="flex-shrink-0 text-right">
-                                      <p className="text-[11px] text-[#777] whitespace-nowrap tabular-nums">
-                                        {formatViewDateTime(view.startedAt)}
+                                    {/* Viewer info */}
+                                    <div className="min-w-0">
+                                      <p className="text-[12px] text-[#1A1A1A] truncate">
+                                        {view.contactId ? (
+                                          <Link
+                                            href={`/contacts/${view.contactId}`}
+                                            className="font-medium hover:underline"
+                                          >
+                                            {view.viewerName}
+                                          </Link>
+                                        ) : (
+                                          <span className="font-medium">
+                                            {view.viewerName}
+                                          </span>
+                                        )}
+                                        {view.company && (
+                                          <span className="text-[#999]">
+                                            {" "}
+                                            ({view.company})
+                                          </span>
+                                        )}
                                       </p>
-                                      <p className="mt-0.5 text-[10px] text-[#bbb] whitespace-nowrap">
-                                        {timeAgo(view.startedAt)}
-                                      </p>
+                                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-0.5">
+                                        <span className="text-[10px] text-[#777] tabular-nums">
+                                          Viewed {formatViewDateTime(view.startedAt)}
+                                        </span>
+                                        <span className="text-[10px] text-[#bbb]">
+                                          {timeAgo(view.startedAt)}
+                                        </span>
+                                        {view.duration != null &&
+                                          view.duration > 0 && (
+                                            <span className="text-[10px] text-[#bbb]">
+                                              Watched{" "}
+                                              {formatDurationShort(
+                                                view.duration
+                                              )}
+                                            </span>
+                                          )}
+                                        {view.avgCompletion !== null && (
+                                          <span
+                                            className={`text-[10px] ${
+                                              view.avgCompletion >= 70
+                                                ? "text-emerald-600"
+                                                : "text-[#bbb]"
+                                            }`}
+                                          >
+                                            {view.avgCompletion}% completion
+                                          </span>
+                                        )}
+                                        {(view.city || view.country) && (
+                                          <span className="text-[10px] text-[#bbb] flex items-center gap-0.5">
+                                            <MapPin size={8} />
+                                            {view.city
+                                              ? `${view.city}${view.country ? `, ${view.country}` : ""}`
+                                              : view.country}
+                                          </span>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 ))}
