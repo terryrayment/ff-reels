@@ -80,6 +80,18 @@ function formatDate(iso: string | null): string {
   });
 }
 
+function formatViewDateTime(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
 function formatDurationShort(seconds: number | null): string {
   if (!seconds) return "\u2014";
   const h = Math.floor(seconds / 3600);
@@ -481,7 +493,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                 {row.views.map((view) => (
                                   <div
                                     key={view.id}
-                                    className="flex items-center justify-between px-6 py-3 hover:bg-white/40 transition-colors"
+                                    className="flex items-center justify-between gap-4 px-6 py-3 hover:bg-white/40 transition-colors"
                                   >
                                     <div className="flex items-center gap-3 min-w-0">
                                       {/* Device icon */}
@@ -542,10 +554,15 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                         </div>
                                       </div>
                                     </div>
-                                    {/* Time ago */}
-                                    <span className="text-[11px] text-[#ccc] flex-shrink-0 ml-4">
-                                      {timeAgo(view.startedAt)}
-                                    </span>
+                                    {/* Exact watched time */}
+                                    <div className="flex-shrink-0 text-right">
+                                      <p className="text-[11px] text-[#777] whitespace-nowrap tabular-nums">
+                                        {formatViewDateTime(view.startedAt)}
+                                      </p>
+                                      <p className="mt-0.5 text-[10px] text-[#bbb] whitespace-nowrap">
+                                        {timeAgo(view.startedAt)}
+                                      </p>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
