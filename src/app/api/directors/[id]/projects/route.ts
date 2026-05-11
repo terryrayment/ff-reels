@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { canViewDirector } from "@/lib/auth/guards";
 
 /**
  * GET /api/directors/[id]/projects
@@ -14,6 +15,10 @@ export async function GET(
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!canViewDirector(session, params.id)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const projects = await prisma.project.findMany({
@@ -36,7 +41,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

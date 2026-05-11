@@ -172,6 +172,9 @@ Open [http://localhost:3000](http://localhost:3000) and log in with the admin ac
 | `npm run build` | Build for production (runs prisma generate) |
 | `npm run start` | Start production server |
 | `npm run lint` | ESLint check |
+| `npm run seo:audit -- --url=https://www.friendsandfamily.tv` | Run SEO health audit against target site |
+| `npm run seo:pack -- --url=https://www.friendsandfamily.tv` | Generate metadata/H1 recommendations from live sitemap |
+| `npm run seo:webflow:apply -- --dryRun=true` | Apply SEO pack into Webflow (supports dry-run + publish) |
 | `npm run cap:sync` | Sync Capacitor native projects |
 | `npm run cap:ios` | Open iOS project in Xcode |
 | `npm run cap:android` | Open Android project in Android Studio |
@@ -188,6 +191,9 @@ Open [http://localhost:3000](http://localhost:3000) and log in with the admin ac
 | [API.md](docs/API.md) | Full REST API reference (30 endpoints) |
 | [DATABASE.md](docs/DATABASE.md) | Prisma schema: all 18 models, relations, constraints |
 | [DEPLOYMENT.md](docs/DEPLOYMENT.md) | Environment setup, Vercel config, cron jobs, mobile builds |
+| [SEO.md](docs/SEO.md) | SEO controls, audit workflow, and regression runbook |
+| [FRIENDSANDFAMILY-SEO-PLAYBOOK.md](docs/FRIENDSANDFAMILY-SEO-PLAYBOOK.md) | No-design SEO execution checklist for marketing site |
+| [WEBFLOW-SEO-IMPLEMENTATION.md](docs/WEBFLOW-SEO-IMPLEMENTATION.md) | API-driven Webflow SEO deployment runbook |
 
 ---
 

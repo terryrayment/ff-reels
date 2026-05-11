@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { canAccessProject, isTeamRole } from "@/lib/auth/guards";
 
 /**
  * GET /api/projects/[id]
@@ -26,6 +27,10 @@ export async function GET(
 
   if (!project) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  if (!canAccessProject(session, project.directorId)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   return NextResponse.json(project);
@@ -71,7 +76,7 @@ export async function PATCH(
   }
 
   // ADMIN / REP: full metadata update
-  if (!["ADMIN", "REP"].includes(session.user.role)) {
+  if (!isTeamRole(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -2,11 +2,11 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, X, ChevronDown, Copy, Check, ExternalLink, GripVertical, Eye, Play, Search } from "lucide-react";
-import MuxPlayer from "@mux/mux-player-react";
+import { Film, X, ChevronDown, Copy, Check, ExternalLink, GripVertical, Eye, Search, Play, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { formatDuration } from "@/lib/utils";
+import MuxPlayer from "@mux/mux-player-react";
 import {
   DndContext,
   closestCenter,
@@ -289,11 +289,9 @@ function SortableSpotItem({
     opacity: isDragging ? 0.9 : 1,
   };
 
-  const thumbSrc = project.thumbnailUrl
-    ? `${project.thumbnailUrl}${project.thumbnailUrl.includes('?') ? '&' : '?'}width=64&height=36`
-    : project.muxPlaybackId
-      ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36`
-      : null;
+  const thumbSrc = project.muxPlaybackId
+    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=64&height=36`
+    : project.thumbnailUrl || null;
 
   return (
     <div
@@ -311,7 +309,7 @@ function SortableSpotItem({
       >
         <GripVertical size={12} />
       </button>
-      <span className="text-[10px] text-black w-3 text-right tabular-nums">
+      <span className="text-[10px] text-[#ccc] w-3 text-right tabular-nums">
         {index + 1}
       </span>
       <div className="w-8 h-5 bg-[#EEEDEA] rounded-[2px] overflow-hidden flex-shrink-0">
@@ -324,17 +322,17 @@ function SortableSpotItem({
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <span className="text-[12px] text-black truncate block">
+        <span className="text-[12px] text-[#1A1A1A] truncate block">
           {project.title}
         </span>
         {isMultiDirector && project.directorName && (
-          <span className="text-[9px] text-black truncate block">
+          <span className="text-[9px] text-[#bbb] truncate block">
             {project.directorName}
           </span>
         )}
       </div>
       {project.duration && (
-        <span className="text-[10px] text-black tabular-nums flex-shrink-0">
+        <span className="text-[10px] text-[#ccc] tabular-nums flex-shrink-0">
           {formatDuration(project.duration)}
         </span>
       )}
@@ -359,13 +357,13 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   const [titleManuallyEdited] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>("brand");
   const [spotSearch, setSpotSearch] = useState("");
+  const [previewProject, setPreviewProject] = useState<Project | null>(null);
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [previewing, setPreviewing] = useState(false);
   const [createdUrl, setCreatedUrl] = useState("");
   const [createdReelId, setCreatedReelId] = useState("");
   const [copied, setCopied] = useState(false);
-  const [previewProject, setPreviewProject] = useState<Project | null>(null);
   const router = useRouter();
 
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
@@ -414,6 +412,19 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     }
   }, [selectedDirectorId, brand, titleManuallyEdited, directors, isMultiDirector]);
 
+  useEffect(() => {
+    if (!previewProject) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setPreviewProject(null);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [previewProject]);
+
   // Sorted/filtered projects for current director view
   const sortedProjects = useMemo(() => {
     const projects = [...availableProjects];
@@ -443,16 +454,20 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     }
   }, [availableProjects, sortMode]);
 
-  // Apply search filter on top of sort
   const filteredProjects = useMemo(() => {
-    if (!spotSearch.trim()) return sortedProjects;
-    const q = spotSearch.toLowerCase();
-    return sortedProjects.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        (p.brand && p.brand.toLowerCase().includes(q)) ||
-        (p.category && p.category.toLowerCase().includes(q))
-    );
+    const query = spotSearch.toLowerCase().trim();
+    if (!query) return sortedProjects;
+
+    return sortedProjects.filter((project) => {
+      const yearText = project.year ? String(project.year) : "";
+      return (
+        project.title.toLowerCase().includes(query) ||
+        project.brand?.toLowerCase().includes(query) ||
+        project.agency?.toLowerCase().includes(query) ||
+        project.category?.toLowerCase().includes(query) ||
+        yearText.includes(query)
+      );
+    });
   }, [sortedProjects, spotSearch]);
 
   // Selected projects resolved from all directors — order matches selectedProjectIds
@@ -478,6 +493,14 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     setSelectedProjectIds((prev) => prev.filter((id) => id !== projectId));
   };
 
+  const handleProjectCardClick = (project: Project) => {
+    if (project.muxPlaybackId) {
+      setPreviewProject(project);
+      return;
+    }
+    toggleProject(project.id);
+  };
+
   // Drag-and-drop reorder
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -498,9 +521,10 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
 
   const handleSelectDirector = (id: string) => {
     setSelectedDirectorId(id);
+    setSpotSearch("");
+    setPreviewProject(null);
     // Don't clear selections — allow multi-director reels
     setSortMode("brand");
-    setSpotSearch("");
   };
 
   const handleSave = async () => {
@@ -642,8 +666,71 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   }
 
   return (
-    <div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-6">
-      {/* Left — director select + video preview + spot grid */}
+    <>
+      {previewProject?.muxPlaybackId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setPreviewProject(null)}
+          />
+          <div className="relative w-full max-w-4xl rounded-xl bg-black overflow-hidden shadow-2xl">
+            <MuxPlayer
+              playbackId={previewProject.muxPlaybackId}
+              streamType="on-demand"
+              autoPlay
+              metadata={{ video_title: previewProject.title }}
+              primaryColor="#ffffff"
+              secondaryColor="#000000"
+              accentColor="#666666"
+              style={{ width: "100%", aspectRatio: "16/9" }}
+            />
+            <button
+              type="button"
+              onClick={() => setPreviewProject(null)}
+              className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition-colors z-10"
+              aria-label="Close preview"
+            >
+              <X size={14} />
+            </button>
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#111]">
+              <div className="min-w-0">
+                <p className="text-[13px] text-white font-medium truncate">
+                  {previewProject.title}
+                </p>
+                <p className="text-[11px] text-white/60 truncate">
+                  {[previewProject.brand, previewProject.agency, previewProject.year]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => toggleProject(previewProject.id)}
+                className={`flex-shrink-0 ml-3 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${
+                  selectedProjectIds.includes(previewProject.id)
+                    ? "bg-white/20 text-white"
+                    : "bg-white text-[#1A1A1A] hover:bg-white/90"
+                }`}
+              >
+                <span className="inline-flex items-center gap-1.5">
+                  {selectedProjectIds.includes(previewProject.id) ? (
+                    <>
+                      <Check size={12} /> Added
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={12} /> Add to Reel
+                    </>
+                  )}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_340px] gap-6">
+      {/* Left — director select + spot grid */}
       <div>
         <DirectorDropdown
           directors={directors}
@@ -676,16 +763,31 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               return null;
             })()}
 
-            {/* Search bar */}
-            <div className="relative mb-3">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#bbb]" />
-              <input
-                type="text"
-                placeholder="Search spots by title, brand, or category..."
-                value={spotSearch}
-                onChange={(e) => setSpotSearch(e.target.value)}
-                className="w-full pl-8 pr-3 py-2 rounded-lg border border-[#E8E7E3] bg-white text-[12px] text-[#1A1A1A] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#1A1A1A]/10 focus:border-[#ccc] transition-all"
-              />
+            {/* Spot search */}
+            <div className="mb-3">
+              <div className="relative max-w-[360px]">
+                <Search
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#bbb]"
+                />
+                <input
+                  type="text"
+                  value={spotSearch}
+                  onChange={(e) => setSpotSearch(e.target.value)}
+                  placeholder="Search spots..."
+                  className="w-full pl-9 pr-8 py-2 text-[12px] bg-white/70 rounded-lg border border-[#E8E7E3]/60 text-[#1A1A1A] placeholder-[#bbb] focus:outline-none focus:border-[#ccc] transition-colors"
+                />
+                {spotSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setSpotSearch("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[#bbb] hover:text-[#777] transition-colors"
+                    aria-label="Clear spot search"
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Filter bar */}
@@ -705,7 +807,9 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               ))}
               <div className="ml-auto flex items-center gap-3">
                 <span className="text-[10px] text-[#ccc]">
-                  {availableProjects.length} spot{availableProjects.length !== 1 ? "s" : ""}
+                  {spotSearch
+                    ? `${filteredProjects.length} of ${availableProjects.length} spots`
+                    : `${availableProjects.length} spot${availableProjects.length !== 1 ? "s" : ""}`}
                 </span>
                 {filteredProjects.length > 0 && (
                   <button
@@ -729,33 +833,21 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {filteredProjects.map((project) => {
                   const isSelected = selectedProjectIds.includes(project.id);
-                  const thumbSrc = project.thumbnailUrl
-                    ? `${project.thumbnailUrl}${project.thumbnailUrl.includes('?') ? '&' : '?'}width=320&height=180`
-                    : project.muxPlaybackId
-                      ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=320&height=180`
-                      : null;
-
-                  const isPreviewing = previewProject?.id === project.id;
+                  const thumbSrc = project.muxPlaybackId
+                    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=320&height=180&fit_mode=smartcrop`
+                    : project.thumbnailUrl || null;
 
                   return (
                     <div
                       key={project.id}
-                      className={`text-left overflow-hidden rounded-[4px] transition-all duration-200 ${
-                        isPreviewing
-                          ? "ring-2 ring-[#C45A2D] shadow-md"
-                          : isSelected
-                            ? "ring-2 ring-[#1A1A1A] shadow-sm"
-                            : "border border-[#E8E7E3]/60 hover:border-[#ccc] hover:shadow-sm"
+                      onClick={() => handleProjectCardClick(project)}
+                      className={`text-left overflow-hidden rounded-lg transition-all duration-200 cursor-pointer ${
+                        isSelected
+                          ? "ring-2 ring-[#1A1A1A] shadow-sm"
+                          : "border border-[#E8E7E3]/60 hover:border-[#ccc] hover:shadow-sm"
                       }`}
                     >
-                      <div
-                        className="aspect-video bg-[#EEEDEA] relative rounded-t-[3px] overflow-hidden cursor-pointer group/thumb"
-                        onClick={() => {
-                          if (project.muxPlaybackId) {
-                            setPreviewProject(isPreviewing ? null : project);
-                          }
-                        }}
-                      >
+                      <div className="aspect-video bg-[#EEEDEA] relative rounded-t-[3px] overflow-hidden">
                         {thumbSrc ? (
                           <img
                             src={thumbSrc}
@@ -768,14 +860,28 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                             <Film size={16} className="text-[#ccc]" />
                           </div>
                         )}
-                        {/* Play button overlay */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleProject(project.id);
+                          }}
+                          className={`absolute top-1.5 left-1.5 px-2 py-0.5 rounded text-[9px] font-medium transition-colors ${
+                            isSelected
+                              ? "bg-[#1A1A1A] text-white"
+                              : "bg-white/90 text-[#1A1A1A] hover:bg-white"
+                          }`}
+                        >
+                          <span className="inline-flex items-center gap-1">
+                            {isSelected ? <Check size={10} /> : <Plus size={10} />}
+                            {isSelected ? "Added" : "Add"}
+                          </span>
+                        </button>
                         {project.muxPlaybackId && (
-                          <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${
-                            isPreviewing ? "opacity-100 bg-black/30" : "opacity-0 group-hover/thumb:opacity-100 bg-black/20"
-                          }`}>
-                            <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-                              <Play size={18} className="text-[#1A1A1A] ml-0.5" fill="#1A1A1A" />
-                            </div>
+                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-sm">
+                              <Play size={15} className="text-[#1A1A1A] ml-0.5" fill="#1A1A1A" />
+                            </span>
                           </div>
                         )}
                         {isSelected && (
@@ -791,18 +897,14 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                           </span>
                         )}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => toggleProject(project.id)}
-                        className="w-full p-2.5 bg-white text-left"
-                      >
+                      <div className="p-2.5 bg-white">
                         <p className="text-xs font-medium text-[#1A1A1A] truncate">
                           {project.title}
                         </p>
                         <p className="text-[10px] text-[#999] truncate mt-0.5">
                           {project.brand || "\u2014"}
                         </p>
-                      </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -811,7 +913,9 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               <div className="py-12 text-center rounded-xl border border-dashed border-[#E8E7E3]">
                 <Film size={20} className="text-[#ddd] mx-auto mb-2" />
                 <p className="text-sm text-[#999]">
-                  No published spots for this director.
+                  {spotSearch
+                    ? `No spots matching "${spotSearch}".`
+                    : "No published spots for this director."}
                 </p>
               </div>
             )}
@@ -819,48 +923,8 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         )}
       </div>
 
-      {/* Right — video preview + reel details + spot order */}
-      <div className="space-y-3 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto lg:scrollbar-none">
-        {/* Video Preview Player */}
-        {previewProject && previewProject.muxPlaybackId && (
-          <div className="rounded-xl overflow-hidden bg-black">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setPreviewProject(null)}
-                className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center transition-colors"
-              >
-                <X size={14} className="text-white" />
-              </button>
-              <MuxPlayer
-                playbackId={previewProject.muxPlaybackId}
-                autoPlay
-                streamType="on-demand"
-                style={{ aspectRatio: "16/9", width: "100%" }}
-              />
-            </div>
-            <div className="px-3 py-2 bg-[#1A1A1A] flex items-center justify-between">
-              <div className="min-w-0">
-                <p className="text-[11px] font-medium text-white truncate">
-                  {previewProject.title}
-                  <span className="text-white/40 font-normal ml-1.5">
-                    {previewProject.brand || "\u2014"}
-                    {previewProject.duration ? ` · ${formatDuration(previewProject.duration)}` : ""}
-                  </span>
-                </p>
-              </div>
-              {!selectedProjectIds.includes(previewProject.id) && (
-                <button
-                  type="button"
-                  onClick={() => toggleProject(previewProject.id)}
-                  className="flex-shrink-0 ml-2 px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-[10px] text-white font-medium transition-colors"
-                >
-                  Add to Reel
-                </button>
-              )}
-            </div>
-          </div>
-        )}
+      {/* Right — reel details + spot order */}
+      <div className="space-y-3 lg:sticky lg:top-8 lg:self-start">
         <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5 space-y-3">
           <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
             Reel Details
@@ -936,11 +1000,11 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         {/* Spot order */}
         <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[10px] uppercase tracking-[0.15em] text-black font-medium">
+            <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium">
               Spot Order
             </h3>
             {selectedProjects.length > 0 && (
-              <span className="text-[10px] text-black">
+              <span className="text-[10px] text-[#ccc]">
                 {selectedProjects.length} spot{selectedProjects.length !== 1 ? "s" : ""}
                 {totalDuration > 0 && ` · ${formatDuration(totalDuration)}`}
               </span>
@@ -983,5 +1047,6 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }

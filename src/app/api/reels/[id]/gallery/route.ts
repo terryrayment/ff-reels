@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { getDownloadUrl } from "@/lib/r2/client";
+import { canViewReel } from "@/lib/auth/guards";
 
 /**
  * GET /api/reels/[id]/gallery
@@ -19,11 +20,19 @@ export async function GET(
 
   const reel = await prisma.reel.findUnique({
     where: { id: params.id },
-    select: { galleryStatus: true },
+    select: {
+      galleryStatus: true,
+      createdById: true,
+      directorId: true,
+    },
   });
 
   if (!reel) {
     return NextResponse.json({ error: "Reel not found" }, { status: 404 });
+  }
+
+  if (!canViewReel(session, reel)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const images = await prisma.reelGalleryImage.findMany({

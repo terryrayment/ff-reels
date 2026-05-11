@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { canManageReel } from "@/lib/auth/guards";
 
 /**
  * PUT /api/reels/[id]/items
@@ -13,8 +14,21 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const reelScope = await prisma.reel.findUnique({
+    where: { id: params.id },
+    select: { createdById: true, directorId: true },
+  });
+
+  if (!reelScope) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  if (!canManageReel(session, reelScope)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { projectIds } = await req.json();

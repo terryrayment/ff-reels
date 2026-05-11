@@ -6,6 +6,7 @@ import { resolveProjectDownload } from "@/lib/mux/downloads";
 import archiver from "archiver";
 import { Readable } from "stream";
 import { finished } from "stream/promises";
+import { canViewReel } from "@/lib/auth/guards";
 
 export const maxDuration = 300;
 
@@ -132,12 +133,13 @@ export async function GET(
   const session = await getServerSession(authOptions);
   const token = req.nextUrl.searchParams.get("token");
   const preflight = req.nextUrl.searchParams.get("preflight") === "1";
+  let hasValidToken = false;
 
   if (!session && !token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!session && token) {
+  if (token) {
     const link = await prisma.screeningLink.findFirst({
       where: {
         token,
@@ -147,7 +149,11 @@ export async function GET(
       },
     });
     if (!link) {
-      return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
+      if (!session) {
+        return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
+      }
+    } else {
+      hasValidToken = true;
     }
   }
 
@@ -155,6 +161,8 @@ export async function GET(
     where: { id: params.id },
     select: {
       title: true,
+      createdById: true,
+      directorId: true,
       director: { select: { name: true } },
       items: {
         select: {
@@ -178,6 +186,11 @@ export async function GET(
 
   if (!reel) {
     return NextResponse.json({ error: "Reel not found" }, { status: 404 });
+  }
+
+  const hasSessionAccess = session ? canViewReel(session, reel) : false;
+  if (!hasSessionAccess && !hasValidToken) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   // Items that have either an R2 key or a Mux playback ID

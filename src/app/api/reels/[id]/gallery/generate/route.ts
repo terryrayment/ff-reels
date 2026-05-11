@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { generateReelGallery } from "@/lib/gallery/generate";
+import { canManageReel } from "@/lib/auth/guards";
 
 export const maxDuration = 60;
 
@@ -16,17 +17,26 @@ export async function POST(
   { params }: { params: { id: string } },
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const reel = await prisma.reel.findUnique({
     where: { id: params.id },
-    select: { id: true, galleryStatus: true },
+    select: {
+      id: true,
+      galleryStatus: true,
+      createdById: true,
+      directorId: true,
+    },
   });
 
   if (!reel) {
     return NextResponse.json({ error: "Reel not found" }, { status: 404 });
+  }
+
+  if (!canManageReel(session, reel)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   if (reel.galleryStatus === "generating") {

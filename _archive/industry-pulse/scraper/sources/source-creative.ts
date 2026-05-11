@@ -1,15 +1,29 @@
-import * as cheerio from "cheerio";
 import { ScrapedCredit, SourceAdapter } from "../types";
-import { companyTerritory } from "../production-companies";
+import { agencyTerritory, companyTerritory } from "../production-companies";
+
+function decodePayload(html: string): string {
+  return html
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/\\\//g, "/");
+}
+
+function clean(value?: string): string | undefined {
+  const cleaned = value?.replace(/\s+/g, " ").trim();
+  return cleaned ? cleaned : undefined;
+}
 
 /**
- * Scrapes SourceCreative.com for new commercial work credits.
+ * SourceCreative embeds structured credit payloads in the HTML. Parsing the
+ * payload is more stable than trying to infer credits from card markup.
  */
 export class SourceCreativeAdapter implements SourceAdapter {
   name = "SOURCE CREATIVE";
 
   async scrape(): Promise<ScrapedCredit[]> {
     const credits: ScrapedCredit[] = [];
+    const seen = new Set<string>();
 
     try {
       const res = await fetch("https://sourcecreative.com/work", {
@@ -18,49 +32,45 @@ export class SourceCreativeAdapter implements SourceAdapter {
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
           Accept: "text/html",
         },
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(20000),
       });
 
       if (!res.ok) return credits;
 
-      const html = await res.text();
-      const $ = cheerio.load(html);
+      const decoded = decodePayload(await res.text());
 
-      // Source Creative has work cards with structured credits
-      $("article, .work-card, .project-card, [class*='work'], [class*='project']").each(
-        (_, el) => {
-          const title =
-            $(el).find("h2, h3, .title, [class*='title']").first().text().trim() || "";
-          const brand =
-            $(el).find(".brand, .client, [class*='brand'], [class*='client']").first().text().trim() || "";
-          const director =
-            $(el).find(".director, [class*='director']").first().text().trim() || "";
-          const prodCo =
-            $(el).find(".production-company, .company, [class*='company']").first().text().trim() || "";
-          const agency =
-            $(el).find(".agency, [class*='agency']").first().text().trim() || "";
-          const link = $(el).find("a").first().attr("href") || "";
+      const re =
+        /"BrandName":"([^"]*)".{0,1200}?"DirectorFirstName":"([^"]*)".{0,120}?"DirectorLastName":"([^"]*)".{0,1200}?"AgencyName":"([^"]*)".{0,1200}?"ProductionCompanyName":"([^"]*)"/g;
 
-          if (!brand && !title) return;
+      for (const match of Array.from(decoded.matchAll(re))) {
+        const brand = clean(match[1]);
+        const directorFirst = clean(match[2]);
+        const directorLast = clean(match[3]);
+        const agency = clean(match[4]);
+        const productionCompany = clean(match[5]);
 
-          const territory = prodCo ? companyTerritory(prodCo) : null;
+        if (!brand || !agency || !productionCompany) continue;
 
-          credits.push({
-            brand: brand || title,
-            campaignName: title || undefined,
-            agency: agency || undefined,
-            productionCompany: prodCo || undefined,
-            directorName: director || undefined,
-            territory: territory ?? undefined,
-            sourceUrl: link.startsWith("http")
-              ? link
-              : link
-                ? `https://sourcecreative.com${link}`
-                : undefined,
-            sourceName: "SOURCE CREATIVE",
-          });
-        }
-      );
+        const directorName = clean([directorFirst, directorLast].filter(Boolean).join(" "));
+        const territory =
+          companyTerritory(productionCompany) ?? agencyTerritory(agency) ?? undefined;
+
+        // Keep this source US-focused for the alert feed.
+        if (!territory) continue;
+
+        const key = [brand, directorName, agency, productionCompany].join("|").toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+
+        credits.push({
+          brand,
+          agency,
+          productionCompany,
+          directorName,
+          territory,
+          sourceName: "SOURCE CREATIVE",
+        });
+      }
     } catch (err) {
       console.error("[SOURCE CREATIVE scraper] Error:", err);
     }

@@ -10,16 +10,16 @@ datasource db {
 // ─── Auth ──────────────────────────────────────────────
 
 model User {
-  id                 String    @id @default(cuid())
+  id                 String     @id @default(cuid())
   name               String?
-  email              String    @unique
+  email              String     @unique
   passwordHash       String?
   emailVerified      DateTime?
   image              String?
-  role               Role      @default(VIEWER)
-  directorId         String?               // Links DIRECTOR-role users to their Director profile
-  director           Director? @relation(fields: [directorId], references: [id])
-  inviteToken        String?   @unique
+  role               Role       @default(VIEWER)
+  directorId         String? // Links DIRECTOR-role users to their Director profile
+  director           Director?  @relation(fields: [directorId], references: [id])
+  inviteToken        String?    @unique
   inviteTokenExpires DateTime?
   accounts           Account[]
   sessions           Session[]
@@ -27,8 +27,8 @@ model User {
   updates            Update[]
   reels              Reel[]
   lastActiveAt       DateTime?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
 }
 
 model Account {
@@ -66,141 +66,140 @@ model VerificationToken {
 }
 
 enum Role {
-  ADMIN       // Full access + user management
-  PRODUCER    // Directors, upload, everything except user management
-  REP         // Sales reps — build & send reels
-  DIRECTOR    // Director — sees own portfolio, reels, anonymized stats
-  VIEWER      // View-only via screening links
+  ADMIN // Full access + user management
+  PRODUCER // Directors, upload, everything except user management
+  REP // Sales reps — build & send reels
+  DIRECTOR // Director — sees own portfolio, reels, anonymized stats
+  VIEWER // View-only via screening links
 }
 
 // ─── Directors ─────────────────────────────────────────
 
 model Director {
-  id             String   @id @default(cuid())
-  name           String
-  slug           String   @unique
-  bio            String?  @db.Text
-  statement      String?  @db.Text   // Director's artistic philosophy
-  videoIntroUrl  String?             // Optional 60s video intro (Mux playback ID)
-  headshotUrl    String?
-  websiteUrl     String?             // Director's personal website
-  categories     String[]            // e.g. ["comedy", "automotive", "food"]
-  awards         Json?               // Structured awards data
-  pressLinks     Json?               // Links to press features
-  clientLogos    String[]            // URLs to client logo images
-  rosterStatus   String   @default("ROSTER")  // "ROSTER" | "OFF_ROSTER" | "PHOTOGRAPHER"
-  heroProjectId      String?             // Curated thumbnail — points to a Project ID
-  heroThumbnailUrl   String?             // Custom thumbnail URL (overrides Mux auto-thumbnail)
-  isActive       Boolean  @default(true)
-  sortOrder      Int      @default(0)
-  projects       Project[]
-  reels          Reel[]
-  lookbookItems      LookbookItem[]
-  treatmentSamples   TreatmentSample[]
-  updates            Update[]
-  users              User[]              // Director-role users linked to this director
-  galleryImages      DirectorGalleryImage[]
-  createdAt          DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id               String            @id @default(cuid())
+  name             String
+  slug             String            @unique
+  bio              String?           @db.Text
+  statement        String?           @db.Text // Director's artistic philosophy
+  videoIntroUrl    String? // Optional 60s video intro (Mux playback ID)
+  headshotUrl      String?
+  websiteUrl       String? // Director's personal website
+  categories       String[] // e.g. ["comedy", "automotive", "food"]
+  awards           Json? // Structured awards data
+  pressLinks       Json? // Links to press features
+  clientLogos      String[] // URLs to client logo images
+  rosterStatus     String            @default("ROSTER") // "ROSTER" | "OFF_ROSTER"
+  heroProjectId    String? // Curated thumbnail — points to a Project ID
+  heroThumbnailUrl String? // Custom thumbnail URL (overrides Mux auto-thumbnail)
+  isActive         Boolean           @default(true)
+  sortOrder        Int               @default(0)
+  projects         Project[]
+  reels            Reel[]
+  lookbookItems    LookbookItem[]
+  treatmentSamples TreatmentSample[]
+  updates          Update[]
+  users            User[] // Director-role users linked to this director
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 }
 
 // ─── Projects (Individual Spots/Work) ──────────────────
 
 model Project {
-  id              String   @id @default(cuid())
-  directorId      String
-  director        Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
-  title           String
-  brand           String?
-  agency          String?
-  productionCompany String?           // e.g. "Friends & Family", "Biscuit Filmworks"
-  category        String?             // e.g. "comedy", "automotive"
-  year            Int?
-  description     String?  @db.Text
-  contextNote     String?  @db.Text   // "Achieved on a 2-day shoot with practical effects"
-  contentType     String   @default("SPOT")  // SPOT | CASE_STUDY | SHORT_FILM
+  id                String   @id @default(cuid())
+  directorId        String
+  director          Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  title             String
+  brand             String?
+  agency            String?
+  productionCompany String? // e.g. "Friends & Family", "Biscuit Filmworks"
+  category          String? // e.g. "comedy", "automotive"
+  year              Int?
+  description       String?  @db.Text
+  contextNote       String?  @db.Text // "Achieved on a 2-day shoot with practical effects"
+  contentType       String   @default("SPOT") // SPOT | CASE_STUDY | SHORT_FILM
 
   // Mux video
-  muxUploadId     String?  @unique           // Mux upload ID — bridges upload → asset
-  muxAssetId      String?  @unique
-  muxPlaybackId   String?
-  muxStatus       String?  @default("waiting") // waiting, preparing, ready, errored
-  duration        Float?              // seconds
-  aspectRatio     String?             // "16:9", "4:3", etc.
+  muxUploadId   String? @unique // Mux upload ID — bridges upload → asset
+  muxAssetId    String? @unique
+  muxPlaybackId String?
+  muxStatus     String? @default("waiting") // waiting, preparing, ready, errored
+  duration      Float? // seconds
+  aspectRatio   String? // "16:9", "4:3", etc.
 
   // R2 original file
-  r2Key           String?             // Key in R2 bucket for original file
+  r2Key            String? // Key in R2 bucket for original file
   originalFilename String?
-  fileSizeMb      Float?
+  fileSizeMb       Float?
 
   // Stills / frame grabs
-  thumbnailUrl    String?
-  frameGrabs      FrameGrab[]
+  thumbnailUrl String?
+  frameGrabs   FrameGrab[]
 
   // Awards per project
-  projectAwards   Json?
+  projectAwards Json?
 
-  isPublished     Boolean  @default(false)
-  sortOrder       Int      @default(0)
-  reelItems       ReelItem[]
-  galleryImages   ReelGalleryImage[]
-  updates         Update[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  isPublished   Boolean            @default(false)
+  sortOrder     Int                @default(0)
+  reelItems     ReelItem[]
+  galleryImages ReelGalleryImage[]
+  updates       Update[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
 }
 
 model FrameGrab {
-  id         String  @id @default(cuid())
-  projectId  String
-  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  imageUrl   String
-  caption    String?
-  sortOrder  Int     @default(0)
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  caption   String?
+  sortOrder Int     @default(0)
 }
 
 // ─── Lookbook (Director's visual world) ────────────────
 
 model LookbookItem {
-  id          String   @id @default(cuid())
-  directorId  String
-  director    Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
-  imageUrl    String
-  caption     String?
-  source      String?  // "Film: Blade Runner 2049" or "Photography: Gregory Crewdson"
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  directorId String
+  director   Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  imageUrl   String
+  caption    String?
+  source     String? // "Film: Blade Runner 2049" or "Photography: Gregory Crewdson"
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
 }
 
 // ─── Reels (Curated playlists of projects) ─────────────
 
 model Reel {
-  id             String     @id @default(cuid())
+  id             String   @id @default(cuid())
   directorId     String
-  director       Director   @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  director       Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
   title          String
-  description    String?    @db.Text
-  curatorialNote String?    @db.Text  // Rep's note: "Look at humor in spots 2 and 4"
+  description    String?  @db.Text
+  curatorialNote String?  @db.Text // Rep's note: "Look at humor in spots 2 and 4"
 
   // Opportunity metadata
-  brand          String?              // e.g. "Cheerios"
-  agencyName     String?              // e.g. "BBH"
-  campaignName   String?              // e.g. "Summer 2026"
-  producer       String?              // e.g. "Jane Smith"
+  brand        String? // e.g. "Cheerios"
+  agencyName   String? // e.g. "BBH"
+  campaignName String? // e.g. "Summer 2026"
+  producer     String? // e.g. "Jane Smith"
 
-  reelType       ReelType   @default(CUSTOM)
+  reelType ReelType @default(CUSTOM)
 
   // Who built this reel
-  createdById    String?
-  createdBy      User?      @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdById String?
+  createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
 
   // AI gallery
-  galleryStatus  String?              // "none" | "generating" | "ready" | "failed"
-  galleryImages  ReelGalleryImage[]
+  galleryStatus String? // "none" | "generating" | "ready" | "failed"
+  galleryImages ReelGalleryImage[]
 
   items          ReelItem[]
   screeningLinks ScreeningLink[]
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model ReelItem {
@@ -215,9 +214,9 @@ model ReelItem {
 }
 
 enum ReelType {
-  PORTFOLIO   // General "best of" for a director
-  CUSTOM      // Built for a specific opportunity
-  CATEGORY    // Category-specific (e.g. "food reel")
+  PORTFOLIO // General "best of" for a director
+  CUSTOM // Built for a specific opportunity
+  CATEGORY // Category-specific (e.g. "food reel")
 }
 
 // ─── Companies & Contacts (Lightweight CRM) ─────────────
@@ -225,8 +224,8 @@ enum ReelType {
 model Company {
   id        String    @id @default(cuid())
   name      String    @unique
-  type      String?   // "Agency" | "Brand" | "Production Company"
-  domain    String?   // e.g. "bbh.com" — extracted from email
+  type      String? // "Agency" | "Brand" | "Production Company"
+  domain    String? // e.g. "bbh.com" — extracted from email
   contacts  Contact[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -238,7 +237,7 @@ model Contact {
   email          String          @unique
   companyId      String?
   company        Company?        @relation(fields: [companyId], references: [id], onDelete: SetNull)
-  role           String?         // "Creative Director", "Producer", "Head of Production"
+  role           String? // "Creative Director", "Producer", "Head of Production"
   phone          String?
   notes          String?         @db.Text
   tags           String[]
@@ -250,191 +249,181 @@ model Contact {
 // ─── Screening Links (Shareable tracking links) ────────
 
 model ScreeningLink {
-  id               String     @id @default(cuid())
-  reelId           String
-  reel             Reel       @relation(fields: [reelId], references: [id], onDelete: Cascade)
-  token            String     @unique @default(cuid())
+  id     String @id @default(cuid())
+  reelId String
+  reel   Reel   @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  token  String @unique @default(cuid())
 
   // Recipient info
   recipientName    String?
   recipientEmail   String?
-  recipientCompany String?    // Agency name
+  recipientCompany String? // Agency name
   contactId        String?
-  contact          Contact?   @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  contact          Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
   // Link settings
-  expiresAt        DateTime?
-  isActive         Boolean    @default(true)
-  password         String?
+  expiresAt DateTime?
+  isActive  Boolean   @default(true)
+  password  String?
 
   // Tracking
-  views            ReelView[]
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  views     ReelView[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 // ─── Analytics ─────────────────────────────────────────
 
 model ReelView {
-  id               String        @id @default(cuid())
-  screeningLinkId  String
-  screeningLink    ScreeningLink @relation(fields: [screeningLinkId], references: [id], onDelete: Cascade)
+  id              String        @id @default(cuid())
+  screeningLinkId String
+  screeningLink   ScreeningLink @relation(fields: [screeningLinkId], references: [id], onDelete: Cascade)
 
   // Viewer identity (self-reported at gate)
-  viewerName       String?
-  viewerEmail      String?
+  viewerName  String?
+  viewerEmail String?
 
   // Viewer info (auto-detected)
-  userId           String?
-  user             User?         @relation(fields: [userId], references: [id])
-  viewerIp         String?
-  viewerCity       String?
-  viewerCountry    String?
-  viewerTimezone   String?       // e.g. "America/New_York" — fallback when city is null
-  userAgent        String?
-  device           String?       // "desktop", "mobile", "tablet"
+  userId         String?
+  user           User?   @relation(fields: [userId], references: [id])
+  viewerIp       String?
+  viewerCity     String?
+  viewerCountry  String?
+  viewerTimezone String? // e.g. "America/New_York" — fallback when city is null
+  userAgent      String?
+  device         String? // "desktop", "mobile", "tablet"
 
   // Session data
-  startedAt        DateTime      @default(now())
-  endedAt          DateTime?
-  totalDuration    Float?
+  startedAt     DateTime  @default(now())
+  endedAt       DateTime?
+  totalDuration Float?
 
   // Per-spot engagement
-  spotViews        SpotView[]
+  spotViews SpotView[]
 
   // Forwarding detection
-  isForwarded      Boolean       @default(false)
+  isForwarded Boolean @default(false)
 
   // Network context (Feature 8)
-  connectionType     String?     // "4g", "wifi", "3g"
-  connectionDownlink Float?      // Estimated Mbps
-  saveData           Boolean?    // Data saver mode
+  connectionType     String? // "4g", "wifi", "3g"
+  connectionDownlink Float? // Estimated Mbps
+  saveData           Boolean? // Data saver mode
 }
 
 model SpotView {
-  id             String   @id @default(cuid())
-  reelViewId     String
-  reelView       ReelView @relation(fields: [reelViewId], references: [id], onDelete: Cascade)
-  projectId      String
+  id         String   @id @default(cuid())
+  reelViewId String
+  reelView   ReelView @relation(fields: [reelViewId], references: [id], onDelete: Cascade)
+  projectId  String
 
   // Engagement
   watchDuration  Float?
   totalDuration  Float?
   percentWatched Float?
-  rewatched      Boolean  @default(false)
-  skipped        Boolean  @default(false)
+  rewatched      Boolean @default(false)
+  skipped        Boolean @default(false)
 
   // Richer video signals (Feature 7)
-  pauseCount            Int      @default(0)
-  seekForwardCount      Int      @default(0)
-  seekBackwardCount     Int      @default(0)
-  fullscreenToggleCount Int      @default(0)
-  playbackRateChanges   String?  // JSON array e.g. "[1, 1.5, 2]"
+  pauseCount            Int     @default(0)
+  seekForwardCount      Int     @default(0)
+  seekBackwardCount     Int     @default(0)
+  fullscreenToggleCount Int     @default(0)
+  playbackRateChanges   String? // JSON array e.g. "[1, 1.5, 2]"
 
   // Video quality context (Feature 8)
-  videoQuality          String?  // e.g. "1080p", "720p"
+  videoQuality String? // e.g. "1080p", "720p"
 
-  startedAt      DateTime @default(now())
+  startedAt DateTime @default(now())
 }
 
 // ─── Updates Feed (Activity + Admin Notes) ────────────────
 
 model Update {
-  id          String     @id @default(cuid())
-  type        UpdateType
-  title       String
-  body        String?    @db.Text    // Markdown-friendly text
-  imageUrl    String?                // Optional media attachment
+  id       String     @id @default(cuid())
+  type     UpdateType
+  title    String
+  body     String?    @db.Text // Markdown-friendly text
+  imageUrl String? // Optional media attachment
 
   // For spot/reel-related updates
-  directorId  String?
-  director    Director?  @relation(fields: [directorId], references: [id], onDelete: SetNull)
-  projectId   String?
-  project     Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  directorId String?
+  director   Director? @relation(fields: [directorId], references: [id], onDelete: SetNull)
+  projectId  String?
+  project    Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
 
   // Who posted/triggered it
-  authorId    String?
-  author      User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
-  isPinned    Boolean    @default(false)
-  createdAt   DateTime   @default(now())
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 
 enum UpdateType {
-  SPOT_ADDED       // Auto: new spot uploaded
-  REEL_CREATED     // Auto: new reel built
-  DIRECTOR_ADDED   // Auto: new director added to roster
-  ADMIN_NOTE       // Manual: admin posts a note for the team
-  REEL_VIEWED      // Auto: someone viewed a screening link
+  SPOT_ADDED // Auto: new spot uploaded
+  REEL_CREATED // Auto: new reel built
+  DIRECTOR_ADDED // Auto: new director added to roster
+  ADMIN_NOTE // Manual: admin posts a note for the team
+  REEL_VIEWED // Auto: someone viewed a screening link
 }
 
 // ─── Industry Credits Feed (Nightly Scrape) ─────────────
 
 model IndustryCredit {
-  id                String    @id @default(cuid())
-  brand             String
-  campaignName      String?
-  agency            String?
-  productionCompany String?
-  directorName      String?
-  category          String?           // e.g. "automotive", "tech", "food"
-  territory         String?           // "EAST", "MIDWEST", "WEST" (derived from prod co HQ)
-  sourceUrl         String?           // Link to original post/article
-  sourceName        String?           // "SHOTS", "Smuggler IG", etc.
-  thumbnailUrl      String?
-  publishedAt       DateTime?         // When the work was published/aired
-  scrapedAt         DateTime          @default(now())
-  isVerified        Boolean           @default(false)
-  isHidden          Boolean           @default(false)
-  createdAt         DateTime          @default(now())
+  id                         String    @id @default(cuid())
+  brand                      String
+  campaignName               String?
+  agency                     String?
+  productionCompany          String?
+  directorName               String?
+  agencyCanonical            String?
+  productionCompanyCanonical String?
+  directorNameCanonical      String?
+  category                   String? // e.g. "automotive", "tech", "food"
+  territory                  String? // "EAST", "MIDWEST", "WEST" (derived from prod co HQ)
+  agencyTerritory            String? // "EAST", "MIDWEST", "WEST" (derived from agency HQ)
+  sourceUrl                  String? // Link to original post/article
+  sourceName                 String? // "SHOTS", "Smuggler IG", etc.
+  sourceTrust                String    @default("LOW")
+  confidence                 Float?
+  alertEligible              Boolean   @default(false)
+  alertRejectedReason        String?
+  qualifiedAt                DateTime?
+  notifiedAt                 DateTime?
+  thumbnailUrl               String?
+  publishedAt                DateTime? // When the work was published/aired
+  scrapedAt                  DateTime  @default(now())
+  isVerified                 Boolean   @default(false)
+  isHidden                   Boolean   @default(false)
+  createdAt                  DateTime  @default(now())
   // Deep credits (AI-extracted)
-  dp                String?           // Director of Photography
-  editor            String?
-  musicCompany      String?
-  executiveProducer String?
-  isAiExtracted     Boolean           @default(false)
+  dp                         String? // Director of Photography
+  editor                     String?
+  musicCompany               String?
+  executiveProducer          String?
+  isAiExtracted              Boolean   @default(false)
 
   // Dedup index
   @@index([brand, campaignName, directorName])
   @@index([createdAt(sort: Desc)])
   @@index([territory])
+  @@index([agencyTerritory])
+  @@index([alertEligible, createdAt(sort: Desc)])
+  @@index([sourceTrust])
 }
 
 // ─── Treatment Samples ─────────────────────────────────
 
 model TreatmentSample {
-  id          String   @id @default(cuid())
-  directorId  String
-  director    Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
-  title       String
-  brand       String?
-  previewUrl  String?               // Optional — Adobe InDesign URL (iframe fallback flow)
-  pdfR2Key    String?               // Optional — R2 storage key when PDF uploaded (preferred flow)
-  token       String?  @unique      // Short share token for branded F&F link
-  pageCount   Int?
-  isRedacted  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  views       TreatmentView[]
-}
-
-model TreatmentView {
-  id             String   @id @default(cuid())
-  treatmentId    String
-  treatment      TreatmentSample @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
-  startedAt      DateTime @default(now())
-  endedAt        DateTime?
-  totalDuration  Int?              // seconds
-  pagesViewed    Int[]             // unique page numbers visited
-  maxPageReached Int?
-  viewerIp       String?
-  viewerCity     String?
-  viewerCountry  String?
-  device         String   @default("desktop")
-  userAgent      String?
-  referer        String?
-
-  @@index([treatmentId])
-  @@index([startedAt])
+  id         String   @id @default(cuid())
+  directorId String
+  director   Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
+  title      String
+  brand      String?
+  previewUrl String
+  pageCount  Int?
+  isRedacted Boolean  @default(false)
+  createdAt  DateTime @default(now())
 }
 
 // ─── AI Gallery (Best Frames from Reels) ────────────────
@@ -455,19 +444,4 @@ model ReelGalleryImage {
   createdAt      DateTime @default(now())
 
   @@index([reelId])
-}
-
-// ─── Director Gallery (Photography / Stills) ─────────────
-
-model DirectorGalleryImage {
-  id          String   @id @default(cuid())
-  directorId  String
-  director    Director @relation(fields: [directorId], references: [id], onDelete: Cascade)
-  url         String               // External image URL or R2 key
-  caption     String?
-  brand       String?              // Client/brand for this image
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-
-  @@index([directorId])
 }

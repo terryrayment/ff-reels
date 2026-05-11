@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { getDownloadUrl } from "@/lib/r2/client";
 import archiver from "archiver";
 import { Readable } from "stream";
+import { canViewReel } from "@/lib/auth/guards";
 
 export const maxDuration = 30;
 
@@ -20,13 +21,14 @@ export async function GET(
   // Auth: session or screening token
   const session = await getServerSession(authOptions);
   const token = req.nextUrl.searchParams.get("token");
+  let hasValidToken = false;
 
   if (!session && !token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Validate screening token if no session
-  if (!session && token) {
+  // Validate screening token when provided
+  if (token) {
     const link = await prisma.screeningLink.findFirst({
       where: {
         token,
@@ -36,8 +38,31 @@ export async function GET(
       },
     });
     if (!link) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      if (!session) {
+        return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      }
+    } else {
+      hasValidToken = true;
     }
+  }
+
+  const reel = await prisma.reel.findUnique({
+    where: { id: params.id },
+    select: {
+      title: true,
+      createdById: true,
+      directorId: true,
+      director: { select: { name: true } },
+    },
+  });
+
+  if (!reel) {
+    return NextResponse.json({ error: "Reel not found" }, { status: 404 });
+  }
+
+  const hasSessionAccess = session ? canViewReel(session, reel) : false;
+  if (!hasSessionAccess && !hasValidToken) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const images = await prisma.reelGalleryImage.findMany({
@@ -51,12 +76,6 @@ export async function GET(
   if (images.length === 0) {
     return NextResponse.json({ error: "No gallery images" }, { status: 404 });
   }
-
-  // Get reel title for ZIP filename
-  const reel = await prisma.reel.findUnique({
-    where: { id: params.id },
-    select: { title: true, director: { select: { name: true } } },
-  });
 
   const zipFilename = reel
     ? `${reel.director.name} - ${reel.title} - Gallery.zip`

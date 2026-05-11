@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
+import { qualifyIndustryAlert } from "@/lib/scraper/qualify";
 
 /**
  * GET /api/industry-credits — List industry credits (paginated)
@@ -14,9 +15,13 @@ export async function GET(req: NextRequest) {
   const take = Math.min(parseInt(searchParams.get("take") || "50"), 100);
   const skip = parseInt(searchParams.get("skip") || "0");
   const territory = searchParams.get("territory");
+  const includeRaw = searchParams.get("raw") === "1";
 
-  const where: Record<string, unknown> = { isHidden: false };
-  if (territory) where.territory = territory;
+  const where: Record<string, unknown> = {
+    isHidden: false,
+    ...(includeRaw ? {} : { alertEligible: true }),
+  };
+  if (territory) where.agencyTerritory = territory;
 
   const [credits, total] = await Promise.all([
     prisma.industryCredit.findMany({
@@ -38,6 +43,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
   try {
     const body = await req.json();
@@ -77,6 +85,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const qualified = qualifyIndustryAlert({
+      agency,
+      directorName,
+      productionCompany,
+      sourceName: sourceName?.trim() || "MANUAL",
+    });
+
     const credit = await prisma.industryCredit.create({
       data: {
         brand: brand.trim(),
@@ -84,10 +99,19 @@ export async function POST(req: NextRequest) {
         agency: agency?.trim() || null,
         productionCompany: productionCompany?.trim() || null,
         directorName: directorName?.trim() || null,
+        agencyCanonical: qualified.agencyCanonical,
+        productionCompanyCanonical: qualified.productionCompanyCanonical,
+        directorNameCanonical: qualified.directorNameCanonical,
         category: category?.trim() || null,
         territory: territory || null,
+        agencyTerritory: qualified.agencyTerritory || null,
         sourceUrl: sourceUrl?.trim() || null,
         sourceName: sourceName?.trim() || "MANUAL",
+        sourceTrust: qualified.sourceTrust,
+        confidence: qualified.confidence,
+        alertEligible: qualified.alertEligible,
+        alertRejectedReason: qualified.alertRejectedReason,
+        qualifiedAt: qualified.qualifiedAt,
         isVerified: true,
         publishedAt: new Date(),
       },

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
+import { isTeamRole } from "@/lib/auth/guards";
 
 /**
  * POST /api/reels/preview
@@ -8,6 +11,11 @@ import crypto from "crypto";
  */
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !isTeamRole(session.user.role)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { directorId, projectIds, title, brand, curatorialNote, agencyName, campaignName } = body;
 

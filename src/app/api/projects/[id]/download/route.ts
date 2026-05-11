@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { resolveProjectDownload } from "@/lib/mux/downloads";
+import { canAccessProject } from "@/lib/auth/guards";
 
 /**
  * GET /api/projects/[id]/download?token=<screeningToken>
@@ -18,13 +19,14 @@ export async function GET(
   const session = await getServerSession(authOptions);
   const token = req.nextUrl.searchParams.get("token");
   const preflight = req.nextUrl.searchParams.get("preflight") === "1";
+  let hasValidToken = false;
 
   if (!session && !token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Validate screening token if no session — scoped to this project
-  if (!session && token) {
+  // Validate screening token — scoped to this project
+  if (token) {
     const link = await prisma.screeningLink.findFirst({
       where: {
         token,
@@ -38,7 +40,11 @@ export async function GET(
       },
     });
     if (!link) {
-      return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
+      if (!session) {
+        return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
+      }
+    } else {
+      hasValidToken = true;
     }
   }
 
@@ -46,6 +52,7 @@ export async function GET(
     where: { id: params.id },
     select: {
       id: true,
+      directorId: true,
       r2Key: true,
       originalFilename: true,
       title: true,
@@ -56,6 +63,11 @@ export async function GET(
 
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
+  const hasSessionAccess = session ? canAccessProject(session, project.directorId) : false;
+  if (!hasSessionAccess && !hasValidToken) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   // Build a clean download filename

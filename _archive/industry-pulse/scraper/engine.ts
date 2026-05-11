@@ -10,8 +10,11 @@ import { ChampionNewsletter } from "./sources/champion-newsletter";
 import { LbbOnlineRss } from "./sources/rss-lbb";
 import { CampaignBriefRss } from "./sources/rss-campaign-brief";
 import { AdlandRss } from "./sources/rss-adland";
+import { SourceCreativeAdapter } from "./sources/source-creative";
+import { ProductionCompanySitesAdapter } from "./sources/production-company-sites";
 import { companyTerritory, agencyTerritory } from "./production-companies";
 import { extractCreditsBatch } from "./ai-extract";
+import { qualifyIndustryAlert } from "./qualify";
 
 /**
  * Decode common HTML entities that leak through RSS parsing.
@@ -57,7 +60,12 @@ const ADAPTERS: SourceAdapter[] = [
   new LbbOnlineRss(),
   new CampaignBriefRss(),
   new AdlandRss(),
+  new SourceCreativeAdapter(),
 ];
+
+if (process.env.SCRAPER_ENABLE_FIRST_PARTY_SITES === "1") {
+  ADAPTERS.push(new ProductionCompanySitesAdapter());
+}
 
 /**
  * Deduplicate credits by brand + campaign + director combo.
@@ -277,6 +285,13 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
         territory = agencyTerritory(credit.agency) ?? undefined;
       }
 
+      const qualified = qualifyIndustryAlert({
+        agency: credit.agency,
+        directorName: credit.directorName,
+        productionCompany: credit.productionCompany,
+        sourceName: credit.sourceName,
+      });
+
       const deep = credit as ScrapedCreditWithDeep;
 
       await prisma.industryCredit.create({
@@ -286,10 +301,19 @@ export async function runNightlyScrape(): Promise<ScrapeResult> {
           agency: credit.agency ? decodeEntities(credit.agency) : undefined,
           productionCompany: credit.productionCompany,
           directorName: credit.directorName,
+          agencyCanonical: qualified.agencyCanonical,
+          productionCompanyCanonical: qualified.productionCompanyCanonical,
+          directorNameCanonical: qualified.directorNameCanonical,
           category: credit.category,
           territory: territory,
+          agencyTerritory: qualified.agencyTerritory ?? undefined,
           sourceUrl: credit.sourceUrl,
           sourceName: credit.sourceName,
+          sourceTrust: qualified.sourceTrust,
+          confidence: qualified.confidence,
+          alertEligible: qualified.alertEligible,
+          alertRejectedReason: qualified.alertRejectedReason ?? undefined,
+          qualifiedAt: qualified.qualifiedAt ?? undefined,
           thumbnailUrl: credit.thumbnailUrl,
           publishedAt: credit.publishedAt,
           // Deep credits (AI-extracted)

@@ -42,12 +42,21 @@ Set password from invite link.
 
 **Errors:** 400 (invalid/expired token, short password)
 
+### Authorization Model
+
+- Team roles: `ADMIN`, `PRODUCER`, `REP`
+- Director role: `DIRECTOR` (scoped to records tied to `session.user.directorId`)
+- `canViewReel`: `ADMIN|PRODUCER` any reel, `REP` only reels they created, `DIRECTOR` only reels for their director profile
+- `canManageReel`: `ADMIN|PRODUCER` any reel, `REP` only reels they created
+- `canAccessProject`: team roles any project, `DIRECTOR` only own projects
+- Token download fallback: reel/project download endpoints accept either a valid scoped screening token or an authorized session
+
 ---
 
 ## Directors
 
 ### `GET /api/directors`
-**Auth:** Any session
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 List all directors with project and reel counts.
 
@@ -68,12 +77,12 @@ Create a new director. Auto-generates unique slug from name. Creates `DIRECTOR_A
 **Response:** `201` — Created director
 
 ### `GET /api/directors/[id]`
-**Auth:** Any session
+**Auth:** Team role OR `DIRECTOR` where `session.user.directorId === [id]`
 
 Get director with projects, reels (with item/link counts), and lookbook items.
 
 ### `PATCH /api/directors/[id]`
-**Auth:** ADMIN
+**Auth:** `ADMIN` or `PRODUCER`
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -92,12 +101,12 @@ Get director with projects, reels (with item/link counts), and lookbook items.
 Cascades: deletes all projects, reels, items, screening links, views, and analytics.
 
 ### `GET /api/directors/[id]/projects`
-**Auth:** Any session
+**Auth:** Team role OR `DIRECTOR` where `session.user.directorId === [id]`
 
 List all projects for a director, ordered by `sortOrder`.
 
 ### `POST /api/directors/[id]/projects`
-**Auth:** ADMIN or REP
+**Auth:** `ADMIN`, `PRODUCER`, or `REP`
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -116,12 +125,12 @@ List all projects for a director, ordered by `sortOrder`.
 ## Projects
 
 ### `GET /api/projects/[id]`
-**Auth:** Any session
+**Auth:** Team role OR `DIRECTOR` owner of the project's `directorId`
 
 Get project with director and frame grabs.
 
 ### `PATCH /api/projects/[id]`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`) OR scoped `DIRECTOR`
 
 | Field | Type |
 |-------|------|
@@ -135,6 +144,15 @@ Get project with director and frame grabs.
 | isPublished | boolean |
 | sortOrder | number |
 | thumbnailUrl | string |
+
+`DIRECTOR` users can only update `title`, and only on their own spots.
+
+### `GET /api/projects/[id]/download`
+**Auth:** Authorized session for project scope OR valid screening token (`?token=...`)
+
+Returns a redirect to a downloadable source URL:
+- Priority: original R2 upload, then ready Mux static rendition
+- `?preflight=1` returns JSON readiness state instead of redirecting
 
 ### `DELETE /api/projects/[id]`
 **Auth:** ADMIN
@@ -158,14 +176,16 @@ Generate presigned R2 upload URL for a custom thumbnail.
 ## Reels
 
 ### `GET /api/reels`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
-List reels. ADMIN sees all; REP sees only their own (filtered by `createdById`).
+List reels.
+- `ADMIN` and `PRODUCER` see all reels
+- `REP` sees only their own (filtered by `createdById`)
 
 **Response:** Array of reels with director, item count, screening link count, and latest view timestamp.
 
 ### `POST /api/reels`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Create a reel with projects. Auto-creates a screening link (30-day expiry) and `REEL_CREATED` update.
 
@@ -185,12 +205,17 @@ Create a reel with projects. Auto-creates a screening link (30-day expiry) and `
 **Response:** `201` — Reel with `screeningUrl`
 
 ### `GET /api/reels/[id]`
-**Auth:** Any session
+**Auth:** Scoped by reel ownership:
+- `ADMIN` and `PRODUCER` can view any reel
+- `REP` can view reels they created
+- `DIRECTOR` can view reels tied to their own director profile
 
 Get reel with director, items (with projects), and screening links (with view counts).
 
 ### `PATCH /api/reels/[id]`
-**Auth:** ADMIN or REP
+**Auth:** Scoped manage access:
+- `ADMIN` and `PRODUCER` can update any reel
+- `REP` can update reels they created
 
 | Field | Type |
 |-------|------|
@@ -205,7 +230,7 @@ Get reel with director, items (with projects), and screening links (with view co
 Cascades: deletes items, screening links, views, spot views, gallery images.
 
 ### `PUT /api/reels/[id]/items`
-**Auth:** ADMIN or REP
+**Auth:** Scoped manage access (`ADMIN|PRODUCER` any reel, `REP` own reels)
 
 Replace all reel items. Runs in a transaction (delete all → create new).
 
@@ -213,12 +238,17 @@ Replace all reel items. Runs in a transaction (delete all → create new).
 |-------|------|----------|
 | projectIds | string[] | yes | In desired sort order |
 
+### `POST /api/reels/preview`
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
+
+Creates a short-lived signed preview token (1 hour) for unpublished preview flows.
+
 ---
 
 ## Screening Links
 
 ### `POST /api/reels/[id]/screening-links`
-**Auth:** ADMIN or REP
+**Auth:** Scoped manage access (`ADMIN|PRODUCER` any reel, `REP` own reels)
 
 Create a screening link for a reel. Auto-creates or links contact record.
 
@@ -236,23 +266,30 @@ Create a screening link for a reel. Auto-creates or links contact record.
 ### Gallery
 
 ### `GET /api/reels/[id]/gallery`
-**Auth:** Any session
+**Auth:** Scoped reel view access (`ADMIN|PRODUCER` any, `REP` own, `DIRECTOR` own)
 
 List gallery images with presigned R2 download URLs (1-hour expiry).
 
 **Response:** `{ status, images: [{ id, imageUrl, thumbnailUrl, timeOffset, aiScore, width, height }] }`
 
 ### `POST /api/reels/[id]/gallery/generate`
-**Auth:** ADMIN or REP
+**Auth:** Scoped manage access (`ADMIN|PRODUCER` any, `REP` own)
 
 Trigger AI gallery generation. Returns 409 if already generating.
 
 **Response:** `{ status: "ready", imageCount, candidatesScored, projectCount }`
 
 ### `GET /api/reels/[id]/gallery/download`
-**Auth:** Session OR valid screening token (query param `?token=xxx`)
+**Auth:** Scoped reel session access OR valid screening token (`?token=...`)
 
 Download all gallery images as a ZIP file.
+
+### `GET /api/reels/[id]/download-videos`
+**Auth:** Scoped reel session access OR valid screening token (`?token=...`)
+
+Streams a ZIP of downloadable reel videos:
+- Source priority per spot: R2 original, then ready Mux static rendition
+- `?preflight=1` returns readiness counts without streaming the ZIP
 
 ---
 
@@ -427,14 +464,15 @@ Post an admin note to the activity feed.
 |-------|------|---------|
 | take | number | 50 (max 100) |
 | skip | number | 0 |
-| territory | string | — | Filter: "EAST", "MIDWEST", "WEST" |
+| territory | string | — | Filter by normalized agency territory (`EAST`, `MIDWEST`, `WEST`) |
+| raw | `1` | omitted | Include non-alert-eligible credits (default excludes them) |
 
 **Response:** `{ credits, total }`
 
 ### `POST /api/industry-credits`
-**Auth:** Any session
+**Auth:** `ADMIN`, `PRODUCER`, or `REP`
 
-Manually add an industry credit. Deduplicates against 30-day window.
+Manually add an industry credit. Deduplicates against 30-day window and runs qualification to populate canonical/eligibility fields.
 
 | Field | Type | Required |
 |-------|------|----------|

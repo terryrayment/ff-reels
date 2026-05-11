@@ -59,7 +59,7 @@ export async function POST(
     data: {
       reelId: clone.id,
       token: generateToken(),
-      expiresAt: new Date(Date.now() + 30 * 86400000),
+      expiresAt: null, // never expires
     },
   });
 
