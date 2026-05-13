@@ -35,7 +35,7 @@ const navItems: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", roles: ["ADMIN", "PRODUCER", "REP"], icon: Home },
   { href: "/reels", label: "Reels", roles: ["ADMIN", "PRODUCER", "REP"], icon: Clapperboard },
   { href: "/analytics", label: "Analytics", roles: ["ADMIN", "PRODUCER", "REP"], icon: BarChart3 },
-  { href: "/contacts", label: "Contacts", roles: ["ADMIN", "PRODUCER", "REP"], icon: Search },
+  { href: "/leads", label: "Leads", roles: ["ADMIN", "PRODUCER", "REP"], icon: Search },
   { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER"], icon: Users },
   { href: "/photographers", label: "Photographers", roles: ["ADMIN", "PRODUCER", "REP"], icon: Briefcase },
   { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"], icon: FileText },
@@ -67,9 +67,10 @@ interface SidebarProps {
     email?: string | null;
     role?: string;
   };
+  leadsEnabled?: boolean;
 }
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const role = user.role || "VIEWER";
@@ -86,7 +87,9 @@ export function Sidebar({ user }: SidebarProps) {
         ...item,
         href: `${item.href}${previewSuffix}`,
       }))
-    : navItems.filter((item) => item.roles.includes(role));
+    : navItems
+        .filter((item) => item.roles.includes(role))
+        .filter((item) => item.href !== "/leads" || leadsEnabled);
   const canUpload = !isPreview && (role === "ADMIN" || role === "PRODUCER");
 
   // Close mobile sidebar on navigation

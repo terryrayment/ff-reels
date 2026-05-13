@@ -8,6 +8,7 @@ const ADMIN_ROUTES = [
   "/reels",
   "/analytics",
   "/contacts",
+  "/leads",
   "/directors",
   "/treatments",
   "/industry",

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { Sidebar } from "@/components/layout/sidebar";
+import { canAccessLeads } from "@/lib/leads-access";
 
 export const metadata: Metadata = {
   robots: {
@@ -32,6 +33,8 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const leadsEnabled = canAccessLeads(session.user);
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
       <Suspense>
@@ -41,6 +44,7 @@ export default async function DashboardLayout({
             email: session.user.email,
             role: session.user.role,
           }}
+          leadsEnabled={leadsEnabled}
         />
       </Suspense>
 
