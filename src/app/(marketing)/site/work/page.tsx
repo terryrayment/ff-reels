@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { cn } from "@/lib/utils";
+import { ProjectCard } from "@/components/marketing/project-card";
+import { ScrollReveal } from "@/components/marketing/scroll-reveal";
 
 export const metadata: Metadata = { title: "Work" };
 export const revalidate = 300;
@@ -62,7 +64,7 @@ export default async function WorkPage({
   return (
     <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
       <header className="mb-12 flex items-baseline justify-between gap-6">
-        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A] font-helveticaDisplay">
+        <h1 className="text-[56px] md:text-[80px] tracking-[-0.04em] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
           Work
         </h1>
         <p className="text-[11px] uppercase tracking-[0.14em] text-[#999]">
@@ -112,52 +114,18 @@ export default async function WorkPage({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
-          {items.map((p) => {
-            const still =
-              p.thumbnailUrl ??
-              (p.muxPlaybackId
-                ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=1000`
-                : null);
+          {items.map((p, i) => {
             const disciplineLabel = DISCIPLINES.find(
               (d) => d.contentType === p.contentType,
             )?.label;
             return (
-              <Link
-                key={p.id}
-                href={`/site/directors/${p.director.slug}`}
-                className="group block"
-              >
-                <div className="relative aspect-video overflow-hidden bg-[#EEEDEA]">
-                  {still && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={still}
-                      alt={p.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-all duration-[900ms] ease-out group-hover:scale-[1.015] group-hover:opacity-95"
-                    />
-                  )}
-                </div>
-                <div className="mt-4">
-                  {p.brand && (
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#1A1A1A] font-medium">
-                      {p.brand}
-                    </p>
-                  )}
-                  <p className="text-[18px] md:text-[20px] tracking-tight-2 font-light text-[#1A1A1A] leading-[1.15] mt-1">
-                    {p.title}
-                  </p>
-                  <p className="text-[12px] tracking-tight text-[#666] mt-2">
-                    Dir. {p.director.name}
-                    {p.year || disciplineLabel ? (
-                      <span className="text-[#999]">
-                        {" · "}
-                        {[disciplineLabel, p.year].filter(Boolean).join(" · ")}
-                      </span>
-                    ) : null}
-                  </p>
-                </div>
-              </Link>
+              <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
+                <ProjectCard
+                  project={p}
+                  disciplineLabel={disciplineLabel ?? null}
+                  showYear
+                />
+              </ScrollReveal>
             );
           })}
         </div>

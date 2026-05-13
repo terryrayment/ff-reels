@@ -3,6 +3,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { HeroVideo } from "@/components/marketing/hero-video";
 import { DirectorCard } from "@/components/marketing/director-card";
+import { ProjectCard } from "@/components/marketing/project-card";
+import { ScrollReveal } from "@/components/marketing/scroll-reveal";
 
 export const metadata: Metadata = {
   title: { absolute: "Friends & Family — Commercial Production" },
@@ -122,7 +124,7 @@ export default async function MarketingHomePage() {
       <section className="border-t border-[#E8E7E3]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-24 lg:py-32">
           <div className="flex items-end justify-between gap-6 mb-12">
-            <h2 className="text-[28px] md:text-[36px] tracking-tight-3 font-light text-[#1A1A1A] font-helveticaDisplay">
+            <h2 className="text-[40px] md:text-[56px] tracking-[-0.04em] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
               Recent work
             </h2>
             <Link
@@ -137,45 +139,11 @@ export default async function MarketingHomePage() {
             <EmptyMessage message="No projects published yet." />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
-              {recentProjects.map((p) => {
-                const still =
-                  p.thumbnailUrl ??
-                  (p.muxPlaybackId
-                    ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=1000`
-                    : null);
-                return (
-                  <Link
-                    key={p.id}
-                    href={`/site/directors/${p.director.slug}`}
-                    className="group block"
-                  >
-                    <div className="relative aspect-video overflow-hidden bg-[#EEEDEA]">
-                      {still && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={still}
-                          alt={p.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover transition-all duration-[900ms] ease-out group-hover:scale-[1.015] group-hover:opacity-95"
-                        />
-                      )}
-                    </div>
-                    <div className="mt-4">
-                      {p.brand && (
-                        <p className="text-[11px] uppercase tracking-[0.18em] text-[#1A1A1A] font-medium">
-                          {p.brand}
-                        </p>
-                      )}
-                      <p className="text-[18px] md:text-[20px] tracking-tight-2 font-light text-[#1A1A1A] leading-[1.15] mt-1">
-                        {p.title}
-                      </p>
-                      <p className="text-[12px] tracking-tight text-[#666] mt-2">
-                        Dir. {p.director.name}
-                      </p>
-                    </div>
-                  </Link>
-                );
-              })}
+              {recentProjects.map((p, i) => (
+                <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
+                  <ProjectCard project={p} />
+                </ScrollReveal>
+              ))}
             </div>
           )}
         </div>

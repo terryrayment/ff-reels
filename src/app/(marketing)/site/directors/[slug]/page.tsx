@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { ProjectCard } from "@/components/marketing/project-card";
+import { ScrollReveal } from "@/components/marketing/scroll-reveal";
 
 interface Props {
   params: { slug: string };
@@ -98,7 +100,7 @@ export default async function DirectorDetailPage({ params }: Props) {
             {positioning}
           </p>
         )}
-        <h1 className="text-[44px] md:text-[88px] lg:text-[120px] leading-[0.92] tracking-tight-3 font-light text-[#1A1A1A] font-helveticaDisplay">
+        <h1 className="text-[64px] md:text-[120px] lg:text-[168px] leading-[0.88] tracking-[-0.045em] font-black text-[#1A1A1A] font-helveticaDisplay">
           {director.name}
         </h1>
       </header>
@@ -152,44 +154,26 @@ export default async function DirectorDetailPage({ params }: Props) {
                 {group.label}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
-                {group.items.map((p) => {
-                  const still =
-                    p.thumbnailUrl ??
-                    (p.muxPlaybackId
-                      ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=1280`
-                      : null);
-                  return (
-                    <div key={p.id} className="group">
-                      <div className="relative aspect-video overflow-hidden bg-[#EEEDEA]">
-                        {still && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={still}
-                            alt={p.title}
-                            loading="lazy"
-                            className="w-full h-full object-cover transition-all duration-[900ms] ease-out group-hover:scale-[1.015] group-hover:opacity-95"
-                          />
-                        )}
-                      </div>
-                      <div className="mt-4">
-                        {p.brand && (
-                          <p className="text-[11px] uppercase tracking-[0.18em] text-[#1A1A1A] font-medium">
-                            {p.brand}
-                          </p>
-                        )}
-                        <p className="text-[18px] md:text-[20px] tracking-tight-2 font-light text-[#1A1A1A] leading-[1.15] mt-1">
-                          {p.title}
-                        </p>
-                        {(p.agency || p.year) && (
-                          <p className="text-[12px] tracking-tight text-[#666] mt-2">
-                            {p.agency ? `${p.agency}` : ""}
-                            {p.year ? `${p.agency ? " · " : ""}${p.year}` : ""}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                {group.items.map((p, i) => (
+                  <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
+                    <ProjectCard
+                      project={{
+                        id: p.id,
+                        title: p.title,
+                        brand: p.brand,
+                        year: p.year,
+                        agency: p.agency,
+                        thumbnailUrl: p.thumbnailUrl,
+                        muxPlaybackId: p.muxPlaybackId,
+                        director: { slug: director.slug, name: director.name },
+                      }}
+                      showDirector={false}
+                      showAgency
+                      showYear
+                      thumbnailWidth={1280}
+                    />
+                  </ScrollReveal>
+                ))}
               </div>
             </div>
           ))}

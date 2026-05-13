@@ -52,7 +52,7 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
         <p className="text-[11px] uppercase tracking-[0.18em] text-white/70">
           Commercial production
         </p>
-        <h1 className="mt-3 text-[42px] md:text-[72px] lg:text-[88px] leading-[0.95] tracking-tight-3 font-light text-white max-w-4xl font-helveticaDisplay">
+        <h1 className="mt-3 text-[64px] md:text-[112px] lg:text-[144px] leading-[0.9] text-white max-w-5xl font-helveticaDisplay font-black tracking-[-0.04em]">
           Friends &amp; Family
         </h1>
         <p className="mt-4 text-[15px] md:text-[17px] tracking-tight-2 text-white/80 max-w-md">

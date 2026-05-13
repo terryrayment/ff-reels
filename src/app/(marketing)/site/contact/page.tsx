@@ -13,7 +13,7 @@ export default function ContactPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
       <header className="mb-16">
-        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A] max-w-3xl leading-[1.02] font-helveticaDisplay">
+        <h1 className="text-[48px] md:text-[72px] tracking-[-0.04em] font-bold text-[#1A1A1A] max-w-4xl leading-[0.98] font-helveticaDisplay">
           Let&rsquo;s talk about your next project.
         </h1>
       </header>
