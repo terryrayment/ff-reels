@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import MuxPlayer from "@mux/mux-player-react";
 
 interface DirectorCardProps {
   slug: string;
@@ -23,24 +24,12 @@ export function DirectorCard({
   muxPlaybackId,
 }: DirectorCardProps) {
   const [hovering, setHovering] = useState(false);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const router = useRouter();
   const href = `/site/directors/${slug}`;
   const nameTransitionName = `director-name-${slug}`;
 
-  const onEnter = () => {
-    setHovering(true);
-    const v = videoRef.current;
-    if (v) {
-      v.currentTime = 0;
-      v.play().catch(() => {});
-    }
-  };
-  const onLeave = () => {
-    setHovering(false);
-    const v = videoRef.current;
-    if (v) v.pause();
-  };
+  const onEnter = () => setHovering(true);
+  const onLeave = () => setHovering(false);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -70,18 +59,26 @@ export function DirectorCard({
             loading="lazy"
           />
         )}
-        {muxPlaybackId && (
-          <video
-            ref={videoRef}
-            src={`https://stream.mux.com/${muxPlaybackId}/low.mp4`}
-            muted
-            loop
-            playsInline
-            preload="none"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-              hovering ? "opacity-100" : "opacity-0"
-            }`}
-          />
+        {muxPlaybackId && hovering && (
+          <div
+            className="absolute inset-0 w-full h-full [&_mux-player]:w-full [&_mux-player]:h-full opacity-0 animate-[fadeIn_300ms_ease-out_forwards]"
+            style={
+              {
+                "--controls": "none",
+                "--media-object-fit": "cover",
+              } as React.CSSProperties
+            }
+          >
+            <MuxPlayer
+              playbackId={muxPlaybackId}
+              streamType="on-demand"
+              autoPlay="muted"
+              muted
+              loop
+              playsInline
+              nohotkeys
+            />
+          </div>
         )}
       </div>
       <div className="mt-3 flex items-baseline justify-between gap-3">

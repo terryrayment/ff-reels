@@ -137,20 +137,15 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
       )}
 
       {!featuredProject && director.videoIntroUrl && (
-        <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16 lg:mb-24">
-          <div className="relative aspect-video overflow-hidden bg-[#0A0A0A]">
-            <video
-              src={`https://stream.mux.com/${director.videoIntroUrl}/high.mp4`}
-              poster={`https://image.mux.com/${director.videoIntroUrl}/thumbnail.jpg?width=1920`}
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </section>
+        <FeaturedReel
+          projectId={`intro-${director.slug}`}
+          muxPlaybackId={director.videoIntroUrl}
+          brand={null}
+          title={`${director.name} — Reel`}
+          directorName={director.name}
+          agency={null}
+          year={null}
+        />
       )}
 
       {(director.bio || director.statement) && (

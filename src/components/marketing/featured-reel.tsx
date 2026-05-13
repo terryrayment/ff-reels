@@ -1,6 +1,7 @@
 "use client";
 
 import MuxPlayer from "@mux/mux-player-react";
+import { useEffect, useRef } from "react";
 
 interface FeaturedReelProps {
   projectId: string;
@@ -21,6 +22,30 @@ export function FeaturedReel({
   agency,
   year,
 }: FeaturedReelProps) {
+  const playerRef = useRef<HTMLElement | null>(null);
+
+  // Belt-and-braces autoplay nudge: some browsers don't honour the
+  // autoplay attribute on a custom element that mounts after route
+  // change / view transition. Force play() once the metadata loads.
+  useEffect(() => {
+    const el = playerRef.current as
+      | (HTMLElement & { play?: () => Promise<void>; muted?: boolean })
+      | null;
+    if (!el) return;
+    let cancelled = false;
+    const tryPlay = () => {
+      if (cancelled || !el.play) return;
+      el.muted = true;
+      el.play().catch(() => {});
+    };
+    tryPlay();
+    const t = setTimeout(tryPlay, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [muxPlaybackId]);
+
   return (
     <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16 lg:mb-24">
       <div
@@ -33,6 +58,7 @@ export function FeaturedReel({
         }
       >
         <MuxPlayer
+          ref={playerRef as React.RefObject<never>}
           playbackId={muxPlaybackId}
           streamType="on-demand"
           autoPlay="muted"
