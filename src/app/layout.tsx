@@ -1,11 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: ["300", "400", "500", "600"],
+});
+
+const hankenGrotesk = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-hanken",
+  weight: ["300", "400", "500", "700"],
+  display: "swap",
 });
 
 export const viewport: Viewport = {
@@ -38,7 +45,7 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased bg-[#F7F6F3] text-[#1A1A1A]`}>
+      <body className={`${inter.variable} ${hankenGrotesk.variable} font-sans antialiased bg-[#F7F6F3] text-[#1A1A1A]`}>
         {children}
       </body>
     </html>

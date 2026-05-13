@@ -12,6 +12,8 @@ const config: Config = {
         sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
         helveticaDisplay: [
           "Helvetica Now Display",
+          "var(--font-hanken)",
+          "Hanken Grotesk",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
@@ -19,6 +21,8 @@ const config: Config = {
         ],
         helveticaText: [
           "Helvetica Now Text",
+          "var(--font-hanken)",
+          "Hanken Grotesk",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
