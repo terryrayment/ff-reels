@@ -136,12 +136,12 @@ export default async function MarketingHomePage() {
           {recentProjects.length === 0 ? (
             <EmptyMessage message="No projects published yet." />
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
               {recentProjects.map((p) => {
                 const still =
                   p.thumbnailUrl ??
                   (p.muxPlaybackId
-                    ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=800`
+                    ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=1000`
                     : null);
                 return (
                   <Link
@@ -156,17 +156,21 @@ export default async function MarketingHomePage() {
                           src={still}
                           alt={p.title}
                           loading="lazy"
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                          className="w-full h-full object-cover transition-all duration-[900ms] ease-out group-hover:scale-[1.015] group-hover:opacity-95"
                         />
                       )}
                     </div>
-                    <div className="mt-2.5">
-                      <p className="text-[13px] tracking-tight-2 text-[#1A1A1A] leading-tight">
-                        {p.brand ? `${p.brand} — ` : ""}
+                    <div className="mt-4">
+                      {p.brand && (
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-[#1A1A1A] font-medium">
+                          {p.brand}
+                        </p>
+                      )}
+                      <p className="text-[18px] md:text-[20px] tracking-tight-2 font-light text-[#1A1A1A] leading-[1.15] mt-1">
                         {p.title}
                       </p>
-                      <p className="text-[11px] text-[#999] mt-0.5">
-                        {p.director.name}
+                      <p className="text-[12px] tracking-tight text-[#666] mt-2">
+                        Dir. {p.director.name}
                       </p>
                     </div>
                   </Link>

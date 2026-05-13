@@ -151,7 +151,7 @@ export default async function DirectorDetailPage({ params }: Props) {
               <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-8">
                 {group.label}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
                 {group.items.map((p) => {
                   const still =
                     p.thumbnailUrl ??
@@ -167,19 +167,25 @@ export default async function DirectorDetailPage({ params }: Props) {
                             src={still}
                             alt={p.title}
                             loading="lazy"
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                            className="w-full h-full object-cover transition-all duration-[900ms] ease-out group-hover:scale-[1.015] group-hover:opacity-95"
                           />
                         )}
                       </div>
-                      <div className="mt-3">
-                        <p className="text-[15px] tracking-tight-2 text-[#1A1A1A] leading-tight">
-                          {p.brand ? `${p.brand} — ` : ""}
+                      <div className="mt-4">
+                        {p.brand && (
+                          <p className="text-[11px] uppercase tracking-[0.18em] text-[#1A1A1A] font-medium">
+                            {p.brand}
+                          </p>
+                        )}
+                        <p className="text-[18px] md:text-[20px] tracking-tight-2 font-light text-[#1A1A1A] leading-[1.15] mt-1">
                           {p.title}
                         </p>
-                        <p className="text-[11px] text-[#999] mt-1">
-                          {p.agency ? `${p.agency}` : ""}
-                          {p.year ? `${p.agency ? " · " : ""}${p.year}` : ""}
-                        </p>
+                        {(p.agency || p.year) && (
+                          <p className="text-[12px] tracking-tight text-[#666] mt-2">
+                            {p.agency ? `${p.agency}` : ""}
+                            {p.year ? `${p.agency ? " · " : ""}${p.year}` : ""}
+                          </p>
+                        )}
                       </div>
                     </div>
                   );
