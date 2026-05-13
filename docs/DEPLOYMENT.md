@@ -85,9 +85,20 @@ Used for: Real-ESRGAN 2x upscaling of gallery frames. Without it, gallery images
 
 ```bash
 NEXT_PUBLIC_APP_URL="http://localhost:3000"  # Production: https://reels.friendsandfamily.tv
+NEXT_PUBLIC_SCREENING_URL="http://localhost:3000"  # Optional override for screening links
+NEXT_PUBLIC_MARKETING_SITE_URL="https://www.friendsandfamily.tv"  # Canonical marketing site
 ```
 
 Used for constructing screening link URLs and invite email links.
+
+### SEO (Recommended)
+
+```bash
+# Primary brand/marketing domain used in SEO metadata + structured data helpers
+NEXT_PUBLIC_MARKETING_SITE_URL="https://www.friendsandfamily.tv"
+```
+
+Keep this set to the public brand domain so generated metadata and schema stay consistent.
 
 ### Cron Secret (Production)
 
@@ -202,6 +213,12 @@ This runs the industry scraper at **8:00 AM UTC (3:00 AM EST)** daily.
 - [ ] Admin user created
 - [ ] Cron job visible in Vercel Dashboard → Cron Jobs
 - [ ] Test a screening link from production URL
+- [ ] Verify `POST /api/reels/preview` returns 401 when logged out
+- [ ] Verify `GET /api/reels/[id]` returns 403 for a REP on someone else’s reel
+- [ ] Verify gallery/video/project download endpoints work with valid screening token and deny invalid token
+- [ ] Verify `https://reels.friendsandfamily.tv/robots.txt` disallows private/auth/tokenized routes
+- [ ] Verify `https://reels.friendsandfamily.tv/sitemap.xml` only lists approved indexable public routes
+- [ ] Run `npm run seo:audit -- --url=https://www.friendsandfamily.tv`
 
 ---
 
@@ -348,6 +365,28 @@ Key endpoints to monitor:
 - `/api/mux/webhook` — on every video upload
 - `/api/tracking/view` — on every screening page load
 
+### Auth & Token Smoke Test (Recommended after deploy)
+
+Run this with a known reel ID, project ID, and a valid screening token from that reel:
+
+```bash
+# 1) Must be blocked when unauthenticated (preview token minting is internal-only)
+curl -i -X POST "$APP_URL/api/reels/preview" -H "Content-Type: application/json" -d '{"directorId":"x","projectIds":["y"],"title":"test"}'
+
+# 2) Token fallback should allow downloads without session
+curl -i "$APP_URL/api/reels/$REEL_ID/gallery/download?token=$SCREENING_TOKEN&preflight=1"
+curl -i "$APP_URL/api/reels/$REEL_ID/download-videos?token=$SCREENING_TOKEN&preflight=1"
+curl -i "$APP_URL/api/projects/$PROJECT_ID/download?token=$SCREENING_TOKEN&preflight=1"
+
+# 3) Invalid token should fail
+curl -i "$APP_URL/api/reels/$REEL_ID/gallery/download?token=invalid"
+```
+
+Expected statuses:
+- `401` for unauthenticated `/api/reels/preview`
+- `200` or `409` for preflight download requests with valid token
+- `401` for invalid token without session
+
 ### Database
 
 ```bash
@@ -378,5 +417,8 @@ These endpoints have no authentication:
 ### Access Control
 - Role checked on every API request via `getServerSession()`
 - JWT callback refreshes role from DB on every request
-- REP users see only their own reels and analytics
-- ADMIN-only: user management, director CRUD, upload, project deletion
+- Team roles are `ADMIN`, `PRODUCER`, `REP`
+- `ADMIN|PRODUCER`: global access to team resources
+- `REP`: can view/manage only reels they created
+- `DIRECTOR`: can access only resources tied to their own `directorId`
+- ADMIN-only: user management, director creation/deletion, upload, project deletion

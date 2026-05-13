@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     data: {
       reelId: reel.id,
       token: generateToken(),
-      expiresAt: new Date(Date.now() + 30 * 86400000), // 30 days
+      expiresAt: null, // never expires
     },
   });
 

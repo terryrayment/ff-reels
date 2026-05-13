@@ -44,7 +44,7 @@ export function ScreeningLinksPanel({ reelId, reelTitle, links, screeningDomain 
   const [recipientName, setRecipientName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientCompany, setRecipientCompany] = useState("");
-  const [expiresInDays, setExpiresInDays] = useState("30");
+  const [expiresInDays, setExpiresInDays] = useState("");
   const [resendFrom, setResendFrom] = useState<string | null>(null);
   const [selectedContact, setSelectedContact] = useState<SelectedContact | null>(null);
   const router = useRouter();
@@ -53,7 +53,7 @@ export function ScreeningLinksPanel({ reelId, reelTitle, links, screeningDomain 
     setRecipientName("");
     setRecipientEmail("");
     setRecipientCompany("");
-    setExpiresInDays("30");
+    setExpiresInDays("");
     setResendFrom(null);
     setSelectedContact(null);
     setCreatedUrl("");
@@ -65,7 +65,7 @@ export function ScreeningLinksPanel({ reelId, reelTitle, links, screeningDomain 
     setRecipientName(link.recipientName || "");
     setRecipientEmail(link.recipientEmail || "");
     setRecipientCompany(link.recipientCompany || "");
-    setExpiresInDays("30");
+    setExpiresInDays("");
     setResendFrom(link.recipientName || link.recipientEmail || "this recipient");
     setSelectedContact(null);
     setCreatedUrl("");
@@ -126,7 +126,7 @@ export function ScreeningLinksPanel({ reelId, reelTitle, links, screeningDomain 
     setRecipientName("");
     setRecipientEmail("");
     setRecipientCompany("");
-    setExpiresInDays("30");
+    setExpiresInDays("");
     setResendFrom(null);
     setSelectedContact(null);
     setCopied(false);

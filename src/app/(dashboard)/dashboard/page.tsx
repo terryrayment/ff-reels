@@ -48,6 +48,7 @@ export default async function DashboardPage({
     recentViews,
     updates,
     directorsForComposer,
+    industryFeed,
     // Weekly digest
     weeklyViewCount,
     weeklyWatchTime,
@@ -103,6 +104,14 @@ export default async function DashboardPage({
           select: { id: true, name: true },
         })
       : Promise.resolve([]),
+    prisma.industryCredit.findMany({
+      take: 25,
+      where: {
+        isHidden: false,
+        alertEligible: true,
+      },
+      orderBy: { createdAt: "desc" },
+    }),
     // Weekly view count
     prisma.reelView.count({
       where: { startedAt: { gte: startOfWeek }, ...viewOwnerFilter },
@@ -584,6 +593,59 @@ export default async function DashboardPage({
             )}
           </div>
 
+          {/* Industry Pulse */}
+          <div className="data-card p-5 md:p-9">
+            <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#777] font-medium mb-6">
+              Industry Pulse
+              <span className="ml-1.5 text-[8px] font-semibold tracking-[0.08em] text-[#bbb] uppercase">Beta</span>
+            </h2>
+
+            {industryFeed.length > 0 ? (
+              <div className="max-h-[380px] overflow-y-auto pr-2 space-y-4">
+                {industryFeed.map((credit) => (
+                  <div key={credit.id}>
+                    {credit.directorNameCanonical && (
+                      <p className="text-[13px] font-medium text-[#1A1A1A]">
+                        {credit.productionCompanyCanonical || "—"} / {credit.directorNameCanonical}
+                      </p>
+                    )}
+                    <p className="text-[12px] text-[#888] mt-0.5 leading-relaxed">
+                      {[
+                        credit.agencyCanonical,
+                        credit.agencyTerritory,
+                      ]
+                        .filter(Boolean)
+                        .join(" / ")}
+                    </p>
+                    <div className="flex items-center gap-3 mt-1">
+                      {credit.agencyTerritory && (
+                        <span className="text-[9px] font-medium text-[#bbb] uppercase tracking-[0.12em]">
+                          {credit.agencyTerritory}
+                        </span>
+                      )}
+                      {credit.sourceTrust && (
+                        <span className="text-[9px] text-[#ccc] uppercase tracking-wider">
+                          {credit.sourceTrust}
+                        </span>
+                      )}
+                      {credit.sourceName && (
+                        <span className="text-[10px] text-[#ccc]">
+                          via {credit.sourceName}
+                        </span>
+                      )}
+                      <span className="text-[10px] text-[#ccc] uppercase tracking-[0.1em] ml-auto flex-shrink-0">
+                        {timeAgo(credit.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[13px] text-[#aaa] py-8 text-center">
+                Industry feed populates nightly. Check back tomorrow.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* RIGHT COLUMN — Directors + Leaderboard */}

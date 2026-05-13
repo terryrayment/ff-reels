@@ -14,7 +14,7 @@ import { ScrapedCredit, SourceAdapter } from "../types";
  * 4. Skip company news (signings, awards, interviews, personnel)
  */
 
-interface ProdCoFeed {
+export interface ProdCoFeed {
   name: string;
   territory: "EAST" | "MIDWEST" | "WEST";
   apiUrl: string;
@@ -28,7 +28,7 @@ interface ParsedCredit {
   agency?: string;
 }
 
-interface WpPost {
+export interface WpPost {
   date: string;
   title: { rendered: string };
   excerpt: { rendered: string };
@@ -36,7 +36,7 @@ interface WpPost {
 }
 
 // ── Feed definitions ────────────────────────────────────────────
-const FEEDS: ProdCoFeed[] = [
+export const PROD_CO_FEEDS: ProdCoFeed[] = [
   // Station Film: structured "Director > Source > Brand" titles
   {
     name: "Station Film",
@@ -264,68 +264,122 @@ export class ProdCoNews implements SourceAdapter {
   name = "PROD CO NEWS";
 
   async scrape(): Promise<ScrapedCredit[]> {
-    const credits: ScrapedCredit[] = [];
+    return scrapeProdCoFeeds();
+  }
+}
 
-    for (const feed of FEEDS) {
-      try {
-        let posts: WpPost[];
+export interface ProdCoFetchOptions {
+  after?: Date;
+  before?: Date;
+  maxPages?: number;
+  perPage?: number;
+}
 
-        if (feed.apiUrl.includes("/feed")) {
-          // RSS feed
-          posts = await fetchRssPosts(feed.apiUrl);
-        } else {
-          // WP REST API
-          const res = await fetch(feed.apiUrl, {
-            headers: {
-              "User-Agent": "Mozilla/5.0 (compatible; FFReels/1.0)",
-              Accept: "application/json",
-            },
-            signal: AbortSignal.timeout(10000),
-          });
-          if (!res.ok) {
-            console.error(`[PROD CO NEWS] ${feed.name}: HTTP ${res.status}`);
-            continue;
-          }
-          posts = await res.json();
-        }
+export async function fetchProdCoPosts(
+  feed: ProdCoFeed,
+  options: ProdCoFetchOptions = {},
+): Promise<WpPost[]> {
+  if (feed.apiUrl.includes("/feed")) {
+    const posts = await fetchRssPosts(feed.apiUrl);
+    return posts.filter((post) => {
+      const publishedAt = post.date ? new Date(post.date) : null;
+      if (!publishedAt || Number.isNaN(publishedAt.getTime())) return true;
+      if (options.after && publishedAt < options.after) return false;
+      if (options.before && publishedAt > options.before) return false;
+      return true;
+    });
+  }
 
-        let feedCredits = 0;
+  const baseUrl = new URL(feed.apiUrl);
+  const requestedPerPage = String(options.perPage ?? 20);
+  const maxPages = options.maxPages ?? Number.POSITIVE_INFINITY;
+  const posts: WpPost[] = [];
 
-        for (const post of posts) {
-          const title = decode(post.title.rendered);
-          const excerpt = post.excerpt?.rendered || "";
+  for (let page = 1; page <= maxPages; page++) {
+    const url = new URL(baseUrl.toString());
+    url.searchParams.set("per_page", requestedPerPage);
+    url.searchParams.set("page", String(page));
+    url.searchParams.set("_fields", "date,title,excerpt,link");
+    if (options.after) url.searchParams.set("after", options.after.toISOString());
+    if (options.before) url.searchParams.set("before", options.before.toISOString());
 
-          const parsed = feed.parsePost
-            ? feed.parsePost(title, excerpt)
-            : parseDirectsBrandTitle(title, excerpt);
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; FFReels/1.0)",
+        Accept: "application/json",
+      },
+      signal: AbortSignal.timeout(10000),
+    });
 
-          if (!parsed) continue;
-          if (!parsed.director && !parsed.brand) continue;
-          // Require at least a director to be useful from prod co feeds
-          if (!parsed.director) continue;
-
-          credits.push({
-            brand: parsed.brand || "Unknown",
-            campaignName: title.length <= 120 ? title : undefined,
-            agency: parsed.agency || undefined,
-            directorName: parsed.director,
-            productionCompany: feed.name,
-            territory: feed.territory,
-            sourceUrl: post.link || undefined,
-            sourceName: `PROD CO: ${feed.name}`,
-            publishedAt: post.date ? new Date(post.date) : undefined,
-          });
-          feedCredits++;
-        }
-
-        console.log(
-          `[PROD CO NEWS] ${feed.name}: ${posts.length} posts → ${feedCredits} credits`,
-        );
-      } catch (err) {
-        console.error(`[PROD CO NEWS] ${feed.name} failed:`, err);
-      }
+    if (res.status === 400 && page > 1) break;
+    if (!res.ok) {
+      throw new Error(`${feed.name}: HTTP ${res.status}`);
     }
 
-    return credits;
+    const batch = (await res.json()) as WpPost[];
+    if (!Array.isArray(batch) || batch.length === 0) break;
+    posts.push(...batch);
+
+    const totalPages = Number(res.headers.get("x-wp-totalpages") || "0");
+    if (totalPages && page >= totalPages) break;
+    if (batch.length < Number(requestedPerPage)) break;
   }
+
+  return posts;
+}
+
+export async function scrapeProdCoFeed(
+  feed: ProdCoFeed,
+  options: ProdCoFetchOptions = {},
+): Promise<ScrapedCredit[]> {
+  const credits: ScrapedCredit[] = [];
+  const posts = await fetchProdCoPosts(feed, options);
+
+  for (const post of posts) {
+    const title = decode(post.title.rendered);
+    const excerpt = post.excerpt?.rendered || "";
+
+    const parsed = feed.parsePost
+      ? feed.parsePost(title, excerpt)
+      : parseDirectsBrandTitle(title, excerpt);
+
+    if (!parsed) continue;
+    if (!parsed.director && !parsed.brand) continue;
+    if (!parsed.director) continue;
+
+    credits.push({
+      brand: parsed.brand || "Unknown",
+      campaignName: title.length <= 120 ? title : undefined,
+      agency: parsed.agency || undefined,
+      directorName: parsed.director,
+      productionCompany: feed.name,
+      territory: feed.territory,
+      sourceUrl: post.link || undefined,
+      sourceName: `PROD CO: ${feed.name}`,
+      publishedAt: post.date ? new Date(post.date) : undefined,
+    });
+  }
+
+  return credits;
+}
+
+export async function scrapeProdCoFeeds(
+  options: ProdCoFetchOptions = {},
+  feeds: ProdCoFeed[] = PROD_CO_FEEDS,
+): Promise<ScrapedCredit[]> {
+  const credits: ScrapedCredit[] = [];
+
+  for (const feed of feeds) {
+    try {
+      const feedCredits = await scrapeProdCoFeed(feed, options);
+      credits.push(...feedCredits);
+      console.log(
+        `[PROD CO NEWS] ${feed.name}: ${feedCredits.length} credits`,
+      );
+    } catch (err) {
+      console.error(`[PROD CO NEWS] ${feed.name} failed:`, err);
+    }
+  }
+
+  return credits;
 }

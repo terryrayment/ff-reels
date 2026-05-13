@@ -393,10 +393,20 @@ model IndustryCredit {
   agency            String?
   productionCompany String?
   directorName      String?
+  agencyCanonical            String?
+  productionCompanyCanonical String?
+  directorNameCanonical      String?
   category          String?           // e.g. "automotive", "tech", "food"
   territory         String?           // "EAST", "MIDWEST", "WEST" (derived from prod co HQ)
+  agencyTerritory            String?  // "EAST", "MIDWEST", "WEST" (derived from agency HQ)
   sourceUrl         String?           // Link to original post/article
   sourceName        String?           // "SHOTS", "Smuggler IG", etc.
+  sourceTrust                String    @default("LOW")
+  confidence                 Float?
+  alertEligible              Boolean   @default(false)
+  alertRejectedReason        String?
+  qualifiedAt                DateTime?
+  notifiedAt                 DateTime?
   thumbnailUrl      String?
   publishedAt       DateTime?         // When the work was published/aired
   scrapedAt         DateTime          @default(now())
@@ -414,6 +424,9 @@ model IndustryCredit {
   @@index([brand, campaignName, directorName])
   @@index([createdAt(sort: Desc)])
   @@index([territory])
+  @@index([agencyTerritory])
+  @@index([alertEligible, createdAt(sort: Desc)])
+  @@index([sourceTrust])
 }
 
 // ─── Treatment Samples ─────────────────────────────────
