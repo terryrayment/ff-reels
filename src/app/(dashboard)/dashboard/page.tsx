@@ -47,6 +47,7 @@ export default async function DashboardPage({
     linkCount,
     recentViews,
     updates,
+    directorsForComposer,
     // Weekly digest
     weeklyViewCount,
     weeklyWatchTime,
@@ -90,10 +91,18 @@ export default async function DashboardPage({
       orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
       include: {
         director: { select: { id: true, name: true } },
-        project: { select: { id: true, title: true, brand: true } },
+        project: { select: { id: true, title: true, brand: true, muxPlaybackId: true } },
         author: { select: { id: true, name: true, email: true } },
+        reactions: { select: { emoji: true, userId: true } },
       },
     }),
+    ["ADMIN", "REP", "PRODUCER"].includes(session.user.role)
+      ? prisma.director.findMany({
+          where: { isActive: true },
+          orderBy: { name: "asc" },
+          select: { id: true, name: true },
+        })
+      : Promise.resolve([]),
     // Weekly view count
     prisma.reelView.count({
       where: { startedAt: { gte: startOfWeek }, ...viewOwnerFilter },
@@ -250,6 +259,44 @@ export default async function DashboardPage({
     .slice(0, 6);
 
   const weeklyTotalSeconds = weeklyWatchTime._sum.totalDuration || 0;
+  const signalUpdates = updates.map((u) => {
+    const reactionCounts = u.reactions.reduce<Record<string, number>>(
+      (counts, reaction) => {
+        counts[reaction.emoji] = (counts[reaction.emoji] || 0) + 1;
+        return counts;
+      },
+      {},
+    );
+
+    return {
+      ...u,
+      createdAt: u.createdAt.toISOString(),
+      body: u.body || null,
+      imageUrl: u.imageUrl || null,
+      director: u.director,
+      project: u.project
+        ? {
+            ...u.project,
+            brand: u.project.brand || null,
+            muxPlaybackId: u.project.muxPlaybackId || null,
+          }
+        : null,
+      author: u.author
+        ? {
+            ...u.author,
+            name: u.author.name || null,
+            email: u.author.email || "",
+          }
+        : null,
+      reactions: Object.entries(reactionCounts).map(([emoji, count]) => ({
+        emoji,
+        count,
+      })),
+      myReactions: u.reactions
+        .filter((reaction) => reaction.userId === userId)
+        .map((reaction) => reaction.emoji),
+    };
+  });
 
   const rosterStats =
     isAdmin && !showMine
@@ -313,14 +360,14 @@ export default async function DashboardPage({
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-6 md:mb-10 gap-4">
+      <div className="flex items-start justify-between mb-6 md:mb-8 gap-4">
         <div className="min-w-0">
-          <h1 className="text-[40px] md:text-[52px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
+          <h1 className="text-[42px] md:text-[60px] font-semibold tracking-tight text-[#111] leading-[0.98]">
             Dashboard
           </h1>
-          <p className="mt-2.5 text-[11px] uppercase tracking-[0.18em] text-[#666]">
+          <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[#777]">
             {session.user.name || session.user.email}
-            <span className="mx-2 text-[#bbb]">/</span>
+            <span className="mx-2 text-[#B8B7B0]">/</span>
             {roleLabel}
           </p>
         </div>
@@ -328,9 +375,9 @@ export default async function DashboardPage({
           <MyActivityToggle />
           <Link
             href="/reels/build"
-            className="group flex items-center gap-2 md:gap-2.5 px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-[#0000FF] text-white hover:bg-[#0000CC] transition-all duration-300"
+            className="group flex items-center gap-2 md:gap-2.5 px-4 md:px-5 py-2.5 rounded-md bg-[#111] text-white hover:bg-black transition-colors"
           >
-            <span className="text-[12px] md:text-[13px] font-semibold tracking-wide">
+            <span className="text-[11px] md:text-[12px] font-semibold uppercase tracking-[0.12em]">
               Build Reel
             </span>
             <ArrowRight
@@ -341,101 +388,63 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {/* Unified Stats Card — weekly metrics | roster counts */}
-      <div className="data-card px-5 md:px-8 py-5 md:py-7 mb-5 md:mb-7">
-        <div className="flex flex-col md:flex-row md:items-stretch gap-5 md:gap-0">
-          {/* Weekly pulse — left group */}
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-[#555] font-medium mb-3">
-              This Week
+      {/* Intelligence strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 mb-5 md:mb-7">
+        {[
+          { label: "Live views", value: hotRightNow.length, detail: "last 30m" },
+          { label: "Recent client activity", value: groupedViews.length, detail: "latest views" },
+          { label: "Active links", value: linkCount, detail: "available now" },
+          {
+            label: "Top reel",
+            value: weeklyBestReel ? weeklyBestReel.count : "\u2014",
+            detail: weeklyBestReel ? weeklyBestReel.director : "no views yet",
+          },
+          {
+            label: "Weekly watch",
+            value: weeklyTotalSeconds > 0 ? formatDuration(weeklyTotalSeconds) : "\u2014",
+            detail: "total time",
+          },
+        ].map((item) => (
+          <div key={item.label} className="metric-tile">
+            <p className="text-[9px] uppercase tracking-[0.14em] text-[#777] font-semibold">
+              {item.label}
             </p>
-            <div className="flex items-end gap-5 md:gap-8 flex-wrap">
-              <div>
-                <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
-                  {weeklyViewCount}
-                </p>
-                <p className="mt-1.5 text-[10px] uppercase tracking-[0.18em] text-[#666]">
-                  Views
-                </p>
-              </div>
-              <div>
-                <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
-                  {weeklyTotalSeconds > 0
-                    ? formatDuration(weeklyTotalSeconds)
-                    : "\u2014"}
-                </p>
-                <p className="mt-1.5 text-[10px] uppercase tracking-[0.18em] text-[#666]">
-                  Watch Time
-                </p>
-              </div>
-              <div>
-                <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
-                  {weeklyNewReels}
-                </p>
-                <p className="mt-1.5 text-[10px] uppercase tracking-[0.18em] text-[#666]">
-                  New Reels
-                </p>
-              </div>
-            </div>
-            {weeklyBestReel && (
-              <p className="mt-3 text-[11px] text-[#666]">
-                <span className="text-[#1A1A1A] font-medium">{weeklyBestReel.director}</span>
-                {" "}leading with {weeklyBestReel.count} view{weeklyBestReel.count !== 1 ? "s" : ""}
-              </p>
-            )}
-          </div>
-
-          {/* Divider — horizontal on mobile, vertical on desktop */}
-          <div className="h-px md:h-auto md:w-px bg-[#E0DFD9] md:mx-7 flex-shrink-0" />
-
-          {/* Roster counts — right group */}
-          <div className="flex-shrink-0">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-[#555] font-medium mb-3">
-              Roster
+            <p className="mt-2 text-[24px] md:text-[28px] font-semibold tracking-tight tabular-nums text-[#111] leading-none">
+              {item.value}
             </p>
-            <div className="flex items-end gap-5 md:gap-7 flex-wrap">
-              {rosterStats.map((stat) => (
-                <Link key={stat.label} href={stat.href} className="group">
-                  <p className="text-[28px] md:text-[32px] font-extralight tracking-tight-3 tabular-nums text-[#1A1A1A] group-hover:text-[#444] transition-colors leading-none">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1.5 text-[10px] uppercase tracking-[0.18em] text-[#666] group-hover:text-[#1A1A1A] transition-colors">
-                    {stat.label}
-                  </p>
-                </Link>
-              ))}
-            </div>
+            <p className="mt-2 text-[11px] text-[#777] truncate">{item.detail}</p>
           </div>
-        </div>
+        ))}
       </div>
 
       {/* Hot Right Now — compact inline */}
       {hotRightNow.length > 0 && (
-        <div className="data-card px-5 md:px-8 py-4 mb-5 md:mb-7">
+        <div className="data-card px-5 md:px-7 py-4 mb-5 md:mb-7">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 flex-shrink-0">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-70" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500 shadow-[0_0_0_3px_rgba(249,115,22,0.14)]" />
               </span>
-              <span className="text-[10px] uppercase tracking-[0.15em] text-amber-700 font-medium">
+              <span className="text-[10px] uppercase tracking-[0.15em] text-orange-700 font-semibold">
                 Live
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              {hotRightNow.map((view) => (
+              {hotRightNow.map((view, index) => (
                 <Link
                   key={view.id}
                   href={`/analytics/link/${view.screeningLink.id}`}
-                  className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50/60 hover:bg-amber-50 transition-all"
+                  className="group flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-orange-300/80 bg-orange-50 text-orange-700 shadow-[0_0_0_1px_rgba(249,115,22,0.05),0_8px_20px_rgba(249,115,22,0.06)] transition-colors hover:border-orange-400/90 hover:bg-orange-100/70 animate-[livePulse_2.8s_ease-in-out_infinite]"
+                  style={{ animationDelay: `${index * 120}ms` }}
                 >
-                  <Flame size={10} className="text-amber-500 flex-shrink-0" />
-                  <span className="text-[11px] text-[#1A1A1A] font-medium group-hover:text-black transition-colors">
+                  <Flame size={10} className="text-orange-500 flex-shrink-0" />
+                  <span className="text-[11px] text-[#111] font-semibold group-hover:text-black transition-colors">
                     {view.screeningLink.recipientName ||
                       view.viewerName ||
                       "Anonymous"}
                   </span>
-                  <span className="text-[10px] text-[#666]">
+                  <span className="text-[10px] text-orange-900/70">
                     {view.screeningLink.reel.director.name}
                   </span>
                 </Link>
@@ -446,35 +455,72 @@ export default async function DashboardPage({
       )}
 
       {/* Signal — full-width, compact 3-column pills */}
-      <div className="data-card p-5 md:p-7 mb-5 md:mb-7">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#444] font-medium">
+      <div className="data-card p-5 md:p-6 mb-5 md:mb-7">
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <h2 className="section-header text-[#444]">
             Signal
           </h2>
-          <ComposeUpdate />
+          <ComposeUpdate directors={directorsForComposer} isAdmin={isAdmin} />
         </div>
 
         <SignalFeed
-          updates={updates.map((u) => ({
-            ...u,
-            createdAt: u.createdAt.toISOString(),
-            body: u.body || null,
-            director: u.director,
-            project: u.project
-              ? { ...u.project, brand: u.project.brand || null }
-              : null,
-            author: u.author
-              ? {
-                  ...u.author,
-                  name: u.author.name || null,
-                  email: u.author.email || "",
-                }
-              : null,
-          }))}
+          updates={signalUpdates}
           currentUserId={userId}
           isAdmin={isAdmin}
           compact
         />
+      </div>
+
+      {/* Unified Stats Card — weekly metrics | roster counts */}
+      <div className="data-card px-5 md:px-7 py-5 md:py-6 mb-5 md:mb-7">
+        <div className="flex flex-col md:flex-row md:items-stretch gap-5 md:gap-0">
+          <div className="flex-1 min-w-0">
+            <p className="section-header mb-4">This week</p>
+            <div className="grid grid-cols-3 gap-4 md:max-w-xl">
+              {[
+                { label: "Views", value: weeklyViewCount },
+                {
+                  label: "Watch time",
+                  value: weeklyTotalSeconds > 0 ? formatDuration(weeklyTotalSeconds) : "\u2014",
+                },
+                { label: "New reels", value: weeklyNewReels },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-[26px] md:text-[32px] font-semibold tracking-tight tabular-nums text-[#111] leading-none">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-[#777] font-semibold">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+            {weeklyBestReel && (
+              <p className="mt-4 text-[12px] text-[#666]">
+                <span className="text-[#111] font-semibold">{weeklyBestReel.director}</span>
+                {" "}is leading this week with {weeklyBestReel.count} view{weeklyBestReel.count !== 1 ? "s" : ""}.
+              </p>
+            )}
+          </div>
+
+          <div className="h-px md:h-auto md:w-px bg-[#DEDDD7] md:mx-7 flex-shrink-0" />
+
+          <div className="flex-shrink-0 md:min-w-[320px]">
+            <p className="section-header mb-4">Roster</p>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+              {rosterStats.map((stat) => (
+                <Link key={stat.label} href={stat.href} className="group">
+                  <p className="text-[26px] md:text-[32px] font-semibold tracking-tight tabular-nums text-[#111] group-hover:text-black transition-colors leading-none">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-[#777] group-hover:text-[#111] transition-colors font-semibold">
+                    {stat.label}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Two-column layout — 58/42 split */}
@@ -482,9 +528,9 @@ export default async function DashboardPage({
         {/* LEFT COLUMN — Activity */}
         <div className="flex-1 min-w-0 flex flex-col gap-5 md:gap-7 lg:basis-[58%]">
           {/* Recent Views — grouped, no dividers */}
-          <div className="data-card p-5 md:p-7">
+          <div className="data-card p-5 md:p-6">
             <div className="flex items-baseline justify-between mb-5">
-              <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#444] font-medium">
+              <h2 className="section-header text-[#444]">
                 Recent Views
               </h2>
               <Link
@@ -501,7 +547,7 @@ export default async function DashboardPage({
                   <Link
                     key={gv.key}
                     href={`/analytics/link/${gv.linkId}`}
-                    className="flex items-center justify-between group"
+                    className="flex items-center justify-between group border-b border-[#ECEBE6] last:border-0 py-2.5"
                   >
                     <div className="min-w-0">
                       <p className="text-[13px] text-[#1A1A1A] truncate">
@@ -545,9 +591,9 @@ export default async function DashboardPage({
           <div className="flex flex-col gap-5 md:gap-7">
             {/* Director Scorecards */}
             {scorecards.length > 0 && (
-              <div className="data-card p-5 md:p-7">
+              <div className="data-card p-5 md:p-6">
                 <div className="flex items-baseline justify-between mb-5">
-                  <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#444] font-medium">
+                  <h2 className="section-header text-[#444]">
                     Directors
                   </h2>
                   <Link
@@ -563,7 +609,7 @@ export default async function DashboardPage({
                     <Link
                       key={d.id}
                       href={`/directors/${d.id}`}
-                      className="group flex items-center gap-3 rounded-xl bg-[#F7F6F3]/50 px-3.5 py-2.5 hover:bg-[#F0F0EC]/50 transition-all duration-300"
+                      className="group flex items-center gap-3 rounded-md border border-transparent px-3 py-2.5 hover:border-[#DEDDD7] hover:bg-[#FAFAF7] transition-colors"
                     >
                       <div className="relative flex-shrink-0">
                         {d.headshotUrl ? (
@@ -573,7 +619,7 @@ export default async function DashboardPage({
                             className="w-9 h-9 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-9 h-9 rounded-full bg-white/80 flex items-center justify-center text-[10px] font-medium text-[#666]">
+                          <div className="w-9 h-9 rounded-full bg-[#F2F1EC] border border-[#DEDDD7] flex items-center justify-center text-[10px] font-medium text-[#666]">
                             {d.name
                               .split(" ")
                               .map((n) => n[0])
@@ -607,10 +653,10 @@ export default async function DashboardPage({
 
             {/* Reel Leaderboard */}
             {leaderboard.length > 0 && (
-              <div className="data-card p-5 md:p-7">
+              <div className="data-card p-5 md:p-6">
                 <div className="flex items-center gap-2 mb-5">
                   <TrendingUp size={11} className="text-[#444]" />
-                  <h2 className="text-[11px] uppercase tracking-[0.15em] text-[#444] font-medium">
+                  <h2 className="section-header text-[#444]">
                     Reel Leaderboard
                   </h2>
                 </div>
@@ -620,7 +666,7 @@ export default async function DashboardPage({
                     <Link
                       key={reel.id}
                       href={`/reels/${reel.id}`}
-                      className="flex items-center gap-3 group"
+                      className="flex items-center gap-3 group border-b border-[#ECEBE6] last:border-0 py-2"
                     >
                       <span
                         className={`text-[11px] w-5 text-right tabular-nums flex-shrink-0 font-medium ${

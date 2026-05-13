@@ -1,0 +1,10 @@
+.git
+.next
+node_modules
+tmp
+.claude
+wiredrive-downloads
+.env
+.env.*
+*.log
+tsconfig.tsbuildinfo

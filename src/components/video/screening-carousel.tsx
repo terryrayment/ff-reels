@@ -1028,8 +1028,8 @@ export function ScreeningCarousel({
 
           {/* Persistent reel title — always visible */}
           <div className="flex-shrink-0 mr-1 hidden md:block">
-            <p className="text-[11px] text-white/30 truncate max-w-[200px]">
-              <span className="font-medium text-white/40">{director.name}</span>
+            <p className="text-[11px] text-white truncate max-w-[200px]">
+              <span className="font-medium text-white">{director.name}</span>
               {brand && <span> · {brand}</span>}
             </p>
           </div>
@@ -1041,8 +1041,8 @@ export function ScreeningCarousel({
               onClick={() => openPanel("share")}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "share"
-                  ? "bg-white/10 border-white/20 text-white/60"
-                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                  ? "bg-white/10 border-white/20 text-white"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
               }`}
             >
               <Share2 size={10} />
@@ -1054,8 +1054,8 @@ export function ScreeningCarousel({
               onClick={() => openPanel("bio")}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "bio"
-                  ? "bg-white/10 border-white/20 text-white/60"
-                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                  ? "bg-white/10 border-white/20 text-white"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
               }`}
             >
               <ChevronUp size={10} />
@@ -1067,8 +1067,8 @@ export function ScreeningCarousel({
               onClick={() => openPanel("download")}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "download"
-                  ? "bg-white/10 border-white/20 text-white/60"
-                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                  ? "bg-white/10 border-white/20 text-white"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
               }`}
             >
               <Download size={10} />
@@ -1078,10 +1078,10 @@ export function ScreeningCarousel({
             {hasFrameGrabs && (
               <button
                 onClick={() => openPanel("framegrabs")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "framegrabs"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
                 }`}
               >
                 <ImageIcon size={10} />
@@ -1097,8 +1097,8 @@ export function ScreeningCarousel({
                 onClick={() => openPanel("lookbook")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "lookbook"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
                 }`}
               >
                 <Palette size={10} />
@@ -1112,8 +1112,8 @@ export function ScreeningCarousel({
                 onClick={() => openPanel("treatments")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "treatments"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
                 }`}
               >
                 <FileText size={10} />
@@ -1127,8 +1127,8 @@ export function ScreeningCarousel({
                 onClick={() => openPanel("gallery")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "gallery"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
                 }`}
               >
                 <Camera size={10} />
@@ -1141,8 +1141,8 @@ export function ScreeningCarousel({
               onClick={() => openPanel("company")}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "company"
-                  ? "bg-white/10 border-white/20 text-white/60"
-                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                  ? "bg-white/10 border-white/20 text-white"
+                  : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
               }`}
             >
               F&amp;F
@@ -1154,8 +1154,8 @@ export function ScreeningCarousel({
                 onClick={() => openPanel("casestudies")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "casestudies"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
                 }`}
               >
                 <Play size={10} />
@@ -1169,8 +1169,8 @@ export function ScreeningCarousel({
                 onClick={() => openPanel("shortfilms")}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "shortfilms"
-                    ? "bg-white/10 border-white/20 text-white/60"
-                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white/30 hover:text-white/50"
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
                 }`}
               >
                 <Film size={10} />

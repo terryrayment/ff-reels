@@ -73,7 +73,7 @@ export function ReelsList({
   return (
     <>
       {/* Search bar */}
-      <div className="relative mb-6 md:mb-8">
+      <div className="relative mb-5 md:mb-6">
         <Search
           size={14}
           className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#bbb]"
@@ -83,12 +83,12 @@ export function ReelsList({
           placeholder="Search reels by title, director, or note..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-[#E8E7E3] bg-white text-[13px] text-[#1A1A1A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/10 focus:border-[#ccc] transition-all"
+          className="quartr-input w-full pl-9 pr-4"
         />
       </div>
 
       {/* Count */}
-      <p className="text-[11px] uppercase tracking-[0.18em] text-[#aaa] mb-4">
+      <p className="section-header mb-4">
         {filtered.length} reel{filtered.length !== 1 ? "s" : ""}
         {isRep ? " by you" : " found"}
         {search.trim() && filtered.length !== reels.length && (
@@ -100,7 +100,7 @@ export function ReelsList({
       </p>
 
       {filtered.length > 0 ? (
-        <div className="space-y-2.5 md:space-y-3">
+        <div className="space-y-2">
           {filtered.map((reel) => (
             <div key={reel.id} className="relative group/row">
               <Link
@@ -130,7 +130,7 @@ export function ReelsList({
                   {reel.items.slice(0, 3).map((item, i) => (
                     <div
                       key={item.id}
-                      className={`w-14 h-9 md:w-20 md:h-12 bg-[#EEEDEA]/60 overflow-hidden rounded-lg ${
+                      className={`w-14 h-9 md:w-20 md:h-12 bg-[#EEEDEA]/60 overflow-hidden rounded-md ${
                         i >= 2 ? "hidden md:block" : ""
                       }`}
                     >
@@ -153,7 +153,7 @@ export function ReelsList({
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 md:gap-3">
-                    <h3 className="text-[14px] md:text-lg font-medium tracking-tight-2 text-[#1A1A1A] group-hover:text-black transition-colors truncate">
+                    <h3 className="text-[14px] md:text-[16px] font-semibold text-[#111] group-hover:text-black transition-colors truncate">
                       {reel.title}
                     </h3>
                     {reel.isHotLead && (
@@ -164,12 +164,12 @@ export function ReelsList({
                         <Flame size={13} className="text-amber-500" />
                       </span>
                     )}
-                    <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-[#E0DDD8] text-[9px] text-[#999] uppercase tracking-[0.1em] flex-shrink-0">
+                    <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-[#DEDDD7] text-[9px] text-[#777] uppercase tracking-[0.1em] flex-shrink-0">
                       <span className="w-1 h-1 rounded-full bg-[#ccc]" />
                       {reel.reelType.toLowerCase()}
                     </span>
                   </div>
-                  <p className="text-[11px] md:text-[12px] text-[#999] mt-0.5">
+                  <p className="text-[11px] md:text-[12px] text-[#777] mt-0.5">
                     {reel.director.name} · {reel._count.items} spot
                     {reel._count.items !== 1 ? "s" : ""}
                     <span className="md:hidden">
@@ -178,7 +178,7 @@ export function ReelsList({
                     </span>
                   </p>
                   {reel.curatorialNote && (
-                    <p className="hidden md:block text-[12px] text-[#bbb] mt-1.5 truncate italic">
+                    <p className="hidden md:block text-[12px] text-[#999] mt-1.5 truncate">
                       &ldquo;{reel.curatorialNote}&rdquo;
                     </p>
                   )}
@@ -188,10 +188,10 @@ export function ReelsList({
                 <div className="flex items-center gap-3 md:gap-5 flex-shrink-0">
                   {/* View count badge */}
                   <div
-                    className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] tabular-nums ${
+                    className={`hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] tabular-nums ${
                       reel.totalViews > 0
-                        ? "bg-[#F7F6F3] text-[#1A1A1A] font-medium"
-                        : "text-[#ccc]"
+                        ? "border-[#DEDDD7] bg-[#FAFAF7] text-[#111] font-semibold"
+                        : "border-transparent text-[#ccc]"
                     }`}
                   >
                     <Eye
@@ -216,7 +216,7 @@ export function ReelsList({
                   )}
 
                   {/* Send count — desktop */}
-                  <div className="hidden md:flex items-center gap-1 text-[11px] text-[#bbb]">
+                  <div className="hidden md:flex items-center gap-1 text-[11px] text-[#999]">
                     <Send size={10} />
                     {reel._count.screeningLinks}
                   </div>
@@ -244,7 +244,7 @@ export function ReelsList({
                 onClick={(e) => handleDuplicate(e, reel.id)}
                 disabled={duplicatingId === reel.id}
                 title="Duplicate reel"
-                className="absolute right-2 top-2 md:right-3 md:top-3 opacity-0 group-hover/row:opacity-100 focus:opacity-100 transition-opacity z-10 w-8 h-8 rounded-lg bg-white border border-[#E8E7E3] hover:border-[#ccc] hover:bg-[#F7F6F3] flex items-center justify-center shadow-sm"
+                className="absolute right-2 top-2 md:right-3 md:top-3 opacity-0 group-hover/row:opacity-100 focus:opacity-100 transition-opacity z-10 w-8 h-8 rounded-md bg-white border border-[#DEDDD7] hover:border-[#999] hover:bg-[#FAFAF7] flex items-center justify-center"
               >
                 {duplicatingId === reel.id ? (
                   <span className="w-3 h-3 border-2 border-[#999] border-t-transparent rounded-full animate-spin" />
@@ -265,14 +265,14 @@ export function ReelsList({
       ) : (
         <div className="flex flex-col items-center justify-center py-20 md:py-32 text-center">
           <Film size={20} className="text-[#ccc] mb-4" />
-          <h3 className="text-lg font-medium text-[#1A1A1A]">No reels yet</h3>
+          <h3 className="text-lg font-semibold text-[#111]">No reels yet</h3>
           <p className="text-[12px] text-[#999] mt-1 max-w-sm">
             Build your first reel by selecting spots from a director&apos;s
             library.
           </p>
           <Link
             href="/reels/build"
-            className="mt-6 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#1A1A1A] text-white text-[13px] font-medium active:bg-[#333] transition-colors"
+            className="mt-6 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-md bg-[#111] text-white text-[12px] font-semibold uppercase tracking-[0.12em] active:bg-[#333] transition-colors"
           >
             Build Your First Reel
           </Link>

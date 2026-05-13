@@ -44,12 +44,20 @@ export function getCandidateTimestamps(
   intervalSec = 2,
 ): number[] {
   const timestamps: number[] = [];
-  const start = 0.5;
-  const end = Math.max(start + 1, duration - 0.5);
+  const start = duration > 10 ? 1.5 : 0.5;
+  const endPadding = duration > 10 ? 1.5 : 0.5;
+  const end = Math.max(start + 1, duration - endPadding);
 
   for (let t = start; t < end; t += intervalSec) {
     timestamps.push(Math.round(t * 10) / 10);
   }
+
+  const midpoint = Math.round((duration / 2) * 10) / 10;
+  if (midpoint > start && midpoint < end && !timestamps.includes(midpoint)) {
+    timestamps.push(midpoint);
+    timestamps.sort((a, b) => a - b);
+  }
+
   return timestamps;
 }
 
@@ -103,21 +111,24 @@ export async function scoreFrames(
   return results;
 }
 
-const SCORING_PROMPT = `You are selecting the single best thumbnail for a commercial video spot. The thumbnail must make someone want to click and watch.
+const SCORING_PROMPT = `You are selecting the single best thumbnail for a commercial video spot. The thumbnail must make a sales rep proud to send it to an agency or brand client.
 
 Score each frame 1-10 based on:
 - PEOPLE & ACTION: Frames with real people, faces, emotion, or physical action score highest. A person's face or body in motion is almost always better than an object or landscape.
 - CINEMATIC QUALITY: Beautiful lighting, interesting camera angles, shallow depth of field, rich color grade.
 - STORYTELLING: Captures a compelling narrative moment — tension, joy, surprise, intimacy.
-- CLARITY: Sharp focus, no motion blur, no compression artifacts.
+- CLARITY: Sharp focus, no motion blur, no compression artifacts, subject readable at small thumbnail size.
+- CLEAN COMPOSITION: The image should look like a film still, not a graphic panel, meme, tutorial card, social overlay, or end slate.
 
 AUTOMATIC LOW SCORES (score 1-2):
-- Title cards, text overlays, brand logos, end cards, or any frame dominated by typography
-- Solid color backgrounds, gradients, or graphic design elements
+- Title cards, tutorial instructions, captions, stickers, subtitles, text overlays, brand logos, legal text, lower thirds, UI screenshots, or end cards
+- Any frame where typography/graphic design is a dominant visual element, even if a person is also visible
+- Solid color backgrounds, gradients, graphic design elements, split screens, phone-screen captures, or presentation slides
 - Slates, countdowns, black frames, or production markers
 - Product shots with no people (unless exceptionally beautiful)
+- Blurry dance/action frames where the subject is smeared or unreadable
 
-The best thumbnail is almost always a HUMAN MOMENT — a face showing emotion, a person mid-action, an intimate or dramatic scene. Prefer these over everything else.
+The best thumbnail is almost always a HUMAN MOMENT — a face showing emotion, a person mid-action, an intimate or dramatic scene. Prefer these over everything else, but never choose a frame dominated by text or graphics.
 
 Be very selective. Only give 8+ to truly exceptional frames with real people. Most frames should score 4-6.
 
@@ -183,7 +194,7 @@ export async function pickBestThumbnail(project: {
   muxPlaybackId: string;
   duration: number;
 }): Promise<{ url: string; time: number; score: number; candidateCount: number } | null> {
-  const interval = project.duration < 4 ? 1 : 2;
+  const interval = project.duration < 12 ? 1 : 1.5;
   const timestamps = getCandidateTimestamps(project.duration, interval);
 
   const candidates = timestamps.map((t) => ({

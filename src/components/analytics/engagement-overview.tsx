@@ -33,11 +33,11 @@ function DeviceTooltip({
   if (!active || !payload?.length) return null;
   const item = payload[0];
   return (
-    <div className="data-card px-3 py-2 shadow-lg border border-[#E8E7E3]/60">
+    <div className="data-card px-3 py-2 border border-[#DEDDD7]">
       <p className="text-[10px] uppercase tracking-wider text-[#999] capitalize">
         {item.name}
       </p>
-      <p className="text-sm font-medium text-[#1A1A1A] tabular-nums">
+      <p className="text-sm font-semibold text-[#111] tabular-nums">
         {item.value} ({Math.round(item.payload.percent * 100)}%)
       </p>
     </div>
@@ -63,19 +63,19 @@ export function EngagementOverview({ data }: { data: EngagementData }) {
   }));
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       {/* Avg Completion */}
-      <div className="data-card p-6 md:p-8">
-        <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] mb-4">
+      <div className="data-card p-5 md:p-6">
+        <h3 className="section-header mb-4">
           Avg. Completion
         </h3>
         <div className="flex items-end gap-3">
-          <p className="text-[48px] font-light tracking-tight-3 tabular-nums text-[#1A1A1A] leading-none">
+          <p className="text-[44px] font-semibold tracking-tight tabular-nums text-[#111] leading-none">
             {data.avgCompletion}
             <span className="text-[24px] text-[#999]">%</span>
           </p>
         </div>
-        <div className="mt-4 h-2 rounded-full bg-[#F0F0EC] overflow-hidden">
+        <div className="mt-4 h-2 rounded-full bg-[#ECEBE6] overflow-hidden">
           <div
             className={`h-full rounded-full transition-all ${completionColor(data.avgCompletion)}`}
             style={{ width: `${Math.min(data.avgCompletion, 100)}%` }}
@@ -84,8 +84,8 @@ export function EngagementOverview({ data }: { data: EngagementData }) {
       </div>
 
       {/* Device Breakdown */}
-      <div className="data-card p-6 md:p-8">
-        <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] mb-4">
+      <div className="data-card p-5 md:p-6">
+        <h3 className="section-header mb-4">
           Devices
         </h3>
         {total > 0 ? (
@@ -141,8 +141,8 @@ export function EngagementOverview({ data }: { data: EngagementData }) {
       </div>
 
       {/* Top Locations */}
-      <div className="data-card p-6 md:p-8">
-        <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] mb-4">
+      <div className="data-card p-5 md:p-6">
+        <h3 className="section-header mb-4">
           Top Locations
         </h3>
         {data.topLocations.length > 0 ? (

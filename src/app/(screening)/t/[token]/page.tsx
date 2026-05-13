@@ -69,7 +69,7 @@ export default async function TreatmentPage({
   const usePdfViewer = hasPdf && !hasPreviewUrl;
   const pdfUrl = hasPdf
     ? `/api/treatments/${treatment.id}/pdf?download=1&v=${encodeURIComponent(treatment.pdfR2Key!)}`
-    : null;
+    : `/api/treatments/${treatment.id}/pdf?download=1`;
   // Director reel link target: prefer their own website, fall back to marketing site
   const reelLinkHref =
     treatment.director.websiteUrl ||
@@ -174,32 +174,17 @@ export default async function TreatmentPage({
             />
           </div>
 
-          {/* Download the uploaded PDF when available; otherwise open the source. */}
-          {hasPdf ? (
-            <PdfDownloadLink
-              href={pdfUrl!}
-              rel="noopener noreferrer"
-              download={`${treatment.title}.pdf`}
-              className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 text-white/70 hover:text-white text-[10px] uppercase tracking-[0.18em] font-medium transition-all backdrop-blur-sm"
-            >
-              <>
-                <Download size={11} />
-                Download PDF
-              </>
-            </PdfDownloadLink>
-          ) : (
-            <a
-              href={treatment.previewUrl ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 text-white/70 hover:text-white text-[10px] uppercase tracking-[0.18em] font-medium transition-all backdrop-blur-sm"
-            >
-              <>
-                <ArrowUpRight size={11} />
-                Open Original
-              </>
-            </a>
-          )}
+          <PdfDownloadLink
+            href={pdfUrl}
+            rel="noopener noreferrer"
+            download={`${treatment.title}.pdf`}
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 hover:border-white/30 text-white/70 hover:text-white text-[10px] uppercase tracking-[0.18em] font-medium transition-all backdrop-blur-sm"
+          >
+            <>
+              <Download size={11} />
+              Download PDF
+            </>
+          </PdfDownloadLink>
         </div>
       )}
     </div>

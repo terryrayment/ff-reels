@@ -5,6 +5,7 @@ import { ReelAnalyticsTable, type ReelRow } from "@/components/analytics/reel-an
 import { ViewsOverTimeChart } from "@/components/analytics/views-over-time-chart";
 import { EngagementOverview } from "@/components/analytics/engagement-overview";
 import { TopSpotsTable } from "@/components/analytics/top-spots-table";
+import { ReelsWorkspaceSwitch } from "@/components/reels/reels-workspace-switch";
 import {
   getHeroStats,
   getViewsPerDay,
@@ -14,6 +15,8 @@ import {
 import { getEngagementScores } from "@/lib/analytics/scoring";
 import { getCommitteeLinks } from "@/lib/analytics/committee";
 import { prisma } from "@/lib/db";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 
 export default async function AnalyticsPage({
   searchParams,
@@ -64,6 +67,7 @@ export default async function AnalyticsPage({
           screeningLinks: {
             select: {
               id: true,
+              token: true,
               isActive: true,
               createdAt: true,
               recipientName: true,
@@ -115,6 +119,8 @@ export default async function AnalyticsPage({
     );
     const totalSent = reel.screeningLinks.length;
     const activeLinks = reel.screeningLinks.filter((l) => l.isActive).length;
+    const activeLinkToken =
+      reel.screeningLinks.find((l) => l.isActive)?.token ?? null;
 
     const sentDates = reel.screeningLinks.map((l) => l.createdAt.getTime());
     const lastSent = sentDates.length > 0
@@ -207,6 +213,7 @@ export default async function AnalyticsPage({
       totalViews: totalViewsForReel,
       totalSent,
       activeLinks,
+      activeLinkToken,
       lastSent,
       lastViewed,
       views: allViews,
@@ -224,18 +231,31 @@ export default async function AnalyticsPage({
   return (
     <div>
       {/* Header + Date Filter */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-14 gap-4">
-        <div>
-          <h1 className="text-[32px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-12 gap-4">
+        <div className="min-w-0">
+          <p className="section-header mb-3">Engagement intelligence</p>
+          <h1 className="text-[42px] md:text-[56px] font-semibold tracking-tight text-[#111] leading-none">
             Analytics
           </h1>
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[#aaa] mt-2 md:mt-3">
+          <p className="text-[12px] text-[#666] mt-3">
             {isAdmin
-              ? "All reel activity"
-              : "Your reel engagement"}
+              ? "All reel activity, ranked by client signal and recency."
+              : "Your reel engagement, ranked by client signal and recency."}
           </p>
         </div>
-        <DateRangePicker />
+        <div className="flex flex-col items-start gap-3 md:items-end">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <ReelsWorkspaceSwitch active="intelligence" />
+            <Link
+              href="/reels/build"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 md:px-5 md:py-2.5 rounded-md bg-[#111] text-white text-[11px] font-semibold uppercase tracking-[0.12em] hover:bg-black active:bg-[#333] transition-colors"
+            >
+              <Plus size={13} />
+              Build Reel
+            </Link>
+          </div>
+          <DateRangePicker />
+        </div>
       </div>
 
       {/* Reel Activity Table */}

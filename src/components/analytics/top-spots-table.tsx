@@ -23,27 +23,27 @@ export function TopSpotsTable({ spots }: { spots: TopSpot[] }) {
   }
 
   return (
-    <div className="data-card p-6 md:p-8 mb-8">
-      <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] mb-6">
+    <div className="data-card p-5 md:p-6 mb-8">
+      <h3 className="section-header mb-5">
         Top Performing Spots
       </h3>
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-[#E8E7E3]">
-              <th className="text-left text-[10px] uppercase tracking-wider text-[#999] font-normal pb-3 pr-4">
+            <tr className="border-b border-[#DEDDD7]">
+              <th className="text-left text-[10px] uppercase tracking-wider text-[#777] font-semibold pb-3 pr-4">
                 Spot
               </th>
-              <th className="text-left text-[10px] uppercase tracking-wider text-[#999] font-normal pb-3 pr-4 hidden md:table-cell">
+              <th className="text-left text-[10px] uppercase tracking-wider text-[#777] font-semibold pb-3 pr-4 hidden md:table-cell">
                 Director
               </th>
-              <th className="text-right text-[10px] uppercase tracking-wider text-[#999] font-normal pb-3 pr-4 w-[70px]">
+              <th className="text-right text-[10px] uppercase tracking-wider text-[#777] font-semibold pb-3 pr-4 w-[70px]">
                 Plays
               </th>
-              <th className="text-left text-[10px] uppercase tracking-wider text-[#999] font-normal pb-3 pr-4 w-[180px]">
+              <th className="text-left text-[10px] uppercase tracking-wider text-[#777] font-semibold pb-3 pr-4 w-[180px]">
                 Completion
               </th>
-              <th className="text-right text-[10px] uppercase tracking-wider text-[#999] font-normal pb-3 w-[90px]">
+              <th className="text-right text-[10px] uppercase tracking-wider text-[#777] font-semibold pb-3 w-[90px]">
                 Signals
               </th>
             </tr>
@@ -52,14 +52,14 @@ export function TopSpotsTable({ spots }: { spots: TopSpot[] }) {
             {spots.map((spot, i) => (
               <tr
                 key={spot.projectId}
-                className="border-b border-[#E8E7E3]/50 last:border-0"
+                className="border-b border-[#ECEBE6] last:border-0 hover:bg-[#FAFAF7] transition-colors"
               >
                 <td className="py-3 pr-4">
                   <div className="flex items-center gap-2.5">
                     <span className="text-[11px] text-[#ccc] tabular-nums w-4 text-right flex-shrink-0">
                       {i + 1}
                     </span>
-                    <span className="text-[13px] text-[#1A1A1A] font-medium truncate max-w-[200px]">
+                    <span className="text-[13px] text-[#111] font-semibold truncate max-w-[200px]">
                       {spot.title}
                     </span>
                   </div>
@@ -70,13 +70,13 @@ export function TopSpotsTable({ spots }: { spots: TopSpot[] }) {
                   </span>
                 </td>
                 <td className="py-3 pr-4 text-right">
-                  <span className="text-[13px] text-[#1A1A1A] tabular-nums font-medium">
+                  <span className="text-[13px] text-[#111] tabular-nums font-semibold">
                     {spot.plays}
                   </span>
                 </td>
                 <td className="py-3 pr-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex-1 h-1.5 rounded-full bg-[#F0F0EC] overflow-hidden">
+                    <div className="flex-1 h-1.5 rounded-full bg-[#ECEBE6] overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${completionColor(spot.avgCompletion)}`}
                         style={{

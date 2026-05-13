@@ -25,6 +25,7 @@ model User {
   sessions           Session[]
   reelViews          ReelView[]
   updates            Update[]
+  updateReactions    UpdateReaction[]
   reels              Reel[]
   lastActiveAt       DateTime?
   createdAt          DateTime  @default(now())
@@ -355,9 +356,24 @@ model Update {
   // Who posted/triggered it
   authorId    String?
   author      User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  reactions   UpdateReaction[]
 
   isPinned    Boolean    @default(false)
   createdAt   DateTime   @default(now())
+}
+
+model UpdateReaction {
+  id        String   @id @default(cuid())
+  updateId  String
+  update    Update   @relation(fields: [updateId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emoji     String
+  createdAt DateTime @default(now())
+
+  @@unique([updateId, userId, emoji])
+  @@index([updateId])
+  @@index([userId])
 }
 
 enum UpdateType {

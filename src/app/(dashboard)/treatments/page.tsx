@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import Link from "next/link";
-import { FileText, Eye } from "lucide-react";
+import { Download, ExternalLink, FileText, Eye } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import { AddTreatmentBar } from "@/components/treatments/add-treatment-bar";
 import { DeleteTreatmentButton } from "@/components/treatments/delete-treatment-button";
@@ -54,12 +54,13 @@ export default async function TreatmentsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-light tracking-tight-2 text-[#1A1A1A]">
+        <p className="section-header mb-3">Client-facing decks</p>
+        <h1 className="text-[42px] md:text-[56px] font-semibold tracking-tight text-[#111] leading-none">
           Treatments
         </h1>
-        <p className="text-[11px] uppercase tracking-wider text-[#999] mt-2">
+        <p className="text-[12px] text-[#666] mt-3">
           {totalCount} treatment{totalCount !== 1 ? "s" : ""} across{" "}
-          {directors.length} director{directors.length !== 1 ? "s" : ""}
+          {directors.length} director{directors.length !== 1 ? "s" : ""}. PDF-ready links and Adobe sources are clearly marked for reps.
         </p>
       </div>
 
@@ -67,25 +68,28 @@ export default async function TreatmentsPage() {
       {canManage && <AddTreatmentBar directors={allDirectors} />}
 
       {directors.length > 0 ? (
-        <div className="space-y-14">
+        <div className="space-y-8">
           {directors.map((director) => (
-            <div key={director.id}>
+            <div key={director.id} className="data-card overflow-hidden">
               {/* Director name */}
               <Link
                 href={`/directors/${director.id}`}
-                className="text-[10px] uppercase tracking-[0.15em] text-[#999] hover:text-[#1A1A1A] transition-colors font-medium"
+                className="flex items-center justify-between border-b border-[#DEDDD7] bg-[#FAFAF7] px-5 py-3 text-[10px] uppercase tracking-[0.14em] text-[#666] hover:text-[#111] transition-colors font-semibold"
               >
-                {director.name}
+                <span>{director.name}</span>
+                <span className="text-[#999] tabular-nums">
+                  {director.treatmentSamples.length}
+                </span>
               </Link>
 
               {/* Treatment links */}
-              <div className="mt-4">
+              <div>
                 {director.treatmentSamples.map((treatment, i) => (
                   <div
                     key={treatment.id}
-                    className={`flex items-center justify-between gap-4 py-3.5 group ${
+                    className={`flex items-center justify-between gap-4 px-5 py-4 group hover:bg-[#FAFAF7] transition-colors ${
                       i < director.treatmentSamples.length - 1
-                        ? "border-b border-[#F0F0EC]"
+                        ? "border-b border-[#ECEBE6]"
                         : ""
                     }`}
                   >
@@ -97,10 +101,10 @@ export default async function TreatmentsPage() {
                       className="flex-1 min-w-0 flex items-center gap-4"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-[14px] text-[#1A1A1A] group-hover:text-[#666] transition-colors truncate">
+                        <p className="text-[14px] font-semibold text-[#111] group-hover:text-black transition-colors truncate">
                           {treatment.title}
                         </p>
-                        <div className="flex items-center gap-3 mt-0.5">
+                        <div className="flex flex-wrap items-center gap-2.5 mt-1">
                           {treatment.brand && (
                             <span className="text-[11px] text-[#999]">
                               {treatment.brand}
@@ -112,6 +116,19 @@ export default async function TreatmentsPage() {
                               {treatment.pageCount !== 1 ? "s" : ""}
                             </span>
                           )}
+                          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.1em] text-[#777]">
+                            {treatment.pdfR2Key ? (
+                              <>
+                                <Download size={9} />
+                                PDF ready
+                              </>
+                            ) : (
+                              <>
+                                <ExternalLink size={9} />
+                                Adobe source
+                              </>
+                            )}
+                          </span>
                           {treatment.isRedacted && (
                             <span className="text-[10px] text-amber-500 uppercase tracking-wider">
                               Redacted
@@ -135,8 +152,8 @@ export default async function TreatmentsPage() {
                           <Eye size={10} className="text-[#bbb]" />
                           {treatment._count.views}
                           {treatment.views[0]?.startedAt && (
-                            <span className="text-[#ccc] ml-1">
-                              · {timeAgo(treatment.views[0].startedAt)}
+                            <span className="text-[#999] ml-1">
+                              · last viewed {timeAgo(treatment.views[0].startedAt)}
                             </span>
                           )}
                         </span>
@@ -144,8 +161,8 @@ export default async function TreatmentsPage() {
                       {treatment.token && (
                         <CopyTreatmentLinkButton token={treatment.token} />
                       )}
-                      <span className="hidden md:inline text-[10px] text-[#ccc] uppercase tracking-wider whitespace-nowrap">
-                        {timeAgo(treatment.createdAt)}
+                      <span className="hidden md:inline text-[10px] text-[#999] uppercase tracking-[0.12em] whitespace-nowrap">
+                        added {timeAgo(treatment.createdAt)}
                       </span>
                       {canManage && (
                         <DeleteTreatmentButton id={treatment.id} title={treatment.title} />

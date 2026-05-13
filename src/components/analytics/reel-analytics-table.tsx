@@ -15,6 +15,7 @@ import {
   Flame,
   Users,
 } from "lucide-react";
+import { ScreeningLinkButton } from "@/components/reels/screening-link-button";
 
 export interface ViewDetail {
   id: string;
@@ -39,6 +40,7 @@ export interface ReelRow {
   totalViews: number;
   totalSent: number;
   activeLinks: number;
+  activeLinkToken: string | null;
   lastSent: string | null;
   lastViewed: string | null;
   views: ViewDetail[];
@@ -103,6 +105,20 @@ function formatDurationShort(seconds: number | null): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+function completionBarColor(pct: number): string {
+  if (pct >= 80) return "bg-emerald-500";
+  if (pct >= 50) return "bg-amber-400";
+  if (pct >= 25) return "bg-orange-400";
+  return "bg-red-400";
+}
+
+function completionTextColor(pct: number): string {
+  if (pct >= 80) return "text-emerald-600 font-semibold";
+  if (pct >= 50) return "text-amber-600 font-semibold";
+  if (pct >= 25) return "text-orange-500 font-semibold";
+  return "text-red-400 font-semibold";
+}
+
 function timeAgo(iso: string): string {
   const now = new Date();
   const d = new Date(iso);
@@ -141,6 +157,12 @@ export function ReelAnalyticsTable({ rows }: Props) {
   };
 
   const handleSort = (key: SortKey) => {
+    if (key === "lastViewed") {
+      setSortKey(key);
+      setSortDir("desc");
+      return;
+    }
+
     if (sortKey === key) {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     } else {
@@ -222,7 +244,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
   };
 
   const headerClass =
-    "text-[10px] uppercase tracking-[0.12em] text-[#999] font-medium py-3 px-3 cursor-pointer select-none hover:text-[#1A1A1A] transition-colors whitespace-nowrap";
+    "text-[10px] uppercase tracking-[0.12em] text-[#777] font-semibold py-3 px-3 cursor-pointer select-none hover:text-[#111] transition-colors whitespace-nowrap";
 
   return (
     <div className="mb-8">
@@ -238,7 +260,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
             placeholder="Search reels, directors, or recipients..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 text-[13px] bg-white/50 border border-[#E0DDD8]/60 rounded-xl placeholder:text-[#ccc] text-[#1A1A1A] focus:outline-none focus:border-[#999] focus:ring-1 focus:ring-[#1A1A1A]/5 transition-all"
+            className="quartr-input w-full pl-9 pr-4"
           />
         </div>
         <span className="text-[11px] text-[#bbb]">
@@ -248,11 +270,11 @@ export function ReelAnalyticsTable({ rows }: Props) {
 
       {/* Table */}
       {sorted.length > 0 ? (
-        <div className="data-card overflow-hidden">
+        <div className="table-module">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#E8E7E3]/50">
+                <tr className="border-b border-[#DEDDD7] bg-[#FAFAF7]">
                   {/* Expand chevron column */}
                   <th className="w-8" />
                   <th
@@ -340,11 +362,11 @@ export function ReelAnalyticsTable({ rows }: Props) {
                       {/* Main reel row */}
                       <tr
                         onClick={() => hasViews && toggleExpand(row.id)}
-                        className={`border-b border-[#F0F0EC]/50 transition-colors group ${
+                        className={`border-b border-[#ECEBE6] transition-colors group ${
                           hasViews
-                            ? "cursor-pointer hover:bg-white/60"
+                            ? "cursor-pointer hover:bg-[#FAFAF7]"
                             : "opacity-70"
-                        } ${isExpanded ? "bg-white/40" : ""}`}
+                        } ${isExpanded ? "bg-[#FAFAF7]" : ""}`}
                       >
                         {/* Expand chevron */}
                         <td className="py-3.5 pl-4 pr-0 w-8">
@@ -378,13 +400,20 @@ export function ReelAnalyticsTable({ rows }: Props) {
                               </span>
                             )}
                             <div className="min-w-0">
-                              <Link
-                                href={`/analytics/reel/${row.id}`}
-                                onClick={(e) => e.stopPropagation()}
-                                className="block text-[13px] font-medium text-[#1A1A1A] group-hover:text-black transition-colors truncate max-w-[280px] hover:underline"
-                              >
-                                {row.title}
-                              </Link>
+                              <div className="flex items-center gap-1.5">
+                                <Link
+                                  href={`/analytics/reel/${row.id}`}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="block text-[13px] font-semibold text-[#111] group-hover:text-black transition-colors truncate max-w-[280px] hover:underline"
+                                >
+                                  {row.title}
+                                </Link>
+                                {row.activeLinkToken && (
+                                  <span className="scale-[0.72] origin-left">
+                                    <ScreeningLinkButton token={row.activeLinkToken} />
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-[11px] text-[#999] mt-0.5">
                                 {row.directorName}
                                 <span className="text-[#ccc]">
@@ -402,33 +431,35 @@ export function ReelAnalyticsTable({ rows }: Props) {
                           </div>
                         </td>
                         {/* Views */}
-                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A]">
-                          {row.totalViews}
+                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#111]">
+                          <span className="font-semibold">{row.totalViews}</span>
                         </td>
                         {/* Avg Completion % */}
                         <td className="py-3.5 px-3 text-right tabular-nums text-[13px] hidden md:table-cell">
                           {row.avgCompletionPct !== null ? (
-                            <span
-                              className={
-                                row.avgCompletionPct >= 70
-                                  ? "text-emerald-600"
-                                  : row.avgCompletionPct >= 40
-                                    ? "text-[#1A1A1A]"
-                                    : "text-[#999]"
-                              }
-                            >
-                              {row.avgCompletionPct}%
-                            </span>
+                            <div className="ml-auto flex max-w-[110px] items-center justify-end gap-2">
+                              <div className="h-1.5 w-14 rounded-full bg-[#ECEBE6] overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full transition-all ${completionBarColor(row.avgCompletionPct)}`}
+                                  style={{ width: `${Math.min(row.avgCompletionPct, 100)}%` }}
+                                />
+                              </div>
+                              <span
+                                className={completionTextColor(row.avgCompletionPct)}
+                              >
+                                {row.avgCompletionPct}%
+                              </span>
+                            </div>
                           ) : (
                             <span className="text-[#ccc]">{"\u2014"}</span>
                           )}
                         </td>
                         {/* Sent */}
-                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A] hidden lg:table-cell">
+                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#111] hidden lg:table-cell">
                           {row.totalSent}
                         </td>
                         {/* Active */}
-                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#1A1A1A] hidden lg:table-cell">
+                        <td className="py-3.5 px-3 text-right tabular-nums text-[13px] text-[#111] hidden lg:table-cell">
                           {row.activeLinks}
                         </td>
                         {/* Last Sent */}
@@ -436,7 +467,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                           {formatDate(row.lastSent)}
                         </td>
                         {/* Last Viewed */}
-                        <td className="py-3.5 px-3 text-right text-[12px] text-[#1A1A1A] whitespace-nowrap">
+                        <td className="py-3.5 px-3 text-right text-[12px] text-[#111] whitespace-nowrap">
                           {formatDate(row.lastViewed)}
                         </td>
                         {/* Sent By */}
@@ -451,7 +482,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                 <Link
                                   href={`/contacts/${row.recipientContactId}`}
                                   onClick={(e) => e.stopPropagation()}
-                                  className="truncate max-w-[150px] block text-[#1A1A1A] hover:underline ml-auto"
+                                  className="truncate max-w-[150px] block text-[#111] hover:underline ml-auto"
                                 >
                                   {row.recipient}
                                 </Link>
@@ -474,7 +505,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                       {isExpanded && row.views.length > 0 && (
                         <tr>
                           <td colSpan={colCount} className="p-0">
-                            <div className="bg-[#F9F8F5] border-b border-[#E8E7E3]/30">
+                            <div className="bg-[#FAFAF7] border-b border-[#DEDDD7]">
                               {/* View feed header + committee badge */}
                               <div className="px-6 pt-4 pb-2 flex items-center gap-3">
                                 <p className="text-[9px] uppercase tracking-[0.2em] text-[#bbb] font-medium">
@@ -493,11 +524,11 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                 )}
                               </div>
                               {/* Individual views */}
-                              <div className="divide-y divide-[#E8E7E3]/30">
+                              <div className="divide-y divide-[#E8E7E3]/60">
                                 {row.views.map((view) => (
                                   <div
                                     key={view.id}
-                                    className="flex items-center gap-3 px-6 py-3 hover:bg-white/40 transition-colors"
+                                    className="flex items-center gap-3 px-6 py-3 hover:bg-white transition-colors"
                                   >
                                     {/* Device icon */}
                                     <div className="w-5 h-5 flex items-center justify-center flex-shrink-0 text-[#ccc]">
@@ -543,11 +574,7 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                           )}
                                         {view.avgCompletion !== null && (
                                           <span
-                                            className={`text-[10px] ${
-                                              view.avgCompletion >= 70
-                                                ? "text-emerald-600"
-                                                : "text-[#bbb]"
-                                            }`}
+                                            className={`text-[10px] ${completionTextColor(view.avgCompletion)}`}
                                           >
                                             {view.avgCompletion}% completion
                                           </span>

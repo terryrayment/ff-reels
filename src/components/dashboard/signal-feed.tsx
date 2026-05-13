@@ -1,20 +1,47 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, Check, X } from "lucide-react";
+import {
+  Check,
+  Clapperboard,
+  ExternalLink,
+  Image as ImageIcon,
+  Megaphone,
+  Pencil,
+  Pin,
+  Send,
+  Trash2,
+  UserPlus,
+  X,
+} from "lucide-react";
+
+interface ReactionSummary {
+  emoji: string;
+  count: number;
+}
 
 interface Update {
   id: string;
   type: string;
   title: string;
   body: string | null;
+  imageUrl: string | null;
   isPinned: boolean;
   createdAt: string;
   director: { id: string; name: string } | null;
-  project: { id: string; title: string; brand: string | null } | null;
+  project: {
+    id: string;
+    title: string;
+    brand: string | null;
+    muxPlaybackId?: string | null;
+  } | null;
   author: { id: string; name: string | null; email: string } | null;
+  reactions: ReactionSummary[];
+  myReactions: string[];
 }
+
+const REACTION_OPTIONS = ["🔥", "👀", "✅", "👏"];
 
 function timeAgoClient(date: string): string {
   const seconds = Math.floor(
@@ -28,6 +55,148 @@ function timeAgoClient(date: string): string {
   const days = Math.floor(hours / 24);
   if (days < 30) return `${days}d ago`;
   return `${Math.floor(days / 30)}mo ago`;
+}
+
+function getAuthorLabel(update: Update) {
+  if (update.author?.name) return update.author.name;
+  if (update.author?.email) return update.author.email;
+  return "System";
+}
+
+function getUpdateLabel(update: Update) {
+  switch (update.type) {
+    case "REEL_CREATED":
+      return "Reel";
+    case "SPOT_ADDED":
+      return "Spot";
+    case "DIRECTOR_ADDED":
+      return "Roster";
+    default:
+      return update.imageUrl ? "Post" : "Signal";
+  }
+}
+
+function getUpdateIcon(update: Update) {
+  switch (update.type) {
+    case "REEL_CREATED":
+      return Send;
+    case "SPOT_ADDED":
+      return Clapperboard;
+    case "DIRECTOR_ADDED":
+      return UserPlus;
+    default:
+      return update.imageUrl ? ImageIcon : Megaphone;
+  }
+}
+
+function getMediaUrl(update: Update) {
+  if (update.imageUrl) return update.imageUrl;
+  if (update.project?.muxPlaybackId) {
+    return `https://image.mux.com/${update.project.muxPlaybackId}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop`;
+  }
+  return null;
+}
+
+function extractFirstUrl(text: string) {
+  return text.match(/https?:\/\/[^\s]+/)?.[0]?.replace(/[.,!?;:)]+$/, "") || null;
+}
+
+function getLinkLabel(href: string) {
+  try {
+    const url = new URL(href);
+    if (url.hostname.includes("treatments.")) return "Open treatment";
+    if (url.hostname.includes("reels.")) return "Open reel";
+    return url.hostname.replace(/^www\./, "");
+  } catch {
+    return "Open link";
+  }
+}
+
+function LinkifiedText({ text }: { text: string }) {
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (!part.match(/^https?:\/\//)) return part;
+
+        const trailingMatch = part.match(/[.,!?;:)]+$/);
+        const trailing = trailingMatch?.[0] ?? "";
+        const href = trailing ? part.slice(0, -trailing.length) : part;
+
+        return (
+          <span key={`${part}-${index}`}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="font-medium text-[#111] underline decoration-[#B8B7B0] underline-offset-2 hover:decoration-[#111]"
+            >
+              {href}
+            </a>
+            {trailing}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
+function SmartLinkCard({ update }: { update: Update }) {
+  const href = extractFirstUrl(`${update.title} ${update.body || ""}`);
+  if (!href) return null;
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      className="mt-2 inline-flex max-w-full items-center gap-1.5 rounded-full border border-[#DDDCD6] bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#333] transition-colors hover:border-[#1A1A1A]"
+    >
+      <ExternalLink size={11} />
+      <span className="truncate">{getLinkLabel(href)}</span>
+    </a>
+  );
+}
+
+function ReactionBar({
+  update,
+  onReact,
+}: {
+  update: Update;
+  onReact: (id: string, emoji: string) => void;
+}) {
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-1">
+      {REACTION_OPTIONS.map((emoji) => {
+        const reaction = update.reactions.find((item) => item.emoji === emoji);
+        const selected = update.myReactions.includes(emoji);
+        return (
+          <button
+            key={emoji}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onReact(update.id, emoji);
+            }}
+            className={`inline-flex h-7 min-w-7 items-center justify-center gap-1 rounded-full border px-2 text-[11px] transition-colors ${
+              selected
+                ? "border-[#1A1A1A] bg-[#1A1A1A] text-white"
+                : reaction
+                  ? "border-[#D8D7D2] bg-white text-[#333] hover:border-[#999]"
+                  : "border-transparent bg-transparent text-[#999] hover:border-[#E2E1DC] hover:bg-white"
+            }`}
+            aria-label={`React ${emoji}`}
+          >
+            <span>{emoji}</span>
+            {reaction && <span className="text-[10px]">{reaction.count}</span>}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 export function SignalFeed({
@@ -47,7 +216,6 @@ export function SignalFeed({
   const editRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  // Sync state when server re-renders with new data (e.g. after router.refresh())
   useEffect(() => {
     setUpdates(initialUpdates);
   }, [initialUpdates]);
@@ -88,7 +256,7 @@ export function SignalFeed({
         router.refresh();
       }
     } catch {
-      // silently fail
+      // Keep the card unchanged if the edit fails.
     }
   };
 
@@ -101,7 +269,37 @@ export function SignalFeed({
         router.refresh();
       }
     } catch {
-      // silently fail
+      // Keep the card visible if delete fails.
+    }
+  };
+
+  const handleReaction = async (id: string, emoji: string) => {
+    try {
+      const res = await fetch(`/api/updates/${id}/reactions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emoji }),
+      });
+
+      if (!res.ok) return;
+      const data = (await res.json()) as {
+        reactions: ReactionSummary[];
+        myReactions: string[];
+      };
+
+      setUpdates((prev) =>
+        prev.map((update) =>
+          update.id === id
+            ? {
+                ...update,
+                reactions: data.reactions,
+                myReactions: data.myReactions,
+              }
+            : update
+        )
+      );
+    } catch {
+      // Reaction counts will recover on refresh.
     }
   };
 
@@ -113,88 +311,146 @@ export function SignalFeed({
     }
   };
 
-  // Compact 3-column pill layout
+  const renderEditControls = (update: Update, compactCard = false) => {
+    if (!canModify(update) || editingId === update.id) return null;
+
+    return (
+      <div
+        className={`absolute right-2 top-2 flex items-center gap-0.5 opacity-100 transition-opacity md:opacity-0 md:group-hover/item:opacity-100 ${
+          compactCard ? "" : "bg-white/80 backdrop-blur-sm rounded-full"
+        }`}
+      >
+        <button
+          onClick={() => handleEdit(update)}
+          className="rounded-full p-2 text-[#888] transition-colors hover:bg-white hover:text-[#1A1A1A]"
+          aria-label="Edit update"
+        >
+          <Pencil size={compactCard ? 13 : 14} />
+        </button>
+        <button
+          onClick={() => handleDelete(update.id)}
+          className="rounded-full p-2 text-[#888] transition-colors hover:bg-red-50 hover:text-red-500"
+          aria-label="Delete update"
+        >
+          <Trash2 size={compactCard ? 13 : 14} />
+        </button>
+      </div>
+    );
+  };
+
+  const renderTitle = (update: Update, className: string) => {
+    if (editingId === update.id) {
+      return (
+        <div className="flex items-center gap-1.5">
+          <input
+            ref={editRef}
+            type="text"
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, update.id)}
+            className="min-w-0 flex-1 rounded border border-[#E0E0E0] bg-white px-2 py-1 text-[12px] text-[#1A1A1A] focus:outline-none focus:border-[#999]"
+          />
+          <button
+            onClick={() => handleSaveEdit(update.id)}
+            className="p-1 text-emerald-500 transition-colors hover:text-emerald-700"
+            aria-label="Save"
+          >
+            <Check size={12} />
+          </button>
+          <button
+            onClick={() => setEditingId(null)}
+            className="p-1 text-[#888] transition-colors hover:text-[#1A1A1A]"
+            aria-label="Cancel"
+          >
+            <X size={12} />
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <p className={className}>
+        <LinkifiedText text={update.title} />
+      </p>
+    );
+  };
+
   if (compact) {
     const displayUpdates = updates.slice(0, 6);
 
     return (
       <div>
         {displayUpdates.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-            {displayUpdates.map((update) => (
-              <div
-                key={update.id}
-                className="group/item relative rounded-xl bg-[#F7F6F3]/60 px-3.5 py-2.5 hover:bg-[#F0F0EC]/60 transition-all duration-300"
-              >
-                {update.isPinned && (
-                  <span className="text-[8px] uppercase tracking-[0.12em] text-amber-600 font-semibold">
-                    Pinned
-                  </span>
-                )}
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3">
+            {displayUpdates.map((update) => {
+              const Icon = getUpdateIcon(update);
+              const mediaUrl = getMediaUrl(update);
 
-                {editingId === update.id ? (
-                  <div className="flex items-center gap-1.5">
-                    <input
-                      ref={editRef}
-                      type="text"
-                      value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, update.id)}
-                      className="flex-1 text-[12px] text-[#1A1A1A] bg-white rounded px-2 py-1 border border-[#E0E0E0] focus:outline-none focus:border-[#999]"
-                    />
-                    <button
-                      onClick={() => handleSaveEdit(update.id)}
-                      className="text-emerald-500 hover:text-emerald-700 transition-colors p-0.5"
-                    >
-                      <Check size={10} />
-                    </button>
-                    <button
-                      onClick={() => setEditingId(null)}
-                      className="text-[#888] hover:text-[#1A1A1A] transition-colors p-0.5"
-                    >
-                      <X size={10} />
-                    </button>
+              return (
+                <div
+                  key={update.id}
+                  className="group/item relative overflow-hidden rounded-xl border border-transparent bg-[#F7F6F3]/70 transition-all duration-300 hover:border-[#DDDCD6] hover:bg-[#F0F0EC]/70"
+                >
+                  {mediaUrl && (
+                    <div className="relative aspect-[16/7] overflow-hidden bg-[#EAE9E3]">
+                      <img
+                        src={mediaUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+
+                  <div className="p-3">
+                    <div className="mb-2 flex items-center gap-2 pr-14">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.11em] text-[#555]">
+                        <Icon size={10} />
+                        {getUpdateLabel(update)}
+                      </span>
+                      {update.isPinned && (
+                        <span className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-[0.11em] text-amber-600">
+                          <Pin size={9} />
+                          Pinned
+                        </span>
+                      )}
+                    </div>
+
+                    {renderTitle(
+                      update,
+                      "text-[13px] font-medium leading-snug text-[#1A1A1A] line-clamp-2 break-words",
+                    )}
+
+                    {update.body && (
+                      <p className="mt-1 line-clamp-2 break-words text-[11px] leading-snug text-[#666]">
+                        <LinkifiedText text={update.body} />
+                      </p>
+                    )}
+
+                    <SmartLinkCard update={update} />
+
+                    {(update.director || update.project) && (
+                      <p className="mt-2 truncate text-[10px] text-[#555]">
+                        {update.director?.name}
+                        {update.director && update.project && " / "}
+                        {update.project?.title}
+                      </p>
+                    )}
+
+                    <ReactionBar update={update} onReact={handleReaction} />
+
+                    <p className="mt-2 text-[9px] uppercase tracking-[0.12em] text-[#888]">
+                      {getAuthorLabel(update)} · {timeAgoClient(update.createdAt)}
+                    </p>
                   </div>
-                ) : (
-                  <p className="text-[12px] text-[#1A1A1A] leading-snug line-clamp-2">
-                    {update.title}
-                  </p>
-                )}
 
-                {(update.director || update.project) && (
-                  <p className="text-[10px] text-[#555] mt-1 truncate">
-                    {update.director?.name}
-                    {update.director && update.project && " / "}
-                    {update.project?.title}
-                  </p>
-                )}
-
-                <p className="text-[9px] uppercase tracking-[0.12em] text-[#888] mt-1.5">
-                  {update.author?.name || "System"} · {timeAgoClient(update.createdAt)}
-                </p>
-
-                {/* Edit/Delete — hover */}
-                {canModify(update) && editingId !== update.id && (
-                  <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-100 md:opacity-0 md:group-hover/item:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => handleEdit(update)}
-                      className="text-[#888] hover:text-[#1A1A1A] transition-colors p-2 rounded hover:bg-white/60"
-                    >
-                      <Pencil size={14} className="md:w-[9px] md:h-[9px]" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(update.id)}
-                      className="text-[#888] hover:text-red-400 transition-colors p-2 rounded hover:bg-red-50/60"
-                    >
-                      <Trash2 size={14} className="md:w-[9px] md:h-[9px]" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
+                  {renderEditControls(update, true)}
+                </div>
+              );
+            })}
           </div>
         ) : (
-          <p className="text-[13px] text-[#777] py-4">
+          <p className="py-4 text-[13px] text-[#777]">
             No updates yet. Post the first one.
           </p>
         )}
@@ -202,115 +458,88 @@ export function SignalFeed({
     );
   }
 
-  // Original list layout
   return (
     <div className="mt-8 max-h-[600px] overflow-y-auto pr-1">
       {updates.length > 0 ? (
-        <div>
-          {updates.map((update, i) => (
-            <div
-              key={update.id}
-              className={`group/item py-4 ${
-                i < updates.length - 1 ? "border-b border-[#F0F0EC]" : ""
-              }`}
-            >
-              {/* Pin badge */}
-              {update.isPinned && (
-                <div className="mb-1.5">
-                  <span className="text-[10px] uppercase tracking-[0.12em] text-[#1A1A1A] font-medium">
-                    Pinned
-                  </span>
-                </div>
-              )}
+        <div className="space-y-3">
+          {updates.map((update) => {
+            const Icon = getUpdateIcon(update);
+            const mediaUrl = getMediaUrl(update);
 
-              {/* Title — editable */}
-              {editingId === update.id ? (
-                <div className="flex items-center gap-1.5">
-                  <input
-                    ref={editRef}
-                    type="text"
-                    value={editText}
-                    onChange={(e) => setEditText(e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, update.id)}
-                    className="flex-1 text-[13px] text-[#1A1A1A] bg-[#F5F5F0] rounded px-2 py-1 border border-[#E0E0E0] focus:outline-none focus:border-[#999]"
-                  />
-                  <button
-                    onClick={() => handleSaveEdit(update.id)}
-                    className="text-emerald-500 hover:text-emerald-700 transition-colors p-0.5"
-                    title="Save"
-                  >
-                    <Check size={12} />
-                  </button>
-                  <button
-                    onClick={() => setEditingId(null)}
-                    className="text-[#ccc] hover:text-[#999] transition-colors p-0.5"
-                    title="Cancel"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-[13px] text-[#1A1A1A] leading-snug flex-1">
-                    {update.title}
-                  </p>
+            return (
+              <div
+                key={update.id}
+                className="group/item relative overflow-hidden rounded-xl border border-[#ECEBE5] bg-white"
+              >
+                {mediaUrl && (
+                  <div className="aspect-video max-h-64 overflow-hidden bg-[#EAE9E3]">
+                    <img
+                      src={mediaUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
 
-                  {/* Edit/Delete actions — show on hover */}
-                  {canModify(update) && (
-                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover/item:opacity-100 transition-opacity flex-shrink-0 -mt-0.5">
-                      <button
-                        onClick={() => handleEdit(update)}
-                        className="text-[#ccc] hover:text-[#999] transition-colors p-2 md:p-1 rounded hover:bg-[#F5F5F0]"
-                        title="Edit"
-                      >
-                        <Pencil size={14} className="md:w-[10px] md:h-[10px]" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(update.id)}
-                        className="text-[#ccc] hover:text-red-400 transition-colors p-2 md:p-1 rounded hover:bg-red-50"
-                        title="Delete"
-                      >
-                        <Trash2 size={14} className="md:w-[10px] md:h-[10px]" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Body */}
-              {update.body && (
-                <p className="text-[12px] text-[#888] mt-1 leading-relaxed">
-                  {update.body}
-                </p>
-              )}
-
-              {/* Director / Project */}
-              {(update.director || update.project) && (
-                <p className="text-[11px] text-[#999] mt-2">
-                  {update.director && <span>{update.director.name}</span>}
-                  {update.director && update.project && (
-                    <span className="text-[#ddd]"> / </span>
-                  )}
-                  {update.project && (
-                    <span>
-                      {update.project.title}
-                      {update.project.brand && ` (${update.project.brand})`}
+                <div className="p-4">
+                  <div className="mb-2 flex items-center gap-2 pr-16">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#F7F6F3] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.11em] text-[#555]">
+                      <Icon size={10} />
+                      {getUpdateLabel(update)}
                     </span>
-                  )}
-                </p>
-              )}
+                    {update.isPinned && (
+                      <span className="inline-flex items-center gap-1 text-[9px] font-semibold uppercase tracking-[0.11em] text-amber-600">
+                        <Pin size={9} />
+                        Pinned
+                      </span>
+                    )}
+                  </div>
 
-              {/* Author + time */}
-              <p className="text-[10px] uppercase tracking-[0.15em] text-[#ccc] mt-2">
-                {update.author?.name || update.author?.email || "System"}
-                <span className="mx-2 text-[#E8E8E3]">/</span>
-                {timeAgoClient(update.createdAt)}
-              </p>
-            </div>
-          ))}
+                  {renderTitle(
+                    update,
+                    "text-[14px] font-medium leading-snug text-[#1A1A1A] break-words",
+                  )}
+
+                  {update.body && (
+                    <p className="mt-1 break-words text-[12px] leading-relaxed text-[#666]">
+                      <LinkifiedText text={update.body} />
+                    </p>
+                  )}
+
+                  <SmartLinkCard update={update} />
+
+                  {(update.director || update.project) && (
+                    <p className="mt-2 text-[11px] text-[#999]">
+                      {update.director && <span>{update.director.name}</span>}
+                      {update.director && update.project && (
+                        <span className="text-[#ddd]"> / </span>
+                      )}
+                      {update.project && (
+                        <span>
+                          {update.project.title}
+                          {update.project.brand && ` (${update.project.brand})`}
+                        </span>
+                      )}
+                    </p>
+                  )}
+
+                  <ReactionBar update={update} onReact={handleReaction} />
+
+                  <p className="mt-2 text-[10px] uppercase tracking-[0.15em] text-[#aaa]">
+                    {getAuthorLabel(update)}
+                    <span className="mx-2 text-[#E8E8E3]">/</span>
+                    {timeAgoClient(update.createdAt)}
+                  </p>
+                </div>
+
+                {renderEditControls(update)}
+              </div>
+            );
+          })}
         </div>
       ) : (
-        <p className="text-[13px] text-[#999] py-6">
+        <p className="py-6 text-[13px] text-[#999]">
           No updates yet. Post the first one.
         </p>
       )}

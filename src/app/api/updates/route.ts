@@ -41,8 +41,8 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // ADMIN and REP can post notes
-  if (session.user.role !== "ADMIN" && session.user.role !== "REP") {
+  // Team members can post notes
+  if (!["ADMIN", "REP", "PRODUCER"].includes(session.user.role)) {
     return NextResponse.json({ error: "Only team members can post updates" }, { status: 403 });
   }
 
@@ -65,6 +65,7 @@ export async function POST(req: NextRequest) {
     },
     include: {
       director: { select: { id: true, name: true } },
+      project: { select: { id: true, title: true, brand: true } },
       author: { select: { id: true, name: true, email: true } },
     },
   });
