@@ -27,8 +27,7 @@ export default async function LeadsPage() {
             Leads
           </h1>
           <p className="mt-3 max-w-xl text-[12px] text-[#666]">
-            Shared lead tracking from Airtable. Access is limited to approved
-            team members.
+            CCCo Leads
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

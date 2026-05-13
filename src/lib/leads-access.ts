@@ -1,6 +1,14 @@
 const DEFAULT_LEADS_URL =
   "https://airtable.com/appfCBl4ZKJqaToNM/shrt6NYAnQ6fd4xg0";
 
+const BLOCKED_LEADS_EMAILS = [
+  "katie.northy@talk-shop.tv",
+  "kenard.jackson@talk-shop.tv",
+  "calebslain@gmail.com",
+  "james@unclelefty.com",
+  "laurel-ann@unclelefty.com",
+];
+
 function parseCsv(value?: string | null) {
   return (value || "")
     .split(",")
@@ -39,6 +47,15 @@ export function canAccessLeads(user?: {
   role?: string | null;
 }) {
   if (!user) return false;
+  const userEmail = user.email?.toLowerCase();
+
+  const blockedEmails = new Set(
+    [
+      ...BLOCKED_LEADS_EMAILS,
+      ...parseCsv(process.env.LEADS_BLOCKED_EMAILS),
+    ].map((email) => email.toLowerCase()),
+  );
+  if (userEmail && blockedEmails.has(userEmail)) return false;
 
   const allowedRoles = new Set(
     ["ADMIN", ...parseCsv(process.env.LEADS_ALLOWED_ROLES)].map((role) =>
@@ -52,5 +69,5 @@ export function canAccessLeads(user?: {
       email.toLowerCase(),
     ),
   );
-  return !!user.email && allowedEmails.has(user.email.toLowerCase());
+  return !!userEmail && allowedEmails.has(userEmail);
 }
