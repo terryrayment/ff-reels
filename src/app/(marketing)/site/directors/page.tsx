@@ -59,7 +59,7 @@ export default async function DirectorsPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
       <header className="flex items-baseline justify-between gap-6 mb-16">
-        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A]">
+        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A] font-helveticaDisplay">
           Directors
         </h1>
         <p className="text-[12px] uppercase tracking-[0.14em] text-[#999]">

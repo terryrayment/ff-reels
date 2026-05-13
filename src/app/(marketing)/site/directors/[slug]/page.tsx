@@ -98,7 +98,7 @@ export default async function DirectorDetailPage({ params }: Props) {
             {positioning}
           </p>
         )}
-        <h1 className="text-[44px] md:text-[88px] lg:text-[120px] leading-[0.92] tracking-tight-3 font-light text-[#1A1A1A]">
+        <h1 className="text-[44px] md:text-[88px] lg:text-[120px] leading-[0.92] tracking-tight-3 font-light text-[#1A1A1A] font-helveticaDisplay">
           {director.name}
         </h1>
       </header>

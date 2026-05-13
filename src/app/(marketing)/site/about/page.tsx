@@ -30,7 +30,7 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
       <header className="mb-20">
-        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A] max-w-3xl leading-[1.02]">
+        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A] max-w-3xl leading-[1.02] font-helveticaDisplay">
           A commercial production company, independently run, director-led.
         </h1>
       </header>

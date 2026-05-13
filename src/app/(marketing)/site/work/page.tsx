@@ -62,7 +62,7 @@ export default async function WorkPage({
   return (
     <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
       <header className="mb-12 flex items-baseline justify-between gap-6">
-        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A]">
+        <h1 className="text-[40px] md:text-[56px] tracking-tight-3 font-light text-[#1A1A1A] font-helveticaDisplay">
           Work
         </h1>
         <p className="text-[11px] uppercase tracking-[0.14em] text-[#999]">

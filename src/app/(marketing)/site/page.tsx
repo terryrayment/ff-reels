@@ -122,7 +122,7 @@ export default async function MarketingHomePage() {
       <section className="border-t border-[#E8E7E3]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-24 lg:py-32">
           <div className="flex items-end justify-between gap-6 mb-12">
-            <h2 className="text-[28px] md:text-[36px] tracking-tight-3 font-light text-[#1A1A1A]">
+            <h2 className="text-[28px] md:text-[36px] tracking-tight-3 font-light text-[#1A1A1A] font-helveticaDisplay">
               Recent work
             </h2>
             <Link

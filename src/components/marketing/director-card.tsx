@@ -70,7 +70,7 @@ export function DirectorCard({
         )}
       </div>
       <div className="mt-3 flex items-baseline justify-between gap-3">
-        <h3 className="text-[17px] md:text-[20px] tracking-tight-2 text-[#1A1A1A] leading-tight">
+        <h3 className="text-[17px] md:text-[20px] tracking-tight-2 text-[#1A1A1A] leading-tight font-helveticaDisplay">
           {name}
         </h3>
         {positioning && (
