@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import MuxPlayer from "@mux/mux-player-react";
 
 interface HeroVideoProps {
   /** Mux playback ID for the homepage hero reel. If absent, shows poster gradient. */
@@ -9,35 +9,31 @@ interface HeroVideoProps {
 }
 
 export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const onCanPlay = () => setLoaded(true);
-    v.addEventListener("canplay", onCanPlay);
-    return () => v.removeEventListener("canplay", onCanPlay);
-  }, []);
-
   return (
     <section className="relative w-full h-[100svh] min-h-[560px] overflow-hidden bg-[#0A0A0A]">
       {muxPlaybackId ? (
-        <video
-          ref={videoRef}
-          src={`https://stream.mux.com/${muxPlaybackId}/high.mp4`}
-          poster={
-            posterUrl ??
-            `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=1920`
-          }
-          autoPlay
-          muted
-          loop
-          playsInline
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-            loaded ? "opacity-100" : "opacity-0"
-          }`}
-        />
+        <div className="absolute inset-0 w-full h-full [&_mux-player]:w-full [&_mux-player]:h-full">
+          <MuxPlayer
+            playbackId={muxPlaybackId}
+            streamType="on-demand"
+            autoPlay="muted"
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={
+              posterUrl ??
+              `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=1920`
+            }
+            nohotkeys
+            style={{
+              width: "100%",
+              height: "100%",
+              "--controls": "none",
+              "--media-object-fit": "cover",
+            }}
+          />
+        </div>
       ) : (
         <div
           className="absolute inset-0 w-full h-full"
@@ -50,7 +46,7 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40 pointer-events-none" />
 
-      <div className="relative h-full mx-auto max-w-[1400px] px-6 lg:px-10 flex flex-col justify-end pb-16">
+      <div className="relative h-full mx-auto max-w-[1400px] px-6 lg:px-10 flex flex-col justify-end pb-16 pointer-events-none">
         <p className="text-[11px] uppercase tracking-[0.18em] text-white/70">
           Commercial production
         </p>

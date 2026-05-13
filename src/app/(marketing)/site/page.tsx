@@ -63,11 +63,15 @@ async function resolveHeroProjectThumb(heroProjectId: string | null) {
 export default async function MarketingHomePage() {
   const { featuredDirectors, recentProjects } = await getHomepageData();
 
-  const heroDirector = featuredDirectors[0];
-  const heroPlaybackId = heroDirector?.videoIntroUrl ?? null;
-  const heroPoster = heroDirector?.heroProjectId
-    ? await resolveHeroProjectThumb(heroDirector.heroProjectId)
-    : null;
+  const directorWithIntro = featuredDirectors.find((d) => d.videoIntroUrl);
+  const heroProject = recentProjects.find((p) => p.muxPlaybackId);
+
+  const heroPlaybackId =
+    directorWithIntro?.videoIntroUrl ?? heroProject?.muxPlaybackId ?? null;
+
+  const heroPoster = directorWithIntro?.heroProjectId
+    ? await resolveHeroProjectThumb(directorWithIntro.heroProjectId)
+    : heroProject?.thumbnailUrl ?? null;
 
   const cardsWithStills = await Promise.all(
     featuredDirectors.map(async (d) => ({
