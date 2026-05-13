@@ -459,3 +459,22 @@ mux-player {
     opacity: 1;
   }
 }
+
+/* View Transitions — fluid morph between project thumbnail positions across routes */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Project thumbnails get their own slow, eased morph */
+  ::view-transition-group(*) {
+    animation-duration: 0.55s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  ::view-transition-image-pair(*) {
+    isolation: auto;
+  }
+}

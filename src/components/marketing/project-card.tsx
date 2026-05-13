@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ReelLightbox, type LightboxProject } from "./reel-lightbox";
+import { useRouter } from "next/navigation";
 
 export interface ProjectCardData {
   id: string;
@@ -37,7 +36,9 @@ export function ProjectCard({
   showAgency = false,
   thumbnailWidth = 1000,
 }: ProjectCardProps) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const href = `/site/directors/${project.director.slug}`;
+  const transitionName = `project-${project.id}`;
 
   const still =
     project.thumbnailUrl ??
@@ -52,9 +53,27 @@ export function ProjectCard({
   if (showYear && project.year) metaParts.push(String(project.year));
   const metaLine = metaParts.join(" · ");
 
-  const inner = (
-    <>
-      <div className="relative aspect-video overflow-hidden bg-[#EEEDEA]">
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Let modified clicks (cmd/ctrl/shift) and middle-click follow default browser behaviour.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (typeof document.startViewTransition !== "function") return;
+    e.preventDefault();
+    document.startViewTransition(() => {
+      router.push(href);
+    });
+  };
+
+  return (
+    <Link
+      href={href}
+      onClick={handleClick}
+      className="group block"
+      prefetch
+    >
+      <div
+        className="relative aspect-video overflow-hidden bg-[#EEEDEA]"
+        style={{ viewTransitionName: transitionName } as React.CSSProperties}
+      >
         {still && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -80,43 +99,6 @@ export function ProjectCard({
           </p>
         )}
       </div>
-    </>
-  );
-
-  if (!project.muxPlaybackId) {
-    return (
-      <Link
-        href={`/site/directors/${project.director.slug}`}
-        className="group block"
-      >
-        {inner}
-      </Link>
-    );
-  }
-
-  const lightboxProject: LightboxProject = {
-    id: project.id,
-    title: project.title,
-    brand: project.brand,
-    year: project.year,
-    agency: project.agency,
-    muxPlaybackId: project.muxPlaybackId,
-    director: { name: project.director.name },
-  };
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="group block text-left w-full cursor-pointer"
-      >
-        {inner}
-      </button>
-      <ReelLightbox
-        project={open ? lightboxProject : null}
-        onClose={() => setOpen(false)}
-      />
-    </>
+    </Link>
   );
 }
