@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 interface DirectorCardProps {
@@ -23,6 +24,9 @@ export function DirectorCard({
 }: DirectorCardProps) {
   const [hovering, setHovering] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const router = useRouter();
+  const href = `/site/directors/${slug}`;
+  const nameTransitionName = `director-name-${slug}`;
 
   const onEnter = () => {
     setHovering(true);
@@ -38,12 +42,23 @@ export function DirectorCard({
     if (v) v.pause();
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (typeof document.startViewTransition !== "function") return;
+    e.preventDefault();
+    document.startViewTransition(() => {
+      router.push(href);
+    });
+  };
+
   return (
     <Link
-      href={`/site/directors/${slug}`}
+      href={href}
+      onClick={handleClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       className="group block"
+      prefetch
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-[#EEEDEA]">
         {stillUrl && (
@@ -70,7 +85,10 @@ export function DirectorCard({
         )}
       </div>
       <div className="mt-3 flex items-baseline justify-between gap-3">
-        <h3 className="text-[17px] md:text-[20px] tracking-tight-2 text-[#1A1A1A] leading-tight font-helveticaDisplay">
+        <h3
+          className="text-[17px] md:text-[20px] tracking-tight-2 text-[#1A1A1A] leading-tight font-helveticaDisplay"
+          style={{ viewTransitionName: nameTransitionName } as React.CSSProperties}
+        >
           {name}
         </h3>
         {positioning && (

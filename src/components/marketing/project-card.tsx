@@ -37,7 +37,7 @@ export function ProjectCard({
   thumbnailWidth = 1000,
 }: ProjectCardProps) {
   const router = useRouter();
-  const href = `/site/directors/${project.director.slug}`;
+  const href = `/site/directors/${project.director.slug}?play=${project.id}`;
   const transitionName = `project-${project.id}`;
 
   const still =

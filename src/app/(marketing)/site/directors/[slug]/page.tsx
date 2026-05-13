@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { ScrollReveal } from "@/components/marketing/scroll-reveal";
+import { FeaturedReel } from "@/components/marketing/featured-reel";
 
 interface Props {
   params: { slug: string };
+  searchParams: { play?: string };
 }
 
 export const revalidate = 300;
@@ -83,11 +85,21 @@ function groupProjects(projects: ProjectRow[]) {
     .map(([key, items]) => ({ key, label: labels[key] ?? key, items }));
 }
 
-export default async function DirectorDetailPage({ params }: Props) {
+export default async function DirectorDetailPage({ params, searchParams }: Props) {
   const director = await getDirector(params.slug);
   if (!director || !director.isActive) notFound();
 
-  const grouped = groupProjects(director.projects);
+  const playId = typeof searchParams.play === "string" ? searchParams.play : null;
+  const featuredProject =
+    playId && director.projects.find((p) => p.id === playId && p.muxPlaybackId)
+      ? director.projects.find((p) => p.id === playId && p.muxPlaybackId)!
+      : null;
+
+  const visibleProjects = featuredProject
+    ? director.projects.filter((p) => p.id !== featuredProject.id)
+    : director.projects;
+
+  const grouped = groupProjects(visibleProjects);
   const positioning = director.categories?.[0] ?? null;
   const awards = Array.isArray(director.awards) ? director.awards : [];
   const press = Array.isArray(director.pressLinks) ? director.pressLinks : [];
@@ -100,12 +112,31 @@ export default async function DirectorDetailPage({ params }: Props) {
             {positioning}
           </p>
         )}
-        <h1 className="text-[64px] md:text-[120px] lg:text-[168px] leading-[0.88] tracking-[-0.045em] font-black text-[#1A1A1A] font-helveticaDisplay">
+        <h1
+          className="text-[64px] md:text-[120px] lg:text-[168px] leading-[0.88] tracking-[-0.045em] font-black text-[#1A1A1A] font-helveticaDisplay"
+          style={
+            {
+              viewTransitionName: `director-name-${director.slug}`,
+            } as React.CSSProperties
+          }
+        >
           {director.name}
         </h1>
       </header>
 
-      {director.videoIntroUrl && (
+      {featuredProject?.muxPlaybackId && (
+        <FeaturedReel
+          projectId={featuredProject.id}
+          muxPlaybackId={featuredProject.muxPlaybackId}
+          brand={featuredProject.brand}
+          title={featuredProject.title}
+          directorName={director.name}
+          agency={featuredProject.agency}
+          year={featuredProject.year}
+        />
+      )}
+
+      {!featuredProject && director.videoIntroUrl && (
         <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16 lg:mb-24">
           <div className="relative aspect-video overflow-hidden bg-[#0A0A0A]">
             <video
