@@ -12,7 +12,15 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
   return (
     <section className="relative w-full h-[100svh] min-h-[560px] overflow-hidden bg-[#0A0A0A]">
       {muxPlaybackId ? (
-        <div className="absolute inset-0 w-full h-full [&_mux-player]:w-full [&_mux-player]:h-full">
+        <div
+          className="absolute inset-0 w-full h-full [&_mux-player]:w-full [&_mux-player]:h-full"
+          style={
+            {
+              "--controls": "none",
+              "--media-object-fit": "cover",
+            } as React.CSSProperties
+          }
+        >
           <MuxPlayer
             playbackId={muxPlaybackId}
             streamType="on-demand"
@@ -26,12 +34,6 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
               `https://image.mux.com/${muxPlaybackId}/thumbnail.jpg?width=1920`
             }
             nohotkeys
-            style={{
-              width: "100%",
-              height: "100%",
-              "--controls": "none",
-              "--media-object-fit": "cover",
-            }}
           />
         </div>
       ) : (
