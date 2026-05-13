@@ -1,0 +1,84 @@
+"use client";
+
+import Link from "next/link";
+import { useRef, useState } from "react";
+
+interface DirectorCardProps {
+  slug: string;
+  name: string;
+  /** Tagline / positioning line (short). Defaults to first category. */
+  positioning?: string | null;
+  /** Still image URL (heroThumbnailUrl ?? headshotUrl ?? Mux thumbnail fallback). */
+  stillUrl: string | null;
+  /** Mux playback ID for hover-to-play loop. */
+  muxPlaybackId?: string | null;
+}
+
+export function DirectorCard({
+  slug,
+  name,
+  positioning,
+  stillUrl,
+  muxPlaybackId,
+}: DirectorCardProps) {
+  const [hovering, setHovering] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const onEnter = () => {
+    setHovering(true);
+    const v = videoRef.current;
+    if (v) {
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    }
+  };
+  const onLeave = () => {
+    setHovering(false);
+    const v = videoRef.current;
+    if (v) v.pause();
+  };
+
+  return (
+    <Link
+      href={`/site/directors/${slug}`}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      className="group block"
+    >
+      <div className="relative aspect-[16/10] overflow-hidden bg-[#EEEDEA]">
+        {stillUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={stillUrl}
+            alt={name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
+            loading="lazy"
+          />
+        )}
+        {muxPlaybackId && (
+          <video
+            ref={videoRef}
+            src={`https://stream.mux.com/${muxPlaybackId}/low.mp4`}
+            muted
+            loop
+            playsInline
+            preload="none"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+              hovering ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        )}
+      </div>
+      <div className="mt-3 flex items-baseline justify-between gap-3">
+        <h3 className="text-[17px] md:text-[20px] tracking-tight-2 text-[#1A1A1A] leading-tight">
+          {name}
+        </h3>
+        {positioning && (
+          <span className="text-[10px] uppercase tracking-[0.12em] text-[#999] shrink-0">
+            {positioning}
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+}
