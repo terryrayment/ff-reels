@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
-import { canViewDirector } from "@/lib/auth/guards";
 
 /**
  * GET /api/directors/[id]
@@ -40,10 +39,6 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  if (!canViewDirector(session, director.id)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
   return NextResponse.json(director);
 }
 
@@ -56,7 +51,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "PRODUCER"].includes(session.user.role)) {
+  if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

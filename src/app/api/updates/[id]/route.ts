@@ -30,13 +30,14 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { title, body: noteBody, isPinned } = body;
+  const { title, body: noteBody, imageUrl, isPinned } = body;
 
   const updated = await prisma.update.update({
     where: { id: params.id },
     data: {
       ...(title !== undefined ? { title } : {}),
       ...(noteBody !== undefined ? { body: noteBody } : {}),
+      ...(imageUrl !== undefined ? { imageUrl } : {}),
       ...(isPinned !== undefined ? { isPinned } : {}),
     },
   });

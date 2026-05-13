@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { ReelsList } from "@/components/reels/reels-list";
+import { ReelsWorkspaceSwitch } from "@/components/reels/reels-workspace-switch";
 
 export default async function ReelsPage() {
   const session = await getServerSession(authOptions);
@@ -117,19 +118,26 @@ export default async function ReelsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center md:items-end justify-between mb-8 md:mb-10">
-        <div>
-          <h1 className="text-[32px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8 md:mb-10">
+        <div className="min-w-0">
+          <p className="section-header mb-3">Shared screening assets</p>
+          <h1 className="text-[42px] md:text-[56px] font-semibold tracking-tight text-[#111] leading-none">
             Reels
           </h1>
+          <p className="mt-3 text-[12px] text-[#666]">
+            Build, send, and manage {reelsWithStats.length} reel{reelsWithStats.length !== 1 ? "s" : ""} from one library.
+          </p>
         </div>
-        <Link
-          href="/reels/build"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 md:px-5 md:py-2.5 rounded-xl bg-[#1A1A1A] text-white text-[12px] font-medium hover:bg-[#333] active:bg-[#444] transition-colors"
-        >
-          <Plus size={13} />
-          Build Reel
-        </Link>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <ReelsWorkspaceSwitch active="library" />
+          <Link
+            href="/reels/build"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 md:px-5 md:py-2.5 rounded-md bg-[#111] text-white text-[11px] font-semibold uppercase tracking-[0.12em] hover:bg-black active:bg-[#333] transition-colors"
+          >
+            <Plus size={13} />
+            Build Reel
+          </Link>
+        </div>
       </div>
 
       <ReelsList reels={reelsWithStats} isRep={isRep} />

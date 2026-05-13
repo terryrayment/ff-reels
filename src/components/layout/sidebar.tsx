@@ -5,28 +5,45 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { Menu, X, Eye, ArrowLeft } from "lucide-react";
+import {
+  BarChart3,
+  BookOpen,
+  Briefcase,
+  Clapperboard,
+  FileText,
+  Home,
+  Menu,
+  Search,
+  Send,
+  UserCog,
+  Users,
+  X,
+  Eye,
+  ArrowLeft,
+  type LucideIcon,
+} from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 
 interface NavItem {
   href: string;
   label: string;
   roles: string[];
+  icon: LucideIcon;
 }
 
 const navItems: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", roles: ["ADMIN", "PRODUCER", "REP"] },
-  { href: "/reels", label: "Reels", roles: ["ADMIN", "PRODUCER", "REP"] },
-  { href: "/analytics", label: "Analytics", roles: ["ADMIN", "PRODUCER", "REP"] },
-  { href: "/contacts", label: "Contacts", roles: ["ADMIN", "PRODUCER", "REP"] },
-  { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER"] },
-  { href: "/photographers", label: "Photographers", roles: ["ADMIN", "PRODUCER", "REP"] },
-  { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"] },
-  { href: "/users", label: "Users", roles: ["ADMIN"] },
+  { href: "/dashboard", label: "Dashboard", roles: ["ADMIN", "PRODUCER", "REP"], icon: Home },
+  { href: "/reels", label: "Reels", roles: ["ADMIN", "PRODUCER", "REP"], icon: Clapperboard },
+  { href: "/analytics", label: "Analytics", roles: ["ADMIN", "PRODUCER", "REP"], icon: BarChart3 },
+  { href: "/leads", label: "Leads", roles: ["ADMIN", "PRODUCER", "REP"], icon: Search },
+  { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER"], icon: Users },
+  { href: "/photographers", label: "Photographers", roles: ["ADMIN", "PRODUCER", "REP"], icon: Briefcase },
+  { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"], icon: FileText },
+  { href: "/users", label: "Users", roles: ["ADMIN"], icon: UserCog },
   // Director-only pages
-  { href: "/portfolio", label: "Portfolio", roles: ["DIRECTOR"] },
-  { href: "/my-reels", label: "My Reels", roles: ["DIRECTOR"] },
-  { href: "/my-stats", label: "My Stats", roles: ["DIRECTOR"] },
+  { href: "/portfolio", label: "Portfolio", roles: ["DIRECTOR"], icon: BookOpen },
+  { href: "/my-reels", label: "My Reels", roles: ["DIRECTOR"], icon: Clapperboard },
+  { href: "/my-stats", label: "My Stats", roles: ["DIRECTOR"], icon: BarChart3 },
 ];
 
 function getRoleDisplayName(role: string): string {
@@ -50,9 +67,10 @@ interface SidebarProps {
     email?: string | null;
     role?: string;
   };
+  leadsEnabled?: boolean;
 }
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const role = user.role || "VIEWER";
@@ -69,7 +87,9 @@ export function Sidebar({ user }: SidebarProps) {
         ...item,
         href: `${item.href}${previewSuffix}`,
       }))
-    : navItems.filter((item) => item.roles.includes(role));
+    : navItems
+        .filter((item) => item.roles.includes(role))
+        .filter((item) => item.href !== "/leads" || leadsEnabled);
   const canUpload = !isPreview && (role === "ADMIN" || role === "PRODUCER");
 
   // Close mobile sidebar on navigation
@@ -90,19 +110,16 @@ export function Sidebar({ user }: SidebarProps) {
   const sidebarContent = (
     <>
       {/* Brand */}
-      <div className="px-7 pt-8 pb-12">
+      <div className="px-5 pt-6 pb-8">
         <Link href={isPreview ? `/portfolio${previewSuffix}` : "/dashboard"} className="block group">
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3">
             <img
               src="/logo.svg"
               alt="FF"
-              className="w-[30px] h-[30px] object-contain flex-shrink-0"
+              className="w-[26px] h-[26px] object-contain flex-shrink-0"
             />
             <div>
-              <h1 className="text-[15px] font-semibold tracking-tight-2 text-[#1A1A1A] leading-none group-hover:text-[#000] transition-colors">
-                Friends &amp; Family
-              </h1>
-              <span className="block mt-1.5 text-[9px] text-[#bbb] uppercase tracking-[0.2em] font-normal group-hover:text-[#999] transition-colors">
+              <span className="block text-[11px] text-[#111] uppercase tracking-[0.08em] font-semibold leading-none group-hover:text-black transition-colors">
                 Reels
               </span>
             </div>
@@ -130,8 +147,9 @@ export function Sidebar({ user }: SidebarProps) {
       )}
 
       {/* Nav */}
-      <nav className="flex-1 px-4 space-y-0.5">
+      <nav className="flex-1 px-4 space-y-1">
         {visibleNav.map((item) => {
+          const Icon = item.icon;
           // Strip query params for active check
           const itemPath = item.href.split("?")[0];
           const isActive =
@@ -141,38 +159,47 @@ export function Sidebar({ user }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "block px-3 py-2.5 text-[13px] rounded-xl transition-all duration-300",
+                "relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-[14px] transition-colors duration-200",
                 isActive
-                  ? "text-[#1A1A1A] font-medium bg-white/60 backdrop-blur-lg shadow-[0_1px_4px_rgba(0,0,0,0.03),0_0.5px_0_rgba(255,255,255,0.5)_inset]"
-                  : "text-[#999] hover:text-[#1A1A1A] hover:bg-white/35"
+                  ? "text-[#111] font-medium bg-[#EDEDEA]"
+                  : "text-[#7B7B76] hover:text-[#111] hover:bg-[#EDEDEA]/55"
               )}
             >
-              {item.label}
+              <Icon
+                size={18}
+                strokeWidth={1.9}
+                className={cn(
+                  "shrink-0",
+                  isActive ? "text-[#111]" : "text-[#8C8C86]"
+                )}
+              />
+              <span className="truncate leading-none">{item.label}</span>
             </Link>
           );
         })}
 
         {/* Upload Spots -- ADMIN + PRODUCER */}
         {canUpload && (
-          <div className="pt-3 mt-3 border-t border-[#E8E7E3]/30 mx-3">
+          <div className="pt-3 mt-3 border-t border-[#DEDDD7] mx-2">
             <Link
               href="/upload"
-              className="block py-1.5 text-[13px] text-[#bbb] hover:text-[#1A1A1A] transition-colors duration-300"
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[14px] text-[#7B7B76] hover:text-[#111] hover:bg-[#EDEDEA]/55 transition-colors duration-200"
             >
-              Upload Spots
+              <Send size={18} strokeWidth={1.9} className="text-[#8C8C86]" />
+              <span className="leading-none">Upload Spots</span>
             </Link>
           </div>
         )}
       </nav>
 
       {/* User */}
-      <div className="px-4 py-5">
-        <div className="flex items-center justify-between px-3 py-3 rounded-2xl bg-white/40 backdrop-blur-lg">
+      <div className="px-3 py-4">
+        <div className="flex items-center justify-between px-3 py-3 rounded-lg bg-white border border-[#DEDDD7]">
           <div className="min-w-0">
-            <p className="text-[12px] text-[#1A1A1A] truncate font-medium leading-tight">
+            <p className="text-[12px] text-[#111] truncate font-medium leading-tight">
               {user.name ?? user.email}
             </p>
-            <p className="text-[9px] text-[#bbb] uppercase tracking-[0.15em] mt-0.5">
+            <p className="text-[9px] text-[#8A8983] uppercase tracking-[0.14em] mt-0.5">
               {isPreview ? "Previewing" : getRoleDisplayName(role)}
             </p>
           </div>
@@ -180,7 +207,7 @@ export function Sidebar({ user }: SidebarProps) {
             <ThemeToggle />
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="text-[#ccc] hover:text-[#666] transition-colors duration-300 p-1"
+              className="text-[#9A9993] hover:text-[#111] transition-colors duration-200 p-1"
               title="Sign out"
               aria-label="Sign out"
             >
@@ -210,14 +237,14 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Mobile hamburger — fixed top-left */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed top-4 left-4 z-50 md:hidden p-3 rounded-xl bg-white/80 backdrop-blur-lg border border-[#E8E7E3]/60 shadow-sm"
+        className="fixed top-4 left-4 z-50 md:hidden p-3 rounded-lg bg-white border border-[#DEDDD7] shadow-sm"
         aria-label="Open menu"
       >
         <Menu size={18} className="text-[#1A1A1A]" />
       </button>
 
       {/* Desktop sidebar — hidden on mobile */}
-      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[220px] backdrop-blur-3xl flex-col z-40" style={{ background: 'var(--surface-nav)', borderRight: '1px solid var(--border)', boxShadow: '1px 0 12px rgba(0,0,0,0.015)' }}>
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[220px] flex-col z-40" style={{ background: 'var(--surface-nav)', borderRight: '1px solid var(--border)' }}>
         {sidebarContent}
       </aside>
 
@@ -228,7 +255,7 @@ export function Sidebar({ user }: SidebarProps) {
             className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 md:hidden"
             onClick={() => setMobileOpen(false)}
           />
-          <aside className="fixed left-0 top-0 bottom-0 w-[260px] bg-[#F7F6F3] backdrop-blur-2xl shadow-2xl flex flex-col z-50 md:hidden">
+          <aside className="fixed left-0 top-0 bottom-0 w-[260px] bg-[#F7F7F4] shadow-2xl flex flex-col z-50 md:hidden">
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute top-4 right-4 p-2 text-[#999] hover:text-[#1A1A1A] transition-colors"

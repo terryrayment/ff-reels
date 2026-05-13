@@ -94,7 +94,7 @@ export function ContactsTable({ rows }: Props) {
     return (
       <div className="data-card p-12 text-center">
         <Users size={20} className="text-[#ccc] mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-[#1A1A1A]">No contacts yet</h3>
+        <h3 className="text-lg font-semibold text-[#111]">No contacts yet</h3>
         <p className="text-[12px] text-[#999] mt-1">
           Contacts are created automatically when you send screening links with an email address.
         </p>
@@ -103,7 +103,7 @@ export function ContactsTable({ rows }: Props) {
   }
 
   return (
-    <div className="data-card p-5 md:p-7">
+    <div className="data-card p-5 md:p-6">
       {/* Search */}
       <div className="flex items-center gap-3 mb-5">
         <div className="relative flex-1">
@@ -116,7 +116,7 @@ export function ContactsTable({ rows }: Props) {
             placeholder="Search contacts..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-2.5 text-[13px] bg-white/50 border border-[#E0DDD8]/60 rounded-xl text-[#1A1A1A] placeholder:text-[#ccc] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A]/8 transition-shadow"
+            className="quartr-input w-full pl-8 pr-3"
           />
         </div>
         <span className="text-[11px] text-[#bbb] tabular-nums whitespace-nowrap">
@@ -128,7 +128,7 @@ export function ContactsTable({ rows }: Props) {
       <div className="overflow-x-auto">
         <table className="w-full text-[12px]">
           <thead>
-            <tr className="text-[10px] uppercase tracking-[0.12em] text-[#999] border-b border-[#E8E7E3]/50">
+            <tr className="text-[10px] uppercase tracking-[0.12em] text-[#777] border-b border-[#DEDDD7] bg-[#FAFAF7]">
               <th className="text-left py-3 px-2 font-medium">
                 <span
                   className={headerClass("name")}
@@ -182,9 +182,9 @@ export function ContactsTable({ rows }: Props) {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F0EC]/60">
+          <tbody className="divide-y divide-[#ECEBE6]">
             {sorted.map((row) => (
-              <tr key={row.id} className="group hover:bg-white/40 transition-colors">
+              <tr key={row.id} className="group hover:bg-[#FAFAF7] transition-colors">
                 <td className="py-3.5 px-2">
                   <Link
                     href={`/contacts/${row.id}`}
@@ -198,7 +198,7 @@ export function ContactsTable({ rows }: Props) {
                         />
                       )}
                       <div className="min-w-0">
-                        <p className="text-[13px] text-[#1A1A1A] font-medium truncate group-hover:text-black">
+                        <p className="text-[13px] text-[#111] font-semibold truncate group-hover:text-black">
                           {row.name}
                         </p>
                         <p className="text-[10px] text-[#bbb] truncate flex items-center gap-1 mt-0.5">
@@ -211,7 +211,7 @@ export function ContactsTable({ rows }: Props) {
                 </td>
                 <td className="py-3.5 px-2 hidden md:table-cell">
                   {row.company ? (
-                    <span className="text-[12px] text-[#666] flex items-center gap-1">
+                    <span className="text-[12px] text-[#555] flex items-center gap-1">
                       <Building2 size={10} className="text-[#ccc]" />
                       {row.company}
                     </span>
@@ -227,7 +227,7 @@ export function ContactsTable({ rows }: Props) {
                   )}
                 </td>
                 <td className="py-3.5 px-2 text-right tabular-nums text-[12px] text-[#1A1A1A]">
-                  {row.totalViews}
+                  <span className="font-semibold text-[#111]">{row.totalViews}</span>
                 </td>
                 <td className="py-3.5 px-2 text-right tabular-nums text-[12px] text-[#999] hidden md:table-cell">
                   {row.reelsSent}
@@ -235,7 +235,7 @@ export function ContactsTable({ rows }: Props) {
                 <td className="py-3.5 px-2 text-right tabular-nums hidden lg:table-cell">
                   {row.avgCompletionPct !== null ? (
                     <span
-                      className={`text-[11px] font-medium ${
+                      className={`inline-flex min-w-[42px] justify-end text-[11px] font-semibold ${
                         row.avgCompletionPct >= 70
                           ? "text-emerald-600"
                           : row.avgCompletionPct >= 40

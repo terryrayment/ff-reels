@@ -88,10 +88,14 @@ export default async function ContactsPage() {
 
   return (
     <div>
-      <div className="mb-10 md:mb-14">
-        <h1 className="text-[32px] md:text-[56px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-[1.05]">
+      <div className="mb-10 md:mb-12">
+        <p className="section-header mb-3">Recipient intelligence</p>
+        <h1 className="text-[42px] md:text-[56px] font-semibold tracking-tight text-[#111] leading-none">
           Contacts
         </h1>
+        <p className="mt-3 text-[12px] text-[#666] max-w-xl">
+          Client activity, completion, and last-touch history from sent screening links.
+        </p>
         <div className="flex items-center gap-3 mt-2 md:mt-3">
           <span className="pill-tag">
             <span className="pill-dot" />

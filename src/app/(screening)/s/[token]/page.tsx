@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ScreeningTracker } from "@/components/video/screening-tracker";
 import { ScreeningCarousel } from "@/components/video/screening-carousel";
-import { absoluteAppUrl } from "@/lib/seo/site";
 
 export async function generateMetadata({
   params,
@@ -29,13 +28,7 @@ export async function generateMetadata({
   });
 
   if (!link) {
-    return {
-      title: "Screening — Friends & Family",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
+    return { title: "Screening — Friends & Family" };
   }
 
   const { reel } = link;
@@ -55,13 +48,6 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: {
-      canonical: absoluteAppUrl(`/s/${params.token}`),
-    },
-    robots: {
-      index: false,
-      follow: false,
-    },
     openGraph: {
       title,
       description,
