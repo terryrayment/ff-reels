@@ -400,7 +400,6 @@ export default async function ScreeningPage({
         curatorialNote={reel.curatorialNote}
         portfolioStills={portfolioStills}
         rosterHighlights={rosterHighlights}
-        treatmentSamples={treatmentSamples}
         clientBrands={clientBrands}
         frameGrabsMap={frameGrabsMap}
         lookbookItems={lookbookItems}
