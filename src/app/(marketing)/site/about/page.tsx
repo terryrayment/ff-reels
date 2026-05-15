@@ -135,6 +135,39 @@ export default function AboutPage() {
       <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mt-20 lg:mt-28 pt-12 border-t border-[#E8E7E3] grid grid-cols-1 lg:grid-cols-12 gap-10">
         <div className="lg:col-span-3">
           <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
+            NETWORK
+          </p>
+        </div>
+        <div className="lg:col-span-7 space-y-6 text-[19px] md:text-[24px] leading-snug tracking-tight text-[#1A1A1A]">
+          <p>
+            Friends &amp; Family is an imprint of THE YOUTH in São Paulo and
+            COLOSSAL in Curitiba. Three studios. One creative network across
+            the Americas.
+          </p>
+          <div className="flex flex-wrap gap-x-6 gap-y-3 pt-1">
+            <a
+              href="https://theyouth.com.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[14px] text-[#1A1A1A] hover:text-[#666] transition-colors"
+            >
+              Visit THE YOUTH →
+            </a>
+            <a
+              href="https://colossal.film/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[14px] text-[#1A1A1A] hover:text-[#666] transition-colors"
+            >
+              Visit COLOSSAL →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mt-20 lg:mt-28 pt-12 border-t border-[#E8E7E3] grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="lg:col-span-3">
+          <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
             Team
           </p>
         </div>

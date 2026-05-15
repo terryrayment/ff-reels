@@ -12,6 +12,34 @@ const LINKS = [
   { href: "/site/contact", label: "Contact" },
 ];
 
+function PartnerAffiliation() {
+  // TODO: Replace plain-text wordmarks with /brand/the-youth.svg
+  // and /brand/colossal.svg once the YOUTH SVG asset is supplied.
+  // Mobile fallback can then be re-enabled.
+  return (
+    <div className="absolute left-0 top-full mt-[2px] flex max-w-[calc(100vw-8rem)] items-baseline gap-[0.45em] overflow-hidden whitespace-nowrap font-helveticaText text-[9px] uppercase tracking-[0.18em] text-[#999]">
+      <span>AN IMPRINT OF</span>
+      <a
+        href="https://theyouth.com.br/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="opacity-70 transition-opacity duration-150 ease-out hover:opacity-100 focus-visible:opacity-100"
+      >
+        THE YOUTH
+      </a>
+      <span aria-hidden="true">·</span>
+      <a
+        href="https://colossal.film/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="opacity-70 transition-opacity duration-150 ease-out hover:opacity-100 focus-visible:opacity-100"
+      >
+        COLOSSAL
+      </a>
+    </div>
+  );
+}
+
 export function MarketingNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -36,12 +64,15 @@ export function MarketingNav() {
       )}
     >
       <nav className="mx-auto max-w-[1400px] px-6 lg:px-10 h-16 flex items-center justify-between">
-        <Link
-          href="/site"
-          className="text-[15px] tracking-tight-2 font-medium text-[#1A1A1A]"
-        >
-          Friends &amp; Family
-        </Link>
+        <div className="relative flex min-w-0 items-center">
+          <Link
+            href="/site"
+            className="text-[15px] tracking-tight-2 font-medium text-[#1A1A1A]"
+          >
+            Friends &amp; Family
+          </Link>
+          <PartnerAffiliation />
+        </div>
 
         <ul className="hidden md:flex items-center gap-8">
           {LINKS.map((link) => {
