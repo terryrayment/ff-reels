@@ -1,33 +1,8 @@
 import type { Metadata } from "next";
+import { InfinitePhotoLoop } from "@/components/marketing/infinite-photo-loop";
+import { ABOUT_PHOTOS } from "@/lib/about/photos";
 
 export const metadata: Metadata = { title: "About" };
-
-const ABOUT_IMAGES = [
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df02012_gallery-225_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df0207c_gallery-277_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df02096_gallery-290_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df02073_gallery-273_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01f85_gallery-154_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df02046_gallery-260_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01e67_gallery-010_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df0204c_gallery-234_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01ee3_gallery-072_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01e81_gallery-023_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df0208a_gallery-284_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01fd2_gallery-193_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df02000_gallery-216_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01fb8_gallery-180_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01f71_gallery-144_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01f81_gallery-152_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01f1b_gallery-100_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01ffe_gallery-215_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01f5b_gallery-133_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01ec7_gallery-058_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01f9d_gallery-169_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df0203f_gallery-252_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01ed1_gallery-063_low-res.jpg",
-  "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01f34_gallery-115_low-res.jpg",
-];
 
 const TEAM = [
   {
@@ -79,22 +54,7 @@ export default function AboutPage() {
           </p>
         </header>
 
-        <div className="columns-2 md:columns-4 lg:columns-6 gap-1 [column-fill:_balance]">
-          {ABOUT_IMAGES.map((src, index) => (
-            <figure
-              key={src}
-              className="group relative mb-1 break-inside-avoid overflow-hidden bg-[#E8E7E3]"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={src}
-                alt={`Friends and Family archive ${index + 1}`}
-                loading={index < 10 ? "eager" : "lazy"}
-                className="w-full object-cover grayscale-[12%] transition duration-[900ms] ease-out group-hover:scale-[1.035] group-hover:grayscale-0"
-              />
-            </figure>
-          ))}
-        </div>
+        <InfinitePhotoLoop photos={ABOUT_PHOTOS} />
       </section>
 
       <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mt-20 lg:mt-28">
