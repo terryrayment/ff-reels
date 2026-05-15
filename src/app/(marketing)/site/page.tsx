@@ -105,15 +105,14 @@ export default async function MarketingHomePage() {
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12">
           <div>
             <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-3">
-              Director-led production
+              A CREATIVE NETWORK
             </p>
             <h1 className="text-[56px] md:text-[88px] lg:text-[116px] font-black text-[#1A1A1A] font-helveticaDisplay leading-[0.9]">
               Friends &amp; Family
             </h1>
           </div>
           <p className="max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[#555] tracking-tight">
-            A roster of commercial directors with distinct points of view across
-            broadcast, brand films, music, and culture-driven work.
+            Director-led. Los Angeles, New York, São Paulo, Curitiba.
           </p>
         </div>
 

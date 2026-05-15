@@ -50,14 +50,13 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
 
       <div className="relative h-full mx-auto max-w-[1400px] px-6 lg:px-10 flex flex-col justify-end pb-16 pointer-events-none">
         <p className="text-[11px] uppercase tracking-[0.18em] text-white/70">
-          Director-led production
+          A CREATIVE NETWORK
         </p>
         <h1 className="mt-3 text-[64px] md:text-[112px] lg:text-[144px] leading-[0.9] text-white max-w-5xl font-helveticaDisplay font-black tracking-[-0.04em]">
           Friends &amp; Family
         </h1>
         <p className="mt-4 text-[15px] md:text-[17px] tracking-tight-2 text-white/80 max-w-md">
-          Commercials and films from Los Angeles and New York, built around a
-          clear point of view.
+          Director-led. Los Angeles, New York, São Paulo, Curitiba.
         </p>
       </div>
     </section>
