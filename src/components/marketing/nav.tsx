@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -67,9 +68,18 @@ export function MarketingNav() {
         <div className="relative flex min-w-0 items-center">
           <Link
             href="/site"
-            className="text-[15px] tracking-tight-2 font-medium text-[#1A1A1A]"
+            aria-label="Friends & Family"
+            className="block shrink-0 opacity-100 transition-opacity duration-150 ease-out hover:opacity-75 focus-visible:opacity-75"
           >
-            Friends &amp; Family
+            <Image
+              src="/brand/ff-logomark.png"
+              alt=""
+              width={778}
+              height={933}
+              sizes="36px"
+              priority
+              className="h-9 w-auto"
+            />
           </Link>
           <PartnerAffiliation />
         </div>
