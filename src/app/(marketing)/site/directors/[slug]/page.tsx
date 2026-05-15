@@ -115,7 +115,6 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           directorName={director.name}
           agency={featuredProject.agency}
           year={featuredProject.year}
-          transitionName={`project-${featuredProject.id}`}
         />
       )}
 
@@ -128,7 +127,6 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           directorName={director.name}
           agency={null}
           year={null}
-          transitionName={`director-reel-${director.slug}`}
         />
       )}
 

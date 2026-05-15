@@ -33,11 +33,6 @@ export function DirectorCard({
     ? `/site/directors/${slug}?play=${playProjectId}`
     : `/site/directors/${slug}`;
   const nameTransitionName = `director-name-${slug}`;
-  const mediaTransitionName = playProjectId
-    ? `project-${playProjectId}`
-    : muxPlaybackId
-      ? `director-reel-${slug}`
-      : undefined;
 
   const onEnter = () => setHovering(true);
   const onLeave = () => setHovering(false);
@@ -66,11 +61,6 @@ export function DirectorCard({
       <div
         data-marketing-media-frame
         className="relative aspect-[16/10] overflow-hidden bg-[#EEEDEA]"
-        style={
-          mediaTransitionName
-            ? ({ viewTransitionName: mediaTransitionName } as React.CSSProperties)
-            : undefined
-        }
       >
         {stillUrl && (
           // eslint-disable-next-line @next/next/no-img-element

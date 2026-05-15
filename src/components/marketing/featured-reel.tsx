@@ -16,7 +16,6 @@ interface FeaturedReelProps {
   directorName: string;
   agency?: string | null;
   year?: number | null;
-  transitionName?: string;
 }
 
 export function FeaturedReel({
@@ -27,15 +26,23 @@ export function FeaturedReel({
   directorName,
   agency,
   year,
-  transitionName,
 }: FeaturedReelProps) {
   const playerRef = useRef<HTMLElement | null>(null);
-  const [canPlay, setCanPlay] = useState(false);
+  const [canPlay, setCanPlay] = useState(
+    () => getMarketingTransitionDelay() <= 0,
+  );
 
   useEffect(() => {
-    setCanPlay(false);
-
     if (typeof window === "undefined") return;
+
+    const delay = getMarketingTransitionDelay();
+    if (delay <= 0) {
+      clearMarketingTransitionDelay();
+      setCanPlay(true);
+      return;
+    }
+
+    setCanPlay(false);
 
     let released = false;
     const release = () => {
@@ -45,8 +52,7 @@ export function FeaturedReel({
       setCanPlay(true);
     };
 
-    const delay = getMarketingTransitionDelay();
-    const timer = window.setTimeout(release, delay > 0 ? delay : 80);
+    const timer = window.setTimeout(release, delay);
     window.addEventListener(MARKETING_TRANSITION_FINISHED, release, { once: true });
 
     return () => {
@@ -81,14 +87,15 @@ export function FeaturedReel({
   return (
     <section className="mx-auto w-[calc(100vw-48px)] md:w-[70vw] max-w-[980px] mb-16 lg:mb-24">
       <div
-        className="relative aspect-video overflow-hidden bg-black [&_mux-player]:w-full [&_mux-player]:h-full"
+        className={`relative aspect-video overflow-hidden bg-black transition-opacity duration-150 [&_mux-player]:w-full [&_mux-player]:h-full ${
+          canPlay ? "opacity-100" : "opacity-0"
+        }`}
         style={
           {
-            viewTransitionName: `project-${projectId}`,
-            ...(transitionName ? { viewTransitionName: transitionName } : {}),
             "--media-object-fit": "cover",
           } as React.CSSProperties
         }
+        data-featured-project-id={projectId}
       >
         <MuxPlayer
           ref={playerRef as React.RefObject<never>}

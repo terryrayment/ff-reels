@@ -39,7 +39,6 @@ export function ProjectCard({
 }: ProjectCardProps) {
   const router = useRouter();
   const href = `/site/directors/${project.director.slug}?play=${project.id}`;
-  const transitionName = `project-${project.id}`;
 
   const still =
     project.thumbnailUrl ??
@@ -77,7 +76,6 @@ export function ProjectCard({
       <div
         data-marketing-media-frame
         className="relative aspect-video overflow-hidden bg-[#EEEDEA]"
-        style={{ viewTransitionName: transitionName } as React.CSSProperties}
       >
         {still && (
           // eslint-disable-next-line @next/next/no-img-element
