@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { HeroVideo } from "@/components/marketing/hero-video";
 import { DirectorCard } from "@/components/marketing/director-card";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { ScrollReveal } from "@/components/marketing/scroll-reveal";
@@ -97,46 +96,24 @@ async function getHomepageData() {
   return { featuredDirectors, recentProjects };
 }
 
-function resolveProjectThumb(
-  project: { thumbnailUrl: string | null; muxPlaybackId: string | null } | null,
-) {
-  return (
-    project?.thumbnailUrl ??
-    (project?.muxPlaybackId
-      ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=1280`
-      : null)
-  );
-}
-
 export default async function MarketingHomePage() {
   const { featuredDirectors, recentProjects } = await getHomepageData();
 
-  const directorWithIntro = featuredDirectors.find((d) => d.videoIntroUrl);
-  const heroProject = recentProjects.find((p) => p.muxPlaybackId);
-
-  const heroPlaybackId =
-    directorWithIntro?.videoIntroUrl ?? heroProject?.muxPlaybackId ?? null;
-
-  const heroPoster =
-    directorWithIntro?.stillUrl ?? resolveProjectThumb(heroProject ?? null);
-
   return (
     <>
-      <HeroVideo muxPlaybackId={heroPlaybackId} posterUrl={heroPoster} />
-
-      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 py-24 lg:py-32">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-12">
+      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-20 lg:pb-28">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12">
           <div>
             <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-3">
-              Roster
+              Director-led production
             </p>
-            <h2 className="text-[32px] md:text-[44px] font-light text-[#1A1A1A] font-helveticaDisplay leading-none">
-              Directors
-            </h2>
+            <h1 className="text-[56px] md:text-[88px] lg:text-[116px] font-black text-[#1A1A1A] font-helveticaDisplay leading-[0.9]">
+              Friends &amp; Family
+            </h1>
           </div>
-          <p className="max-w-md text-[14px] md:text-[15px] leading-relaxed text-[#666] tracking-tight">
-            A full roster of commercial directors, each with a distinct point of
-            view across brand films, broadcast, and culture-driven work.
+          <p className="max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[#555] tracking-tight">
+            A roster of commercial directors with distinct points of view across
+            broadcast, brand films, music, and culture-driven work.
           </p>
         </div>
 

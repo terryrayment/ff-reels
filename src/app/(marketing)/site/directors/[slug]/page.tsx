@@ -105,25 +105,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
   const press = Array.isArray(director.pressLinks) ? director.pressLinks : [];
 
   return (
-    <article className="pt-32 lg:pt-40 pb-24">
-      <header className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-12 lg:mb-16">
-        {positioning && (
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[#666] mb-4">
-            {positioning}
-          </p>
-        )}
-        <h1
-          className="text-[64px] md:text-[120px] lg:text-[168px] leading-[0.88] font-black text-[#1A1A1A] font-helveticaDisplay"
-          style={
-            {
-              viewTransitionName: `director-name-${director.slug}`,
-            } as React.CSSProperties
-          }
-        >
-          {director.name}
-        </h1>
-      </header>
-
+    <article className="pt-24 lg:pt-28 pb-24">
       {featuredProject?.muxPlaybackId && (
         <FeaturedReel
           projectId={featuredProject.id}
@@ -150,29 +132,23 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
         />
       )}
 
-      {(director.bio || director.statement) && (
-        <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-20 lg:mb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <div className="lg:col-span-3">
-              <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
-                About
-              </p>
-            </div>
-            <div className="lg:col-span-7 space-y-6">
-              {director.bio && (
-                <p className="text-[17px] md:text-[19px] leading-relaxed tracking-tight-2 text-[#1A1A1A] whitespace-pre-line">
-                  {director.bio}
-                </p>
-              )}
-              {director.statement && (
-                <blockquote className="border-l-2 border-[#1A1A1A] pl-6 text-[16px] leading-relaxed text-[#444] italic whitespace-pre-line">
-                  {director.statement}
-                </blockquote>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
+      <header className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-14 lg:mb-18">
+        {positioning && (
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#666] mb-3">
+            {positioning}
+          </p>
+        )}
+        <h1
+          className="text-[52px] md:text-[88px] lg:text-[116px] leading-[0.9] font-black text-[#1A1A1A] font-helveticaDisplay"
+          style={
+            {
+              viewTransitionName: `director-name-${director.slug}`,
+            } as React.CSSProperties
+          }
+        >
+          {director.name}
+        </h1>
+      </header>
 
       {grouped.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-6 lg:px-10">
@@ -214,6 +190,30 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
               </div>
             </div>
           ))}
+        </section>
+      )}
+
+      {(director.bio || director.statement) && (
+        <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mt-24 pt-16 border-t border-[#E8E7E3]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <div className="lg:col-span-3">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
+                About
+              </p>
+            </div>
+            <div className="lg:col-span-7 space-y-6">
+              {director.bio && (
+                <p className="text-[17px] md:text-[19px] leading-relaxed tracking-tight-2 text-[#1A1A1A] whitespace-pre-line">
+                  {director.bio}
+                </p>
+              )}
+              {director.statement && (
+                <blockquote className="border-l-2 border-[#1A1A1A] pl-6 text-[16px] leading-relaxed text-[#444] italic whitespace-pre-line">
+                  {director.statement}
+                </blockquote>
+              )}
+            </div>
+          </div>
         </section>
       )}
 

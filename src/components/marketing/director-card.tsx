@@ -45,7 +45,13 @@ export function DirectorCard({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
-    startMarketingViewTransition(router, href);
+    const sourceElement = e.currentTarget.querySelector<HTMLElement>(
+      "[data-marketing-media-frame]",
+    );
+    startMarketingViewTransition(router, href, {
+      sourceElement,
+      imageUrl: stillUrl,
+    });
   };
 
   return (
@@ -58,6 +64,7 @@ export function DirectorCard({
       prefetch
     >
       <div
+        data-marketing-media-frame
         className="relative aspect-[16/10] overflow-hidden bg-[#EEEDEA]"
         style={
           mediaTransitionName

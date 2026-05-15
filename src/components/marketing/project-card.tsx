@@ -58,7 +58,13 @@ export function ProjectCard({
     // Let modified clicks (cmd/ctrl/shift) and middle-click follow default browser behaviour.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
-    startMarketingViewTransition(router, href);
+    const sourceElement = e.currentTarget.querySelector<HTMLElement>(
+      "[data-marketing-media-frame]",
+    );
+    startMarketingViewTransition(router, href, {
+      sourceElement,
+      imageUrl: still,
+    });
   };
 
   return (
@@ -69,6 +75,7 @@ export function ProjectCard({
       prefetch
     >
       <div
+        data-marketing-media-frame
         className="relative aspect-video overflow-hidden bg-[#EEEDEA]"
         style={{ viewTransitionName: transitionName } as React.CSSProperties}
       >

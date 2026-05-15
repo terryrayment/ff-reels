@@ -10,6 +10,11 @@ type RouterLike = {
   push: (href: string) => void;
 };
 
+interface MarketingTransitionOptions {
+  sourceElement?: HTMLElement | null;
+  imageUrl?: string | null;
+}
+
 function getStorage() {
   try {
     return typeof window !== "undefined" ? window.sessionStorage : null;
@@ -28,7 +33,93 @@ export function clearMarketingTransitionDelay() {
   getStorage()?.removeItem(TRANSITION_UNTIL_KEY);
 }
 
-export function startMarketingViewTransition(router: RouterLike, href: string) {
+function getFeaturedReelTargetRect() {
+  const viewportWidth = window.innerWidth;
+  const margin = viewportWidth >= 1024 ? 40 : 24;
+  const maxWidth = 1400;
+  const width = Math.min(viewportWidth - margin * 2, maxWidth);
+  const x = (viewportWidth - width) / 2;
+  const y = viewportWidth >= 1024 ? 104 : 88;
+  const height = width * (9 / 16);
+
+  return { x, y, width, height };
+}
+
+function animateMediaFrame({
+  sourceElement,
+  imageUrl,
+}: MarketingTransitionOptions) {
+  if (!sourceElement || typeof document === "undefined") return;
+
+  const from = sourceElement.getBoundingClientRect();
+  if (from.width <= 0 || from.height <= 0) return;
+
+  const to = getFeaturedReelTargetRect();
+  const overlay = document.createElement("div");
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.className = "marketing-media-transition";
+  overlay.style.position = "fixed";
+  overlay.style.left = `${from.left}px`;
+  overlay.style.top = `${from.top}px`;
+  overlay.style.width = `${from.width}px`;
+  overlay.style.height = `${from.height}px`;
+  overlay.style.zIndex = "2147483647";
+  overlay.style.overflow = "hidden";
+  overlay.style.background = "#050505";
+  overlay.style.pointerEvents = "none";
+  overlay.style.transformOrigin = "top left";
+  overlay.style.boxShadow = "0 30px 90px rgba(0,0,0,0.26)";
+
+  if (imageUrl) {
+    const image = document.createElement("img");
+    image.src = imageUrl;
+    image.alt = "";
+    image.decoding = "async";
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "cover";
+    image.style.display = "block";
+    overlay.appendChild(image);
+  }
+
+  document.body.appendChild(overlay);
+
+  const animation = overlay.animate(
+    [
+      { transform: "translate3d(0, 0, 0) scale(1)", opacity: 1 },
+      {
+        transform: `translate3d(${to.x - from.left}px, ${to.y - from.top}px, 0) scale(${to.width / from.width}, ${to.height / from.height})`,
+        opacity: 1,
+      },
+    ],
+    {
+      duration: 780,
+      easing: "cubic-bezier(0.19, 1, 0.22, 1)",
+      fill: "forwards",
+    },
+  );
+
+  animation.finished
+    .then(() =>
+      overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 180,
+        easing: "ease-out",
+        fill: "forwards",
+      }).finished,
+    )
+    .finally(() => overlay.remove())
+    .catch(() => overlay.remove());
+}
+
+export function startMarketingViewTransition(
+  router: RouterLike,
+  href: string,
+  options: MarketingTransitionOptions = {},
+) {
+  if (typeof window !== "undefined") {
+    animateMediaFrame(options);
+  }
+
   if (
     typeof document === "undefined" ||
     typeof window === "undefined" ||
