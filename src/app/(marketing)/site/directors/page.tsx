@@ -18,6 +18,16 @@ async function getDirectors() {
       headshotUrl: true,
       heroThumbnailUrl: true,
       heroProjectId: true,
+      projects: {
+        where: { muxStatus: "ready", muxPlaybackId: { not: null } },
+        orderBy: [{ year: "desc" }, { createdAt: "desc" }],
+        take: 1,
+        select: {
+          id: true,
+          muxPlaybackId: true,
+          thumbnailUrl: true,
+        },
+      },
     },
   });
 
@@ -33,24 +43,34 @@ async function getDirectors() {
         })
       : [];
 
-  const heroProjectMap = new Map(
-    heroProjects.map((p) => [
-      p.id,
-      p.thumbnailUrl ??
-        (p.muxPlaybackId
-          ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=1280`
-          : null),
-    ]),
-  );
+  const heroProjectMap = new Map(heroProjects.map((p) => [p.id, p]));
 
-  return directors.map((d) => ({
-    ...d,
-    stillUrl:
+  return directors.map((d) => {
+    const heroProject = d.heroProjectId
+      ? heroProjectMap.get(d.heroProjectId) ?? null
+      : null;
+    const fallbackProject =
+      heroProject?.muxPlaybackId ? heroProject : d.projects[0] ?? null;
+    const stillUrl =
       d.heroThumbnailUrl ??
-      (d.heroProjectId ? heroProjectMap.get(d.heroProjectId) ?? null : null) ??
+      heroProject?.thumbnailUrl ??
+      (heroProject?.muxPlaybackId
+        ? `https://image.mux.com/${heroProject.muxPlaybackId}/thumbnail.jpg?width=1280`
+        : null) ??
+      fallbackProject?.thumbnailUrl ??
+      (fallbackProject?.muxPlaybackId
+        ? `https://image.mux.com/${fallbackProject.muxPlaybackId}/thumbnail.jpg?width=1280`
+        : null) ??
       d.headshotUrl ??
-      null,
-  }));
+      null;
+
+    return {
+      ...d,
+      stillUrl,
+      cardPlaybackId: d.videoIntroUrl ?? fallbackProject?.muxPlaybackId ?? null,
+      playProjectId: d.videoIntroUrl ? null : fallbackProject?.id ?? null,
+    };
+  });
 }
 
 export default async function DirectorsPage() {
@@ -59,7 +79,7 @@ export default async function DirectorsPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
       <header className="flex items-baseline justify-between gap-6 mb-16">
-        <h1 className="text-[56px] md:text-[80px] tracking-[-0.04em] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
+        <h1 className="text-[56px] md:text-[80px] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
           Directors
         </h1>
         <p className="text-[12px] uppercase tracking-[0.14em] text-[#999]">
@@ -80,7 +100,8 @@ export default async function DirectorsPage() {
               name={d.name}
               positioning={d.categories?.[0] ?? null}
               stillUrl={d.stillUrl}
-              muxPlaybackId={d.videoIntroUrl}
+              muxPlaybackId={d.cardPlaybackId}
+              playProjectId={d.playProjectId}
             />
           ))}
         </div>

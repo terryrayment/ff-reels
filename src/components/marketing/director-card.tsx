@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
+import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 
 interface DirectorCardProps {
   slug: string;
@@ -14,6 +15,8 @@ interface DirectorCardProps {
   stillUrl: string | null;
   /** Mux playback ID for hover-to-play loop. */
   muxPlaybackId?: string | null;
+  /** Optional project to open and autoplay when the director has no intro reel. */
+  playProjectId?: string | null;
 }
 
 export function DirectorCard({
@@ -22,22 +25,27 @@ export function DirectorCard({
   positioning,
   stillUrl,
   muxPlaybackId,
+  playProjectId,
 }: DirectorCardProps) {
   const [hovering, setHovering] = useState(false);
   const router = useRouter();
-  const href = `/site/directors/${slug}`;
+  const href = playProjectId
+    ? `/site/directors/${slug}?play=${playProjectId}`
+    : `/site/directors/${slug}`;
   const nameTransitionName = `director-name-${slug}`;
+  const mediaTransitionName = playProjectId
+    ? `project-${playProjectId}`
+    : muxPlaybackId
+      ? `director-reel-${slug}`
+      : undefined;
 
   const onEnter = () => setHovering(true);
   const onLeave = () => setHovering(false);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    if (typeof document.startViewTransition !== "function") return;
     e.preventDefault();
-    document.startViewTransition(() => {
-      router.push(href);
-    });
+    startMarketingViewTransition(router, href);
   };
 
   return (
@@ -49,7 +57,14 @@ export function DirectorCard({
       className="group block"
       prefetch
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-[#EEEDEA]">
+      <div
+        className="relative aspect-[16/10] overflow-hidden bg-[#EEEDEA]"
+        style={
+          mediaTransitionName
+            ? ({ viewTransitionName: mediaTransitionName } as React.CSSProperties)
+            : undefined
+        }
+      >
         {stillUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img

@@ -13,11 +13,10 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 async function getHomepageData() {
-  const [featuredDirectors, recentProjects] = await Promise.all([
+  const [directors, recentProjects] = await Promise.all([
     prisma.director.findMany({
       where: { isActive: true, rosterStatus: "ROSTER" },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-      take: 6,
       select: {
         id: true,
         slug: true,
@@ -27,6 +26,16 @@ async function getHomepageData() {
         headshotUrl: true,
         heroThumbnailUrl: true,
         heroProjectId: true,
+        projects: {
+          where: { muxStatus: "ready", muxPlaybackId: { not: null } },
+          orderBy: [{ year: "desc" }, { createdAt: "desc" }],
+          take: 1,
+          select: {
+            id: true,
+            muxPlaybackId: true,
+            thumbnailUrl: true,
+          },
+        },
       },
     }),
     prisma.project.findMany({
@@ -44,20 +53,57 @@ async function getHomepageData() {
     }),
   ]);
 
+  const heroProjectIds = directors
+    .map((d) => d.heroProjectId)
+    .filter((id): id is string => Boolean(id));
+
+  const heroProjects =
+    heroProjectIds.length > 0
+      ? await prisma.project.findMany({
+          where: { id: { in: heroProjectIds } },
+          select: { id: true, thumbnailUrl: true, muxPlaybackId: true },
+        })
+      : [];
+
+  const heroProjectMap = new Map(heroProjects.map((p) => [p.id, p]));
+
+  const featuredDirectors = directors.map((d) => {
+    const heroProject = d.heroProjectId
+      ? heroProjectMap.get(d.heroProjectId) ?? null
+      : null;
+    const fallbackProject =
+      heroProject?.muxPlaybackId ? heroProject : d.projects[0] ?? null;
+    const stillUrl =
+      d.heroThumbnailUrl ??
+      heroProject?.thumbnailUrl ??
+      (heroProject?.muxPlaybackId
+        ? `https://image.mux.com/${heroProject.muxPlaybackId}/thumbnail.jpg?width=1280`
+        : null) ??
+      fallbackProject?.thumbnailUrl ??
+      (fallbackProject?.muxPlaybackId
+        ? `https://image.mux.com/${fallbackProject.muxPlaybackId}/thumbnail.jpg?width=1280`
+        : null) ??
+      d.headshotUrl ??
+      null;
+
+    return {
+      ...d,
+      stillUrl,
+      cardPlaybackId: d.videoIntroUrl ?? fallbackProject?.muxPlaybackId ?? null,
+      playProjectId: d.videoIntroUrl ? null : fallbackProject?.id ?? null,
+    };
+  });
+
   return { featuredDirectors, recentProjects };
 }
 
-async function resolveHeroProjectThumb(heroProjectId: string | null) {
-  if (!heroProjectId) return null;
-  const p = await prisma.project.findUnique({
-    where: { id: heroProjectId },
-    select: { thumbnailUrl: true, muxPlaybackId: true },
-  });
-  if (!p) return null;
+function resolveProjectThumb(
+  project: { thumbnailUrl: string | null; muxPlaybackId: string | null } | null,
+) {
   return (
-    p.thumbnailUrl ??
-    (p.muxPlaybackId
-      ? `https://image.mux.com/${p.muxPlaybackId}/thumbnail.jpg?width=1280`
+    project?.thumbnailUrl ??
+    (project?.muxPlaybackId
+      ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=1280`
       : null)
   );
 }
@@ -71,50 +117,42 @@ export default async function MarketingHomePage() {
   const heroPlaybackId =
     directorWithIntro?.videoIntroUrl ?? heroProject?.muxPlaybackId ?? null;
 
-  const heroPoster = directorWithIntro?.heroProjectId
-    ? await resolveHeroProjectThumb(directorWithIntro.heroProjectId)
-    : heroProject?.thumbnailUrl ?? null;
-
-  const cardsWithStills = await Promise.all(
-    featuredDirectors.map(async (d) => ({
-      ...d,
-      stillUrl:
-        d.heroThumbnailUrl ??
-        (await resolveHeroProjectThumb(d.heroProjectId)) ??
-        d.headshotUrl ??
-        null,
-    })),
-  );
+  const heroPoster =
+    directorWithIntro?.stillUrl ?? resolveProjectThumb(heroProject ?? null);
 
   return (
     <>
       <HeroVideo muxPlaybackId={heroPlaybackId} posterUrl={heroPoster} />
 
       <section className="mx-auto max-w-[1400px] px-6 lg:px-10 py-24 lg:py-32">
-        <div className="flex items-end justify-between gap-6 mb-12">
-          <h2 className="text-[28px] md:text-[36px] tracking-tight-3 font-light text-[#1A1A1A]">
-            Selected directors
-          </h2>
-          <Link
-            href="/site/directors"
-            className="text-[12px] uppercase tracking-[0.14em] text-[#666] hover:text-[#1A1A1A] transition-colors"
-          >
-            View all →
-          </Link>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-12">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-3">
+              Roster
+            </p>
+            <h2 className="text-[32px] md:text-[44px] font-light text-[#1A1A1A] font-helveticaDisplay leading-none">
+              Directors
+            </h2>
+          </div>
+          <p className="max-w-md text-[14px] md:text-[15px] leading-relaxed text-[#666] tracking-tight">
+            A full roster of commercial directors, each with a distinct point of
+            view across brand films, broadcast, and culture-driven work.
+          </p>
         </div>
 
-        {cardsWithStills.length === 0 ? (
+        {featuredDirectors.length === 0 ? (
           <EmptyMessage message="No directors published yet." />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-            {cardsWithStills.map((d) => (
+            {featuredDirectors.map((d) => (
               <DirectorCard
                 key={d.id}
                 slug={d.slug}
                 name={d.name}
                 positioning={d.categories?.[0] ?? null}
                 stillUrl={d.stillUrl}
-                muxPlaybackId={d.videoIntroUrl}
+                muxPlaybackId={d.cardPlaybackId}
+                playProjectId={d.playProjectId}
               />
             ))}
           </div>
@@ -124,8 +162,8 @@ export default async function MarketingHomePage() {
       <section className="border-t border-[#E8E7E3]">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-24 lg:py-32">
           <div className="flex items-end justify-between gap-6 mb-12">
-            <h2 className="text-[40px] md:text-[56px] tracking-[-0.04em] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
-              Recent work
+            <h2 className="text-[40px] md:text-[56px] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
+              Latest work
             </h2>
             <Link
               href="/site/work"

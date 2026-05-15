@@ -462,19 +462,48 @@ mux-player {
 
 /* View Transitions — fluid morph between project thumbnail positions across routes */
 @media (prefers-reduced-motion: no-preference) {
+  html.marketing-view-transition::view-transition-old(root) {
+    animation: marketingRootOut 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  html.marketing-view-transition::view-transition-new(root) {
+    animation: marketingRootIn 260ms cubic-bezier(0.16, 1, 0.3, 1) 90ms both;
+  }
+
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 0.4s;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    mix-blend-mode: normal;
   }
 
   /* Project thumbnails get their own slow, eased morph */
   ::view-transition-group(*) {
-    animation-duration: 0.55s;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    animation-duration: 0.78s;
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  ::view-transition-group(root) {
+    animation-duration: 0.34s;
   }
 
   ::view-transition-image-pair(*) {
     isolation: auto;
   }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    object-fit: cover;
+    overflow: clip;
+  }
+}
+
+@keyframes marketingRootOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes marketingRootIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

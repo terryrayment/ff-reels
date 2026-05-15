@@ -113,7 +113,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           </p>
         )}
         <h1
-          className="text-[64px] md:text-[120px] lg:text-[168px] leading-[0.88] tracking-[-0.045em] font-black text-[#1A1A1A] font-helveticaDisplay"
+          className="text-[64px] md:text-[120px] lg:text-[168px] leading-[0.88] font-black text-[#1A1A1A] font-helveticaDisplay"
           style={
             {
               viewTransitionName: `director-name-${director.slug}`,
@@ -133,6 +133,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           directorName={director.name}
           agency={featuredProject.agency}
           year={featuredProject.year}
+          transitionName={`project-${featuredProject.id}`}
         />
       )}
 
@@ -145,6 +146,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           directorName={director.name}
           agency={null}
           year={null}
+          transitionName={`director-reel-${director.slug}`}
         />
       )}
 
@@ -174,6 +176,15 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
 
       {grouped.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-6 lg:px-10">
+          <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+            <h2 className="text-[30px] md:text-[40px] font-light text-[#1A1A1A] font-helveticaDisplay leading-none">
+              Work gallery
+            </h2>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-[#999]">
+              {director.projects.length}{" "}
+              {director.projects.length === 1 ? "film" : "films"}
+            </p>
+          </div>
           {grouped.map((group) => (
             <div key={group.key} className="mb-20 last:mb-0">
               <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-8">

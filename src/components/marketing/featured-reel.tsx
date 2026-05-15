@@ -1,7 +1,12 @@
 "use client";
 
 import MuxPlayer from "@mux/mux-player-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  MARKETING_TRANSITION_FINISHED,
+  clearMarketingTransitionDelay,
+  getMarketingTransitionDelay,
+} from "@/components/marketing/view-transition";
 
 interface FeaturedReelProps {
   projectId: string;
@@ -11,6 +16,7 @@ interface FeaturedReelProps {
   directorName: string;
   agency?: string | null;
   year?: number | null;
+  transitionName?: string;
 }
 
 export function FeaturedReel({
@@ -21,13 +27,39 @@ export function FeaturedReel({
   directorName,
   agency,
   year,
+  transitionName,
 }: FeaturedReelProps) {
   const playerRef = useRef<HTMLElement | null>(null);
+  const [canPlay, setCanPlay] = useState(false);
 
-  // Belt-and-braces autoplay nudge: some browsers don't honour the
-  // autoplay attribute on a custom element that mounts after route
-  // change / view transition. Force play() once the metadata loads.
   useEffect(() => {
+    setCanPlay(false);
+
+    if (typeof window === "undefined") return;
+
+    let released = false;
+    const release = () => {
+      if (released) return;
+      released = true;
+      clearMarketingTransitionDelay();
+      setCanPlay(true);
+    };
+
+    const delay = getMarketingTransitionDelay();
+    const timer = window.setTimeout(release, delay > 0 ? delay : 80);
+    window.addEventListener(MARKETING_TRANSITION_FINISHED, release, { once: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener(MARKETING_TRANSITION_FINISHED, release);
+    };
+  }, [muxPlaybackId]);
+
+  // Some browsers do not honor autoplay on a custom element after a route
+  // view transition, so nudge playback once the shared-media morph has ended.
+  useEffect(() => {
+    if (!canPlay) return;
+
     const el = playerRef.current as
       | (HTMLElement & { play?: () => Promise<void>; muted?: boolean })
       | null;
@@ -44,7 +76,7 @@ export function FeaturedReel({
       cancelled = true;
       clearTimeout(t);
     };
-  }, [muxPlaybackId]);
+  }, [canPlay, muxPlaybackId]);
 
   return (
     <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16 lg:mb-24">
@@ -53,6 +85,7 @@ export function FeaturedReel({
         style={
           {
             viewTransitionName: `project-${projectId}`,
+            ...(transitionName ? { viewTransitionName: transitionName } : {}),
             "--media-object-fit": "cover",
           } as React.CSSProperties
         }
@@ -61,9 +94,10 @@ export function FeaturedReel({
           ref={playerRef as React.RefObject<never>}
           playbackId={muxPlaybackId}
           streamType="on-demand"
-          autoPlay="muted"
+          {...(canPlay ? { autoPlay: "muted" as const } : {})}
           muted
           playsInline
+          preload={canPlay ? "auto" : "metadata"}
         />
       </div>
       <div className="mt-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">

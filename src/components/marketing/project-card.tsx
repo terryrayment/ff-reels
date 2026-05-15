@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 
 export interface ProjectCardData {
   id: string;
@@ -56,11 +57,8 @@ export function ProjectCard({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Let modified clicks (cmd/ctrl/shift) and middle-click follow default browser behaviour.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    if (typeof document.startViewTransition !== "function") return;
     e.preventDefault();
-    document.startViewTransition(() => {
-      router.push(href);
-    });
+    startMarketingViewTransition(router, href);
   };
 
   return (
