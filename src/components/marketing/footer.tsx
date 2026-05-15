@@ -32,7 +32,7 @@ export function MarketingFooter() {
               Friends &amp; Family
             </p>
             <p className="mt-2 text-[12px] tracking-tight text-[#666] max-w-xs leading-relaxed">
-              A commercial production company. Los Angeles &amp; New York.
+              A creative network. Los Angeles, New York, São Paulo, Curitiba.
             </p>
           </div>
 

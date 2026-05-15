@@ -70,12 +70,11 @@ export default function AboutPage() {
               About
             </p>
             <h1 className="text-[52px] md:text-[84px] lg:text-[110px] font-black text-[#1A1A1A] font-helveticaDisplay leading-[0.9]">
-              Friends make the work possible.
+              A creative network across the Americas.
             </h1>
           </div>
           <p className="lg:col-span-4 lg:col-start-9 text-[15px] md:text-[17px] leading-relaxed tracking-tight text-[#555]">
-            An independent commercial production company built around a close
-            roster, long relationships, and the people behind the frame.
+            Director-led. Los Angeles, New York, São Paulo, Curitiba.
           </p>
         </header>
 
@@ -120,14 +119,14 @@ export default function AboutPage() {
         </div>
         <div className="lg:col-span-7 space-y-5 text-[19px] md:text-[24px] leading-snug tracking-tight text-[#1A1A1A]">
           <p>
-            Friends &amp; Family represents a curated group of commercial
-            directors and builds each project around the right creative,
-            production, and agency relationships.
+            Friends &amp; Family is a creative network of three studios across
+            the Americas — production in Los Angeles and New York, post and
+            animation in Curitiba, and a wider creative practice in São Paulo.
+            Director-led, independently run.
           </p>
           <p className="text-[#555]">
-            The work spans broadcast, brand films, music, culture, and
-            campaign systems for agencies and brands that need taste,
-            precision, and calm production instincts.
+            A small roster, picked carefully. Long relationships with
+            directors, agencies, and the brands that come back.
           </p>
         </div>
       </section>
