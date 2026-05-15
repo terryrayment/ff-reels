@@ -79,7 +79,7 @@ export function FeaturedReel({
   }, [canPlay, muxPlaybackId]);
 
   return (
-    <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16 lg:mb-24">
+    <section className="mx-auto w-[calc(100vw-48px)] md:w-[70vw] max-w-[980px] mb-16 lg:mb-24">
       <div
         className="relative aspect-video overflow-hidden bg-black [&_mux-player]:w-full [&_mux-player]:h-full"
         style={

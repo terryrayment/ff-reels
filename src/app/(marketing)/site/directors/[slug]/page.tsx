@@ -105,7 +105,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
   const press = Array.isArray(director.pressLinks) ? director.pressLinks : [];
 
   return (
-    <article className="pt-24 lg:pt-28 pb-24">
+    <article className="pt-[88px] lg:pt-[104px] pb-24">
       {featuredProject?.muxPlaybackId && (
         <FeaturedReel
           projectId={featuredProject.id}
@@ -150,6 +150,43 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
         </h1>
       </header>
 
+      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16">
+        <details className="group border-t border-b border-[#E8E7E3]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[12px] uppercase tracking-[0.14em] text-[#666] transition-colors hover:text-[#1A1A1A] [&::-webkit-details-marker]:hidden">
+            <span>Bio</span>
+            <span className="text-[18px] leading-none text-[#1A1A1A] group-open:hidden">
+              +
+            </span>
+            <span className="hidden text-[18px] leading-none text-[#1A1A1A] group-open:block">
+              -
+            </span>
+          </summary>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-10">
+            <div className="lg:col-span-3">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
+                About {director.name}
+              </p>
+            </div>
+            <div className="lg:col-span-7 space-y-6">
+              {director.bio ? (
+                <p className="text-[17px] md:text-[19px] leading-relaxed tracking-tight-2 text-[#1A1A1A] whitespace-pre-line">
+                  {director.bio}
+                </p>
+              ) : (
+                <p className="text-[17px] md:text-[19px] leading-relaxed tracking-tight-2 text-[#666]">
+                  More background is being added to this profile.
+                </p>
+              )}
+              {director.statement && (
+                <blockquote className="border-l-2 border-[#1A1A1A] pl-6 text-[16px] leading-relaxed text-[#444] italic whitespace-pre-line">
+                  {director.statement}
+                </blockquote>
+              )}
+            </div>
+          </div>
+        </details>
+      </section>
+
       {grouped.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-6 lg:px-10">
           <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
@@ -190,30 +227,6 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
               </div>
             </div>
           ))}
-        </section>
-      )}
-
-      {(director.bio || director.statement) && (
-        <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mt-24 pt-16 border-t border-[#E8E7E3]">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <div className="lg:col-span-3">
-              <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
-                About
-              </p>
-            </div>
-            <div className="lg:col-span-7 space-y-6">
-              {director.bio && (
-                <p className="text-[17px] md:text-[19px] leading-relaxed tracking-tight-2 text-[#1A1A1A] whitespace-pre-line">
-                  {director.bio}
-                </p>
-              )}
-              {director.statement && (
-                <blockquote className="border-l-2 border-[#1A1A1A] pl-6 text-[16px] leading-relaxed text-[#444] italic whitespace-pre-line">
-                  {director.statement}
-                </blockquote>
-              )}
-            </div>
-          </div>
         </section>
       )}
 

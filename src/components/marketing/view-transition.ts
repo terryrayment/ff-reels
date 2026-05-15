@@ -1,7 +1,8 @@
 "use client";
 
 const TRANSITION_UNTIL_KEY = "ff:marketing-transition-until";
-const TRANSITION_DURATION_MS = 900;
+const TRANSITION_DURATION_MS = 1180;
+const TRANSITION_EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
 
 export const MARKETING_TRANSITION_FINISHED =
   "ff:marketing-route-transition-finished";
@@ -35,9 +36,10 @@ export function clearMarketingTransitionDelay() {
 
 function getFeaturedReelTargetRect() {
   const viewportWidth = window.innerWidth;
-  const margin = viewportWidth >= 1024 ? 40 : 24;
-  const maxWidth = 1400;
-  const width = Math.min(viewportWidth - margin * 2, maxWidth);
+  const width =
+    viewportWidth >= 768
+      ? Math.min(viewportWidth * 0.7, 980)
+      : viewportWidth - 48;
   const x = (viewportWidth - width) / 2;
   const y = viewportWidth >= 1024 ? 104 : 88;
   const height = width * (9 / 16);
@@ -93,20 +95,21 @@ function animateMediaFrame({
       },
     ],
     {
-      duration: 780,
-      easing: "cubic-bezier(0.19, 1, 0.22, 1)",
+      duration: TRANSITION_DURATION_MS,
+      easing: TRANSITION_EASING,
       fill: "forwards",
     },
   );
 
   animation.finished
-    .then(() =>
-      overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
-        duration: 180,
+    .then(() => {
+      window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
+      return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 140,
         easing: "ease-out",
         fill: "forwards",
-      }).finished,
-    )
+      }).finished;
+    })
     .finally(() => overlay.remove())
     .catch(() => overlay.remove());
 }
@@ -117,6 +120,10 @@ export function startMarketingViewTransition(
   options: MarketingTransitionOptions = {},
 ) {
   if (typeof window !== "undefined") {
+    getStorage()?.setItem(
+      TRANSITION_UNTIL_KEY,
+      String(Date.now() + TRANSITION_DURATION_MS),
+    );
     animateMediaFrame(options);
   }
 
@@ -130,10 +137,6 @@ export function startMarketingViewTransition(
   }
 
   document.documentElement.classList.add("marketing-view-transition");
-  getStorage()?.setItem(
-    TRANSITION_UNTIL_KEY,
-    String(Date.now() + TRANSITION_DURATION_MS),
-  );
 
   const transition = document.startViewTransition(() => {
     router.push(href);
