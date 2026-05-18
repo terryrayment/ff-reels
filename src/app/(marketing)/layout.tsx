@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s — Friends & Family",
   },
   description:
-    "Friends & Family is a commercial production company based in Los Angeles and New York. Independently run, director-led.",
+    "Friends & Family is a creative network across Los Angeles, New York, São Paulo, and Curitiba. Independently run, director-led.",
   robots: {
     index: false,
     follow: false,
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Friends & Family",
     description:
-      "A commercial production company. Los Angeles & New York. Independently run, director-led.",
+      "A creative network. Los Angeles, New York, São Paulo, Curitiba. Independently run, director-led.",
     type: "website",
     siteName: "Friends & Family",
   },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Friends & Family",
     description:
-      "A commercial production company. Los Angeles & New York. Independently run, director-led.",
+      "A creative network. Los Angeles, New York, São Paulo, Curitiba. Independently run, director-led.",
   },
 };
 

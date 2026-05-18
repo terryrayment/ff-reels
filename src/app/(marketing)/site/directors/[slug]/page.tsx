@@ -130,14 +130,14 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
         />
       )}
 
-      <header className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-14 lg:mb-18">
+      <header className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-12 lg:mb-14">
         {positioning && (
           <p className="text-[11px] uppercase tracking-[0.18em] text-[#666] mb-3">
             {positioning}
           </p>
         )}
         <h1
-          className="text-[52px] md:text-[88px] lg:text-[116px] leading-[0.9] font-black text-[#1A1A1A] font-helveticaDisplay"
+          className="text-[58px] md:text-[98px] lg:text-[128px] leading-[0.92] font-semibold text-[#1A1A1A] font-helveticaDisplay"
           style={
             {
               viewTransitionName: `director-name-${director.slug}`,
@@ -148,7 +148,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
         </h1>
       </header>
 
-      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16">
+      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-14">
         <details className="group border-t border-b border-[#E8E7E3]">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[12px] uppercase tracking-[0.14em] text-[#666] transition-colors hover:text-[#1A1A1A] [&::-webkit-details-marker]:hidden">
             <span>Bio</span>
@@ -167,11 +167,11 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
             </div>
             <div className="lg:col-span-7 space-y-6">
               {director.bio ? (
-                <p className="text-[17px] md:text-[19px] leading-relaxed tracking-tight-2 text-[#1A1A1A] whitespace-pre-line">
+                <p className="text-[17px] md:text-[19px] leading-relaxed text-[#1A1A1A] whitespace-pre-line">
                   {director.bio}
                 </p>
               ) : (
-                <p className="text-[17px] md:text-[19px] leading-relaxed tracking-tight-2 text-[#666]">
+                <p className="text-[17px] md:text-[19px] leading-relaxed text-[#666]">
                   More background is being added to this profile.
                 </p>
               )}
@@ -187,8 +187,8 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
 
       {grouped.length > 0 && (
         <section className="mx-auto max-w-[1400px] px-6 lg:px-10">
-          <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
-            <h2 className="text-[30px] md:text-[40px] font-light text-[#1A1A1A] font-helveticaDisplay leading-none">
+          <div className="mb-9 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+            <h2 className="text-[34px] md:text-[46px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-none">
               Work gallery
             </h2>
             <p className="text-[11px] uppercase tracking-[0.14em] text-[#999]">
@@ -201,7 +201,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
               <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-8">
                 {group.label}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-12">
                 {group.items.map((p, i) => (
                   <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
                     <ProjectCard
@@ -236,7 +236,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
                 <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-6">
                   Selected awards
                 </h2>
-                <ul className="space-y-2 text-[14px] tracking-tight-2 text-[#1A1A1A]">
+                <ul className="space-y-2 text-[14px] text-[#1A1A1A]">
                   {awards.slice(0, 12).map((a: unknown, i: number) => (
                     <li key={i}>{typeof a === "string" ? a : JSON.stringify(a)}</li>
                   ))}
@@ -248,7 +248,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
                 <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-6">
                   Press
                 </h2>
-                <ul className="space-y-2 text-[14px] tracking-tight-2">
+                <ul className="space-y-2 text-[14px]">
                   {press.slice(0, 12).map((p: unknown, i: number) => {
                     if (typeof p === "string") {
                       return (

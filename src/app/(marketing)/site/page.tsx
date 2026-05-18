@@ -6,7 +6,7 @@ import { ProjectCard } from "@/components/marketing/project-card";
 import { ScrollReveal } from "@/components/marketing/scroll-reveal";
 
 export const metadata: Metadata = {
-  title: { absolute: "Friends & Family — Commercial Production" },
+  title: { absolute: "Friends & Family — Creative Network" },
 };
 
 export const revalidate = 300;
@@ -101,26 +101,25 @@ export default async function MarketingHomePage() {
 
   return (
     <>
-      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-20 lg:pb-28">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12">
+      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-16 lg:pb-24">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-10 lg:mb-12">
           <div>
             <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-3">
-              Director-led production
+              A creative network
             </p>
-            <h1 className="text-[56px] md:text-[88px] lg:text-[116px] font-black text-[#1A1A1A] font-helveticaDisplay leading-[0.9]">
+            <h1 className="text-[58px] md:text-[96px] lg:text-[124px] font-semibold text-[#1A1A1A] font-helveticaDisplay leading-[0.92]">
               Friends &amp; Family
             </h1>
           </div>
-          <p className="max-w-xl text-[15px] md:text-[17px] leading-relaxed text-[#555] tracking-tight">
-            A roster of commercial directors with distinct points of view across
-            broadcast, brand films, music, and culture-driven work.
+          <p className="max-w-lg text-[16px] md:text-[19px] leading-relaxed text-[#555]">
+            Director-led. Los Angeles, New York, São Paulo, Curitiba.
           </p>
         </div>
 
         {featuredDirectors.length === 0 ? (
           <EmptyMessage message="No directors published yet." />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-10 lg:gap-y-12">
             {featuredDirectors.map((d) => (
               <DirectorCard
                 key={d.id}
@@ -137,9 +136,9 @@ export default async function MarketingHomePage() {
       </section>
 
       <section className="border-t border-[#E8E7E3]">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-24 lg:py-32">
-          <div className="flex items-end justify-between gap-6 mb-12">
-            <h2 className="text-[40px] md:text-[56px] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-24">
+          <div className="flex items-end justify-between gap-6 mb-10">
+            <h2 className="text-[38px] md:text-[56px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-none">
               Latest work
             </h2>
             <Link
@@ -153,7 +152,7 @@ export default async function MarketingHomePage() {
           {recentProjects.length === 0 ? (
             <EmptyMessage message="No projects published yet." />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-12">
               {recentProjects.map((p, i) => (
                 <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
                   <ProjectCard project={p} />

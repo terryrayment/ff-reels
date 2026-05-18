@@ -89,15 +89,15 @@ export function ProjectCard({
       </div>
       <div className="mt-4">
         {project.brand && (
-          <p className="text-[11px] uppercase tracking-[0.18em] text-[#1A1A1A] font-bold font-helveticaText">
+          <p className="text-[10px] uppercase tracking-[0.16em] text-[#1A1A1A] font-medium font-helveticaText">
             {project.brand}
           </p>
         )}
-        <p className="text-[18px] md:text-[20px] tracking-tight-2 font-light text-[#1A1A1A] leading-[1.15] mt-1 font-helveticaDisplay">
+        <p className="text-[20px] md:text-[24px] font-medium text-[#1A1A1A] leading-[1.05] mt-1.5 font-helveticaDisplay">
           {project.title}
         </p>
         {metaLine && (
-          <p className="text-[12px] tracking-tight text-[#666] mt-2 font-helveticaText">
+          <p className="text-[11px] text-[#666] mt-2 font-helveticaText leading-snug">
             {metaLine}
           </p>
         )}

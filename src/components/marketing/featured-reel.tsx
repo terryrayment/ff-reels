@@ -85,7 +85,7 @@ export function FeaturedReel({
   }, [canPlay, muxPlaybackId]);
 
   return (
-    <section className="mx-auto w-[calc(100vw-48px)] md:w-[70vw] max-w-[980px] mb-16 lg:mb-24">
+    <section className="mx-auto w-[calc(100vw-48px)] md:w-[64vw] max-w-[920px] mb-14 lg:mb-20">
       <div
         className={`relative aspect-video overflow-hidden bg-black transition-opacity duration-150 [&_mux-player]:w-full [&_mux-player]:h-full ${
           canPlay ? "opacity-100" : "opacity-0"
@@ -110,15 +110,15 @@ export function FeaturedReel({
       <div className="mt-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
         <div>
           {brand && (
-            <p className="text-[11px] uppercase tracking-[0.18em] text-[#1A1A1A] font-bold font-helveticaText">
+            <p className="text-[10px] uppercase tracking-[0.16em] text-[#1A1A1A] font-medium font-helveticaText">
               {brand}
             </p>
           )}
-          <p className="text-[22px] md:text-[28px] tracking-tight-2 font-light text-[#1A1A1A] mt-1 font-helveticaDisplay">
+          <p className="text-[24px] md:text-[34px] font-medium text-[#1A1A1A] mt-1 font-helveticaDisplay leading-[1.02]">
             {title}
           </p>
         </div>
-        <p className="text-[12px] tracking-tight text-[#666] font-helveticaText">
+        <p className="text-[12px] text-[#666] font-helveticaText leading-snug">
           Dir. {directorName}
           {agency ? ` · ${agency}` : ""}
           {year ? ` · ${year}` : ""}

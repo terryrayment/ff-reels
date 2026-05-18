@@ -60,14 +60,14 @@ export function DirectorCard({
     >
       <div
         data-marketing-media-frame
-        className="relative aspect-[16/10] overflow-hidden bg-[#EEEDEA]"
+        className="relative aspect-video overflow-hidden bg-[#E8E7E3]"
       >
         {stillUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={stillUrl}
             alt={name}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.015]"
             loading="lazy"
           />
         )}
@@ -93,15 +93,15 @@ export function DirectorCard({
           </div>
         )}
       </div>
-      <div className="mt-3 flex items-baseline justify-between gap-3">
+      <div className="mt-3.5 flex items-baseline justify-between gap-4">
         <h3
-          className="text-[17px] md:text-[20px] tracking-tight-2 text-[#1A1A1A] leading-tight font-helveticaDisplay"
+          className="text-[20px] md:text-[24px] text-[#1A1A1A] leading-none font-helveticaDisplay font-medium"
           style={{ viewTransitionName: nameTransitionName } as React.CSSProperties}
         >
           {name}
         </h3>
         {positioning && (
-          <span className="text-[10px] uppercase tracking-[0.12em] text-[#999] shrink-0">
+          <span className="text-[9px] uppercase tracking-[0.14em] text-[#999] shrink-0">
             {positioning}
           </span>
         )}

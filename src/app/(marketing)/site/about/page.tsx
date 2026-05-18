@@ -31,8 +31,8 @@ const REPS = [
 const PRINCIPLES = [
   "Director-led",
   "Independent",
-  "Los Angeles / New York",
-  "Production-forward",
+  "LA / NY / SP / CWB",
+  "Production / post / VFX",
 ];
 
 export default function AboutPage() {
@@ -44,13 +44,13 @@ export default function AboutPage() {
             <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-4">
               About
             </p>
-            <h1 className="text-[52px] md:text-[84px] lg:text-[110px] font-black text-[#1A1A1A] font-helveticaDisplay leading-[0.9]">
-              Friends make the work possible.
+            <h1 className="text-[54px] md:text-[90px] lg:text-[118px] font-semibold text-[#1A1A1A] font-helveticaDisplay leading-[0.92]">
+              A creative network across the Americas.
             </h1>
           </div>
-          <p className="lg:col-span-4 lg:col-start-9 text-[15px] md:text-[17px] leading-relaxed tracking-tight text-[#555]">
-            An independent commercial production company built around a close
-            roster, long relationships, and the people behind the frame.
+          <p className="lg:col-span-4 lg:col-start-9 text-[16px] md:text-[18px] leading-relaxed text-[#555]">
+            Director-led and independently run from Los Angeles and New York,
+            connected with production, post, animation, and VFX in Brazil.
           </p>
         </header>
 
@@ -78,16 +78,16 @@ export default function AboutPage() {
             Company
           </p>
         </div>
-        <div className="lg:col-span-7 space-y-5 text-[19px] md:text-[24px] leading-snug tracking-tight text-[#1A1A1A]">
+        <div className="lg:col-span-7 space-y-5 text-[20px] md:text-[26px] leading-snug text-[#1A1A1A]">
           <p>
-            Friends &amp; Family represents a curated group of commercial
-            directors and builds each project around the right creative,
-            production, and agency relationships.
+            Friends &amp; Family is a creative network of three connected
+            practices across the Americas: production in Los Angeles and New
+            York, post and animation in Curitiba, and a wider culture practice
+            in São Paulo. Director-led, independently run.
           </p>
           <p className="text-[#555]">
-            The work spans broadcast, brand films, music, culture, and
-            campaign systems for agencies and brands that need taste,
-            precision, and calm production instincts.
+            A small roster, picked carefully. Long relationships with
+            directors, brands, and the people that come back.
           </p>
         </div>
       </section>
@@ -98,21 +98,14 @@ export default function AboutPage() {
             NETWORK
           </p>
         </div>
-        <div className="lg:col-span-7 space-y-6 text-[19px] md:text-[24px] leading-snug tracking-tight text-[#1A1A1A]">
+        <div className="lg:col-span-7 space-y-6 text-[20px] md:text-[26px] leading-snug text-[#1A1A1A]">
           <p>
-            Friends &amp; Family is an imprint of THE YOUTH in São Paulo and
-            COLOSSAL in Curitiba. Three studios. One creative network across
-            the Americas.
+            COLOSSAL in Curitiba and THE YOUTH in São Paulo connect post,
+            animation, VFX, production, and culture work to Friends &amp;
+            Family&apos;s Los Angeles and New York offices. One network across the
+            Americas.
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-3 pt-1">
-            <a
-              href="https://theyouth.com.br/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[14px] text-[#1A1A1A] hover:text-[#666] transition-colors"
-            >
-              Visit THE YOUTH →
-            </a>
             <a
               href="https://colossal.film/"
               target="_blank"
@@ -120,6 +113,14 @@ export default function AboutPage() {
               className="text-[14px] text-[#1A1A1A] hover:text-[#666] transition-colors"
             >
               Visit COLOSSAL →
+            </a>
+            <a
+              href="https://theyouth.com.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[14px] text-[#1A1A1A] hover:text-[#666] transition-colors"
+            >
+              Visit THE YOUTH →
             </a>
           </div>
         </div>
@@ -139,7 +140,7 @@ export default function AboutPage() {
                 className="py-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-1"
               >
                 <div>
-                  <p className="text-[24px] md:text-[30px] tracking-tight text-[#1A1A1A] font-helveticaDisplay">
+                  <p className="text-[26px] md:text-[34px] text-[#1A1A1A] font-helveticaDisplay font-medium leading-none">
                     {m.name}
                   </p>
                   <p className="text-[11px] uppercase tracking-[0.12em] text-[#666] mt-1">
@@ -171,7 +172,7 @@ export default function AboutPage() {
                 key={r.region}
                 className="py-5 flex items-baseline justify-between gap-6"
               >
-                <p className="text-[24px] md:text-[30px] tracking-tight text-[#1A1A1A] font-helveticaDisplay">
+                <p className="text-[26px] md:text-[34px] text-[#1A1A1A] font-helveticaDisplay font-medium leading-none">
                   {r.name}
                 </p>
                 <p className="text-[11px] uppercase tracking-[0.12em] text-[#666]">

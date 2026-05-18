@@ -92,15 +92,15 @@ export function ReelLightbox({ project, onClose }: ReelLightboxProps) {
             <div className="mt-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-3 text-white font-helveticaText">
               <div>
                 {project.brand && (
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-white/70 font-bold">
+                  <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/70">
                     {project.brand}
                   </p>
                 )}
-                <p className="text-[20px] md:text-[24px] tracking-tight-2 font-light mt-1 font-helveticaDisplay">
+                <p className="text-[20px] md:text-[24px] font-medium leading-[1.05] mt-1 font-helveticaDisplay">
                   {project.title}
                 </p>
               </div>
-              <p className="text-[12px] text-white/60 tracking-tight">
+              <p className="text-[12px] leading-snug text-white/60">
                 Dir. {project.director.name}
                 {project.agency ? ` · ${project.agency}` : ""}
                 {project.year ? ` · ${project.year}` : ""}

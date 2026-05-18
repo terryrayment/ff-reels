@@ -8,6 +8,9 @@
  *   npx tsx scripts/import-theo-lesourd.ts
  *   npx tsx scripts/import-theo-lesourd.ts --dry-run
  *   npx tsx scripts/import-theo-lesourd.ts --skip-download
+ *
+ * NOTE: wiredrive-downloads/ is optional local migration staging only. It is
+ * not required for deploy or runtime playback; production uses Mux playback IDs.
  */
 
 import { PrismaClient } from "@prisma/client";

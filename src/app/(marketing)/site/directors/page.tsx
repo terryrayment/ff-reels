@@ -77,9 +77,9 @@ export default async function DirectorsPage() {
   const directors = await getDirectors();
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
-      <header className="flex items-baseline justify-between gap-6 mb-16">
-        <h1 className="text-[56px] md:text-[80px] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
+    <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-24">
+      <header className="flex items-baseline justify-between gap-6 mb-12">
+        <h1 className="text-[58px] md:text-[92px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-none">
           Directors
         </h1>
         <p className="text-[12px] uppercase tracking-[0.14em] text-[#999]">
@@ -92,7 +92,7 @@ export default async function DirectorsPage() {
           <p className="text-[14px] text-[#999]">No directors published yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-10 lg:gap-y-12">
           {directors.map((d) => (
             <DirectorCard
               key={d.id}

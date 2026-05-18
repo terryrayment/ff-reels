@@ -16,6 +16,11 @@
 # production
 /build
 
+# local video staging / source media (Mux is canonical in production)
+wiredrive-downloads/
+*.mov
+*.mp4
+
 # misc
 .DS_Store
 *.pem

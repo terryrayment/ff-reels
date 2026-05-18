@@ -45,7 +45,7 @@ export function ContactForm() {
   if (status === "sent") {
     return (
       <div className="border-t border-[#E8E7E3] py-12">
-        <p className="text-[20px] tracking-tight-2 text-[#1A1A1A]">
+        <p className="font-helveticaDisplay text-[24px] font-medium leading-tight text-[#1A1A1A]">
           Thanks &mdash; we&rsquo;ll be in touch.
         </p>
         <p className="mt-2 text-[14px] text-[#666]">
@@ -62,7 +62,7 @@ export function ContactForm() {
   const labelCls =
     "block text-[11px] uppercase tracking-[0.12em] text-[#666] mb-2";
   const inputCls =
-    "w-full bg-transparent border-b border-[#1A1A1A]/15 focus:border-[#1A1A1A] outline-none px-0 py-2 text-[15px] tracking-tight-2 placeholder:text-[#999] transition-colors";
+    "w-full bg-transparent border-b border-[#1A1A1A]/15 focus:border-[#1A1A1A] outline-none px-0 py-2 text-[15px] placeholder:text-[#999] transition-colors";
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">

@@ -1,6 +1,9 @@
 /**
  * Upload Nick Stachurski's 4 missing videos to Mux.
  * Usage: npx tsx scripts/mux-upload-nick.ts
+ *
+ * NOTE: wiredrive-downloads/ is optional local migration staging only. It is
+ * not required for deploy or runtime playback; production uses Mux playback IDs.
  */
 
 import { PrismaClient } from "@prisma/client";

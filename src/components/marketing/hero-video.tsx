@@ -49,15 +49,14 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40 pointer-events-none" />
 
       <div className="relative h-full mx-auto max-w-[1400px] px-6 lg:px-10 flex flex-col justify-end pb-16 pointer-events-none">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-white/70">
-          Director-led production
+        <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/70 font-helveticaText">
+          A creative network
         </p>
-        <h1 className="mt-3 text-[64px] md:text-[112px] lg:text-[144px] leading-[0.9] text-white max-w-5xl font-helveticaDisplay font-black tracking-[-0.04em]">
+        <h1 className="mt-3 text-[58px] md:text-[98px] lg:text-[126px] leading-[0.92] text-white max-w-5xl font-helveticaDisplay font-semibold">
           Friends &amp; Family
         </h1>
-        <p className="mt-4 text-[15px] md:text-[17px] tracking-tight-2 text-white/80 max-w-md">
-          Commercials and films from Los Angeles and New York, built around a
-          clear point of view.
+        <p className="mt-4 text-[16px] md:text-[18px] leading-relaxed text-white/80 max-w-md">
+          Director-led. Los Angeles, New York, São Paulo, Curitiba.
         </p>
       </div>
     </section>

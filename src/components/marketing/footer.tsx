@@ -28,11 +28,11 @@ export function MarketingFooter() {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div>
-            <p className="text-[15px] tracking-tight-2 font-medium text-[#1A1A1A]">
+            <p className="font-helveticaDisplay text-[18px] font-medium leading-none text-[#1A1A1A]">
               Friends &amp; Family
             </p>
-            <p className="mt-2 text-[12px] tracking-tight text-[#666] max-w-xs leading-relaxed">
-              A commercial production company. Los Angeles &amp; New York.
+            <p className="mt-2 text-[12px] text-[#666] max-w-xs leading-relaxed">
+              A creative network. Los Angeles, New York, São Paulo, Curitiba.
             </p>
           </div>
 
@@ -76,7 +76,7 @@ export function MarketingFooter() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[12px] tracking-tight text-[#666] hover:text-[#1A1A1A] transition-colors"
+                  className="text-[12px] text-[#666] hover:text-[#1A1A1A] transition-colors"
                 >
                   {s.label}
                 </a>
@@ -87,11 +87,11 @@ export function MarketingFooter() {
           <div className="flex items-center gap-6">
             <Link
               href="/site/contact"
-              className="text-[12px] tracking-tight text-[#666] hover:text-[#1A1A1A] transition-colors"
+              className="text-[12px] text-[#666] hover:text-[#1A1A1A] transition-colors"
             >
               Get in touch
             </Link>
-            <p className="text-[12px] tracking-tight text-[#999]">
+            <p className="text-[12px] text-[#999]">
               &copy; {new Date().getFullYear()} Friends &amp; Family
             </p>
           </div>

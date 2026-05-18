@@ -62,9 +62,9 @@ export default async function WorkPage({
   const { items, totalCount } = await getWork(activeDiscipline.contentType);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-32 lg:pt-40 pb-24">
-      <header className="mb-12 flex items-baseline justify-between gap-6">
-        <h1 className="text-[56px] md:text-[80px] tracking-[-0.04em] font-bold text-[#1A1A1A] font-helveticaDisplay leading-[0.95]">
+    <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-24">
+      <header className="mb-10 flex items-baseline justify-between gap-6">
+        <h1 className="text-[58px] md:text-[92px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-none">
           Work
         </h1>
         <p className="text-[11px] uppercase tracking-[0.14em] text-[#999]">
@@ -74,7 +74,7 @@ export default async function WorkPage({
 
       <nav
         aria-label="Filter by discipline"
-        className="mb-12 -mx-1 flex flex-wrap items-center gap-x-1 gap-y-2 border-b border-[#E8E7E3] pb-4"
+        className="mb-10 -mx-1 flex flex-wrap items-center gap-x-1 gap-y-2 border-b border-[#E8E7E3] pb-4"
       >
         {DISCIPLINES.map((d, i) => {
           const isActive = d.slug === active;
@@ -113,7 +113,7 @@ export default async function WorkPage({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-12">
           {items.map((p, i) => {
             const disciplineLabel = DISCIPLINES.find(
               (d) => d.contentType === p.contentType,

@@ -1,8 +1,8 @@
 "use client";
 
 const TRANSITION_UNTIL_KEY = "ff:marketing-transition-until";
-const TRANSITION_DURATION_MS = 1180;
-const TRANSITION_EASING = "cubic-bezier(0.65, 0, 0.35, 1)";
+const TRANSITION_DURATION_MS = 1320;
+const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
 
 export const MARKETING_TRANSITION_FINISHED =
   "ff:marketing-route-transition-finished";
@@ -38,7 +38,7 @@ function getFeaturedReelTargetRect() {
   const viewportWidth = window.innerWidth;
   const width =
     viewportWidth >= 768
-      ? Math.min(viewportWidth * 0.7, 980)
+      ? Math.min(viewportWidth * 0.64, 920)
       : viewportWidth - 48;
   const x = (viewportWidth - width) / 2;
   const y = viewportWidth >= 1024 ? 104 : 88;
