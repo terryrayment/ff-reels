@@ -24,6 +24,28 @@
   --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-base: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.15s ease;
+
+  /* Friends & Family marketing design tokens */
+  --ff-color-paper: #F5F4F0;
+  --ff-color-paper-soft: #FAFAF7;
+  --ff-color-ink: #1A1A1A;
+  --ff-color-muted: #66645F;
+  --ff-color-faint: #999790;
+  --ff-color-line: #E1E0DA;
+  --ff-color-line-soft: #E8E7E3;
+  --ff-color-media: #050505;
+  --ff-color-signal: #D7FF38;
+  --ff-rgb-paper: 245 244 240;
+  --ff-rgb-ink: 26 26 26;
+  --ff-container: 1400px;
+  --ff-page-x: clamp(1.5rem, 2.75vw, 2.5rem);
+  --ff-nav-height: 4rem;
+  --ff-type-label: 10px;
+  --ff-track-label: 0.16em;
+  --ff-ease-primary: cubic-bezier(0.76, 0, 0.24, 1);
+  --ff-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ff-duration-media: 1320ms;
+  --ff-duration-fast: 150ms;
 }
 
 [data-theme="dark"] {
@@ -45,6 +67,15 @@
   --shadow-card: 0 0.5px 0 rgba(255, 255, 255, 0.04) inset, 0 1px 4px rgba(0, 0, 0, 0.2), 0 8px 28px rgba(0, 0, 0, 0.15);
   --shadow-content: 0 0.5px 0 rgba(255, 255, 255, 0.03) inset, 0 1px 3px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(0, 0, 0, 0.1);
   --inset-glow: 0 0.5px 0 rgba(255, 255, 255, 0.06) inset;
+  --ff-color-paper: #141414;
+  --ff-color-paper-soft: #1B1B1B;
+  --ff-color-ink: #E8E8E8;
+  --ff-color-muted: #AAAAAA;
+  --ff-color-faint: #888888;
+  --ff-color-line: #333333;
+  --ff-color-line-soft: #2A2A2A;
+  --ff-rgb-paper: 20 20 20;
+  --ff-rgb-ink: 232 232 232;
 }
 
 body {
@@ -57,6 +88,29 @@ body {
 
 [data-theme="dark"] body {
   background-image: none;
+}
+
+.marketing-transition-reveal {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity 260ms var(--ff-ease-out),
+    transform 420ms var(--ff-ease-out);
+}
+
+.marketing-media-transition-active .marketing-transition-reveal {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 10px, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marketing-transition-reveal,
+  .marketing-media-transition-active .marketing-transition-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* ------------------------------------------------

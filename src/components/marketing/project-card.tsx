@@ -75,7 +75,7 @@ export function ProjectCard({
     >
       <div
         data-marketing-media-frame
-        className="relative aspect-video overflow-hidden bg-[#EEEDEA]"
+        className="relative aspect-video overflow-hidden bg-ff-line-soft"
       >
         {still && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -89,15 +89,15 @@ export function ProjectCard({
       </div>
       <div className="mt-4">
         {project.brand && (
-          <p className="text-[10px] uppercase tracking-[0.16em] text-[#1A1A1A] font-medium font-helveticaText">
+          <p className="text-[var(--ff-type-label)] uppercase tracking-[var(--ff-track-label)] text-ff-ink font-medium font-helveticaText">
             {project.brand}
           </p>
         )}
-        <p className="text-[20px] md:text-[24px] font-medium text-[#1A1A1A] leading-[1.05] mt-1.5 font-helveticaDisplay">
+        <p className="text-[20px] md:text-[24px] font-medium text-ff-ink leading-[1.05] mt-1.5 font-helveticaDisplay">
           {project.title}
         </p>
         {metaLine && (
-          <p className="text-[11px] text-[#666] mt-2 font-helveticaText leading-snug">
+          <p className="text-[11px] text-ff-muted mt-2 font-helveticaText leading-snug">
             {metaLine}
           </p>
         )}

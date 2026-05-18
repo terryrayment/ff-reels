@@ -110,15 +110,15 @@ export function FeaturedReel({
       <div className="mt-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
         <div>
           {brand && (
-            <p className="text-[10px] uppercase tracking-[0.16em] text-[#1A1A1A] font-medium font-helveticaText">
+            <p className="text-[var(--ff-type-label)] uppercase tracking-[var(--ff-track-label)] text-ff-ink font-medium font-helveticaText">
               {brand}
             </p>
           )}
-          <p className="text-[24px] md:text-[34px] font-medium text-[#1A1A1A] mt-1 font-helveticaDisplay leading-[1.02]">
+          <p className="text-[24px] md:text-[34px] font-medium text-ff-ink mt-1 font-helveticaDisplay leading-[1.02]">
             {title}
           </p>
         </div>
-        <p className="text-[12px] text-[#666] font-helveticaText leading-snug">
+        <p className="text-[12px] text-ff-muted font-helveticaText leading-snug">
           Dir. {directorName}
           {agency ? ` · ${agency}` : ""}
           {year ? ` · ${year}` : ""}

@@ -35,7 +35,7 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F4F0] text-[#1A1A1A] font-helveticaText">
+    <div className="min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
       <MarketingNav />
       <main className="flex-1">{children}</main>
       <MarketingFooter />

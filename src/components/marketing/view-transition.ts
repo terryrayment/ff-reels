@@ -3,6 +3,7 @@
 const TRANSITION_UNTIL_KEY = "ff:marketing-transition-until";
 const TRANSITION_DURATION_MS = 1320;
 const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
+const MEDIA_TRANSITION_ACTIVE_CLASS = "marketing-media-transition-active";
 
 export const MARKETING_TRANSITION_FINISHED =
   "ff:marketing-route-transition-finished";
@@ -47,14 +48,19 @@ function getFeaturedReelTargetRect() {
   return { x, y, width, height };
 }
 
+function finishMarketingMediaTransition() {
+  document.documentElement.classList.remove(MEDIA_TRANSITION_ACTIVE_CLASS);
+  window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
+}
+
 function animateMediaFrame({
   sourceElement,
   imageUrl,
 }: MarketingTransitionOptions) {
-  if (!sourceElement || typeof document === "undefined") return;
+  if (!sourceElement || typeof document === "undefined") return false;
 
   const from = sourceElement.getBoundingClientRect();
-  if (from.width <= 0 || from.height <= 0) return;
+  if (from.width <= 0 || from.height <= 0) return false;
 
   const to = getFeaturedReelTargetRect();
   const overlay = document.createElement("div");
@@ -103,7 +109,7 @@ function animateMediaFrame({
 
   animation.finished
     .then(() => {
-      window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
+      finishMarketingMediaTransition();
       return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: 140,
         easing: "ease-out",
@@ -112,6 +118,8 @@ function animateMediaFrame({
     })
     .finally(() => overlay.remove())
     .catch(() => overlay.remove());
+
+  return true;
 }
 
 export function startMarketingViewTransition(
@@ -124,7 +132,11 @@ export function startMarketingViewTransition(
       TRANSITION_UNTIL_KEY,
       String(Date.now() + TRANSITION_DURATION_MS),
     );
-    animateMediaFrame(options);
+    document.documentElement.classList.add(MEDIA_TRANSITION_ACTIVE_CLASS);
+    const hasMediaOverlay = animateMediaFrame(options);
+    if (!hasMediaOverlay) {
+      window.setTimeout(finishMarketingMediaTransition, TRANSITION_DURATION_MS);
+    }
   }
 
   if (
@@ -144,6 +156,5 @@ export function startMarketingViewTransition(
 
   transition.finished.finally(() => {
     document.documentElement.classList.remove("marketing-view-transition");
-    window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
   });
 }

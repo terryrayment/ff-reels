@@ -70,11 +70,11 @@ export function MarketingNav() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
         scrolled
-          ? "bg-[#F5F4F0]/85 backdrop-blur-md border-b border-[#E8E7E3]"
+          ? "bg-[rgb(var(--ff-rgb-paper)_/_0.85)] backdrop-blur-md border-b border-ff-line-soft"
           : "bg-transparent border-b border-transparent",
       )}
     >
-      <nav className="mx-auto max-w-[1400px] px-6 lg:px-10 h-16 flex items-center justify-between">
+      <nav className="mx-auto max-w-ff px-ff-x h-ff-nav flex items-center justify-between">
         <div className="relative flex min-w-0 items-center">
           <Link
             href="/site"
@@ -100,7 +100,7 @@ export function MarketingNav() {
                 key={id}
                 type="button"
                 onClick={() => setActivePartner(id)}
-                className="font-helveticaText text-[10px] font-medium uppercase tracking-[0.16em] text-[#777] transition-colors duration-150 ease-out hover:text-[#1A1A1A] focus-visible:text-[#1A1A1A]"
+                className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
               >
                 {PARTNERS[id].label}
               </button>
@@ -115,10 +115,10 @@ export function MarketingNav() {
                   <Link
                     href={link.href}
                     className={cn(
-                      "font-helveticaText text-[10px] font-medium uppercase tracking-[0.16em] transition-colors",
+                      "font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] transition-colors",
                       active
-                        ? "text-[#1A1A1A]"
-                        : "text-[#666] hover:text-[#1A1A1A]",
+                        ? "text-ff-ink"
+                        : "text-ff-muted hover:text-ff-ink",
                     )}
                   >
                     {link.label}
@@ -134,16 +134,16 @@ export function MarketingNav() {
           aria-label="Menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="md:hidden font-helveticaText text-[11px] font-medium uppercase tracking-[0.14em] text-[#1A1A1A]"
+          className="md:hidden font-helveticaText text-[11px] font-medium uppercase tracking-[0.14em] text-ff-ink"
         >
           {open ? "Close" : "Menu"}
         </button>
       </nav>
 
       {open && (
-        <div className="md:hidden border-t border-[#E8E7E3] bg-[#F5F4F0]">
+        <div className="md:hidden border-t border-ff-line-soft bg-ff-paper">
           <div className="px-6 py-5">
-            <div className="mb-5 flex flex-wrap gap-x-5 gap-y-3 border-b border-[#E8E7E3] pb-5">
+            <div className="mb-5 flex flex-wrap gap-x-5 gap-y-3 border-b border-ff-line-soft pb-5">
               {(Object.keys(PARTNERS) as PartnerId[]).map((id) => (
                 <button
                   key={id}
@@ -152,7 +152,7 @@ export function MarketingNav() {
                     setOpen(false);
                     setActivePartner(id);
                   }}
-                  className="font-helveticaText text-[10px] font-medium uppercase tracking-[0.16em] text-[#666]"
+                  className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted"
                 >
                   {PARTNERS[id].label}
                 </button>
@@ -163,7 +163,7 @@ export function MarketingNav() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="block font-helveticaDisplay text-[30px] font-medium leading-none text-[#1A1A1A]"
+                    className="block font-helveticaDisplay text-[30px] font-medium leading-none text-ff-ink"
                   >
                     {link.label}
                   </Link>
@@ -176,53 +176,52 @@ export function MarketingNav() {
 
       {partner && (
         <div
-          className="fixed inset-0 z-[60] bg-[#1A1A1A]/18 backdrop-blur-[2px] animate-[fadeIn_180ms_ease-out_forwards]"
+          className="fixed inset-0 z-[60] bg-[rgb(var(--ff-rgb-ink)_/_0.18)] backdrop-blur-[2px] animate-[fadeIn_180ms_ease-out_forwards]"
           aria-modal="true"
           role="dialog"
           aria-labelledby="partner-panel-title"
         >
-          <button
-            type="button"
-            aria-label="Close partner panel"
+          <div
+            aria-hidden="true"
             className="absolute inset-0 cursor-default"
             onClick={() => setActivePartner(null)}
           />
-          <aside className="absolute right-0 top-0 flex h-screen w-full max-w-[680px] flex-col bg-[#F5F4F0] shadow-[-30px_0_90px_rgba(0,0,0,0.18)] animate-[partnerPanelIn_620ms_cubic-bezier(0.65,0,0.35,1)_both]">
-            <div className="flex h-16 items-center justify-between border-b border-[#E1E0DA] px-6 lg:px-10">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[#777]">
+          <aside className="absolute right-0 top-0 flex h-screen w-full max-w-[680px] flex-col bg-ff-paper shadow-[-30px_0_90px_rgba(0,0,0,0.18)] animate-[partnerPanelIn_620ms_cubic-bezier(0.65,0,0.35,1)_both]">
+            <div className="flex h-ff-nav items-center justify-between border-b border-ff-line px-ff-x">
+              <p className="text-[var(--ff-type-label)] uppercase tracking-[0.18em] text-ff-muted">
                 Under the hood
               </p>
               <button
                 type="button"
                 onClick={() => setActivePartner(null)}
-                className="font-helveticaText text-[10px] font-medium uppercase tracking-[0.16em] text-[#666] transition-colors hover:text-[#1A1A1A]"
+                className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted transition-colors hover:text-ff-ink"
               >
                 Close
               </button>
             </div>
 
-            <div className="flex flex-1 flex-col justify-between px-6 py-10 lg:px-10 lg:py-14">
+            <div className="flex flex-1 flex-col justify-between px-ff-x py-10 lg:py-14">
               <div>
-                <p className="mb-5 text-[11px] uppercase tracking-[0.18em] text-[#999]">
+                <p className="mb-5 text-[11px] uppercase tracking-[0.18em] text-ff-faint">
                   {partner.location} / {partner.discipline}
                 </p>
                 <h2
                   id="partner-panel-title"
-                  className="font-helveticaDisplay text-[58px] font-semibold leading-[0.92] text-[#1A1A1A] md:text-[92px]"
+                  className="font-helveticaDisplay text-[58px] font-semibold leading-[0.92] text-ff-ink md:text-[92px]"
                 >
                   {partner.label}
                 </h2>
-                <p className="mt-8 max-w-xl text-[20px] leading-snug text-[#1A1A1A] md:text-[26px]">
+                <p className="mt-8 max-w-xl text-[20px] leading-snug text-ff-ink md:text-[26px]">
                   {partner.body}
                 </p>
               </div>
 
               <div className="mt-14">
-                <div className="grid grid-cols-2 border-y border-[#E1E0DA] md:grid-cols-4">
+                <div className="grid grid-cols-2 border-y border-ff-line md:grid-cols-4">
                   {partner.details.map((detail) => (
                     <p
                       key={detail}
-                      className="border-b border-[#E1E0DA] py-4 text-[10px] uppercase tracking-[0.16em] text-[#666] last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
+                      className="border-b border-ff-line py-4 text-[var(--ff-type-label)] uppercase tracking-[var(--ff-track-label)] text-ff-muted last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
                     >
                       {detail}
                     </p>
@@ -232,7 +231,7 @@ export function MarketingNav() {
                   href={partner.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-8 inline-flex font-helveticaText text-[11px] font-medium uppercase tracking-[0.16em] text-[#1A1A1A] transition-colors hover:text-[#666]"
+                  className="mt-8 inline-flex font-helveticaText text-[11px] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-ink transition-colors hover:text-ff-muted"
                 >
                   Visit {partner.label} →
                 </a>
