@@ -76,7 +76,6 @@ function animateMediaFrame({
   overlay.style.background = "#050505";
   overlay.style.pointerEvents = "none";
   overlay.style.transformOrigin = "top left";
-  overlay.style.boxShadow = "0 30px 90px rgba(0,0,0,0.26)";
 
   if (imageUrl) {
     const image = document.createElement("img");

@@ -4,6 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  MARKETING_PARTNERS,
+  PartnerPortal,
+  type PartnerId,
+} from "@/components/marketing/partner-portal";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -13,35 +18,11 @@ const LINKS = [
   { href: "/site/contact", label: "Contact" },
 ];
 
-const PARTNERS = {
-  colossal: {
-    label: "COLOSSAL",
-    location: "Curitiba",
-    discipline: "Post / animation / VFX",
-    href: "https://colossal.film/",
-    body:
-      "Post, animation, VFX, compositing, motion, and design-led finishing connected to the Friends & Family network from Curitiba.",
-    details: ["Curitiba", "Post", "Animation", "VFX"],
-  },
-  youth: {
-    label: "THE YOUTH",
-    location: "São Paulo",
-    discipline: "Production / creative practice",
-    href: "https://theyouth.com.br/",
-    body:
-      "Production, casting, creative development, and culture work connected to the Friends & Family network from São Paulo.",
-    details: ["São Paulo", "Production", "Casting", "Culture"],
-  },
-} as const;
-
-type PartnerId = keyof typeof PARTNERS;
-
 export function MarketingNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activePartner, setActivePartner] = useState<PartnerId | null>(null);
-  const partner = activePartner ? PARTNERS[activePartner] : null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -95,14 +76,14 @@ export function MarketingNav() {
 
         <div className="hidden md:flex items-center gap-8">
           <div className="flex items-center gap-5 pr-1">
-            {(Object.keys(PARTNERS) as PartnerId[]).map((id) => (
+            {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => setActivePartner(id)}
                 className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
               >
-                {PARTNERS[id].label}
+                {MARKETING_PARTNERS[id].label}
               </button>
             ))}
           </div>
@@ -144,7 +125,7 @@ export function MarketingNav() {
         <div className="md:hidden border-t border-ff-line-soft bg-ff-paper">
           <div className="px-6 py-5">
             <div className="mb-5 flex flex-wrap gap-x-5 gap-y-3 border-b border-ff-line-soft pb-5">
-              {(Object.keys(PARTNERS) as PartnerId[]).map((id) => (
+              {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => (
                 <button
                   key={id}
                   type="button"
@@ -154,7 +135,7 @@ export function MarketingNav() {
                   }}
                   className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted"
                 >
-                  {PARTNERS[id].label}
+                  {MARKETING_PARTNERS[id].label}
                 </button>
               ))}
             </div>
@@ -174,83 +155,12 @@ export function MarketingNav() {
         </div>
       )}
 
-      {partner && (
-        <div
-          className="fixed inset-0 z-[60] bg-[rgb(var(--ff-rgb-ink)_/_0.18)] backdrop-blur-[2px] animate-[fadeIn_180ms_ease-out_forwards]"
-          aria-modal="true"
-          role="dialog"
-          aria-labelledby="partner-panel-title"
-        >
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 cursor-default"
-            onClick={() => setActivePartner(null)}
-          />
-          <aside className="absolute right-0 top-0 flex h-screen w-full max-w-[680px] flex-col bg-ff-paper shadow-[-30px_0_90px_rgba(0,0,0,0.18)] animate-[partnerPanelIn_620ms_cubic-bezier(0.65,0,0.35,1)_both]">
-            <div className="flex h-ff-nav items-center justify-between border-b border-ff-line px-ff-x">
-              <p className="text-[var(--ff-type-label)] uppercase tracking-[0.18em] text-ff-muted">
-                Under the hood
-              </p>
-              <button
-                type="button"
-                onClick={() => setActivePartner(null)}
-                className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted transition-colors hover:text-ff-ink"
-              >
-                Close
-              </button>
-            </div>
-
-            <div className="flex flex-1 flex-col justify-between px-ff-x py-10 lg:py-14">
-              <div>
-                <p className="mb-5 text-[11px] uppercase tracking-[0.18em] text-ff-faint">
-                  {partner.location} / {partner.discipline}
-                </p>
-                <h2
-                  id="partner-panel-title"
-                  className="font-helveticaDisplay text-[58px] font-semibold leading-[0.92] text-ff-ink md:text-[92px]"
-                >
-                  {partner.label}
-                </h2>
-                <p className="mt-8 max-w-xl text-[20px] leading-snug text-ff-ink md:text-[26px]">
-                  {partner.body}
-                </p>
-              </div>
-
-              <div className="mt-14">
-                <div className="grid grid-cols-2 border-y border-ff-line md:grid-cols-4">
-                  {partner.details.map((detail) => (
-                    <p
-                      key={detail}
-                      className="border-b border-ff-line py-4 text-[var(--ff-type-label)] uppercase tracking-[var(--ff-track-label)] text-ff-muted last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0"
-                    >
-                      {detail}
-                    </p>
-                  ))}
-                </div>
-                <a
-                  href={partner.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-8 inline-flex font-helveticaText text-[11px] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-ink transition-colors hover:text-ff-muted"
-                >
-                  Visit {partner.label} →
-                </a>
-              </div>
-            </div>
-          </aside>
-        </div>
+      {activePartner && (
+        <PartnerPortal
+          partnerId={activePartner}
+          onClose={() => setActivePartner(null)}
+        />
       )}
-      <style>{`
-        @keyframes partnerPanelIn {
-          from {
-            transform: translate3d(100%, 0, 0);
-          }
-          to {
-            transform: translate3d(0, 0, 0);
-          }
-        }
-      `}</style>
-
     </header>
   );
 }

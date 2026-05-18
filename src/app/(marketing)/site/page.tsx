@@ -107,7 +107,7 @@ export default async function MarketingHomePage() {
             <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-3">
               A creative network
             </p>
-            <h1 className="text-[58px] md:text-[96px] lg:text-[124px] font-semibold text-[#1A1A1A] font-helveticaDisplay leading-[0.92]">
+            <h1 className="text-[58px] md:text-[96px] lg:text-[124px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-[0.92]">
               Friends &amp; Family
             </h1>
           </div>

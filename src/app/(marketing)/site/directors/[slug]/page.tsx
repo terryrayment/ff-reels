@@ -138,7 +138,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
             </p>
           )}
           <h1
-            className="text-[58px] md:text-[98px] lg:text-[128px] leading-[0.92] font-semibold text-[#1A1A1A] font-helveticaDisplay"
+            className="text-[58px] md:text-[98px] lg:text-[128px] leading-[0.92] font-medium text-[#1A1A1A] font-helveticaDisplay"
             style={
               {
                 viewTransitionName: `director-name-${director.slug}`,

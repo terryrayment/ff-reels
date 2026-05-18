@@ -44,7 +44,7 @@ export default function AboutPage() {
             <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-4">
               About
             </p>
-            <h1 className="text-[54px] md:text-[90px] lg:text-[118px] font-semibold text-[#1A1A1A] font-helveticaDisplay leading-[0.92]">
+            <h1 className="text-[54px] md:text-[90px] lg:text-[118px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-[0.92]">
               A creative network across the Americas.
             </h1>
           </div>
