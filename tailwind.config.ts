@@ -11,18 +11,18 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
         helveticaDisplay: [
-          "var(--font-inter)",
+          "var(--ff-font-display)",
+          "var(--font-archivo)",
           "Helvetica Neue",
           "Helvetica",
-          "Hanken Grotesk",
           "Arial",
           "sans-serif",
         ],
         helveticaText: [
-          "var(--font-inter)",
+          "var(--ff-font-text)",
+          "var(--font-archivo)",
           "Helvetica Neue",
           "Helvetica",
-          "Hanken Grotesk",
           "Arial",
           "sans-serif",
         ],

@@ -44,8 +44,8 @@
   --ff-rgb-paper: 245 244 240;
   --ff-rgb-ink: 26 26 26;
   --ff-rgb-partner-bg: 5 5 5;
-  --ff-font-display: var(--font-hanken), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --ff-font-text: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-display: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-text: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --ff-container: 1400px;
   --ff-page-x: clamp(1.5rem, 2.75vw, 2.5rem);
   --ff-nav-height: 4rem;
@@ -79,10 +79,10 @@
   --ff-type-form: 15px;
   --ff-type-label: 10px;
   --ff-type-nav-drawer: 30px;
-  --ff-track-micro: 0.12em;
-  --ff-track-label: 0.16em;
-  --ff-track-wide: 0.18em;
-  --ff-track-nav: 0.22em;
+  --ff-track-micro: 0.055em;
+  --ff-track-label: 0.085em;
+  --ff-track-wide: 0.105em;
+  --ff-track-nav: 0.115em;
   --ff-type-partner-intro: 42px;
   --ff-type-partner-colossal: 48px;
   --ff-type-partner-youth: 72px;
@@ -179,6 +179,8 @@
 }
 
 body {
+  --ff-font-display: var(--font-archivo), "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-text: var(--font-archivo), var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--foreground);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
@@ -599,6 +601,13 @@ mux-player {
     font-family: var(--ff-font-text);
   }
 
+  .font-helveticaDisplay,
+  .font-helveticaText {
+    font-stretch: 92%;
+    font-kerning: normal;
+    font-variation-settings: "wdth" 92;
+  }
+
   .ff-kicker,
   .ff-kicker-muted {
     font-family: var(--ff-font-text);
@@ -607,6 +616,8 @@ mux-player {
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;
+    font-stretch: 92%;
+    font-variation-settings: "wdth" 92, "wght" 560;
   }
 
   .ff-kicker {
@@ -621,6 +632,7 @@ mux-player {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-meta);
     line-height: 1.25;
+    font-variation-settings: "wdth" 96, "wght" 420;
     color: var(--ff-color-muted);
   }
 
@@ -631,7 +643,11 @@ mux-player {
   .ff-display-feature,
   .ff-display-card {
     font-family: var(--ff-font-display);
-    font-weight: 500;
+    font-weight: 650;
+    font-stretch: 92%;
+    font-variation-settings: "wdth" 92, "wght" 650;
+    font-kerning: normal;
+    text-rendering: geometricPrecision;
     letter-spacing: 0;
     color: var(--ff-color-ink);
   }
@@ -667,20 +683,29 @@ mux-player {
   }
 
   .ff-body {
+    font-family: var(--ff-font-text);
     font-size: var(--ff-type-body);
+    font-weight: 420;
     line-height: var(--ff-leading-body);
+    font-variation-settings: "wdth" 96, "wght" 420;
     color: var(--ff-color-body);
   }
 
   .ff-lede {
+    font-family: var(--ff-font-text);
     font-size: var(--ff-type-lede);
+    font-weight: 460;
     line-height: var(--ff-leading-tight);
+    font-variation-settings: "wdth" 96, "wght" 460;
     color: var(--ff-color-ink);
   }
 
   .ff-copy-small {
+    font-family: var(--ff-font-text);
     font-size: var(--ff-type-small);
+    font-weight: 420;
     line-height: var(--ff-leading-body);
+    font-variation-settings: "wdth" 96, "wght" 420;
     color: var(--ff-color-body);
   }
 
@@ -691,34 +716,44 @@ mux-player {
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;
+    font-stretch: 92%;
+    font-variation-settings: "wdth" 92, "wght" 560;
     color: var(--ff-color-ink);
   }
 
   .ff-card-positioning {
     flex-shrink: 0;
+    font-family: var(--ff-font-text);
     font-size: var(--ff-type-label);
+    font-weight: 520;
     line-height: 1;
     letter-spacing: var(--ff-track-micro);
     text-transform: uppercase;
+    font-stretch: 92%;
+    font-variation-settings: "wdth" 92, "wght" 520;
     color: var(--ff-color-faint);
   }
 
   .ff-nav-label {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-label);
-    font-weight: 500;
+    font-weight: 560;
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;
+    font-stretch: 92%;
+    font-variation-settings: "wdth" 92, "wght" 560;
   }
 
   .ff-link-small {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-meta);
-    font-weight: 500;
+    font-weight: 560;
     line-height: 1;
     letter-spacing: var(--ff-track-micro);
     text-transform: uppercase;
+    font-stretch: 92%;
+    font-variation-settings: "wdth" 92, "wght" 560;
     color: var(--ff-color-muted);
     transition: color var(--ff-duration-fast) var(--ff-ease-out);
   }
@@ -755,11 +790,15 @@ mux-player {
   }
 
   .ff-filter-link {
+    font-family: var(--ff-font-text);
     padding: 0.25rem;
     font-size: var(--ff-type-micro);
+    font-weight: 540;
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;
+    font-stretch: 92%;
+    font-variation-settings: "wdth" 92, "wght" 540;
     color: var(--ff-color-muted);
     transition: color var(--ff-duration-fast) var(--ff-ease-out);
   }
