@@ -70,7 +70,7 @@ get_or_create_field() {
   existing_id=$(gh project field-list "$PROJECT_NUMBER" --owner "$OWNER" --format json \
     | jq -r --arg n "$field_name" '.fields[] | select(.name==$n) | .id' | head -1)
   if [ -n "$existing_id" ]; then
-    echo "    Field '$field_name' exists: $existing_id"
+    echo "    Field '$field_name' exists: $existing_id" >&2
     echo "$existing_id"
     return
   fi
