@@ -32,7 +32,6 @@ export function DirectorCard({
   const href = playProjectId
     ? `/site/directors/${slug}?play=${playProjectId}`
     : `/site/directors/${slug}`;
-  const nameTransitionName = `director-name-${slug}`;
 
   const onEnter = () => setHovering(true);
   const onLeave = () => setHovering(false);
@@ -43,9 +42,15 @@ export function DirectorCard({
     const sourceElement = e.currentTarget.querySelector<HTMLElement>(
       "[data-marketing-media-frame]",
     );
+    const sourceNameElement = e.currentTarget.querySelector<HTMLElement>(
+      "[data-marketing-director-name-source]",
+    );
     startMarketingViewTransition(router, href, {
       sourceElement,
+      sourceNameElement,
       imageUrl: stillUrl,
+      directorName: name,
+      directorSlug: slug,
     });
   };
 
@@ -96,7 +101,7 @@ export function DirectorCard({
       <div className="mt-3.5 flex items-baseline justify-between gap-4">
         <h3
           className="ff-display-card"
-          style={{ viewTransitionName: nameTransitionName } as React.CSSProperties}
+          data-marketing-director-name-source
         >
           {name}
         </h3>

@@ -139,11 +139,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           )}
           <h1
             className="ff-display-director"
-            style={
-              {
-                viewTransitionName: `director-name-${director.slug}`,
-              } as React.CSSProperties
-            }
+            data-marketing-director-name-target={director.slug}
           >
             {director.name}
           </h1>

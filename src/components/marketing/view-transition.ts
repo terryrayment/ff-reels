@@ -14,7 +14,10 @@ type RouterLike = {
 
 interface MarketingTransitionOptions {
   sourceElement?: HTMLElement | null;
+  sourceNameElement?: HTMLElement | null;
   imageUrl?: string | null;
+  directorName?: string | null;
+  directorSlug?: string | null;
 }
 
 function getStorage() {
@@ -121,6 +124,135 @@ function animateMediaFrame({
   return true;
 }
 
+function getDirectorNameTarget(slug: string) {
+  return document.querySelector<HTMLElement>(
+    `[data-marketing-director-name-target="${slug}"]`,
+  );
+}
+
+function waitForDirectorNameTarget(slug: string, timeoutMs = 900) {
+  const startedAt = performance.now();
+
+  return new Promise<HTMLElement | null>((resolve) => {
+    const tick = () => {
+      const target = getDirectorNameTarget(slug);
+      if (target) {
+        resolve(target);
+        return;
+      }
+      if (performance.now() - startedAt >= timeoutMs) {
+        resolve(null);
+        return;
+      }
+      window.requestAnimationFrame(tick);
+    };
+
+    tick();
+  });
+}
+
+function animateDirectorName({
+  sourceNameElement,
+  directorName,
+  directorSlug,
+}: MarketingTransitionOptions) {
+  if (
+    !sourceNameElement ||
+    !directorName ||
+    !directorSlug ||
+    typeof document === "undefined" ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return false;
+  }
+
+  const from = sourceNameElement.getBoundingClientRect();
+  if (from.width <= 0 || from.height <= 0) return false;
+
+  const sourceStyle = window.getComputedStyle(sourceNameElement);
+  const overlay = document.createElement("div");
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.className = "marketing-director-name-transition";
+  overlay.textContent = directorName;
+  overlay.style.position = "fixed";
+  overlay.style.left = `${from.left}px`;
+  overlay.style.top = `${from.top}px`;
+  overlay.style.width = `${from.width}px`;
+  overlay.style.height = `${from.height}px`;
+  overlay.style.zIndex = "2147483647";
+  overlay.style.pointerEvents = "none";
+  overlay.style.transformOrigin = "top left";
+  overlay.style.fontFamily = sourceStyle.fontFamily;
+  overlay.style.fontSize = sourceStyle.fontSize;
+  overlay.style.fontWeight = sourceStyle.fontWeight;
+  overlay.style.lineHeight = sourceStyle.lineHeight;
+  overlay.style.letterSpacing = sourceStyle.letterSpacing;
+  overlay.style.color = sourceStyle.color;
+  overlay.style.willChange = "left, top, width, height, font-size, line-height";
+
+  document.body.appendChild(overlay);
+
+  const startedAt = performance.now();
+
+  waitForDirectorNameTarget(directorSlug)
+    .then((target) => {
+      if (!target) {
+        return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration: 180,
+          easing: "ease-out",
+          fill: "forwards",
+        }).finished;
+      }
+
+      const to = target.getBoundingClientRect();
+      const targetStyle = window.getComputedStyle(target);
+      const remaining = Math.max(
+        TRANSITION_DURATION_MS - (performance.now() - startedAt),
+        620,
+      );
+
+      return overlay.animate(
+        [
+          {
+            left: `${from.left}px`,
+            top: `${from.top}px`,
+            width: `${from.width}px`,
+            height: `${from.height}px`,
+            fontSize: sourceStyle.fontSize,
+            lineHeight: sourceStyle.lineHeight,
+            letterSpacing: sourceStyle.letterSpacing,
+            opacity: 1,
+          },
+          {
+            left: `${to.left}px`,
+            top: `${to.top}px`,
+            width: `${to.width}px`,
+            height: `${to.height}px`,
+            fontSize: targetStyle.fontSize,
+            lineHeight: targetStyle.lineHeight,
+            letterSpacing: targetStyle.letterSpacing,
+            opacity: 1,
+          },
+        ],
+        {
+          duration: remaining,
+          easing: TRANSITION_EASING,
+          fill: "forwards",
+        },
+      ).finished.then(() =>
+        overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration: 120,
+          easing: "ease-out",
+          fill: "forwards",
+        }).finished,
+      );
+    })
+    .finally(() => overlay.remove())
+    .catch(() => overlay.remove());
+
+  return true;
+}
+
 export function startMarketingViewTransition(
   router: RouterLike,
   href: string,
@@ -133,6 +265,7 @@ export function startMarketingViewTransition(
     );
     document.documentElement.classList.add(MEDIA_TRANSITION_ACTIVE_CLASS);
     const hasMediaOverlay = animateMediaFrame(options);
+    animateDirectorName(options);
     if (!hasMediaOverlay) {
       window.setTimeout(finishMarketingMediaTransition, TRANSITION_DURATION_MS);
     }

@@ -204,9 +204,17 @@ body {
   transform: translate3d(0, 10px, 0);
 }
 
+.marketing-director-name-transition {
+  contain: layout paint style;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marketing-transition-reveal,
-  .marketing-media-transition-active .marketing-transition-reveal {
+  .marketing-media-transition-active .marketing-transition-reveal,
+  .marketing-director-name-transition {
     opacity: 1;
     transform: none;
     transition: none;
