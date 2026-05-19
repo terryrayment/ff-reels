@@ -49,7 +49,7 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40 pointer-events-none" />
 
       <div className="ff-shell pointer-events-none relative flex h-full flex-col justify-end pb-16">
-        <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-label text-white/70">
+        <p className="ff-nav-label text-white/70">
           A creative network
         </p>
         <h1 className="ff-display-hero mt-3 max-w-5xl text-white">

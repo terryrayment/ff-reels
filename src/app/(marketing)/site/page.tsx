@@ -102,7 +102,7 @@ export default async function MarketingHomePage() {
   return (
     <>
       <section className="ff-shell ff-page">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-10 lg:mb-12">
+        <div className="ff-hero-heading-row">
           <div>
             <p className="ff-kicker mb-3">
               A creative network
@@ -137,7 +137,7 @@ export default async function MarketingHomePage() {
 
       <section className="border-t ff-rule">
         <div className="ff-shell ff-section-y">
-          <div className="flex items-end justify-between gap-6 mb-10">
+          <div className="ff-page-heading-row">
             <h2 className="ff-display-section">
               Latest work
             </h2>

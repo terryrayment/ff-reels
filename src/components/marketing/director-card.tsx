@@ -55,25 +55,25 @@ export function DirectorCard({
       onClick={handleClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      className="group block"
+      className="ff-focusable group block"
       prefetch
     >
       <div
         data-marketing-media-frame
-        className="relative aspect-video overflow-hidden bg-ff-line-soft"
+        className="ff-media-frame aspect-video"
       >
         {stillUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={stillUrl}
             alt={name}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.015]"
+            className="ff-media-image ff-media-fill"
             loading="lazy"
           />
         )}
         {muxPlaybackId && hovering && (
           <div
-            className="absolute inset-0 w-full h-full [&_mux-player]:w-full [&_mux-player]:h-full opacity-0 animate-[fadeIn_300ms_ease-out_forwards]"
+            className="ff-media-fill opacity-0 animate-[fadeIn_300ms_ease-out_forwards] [&_mux-player]:h-full [&_mux-player]:w-full"
             style={
               {
                 "--controls": "none",
@@ -101,7 +101,7 @@ export function DirectorCard({
           {name}
         </h3>
         {positioning && (
-          <span className="shrink-0 text-ff-label uppercase tracking-ff-micro text-ff-faint">
+          <span className="ff-card-positioning">
             {positioning}
           </span>
         )}

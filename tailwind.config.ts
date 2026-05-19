@@ -91,12 +91,16 @@ const config: Config = {
       spacing: {
         "ff-x": "var(--ff-page-x)",
         "ff-nav": "var(--ff-nav-height)",
+        "ff-header-gap": "var(--ff-space-header-gap)",
         "ff-section": "var(--ff-space-section-y)",
         "ff-section-lg": "var(--ff-space-section-y-lg)",
+        "ff-section-stack": "var(--ff-space-section-stack)",
+        "ff-section-inset": "var(--ff-space-section-inset)",
         "ff-page-top": "var(--ff-space-page-top)",
         "ff-page-bottom": "var(--ff-space-page-bottom)",
         "ff-grid-x": "var(--ff-grid-gap-x)",
         "ff-grid-y": "var(--ff-grid-gap-y)",
+        "ff-list-row": "var(--ff-space-list-row)",
       },
       transitionTimingFunction: {
         ff: "var(--ff-ease-primary)",

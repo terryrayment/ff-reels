@@ -37,9 +37,9 @@ const PRINCIPLES = [
 
 export default function AboutPage() {
   return (
-    <div className="pt-24 lg:pt-28 pb-24">
+    <div className="ff-page">
       <section className="ff-shell">
-        <header className="mb-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-end">
+        <header className="ff-intro-grid">
           <div className="lg:col-span-7">
             <p className="ff-kicker mb-4">
               About
@@ -57,12 +57,12 @@ export default function AboutPage() {
         <InfinitePhotoLoop photos={ABOUT_PHOTOS} />
       </section>
 
-      <section className="ff-shell mt-20 lg:mt-28">
-        <div className="grid grid-cols-2 md:grid-cols-4 border-y ff-rule">
+      <section className="ff-shell ff-section-stack">
+        <div className="ff-principles-grid">
           {PRINCIPLES.map((item) => (
             <div
               key={item}
-              className="py-5 md:py-7 border-b md:border-b-0 md:border-r last:border-r-0 ff-rule"
+              className="ff-principle"
             >
               <p className="ff-kicker-muted">
                 {item}
@@ -72,13 +72,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="ff-shell mt-20 lg:mt-28 grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-3">
+      <section className="ff-shell ff-section-stack ff-section-grid">
+        <div className="ff-label-column">
           <p className="ff-kicker">
             Company
           </p>
         </div>
-        <div className="lg:col-span-7 space-y-5 ff-lede">
+        <div className="ff-copy-column space-y-5 ff-lede">
           <p>
             Friends &amp; Family is a creative network of three connected
             practices across the Americas: production in Los Angeles and New
@@ -92,13 +92,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="ff-shell mt-20 lg:mt-28 pt-12 border-t ff-rule grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-3">
+      <section className="ff-shell ff-section-stack ff-section-border ff-section-grid">
+        <div className="ff-label-column">
           <p className="ff-kicker">
             NETWORK
           </p>
         </div>
-        <div className="lg:col-span-7 space-y-6 ff-lede">
+        <div className="ff-copy-column space-y-6 ff-lede">
           <p>
             COLOSSAL in Curitiba and THE YOUTH in São Paulo connect post,
             animation, VFX, production, and culture work to Friends &amp;
@@ -126,18 +126,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="ff-shell mt-20 lg:mt-28 pt-12 border-t ff-rule grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-3">
+      <section className="ff-shell ff-section-stack ff-section-border ff-section-grid">
+        <div className="ff-label-column">
           <p className="ff-kicker">
             Team
           </p>
         </div>
-        <div className="lg:col-span-9">
-          <ul className="divide-y divide-ff-line-soft -mt-2">
+        <div className="ff-wide-column">
+          <ul className="ff-list-rows">
             {TEAM.map((m) => (
               <li
                 key={m.email}
-                className="py-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-1"
+                className="ff-list-row"
               >
                 <div>
                   <p className="ff-display-feature">
@@ -159,18 +159,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="ff-shell mt-20 pt-12 border-t ff-rule grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-3">
+      <section className="ff-shell ff-section-stack ff-section-border ff-section-grid">
+        <div className="ff-label-column">
           <p className="ff-kicker">
             Sales reps
           </p>
         </div>
-        <div className="lg:col-span-9">
-          <ul className="divide-y divide-ff-line-soft -mt-2">
+        <div className="ff-wide-column">
+          <ul className="ff-list-rows">
             {REPS.map((r) => (
               <li
                 key={r.region}
-                className="py-5 flex items-baseline justify-between gap-6"
+                className="ff-list-row-compact"
               >
                 <p className="ff-display-feature">
                   {r.name}

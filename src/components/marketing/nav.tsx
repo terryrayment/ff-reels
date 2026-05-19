@@ -81,7 +81,7 @@ export function MarketingNav() {
                 key={id}
                 type="button"
                 onClick={() => setActivePartner(id)}
-                className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-label text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
+                className="ff-nav-label text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
               >
                 {MARKETING_PARTNERS[id].label}
               </button>
@@ -96,7 +96,7 @@ export function MarketingNav() {
                   <Link
                     href={link.href}
                     className={cn(
-                      "font-helveticaText text-ff-label font-medium uppercase tracking-ff-label transition-colors",
+                      "ff-nav-label transition-colors",
                       active
                         ? "text-ff-ink"
                         : "text-ff-muted hover:text-ff-ink",
@@ -133,7 +133,7 @@ export function MarketingNav() {
                     setOpen(false);
                     setActivePartner(id);
                   }}
-                  className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-label text-ff-muted"
+                  className="ff-nav-label text-ff-muted"
                 >
                   {MARKETING_PARTNERS[id].label}
                 </button>

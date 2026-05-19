@@ -63,7 +63,7 @@ export default async function WorkPage({
 
   return (
     <div className="ff-shell ff-page">
-      <header className="mb-10 flex items-baseline justify-between gap-6">
+      <header className="ff-page-heading-row">
         <h1 className="ff-display-page">
           Work
         </h1>
@@ -74,7 +74,7 @@ export default async function WorkPage({
 
       <nav
         aria-label="Filter by discipline"
-        className="mb-10 -mx-1 flex flex-wrap items-center gap-x-1 gap-y-2 border-b ff-rule pb-4"
+        className="ff-filter-nav"
       >
         {DISCIPLINES.map((d, i) => {
           const isActive = d.slug === active;
@@ -89,10 +89,10 @@ export default async function WorkPage({
               <Link
                 href={href}
                 className={cn(
-                  "px-1 py-1 text-ff-micro uppercase tracking-ff-label transition-colors",
+                  "ff-filter-link",
                   isActive
-                    ? "text-ff-ink underline underline-offset-[6px] decoration-ff-ink"
-                    : "text-ff-muted hover:text-ff-ink",
+                    ? "ff-filter-link-active"
+                    : "text-ff-muted",
                 )}
               >
                 {d.label}

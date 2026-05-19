@@ -70,12 +70,12 @@ export function ProjectCard({
     <Link
       href={href}
       onClick={handleClick}
-      className="group block"
+      className="ff-focusable group block"
       prefetch
     >
       <div
         data-marketing-media-frame
-        className="relative aspect-video overflow-hidden bg-ff-line-soft"
+        className="ff-media-frame aspect-video"
       >
         {still && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -83,13 +83,13 @@ export function ProjectCard({
             src={still}
             alt={project.title}
             loading="lazy"
-            className="w-full h-full object-cover transition-all duration-[900ms] ease-out group-hover:scale-[1.015] group-hover:opacity-95"
+            className="ff-media-image"
           />
         )}
       </div>
       <div className="mt-4">
         {project.brand && (
-          <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-label text-ff-ink">
+          <p className="ff-card-brand">
             {project.brand}
           </p>
         )}

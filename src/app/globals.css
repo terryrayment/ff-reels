@@ -51,8 +51,13 @@
   --ff-nav-height: 4rem;
   --ff-space-page-top: 7rem;
   --ff-space-page-bottom: 6rem;
+  --ff-space-header-gap: 2.5rem;
+  --ff-space-section-stack: 5rem;
+  --ff-space-section-inset: 3rem;
   --ff-space-section-y: 5rem;
   --ff-space-section-y-lg: 6rem;
+  --ff-space-section-grid-gap: 2.5rem;
+  --ff-space-list-row: 1.25rem;
   --ff-grid-gap-x: 0.75rem;
   --ff-grid-gap-y: 2.5rem;
   --ff-grid-gap-y-loose: 3rem;
@@ -85,6 +90,9 @@
   --ff-type-partner-tile: 30px;
   --ff-type-partner-detail: 42px;
   --ff-type-partner-code: 72px;
+  --ff-media-hover-scale: 1.018;
+  --ff-media-duration: 900ms;
+  --ff-focus-ring: 0 0 0 2px rgb(var(--ff-rgb-ink) / 0.18);
   --ff-ease-primary: cubic-bezier(0.76, 0, 0.24, 1);
   --ff-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ff-duration-media: 1320ms;
@@ -95,6 +103,9 @@
   :root {
     --ff-space-page-top: 8rem;
     --ff-space-page-bottom: 6rem;
+    --ff-space-header-gap: 3rem;
+    --ff-space-section-stack: 7rem;
+    --ff-space-section-inset: 4rem;
     --ff-space-section-y: 6rem;
     --ff-type-hero: 96px;
     --ff-type-page: 90px;
@@ -118,6 +129,7 @@
   :root {
     --ff-space-section-y: 6rem;
     --ff-space-section-y-lg: 7rem;
+    --ff-space-section-grid-gap: 2.5rem;
     --ff-grid-gap-y: 3rem;
     --ff-type-hero: 124px;
     --ff-type-page: 118px;
@@ -515,6 +527,22 @@ mux-player {
     padding-bottom: var(--ff-space-page-bottom);
   }
 
+  .ff-page-heading-row {
+    @apply flex items-baseline justify-between gap-6;
+    margin-bottom: var(--ff-space-header-gap);
+  }
+
+  .ff-hero-heading-row {
+    @apply flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between;
+    margin-bottom: var(--ff-space-header-gap);
+  }
+
+  .ff-intro-grid {
+    @apply grid grid-cols-1 lg:grid-cols-12 lg:items-end;
+    gap: var(--ff-space-section-grid-gap);
+    margin-bottom: var(--ff-space-header-gap);
+  }
+
   .ff-section-y {
     padding-top: var(--ff-space-section-y);
     padding-bottom: var(--ff-space-section-y);
@@ -523,6 +551,32 @@ mux-player {
   .ff-section-y-lg {
     padding-top: var(--ff-space-section-y-lg);
     padding-bottom: var(--ff-space-section-y-lg);
+  }
+
+  .ff-section-stack {
+    margin-top: var(--ff-space-section-stack);
+  }
+
+  .ff-section-border {
+    border-top: 1px solid var(--ff-color-line-soft);
+    padding-top: var(--ff-space-section-inset);
+  }
+
+  .ff-section-grid {
+    @apply grid grid-cols-1 lg:grid-cols-12;
+    gap: var(--ff-space-section-grid-gap);
+  }
+
+  .ff-label-column {
+    @apply lg:col-span-3;
+  }
+
+  .ff-copy-column {
+    @apply lg:col-span-7;
+  }
+
+  .ff-wide-column {
+    @apply lg:col-span-9;
   }
 
   .ff-rule {
@@ -622,6 +676,34 @@ mux-player {
     color: var(--ff-color-body);
   }
 
+  .ff-card-brand {
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-label);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--ff-track-label);
+    text-transform: uppercase;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-card-positioning {
+    flex-shrink: 0;
+    font-size: var(--ff-type-label);
+    line-height: 1;
+    letter-spacing: var(--ff-track-micro);
+    text-transform: uppercase;
+    color: var(--ff-color-faint);
+  }
+
+  .ff-nav-label {
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-label);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--ff-track-label);
+    text-transform: uppercase;
+  }
+
   .ff-link-small {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-meta);
@@ -648,6 +730,42 @@ mux-player {
   .ff-text-link:hover,
   .ff-text-link:focus-visible {
     color: var(--ff-color-muted);
+  }
+
+  .ff-focusable {
+    outline: none;
+  }
+
+  .ff-focusable:focus-visible {
+    box-shadow: var(--ff-focus-ring);
+  }
+
+  .ff-filter-nav {
+    @apply -mx-1 flex flex-wrap items-center gap-x-1 gap-y-2 border-b pb-4;
+    border-color: var(--ff-color-line-soft);
+    margin-bottom: var(--ff-space-header-gap);
+  }
+
+  .ff-filter-link {
+    padding: 0.25rem;
+    font-size: var(--ff-type-micro);
+    line-height: 1;
+    letter-spacing: var(--ff-track-label);
+    text-transform: uppercase;
+    color: var(--ff-color-muted);
+    transition: color var(--ff-duration-fast) var(--ff-ease-out);
+  }
+
+  .ff-filter-link:hover,
+  .ff-filter-link:focus-visible {
+    color: var(--ff-color-ink);
+  }
+
+  .ff-filter-link-active {
+    color: var(--ff-color-ink);
+    text-decoration-line: underline;
+    text-underline-offset: 6px;
+    text-decoration-color: var(--ff-color-ink);
   }
 
   .ff-form-label {
@@ -749,6 +867,85 @@ mux-player {
     font-size: var(--ff-type-partner-code);
     line-height: 1;
     color: rgb(255 255 255 / 0.1);
+  }
+
+  .ff-media-frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--ff-color-line-soft);
+  }
+
+  .ff-media-frame-dark {
+    background: var(--ff-color-media);
+  }
+
+  .ff-media-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      transform var(--ff-media-duration) var(--ff-ease-out),
+      opacity var(--ff-media-duration) var(--ff-ease-out);
+  }
+
+  .ff-media-fill {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .group:hover .ff-media-image {
+    opacity: 0.95;
+    transform: scale(var(--ff-media-hover-scale));
+  }
+
+  .ff-list-rows {
+    margin-top: -0.5rem;
+  }
+
+  .ff-list-rows > * + * {
+    border-top: 1px solid var(--ff-color-line-soft);
+  }
+
+  .ff-list-row {
+    @apply flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between;
+    padding-block: var(--ff-space-list-row);
+  }
+
+  .ff-list-row-compact {
+    @apply flex items-baseline justify-between gap-6;
+    padding-block: var(--ff-space-list-row);
+  }
+
+  .ff-principles-grid {
+    @apply grid grid-cols-2 border-y md:grid-cols-4;
+    border-color: var(--ff-color-line-soft);
+  }
+
+  .ff-principle {
+    @apply border-b py-5 md:border-b-0 md:border-r md:py-7;
+    border-color: var(--ff-color-line-soft);
+  }
+
+  .ff-principle:last-child {
+    border-right: 0;
+  }
+
+  .ff-accordion-mark {
+    font-size: 18px;
+    line-height: 1;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-quote {
+    border-left: 2px solid var(--ff-color-ink);
+    padding-left: 1.5rem;
+    font-size: var(--ff-type-body);
+    line-height: var(--ff-leading-body);
+    color: var(--ff-color-body);
+    font-style: italic;
   }
 
   .ff-grid-directors {

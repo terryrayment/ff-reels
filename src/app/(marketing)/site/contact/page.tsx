@@ -12,7 +12,7 @@ const CONTACTS = [
 export default function ContactPage() {
   return (
     <div className="ff-shell ff-page">
-      <header className="mb-14">
+      <header className="ff-page-heading-row">
         <h1 className="ff-display-page max-w-5xl">
           Let&rsquo;s talk about your next project.
         </h1>

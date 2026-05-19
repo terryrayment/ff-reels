@@ -78,7 +78,7 @@ export default async function DirectorsPage() {
 
   return (
     <div className="ff-shell ff-page">
-      <header className="flex items-baseline justify-between gap-6 mb-12">
+      <header className="ff-page-heading-row">
         <h1 className="ff-display-page">
           Directors
         </h1>

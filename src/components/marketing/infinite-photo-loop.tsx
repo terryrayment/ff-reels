@@ -126,7 +126,7 @@ export function InfinitePhotoLoop({
         {renderedPhotos.map((photo) => (
           <figure
             key={photo.key}
-            className="about-photo-loop__item group relative aspect-square overflow-hidden bg-ff-line-soft"
+            className="about-photo-loop__item ff-media-frame group aspect-square"
             style={
               photo.batch > 0
                 ? { animation: "aboutPhotoLoopFade 300ms ease-out both" }
@@ -139,7 +139,7 @@ export function InfinitePhotoLoop({
               alt={photo.alt}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover grayscale-[12%] transition duration-[900ms] ease-out group-hover:scale-[1.035] group-hover:grayscale-0"
+              className="ff-media-image grayscale-[12%] group-hover:grayscale-0"
             />
           </figure>
         ))}

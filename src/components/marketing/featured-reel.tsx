@@ -87,7 +87,7 @@ export function FeaturedReel({
   return (
     <section className="mx-auto w-[calc(100vw-48px)] md:w-[64vw] max-w-[920px] mb-14 lg:mb-20">
       <div
-        className={`relative aspect-video overflow-hidden bg-black transition-opacity duration-150 [&_mux-player]:w-full [&_mux-player]:h-full ${
+        className={`ff-media-frame ff-media-frame-dark aspect-video transition-opacity duration-150 [&_mux-player]:h-full [&_mux-player]:w-full ${
           canPlay ? "opacity-100" : "opacity-0"
         }`}
         style={
@@ -110,7 +110,7 @@ export function FeaturedReel({
       <div className="mt-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
         <div>
           {brand && (
-            <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-label text-ff-ink">
+            <p className="ff-card-brand">
               {brand}
             </p>
           )}

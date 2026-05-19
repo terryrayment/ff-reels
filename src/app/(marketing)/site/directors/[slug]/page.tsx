@@ -153,20 +153,20 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           <details className="group border-y ff-rule">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-ff-micro uppercase tracking-ff-micro text-ff-muted transition-colors hover:text-ff-ink [&::-webkit-details-marker]:hidden">
               <span>Bio</span>
-              <span className="text-[18px] leading-none text-ff-ink group-open:hidden">
+              <span className="ff-accordion-mark group-open:hidden">
                 +
               </span>
-              <span className="hidden text-[18px] leading-none text-ff-ink group-open:block">
+              <span className="ff-accordion-mark hidden group-open:block">
                 -
               </span>
             </summary>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-10">
-              <div className="lg:col-span-3">
+            <div className="ff-section-grid pb-10">
+              <div className="ff-label-column">
                 <p className="ff-kicker">
                   About {director.name}
                 </p>
               </div>
-              <div className="lg:col-span-7 space-y-6">
+              <div className="ff-copy-column space-y-6">
                 {director.bio ? (
                   <p className="ff-body whitespace-pre-line text-ff-ink">
                     {director.bio}
@@ -177,7 +177,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
                   </p>
                 )}
                 {director.statement && (
-                  <blockquote className="border-l-2 border-ff-ink pl-6 text-[16px] leading-relaxed text-ff-copy italic whitespace-pre-line">
+                  <blockquote className="ff-quote whitespace-pre-line">
                     {director.statement}
                   </blockquote>
                 )}
@@ -230,7 +230,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
         )}
 
         {(awards.length > 0 || press.length > 0) && (
-          <section className="ff-shell mt-24 border-t ff-rule pt-16">
+          <section className="ff-shell ff-section-stack ff-section-border">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {awards.length > 0 && (
                 <div>
@@ -289,7 +289,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           </section>
         )}
 
-        <div className="ff-shell mt-24 border-t ff-rule pt-10">
+        <div className="ff-shell ff-section-stack ff-section-border">
           <Link
             href="/site/directors"
             className="ff-link-small"
