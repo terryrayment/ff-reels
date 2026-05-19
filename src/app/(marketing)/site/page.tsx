@@ -101,17 +101,17 @@ export default async function MarketingHomePage() {
 
   return (
     <>
-      <section className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-16 lg:pb-24">
+      <section className="ff-shell ff-page">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-10 lg:mb-12">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-[#999] mb-3">
+            <p className="ff-kicker mb-3">
               A creative network
             </p>
-            <h1 className="text-[58px] md:text-[96px] lg:text-[124px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-[0.92]">
+            <h1 className="ff-display-hero">
               Friends &amp; Family
             </h1>
           </div>
-          <p className="max-w-lg text-[16px] md:text-[19px] leading-relaxed text-[#555]">
+          <p className="ff-body max-w-lg">
             Director-led. Los Angeles, New York, São Paulo, Curitiba.
           </p>
         </div>
@@ -119,7 +119,7 @@ export default async function MarketingHomePage() {
         {featuredDirectors.length === 0 ? (
           <EmptyMessage message="No directors published yet." />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-10 lg:gap-y-12">
+          <div className="ff-grid-directors">
             {featuredDirectors.map((d) => (
               <DirectorCard
                 key={d.id}
@@ -135,15 +135,15 @@ export default async function MarketingHomePage() {
         )}
       </section>
 
-      <section className="border-t border-[#E8E7E3]">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-24">
+      <section className="border-t ff-rule">
+        <div className="ff-shell ff-section-y">
           <div className="flex items-end justify-between gap-6 mb-10">
-            <h2 className="text-[38px] md:text-[56px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-none">
+            <h2 className="ff-display-section">
               Latest work
             </h2>
             <Link
               href="/site/work"
-              className="text-[12px] uppercase tracking-[0.14em] text-[#666] hover:text-[#1A1A1A] transition-colors"
+              className="ff-link-small"
             >
               View archive →
             </Link>
@@ -152,7 +152,7 @@ export default async function MarketingHomePage() {
           {recentProjects.length === 0 ? (
             <EmptyMessage message="No projects published yet." />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-12">
+            <div className="ff-grid-work">
               {recentProjects.map((p, i) => (
                 <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
                   <ProjectCard project={p} />
@@ -168,8 +168,8 @@ export default async function MarketingHomePage() {
 
 function EmptyMessage({ message }: { message: string }) {
   return (
-    <div className="border border-dashed border-[#E8E7E3] py-16 text-center">
-      <p className="text-[13px] text-[#999]">{message}</p>
+    <div className="ff-empty-state">
+      <p>{message}</p>
     </div>
   );
 }

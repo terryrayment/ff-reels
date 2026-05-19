@@ -44,11 +44,11 @@ export function ContactForm() {
 
   if (status === "sent") {
     return (
-      <div className="border-t border-[#E8E7E3] py-12">
-        <p className="font-helveticaDisplay text-[24px] font-medium leading-tight text-[#1A1A1A]">
+      <div className="border-t ff-rule py-12">
+        <p className="ff-display-feature">
           Thanks &mdash; we&rsquo;ll be in touch.
         </p>
-        <p className="mt-2 text-[14px] text-[#666]">
+        <p className="ff-copy-small mt-2">
           For anything urgent, email{" "}
           <a href="mailto:scott@friendsandfamily.tv" className="underline">
             scott@friendsandfamily.tv
@@ -59,10 +59,8 @@ export function ContactForm() {
     );
   }
 
-  const labelCls =
-    "block text-[11px] uppercase tracking-[0.12em] text-[#666] mb-2";
-  const inputCls =
-    "w-full bg-transparent border-b border-[#1A1A1A]/15 focus:border-[#1A1A1A] outline-none px-0 py-2 text-[15px] placeholder:text-[#999] transition-colors";
+  const labelCls = "ff-form-label";
+  const inputCls = "ff-form-field";
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
@@ -153,12 +151,12 @@ export function ContactForm() {
 
       <div className="flex items-center justify-between gap-6 pt-2">
         {status === "error" && errorMsg && (
-          <p className="text-[13px] text-red-600">{errorMsg}</p>
+          <p className="text-ff-footer text-red-600">{errorMsg}</p>
         )}
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="ml-auto px-6 py-3 bg-[#1A1A1A] text-white text-[12px] uppercase tracking-[0.14em] hover:bg-[#333] transition-colors disabled:opacity-50"
+          className="ff-button-primary ml-auto"
         >
           {status === "submitting" ? "Sending…" : "Send inquiry"}
         </button>

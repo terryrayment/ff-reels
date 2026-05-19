@@ -126,7 +126,7 @@ export function InfinitePhotoLoop({
         {renderedPhotos.map((photo) => (
           <figure
             key={photo.key}
-            className="about-photo-loop__item group relative aspect-square overflow-hidden bg-[#E8E7E3]"
+            className="about-photo-loop__item group relative aspect-square overflow-hidden bg-ff-line-soft"
             style={
               photo.batch > 0
                 ? { animation: "aboutPhotoLoopFade 300ms ease-out both" }

@@ -11,9 +11,9 @@ const CONTACTS = [
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-24">
+    <div className="ff-shell ff-page">
       <header className="mb-14">
-        <h1 className="text-[54px] md:text-[86px] font-medium text-[#1A1A1A] max-w-5xl leading-[0.98] font-helveticaDisplay">
+        <h1 className="ff-display-page max-w-5xl">
           Let&rsquo;s talk about your next project.
         </h1>
       </header>
@@ -21,21 +21,21 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         <aside className="lg:col-span-4 space-y-12">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-4">
+            <p className="ff-kicker mb-4">
               Direct
             </p>
             <ul className="space-y-3">
               {CONTACTS.map((c) => (
                 <li key={c.email}>
-                  <p className="text-[18px] text-[#1A1A1A] font-helveticaDisplay font-medium leading-none">
+                  <p className="ff-footer-brand">
                     {c.name}
                   </p>
-                  <p className="text-[11px] uppercase tracking-[0.12em] text-[#666] mt-0.5">
+                  <p className="ff-kicker-muted mt-0.5">
                     {c.role}
                   </p>
                   <a
                     href={`mailto:${c.email}`}
-                    className="block mt-1 text-[13px] text-[#1A1A1A] hover:text-[#666] transition-colors"
+                    className="ff-footer-copy mt-1 block transition-colors hover:text-ff-muted"
                   >
                     {c.email}
                   </a>
@@ -45,10 +45,10 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-3">
+            <p className="ff-kicker mb-3">
               Los Angeles
             </p>
-            <p className="text-[13px] text-[#1A1A1A] leading-relaxed">
+            <p className="ff-footer-copy">
               1234 Sunset Blvd
               <br />
               Los Angeles, CA 90026
@@ -56,10 +56,10 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-3">
+            <p className="ff-kicker mb-3">
               New York
             </p>
-            <p className="text-[13px] text-[#1A1A1A] leading-relaxed">
+            <p className="ff-footer-copy">
               456 Greene Street
               <br />
               New York, NY 10012

@@ -81,7 +81,7 @@ export function MarketingNav() {
                 key={id}
                 type="button"
                 onClick={() => setActivePartner(id)}
-                className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
+                className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-label text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
               >
                 {MARKETING_PARTNERS[id].label}
               </button>
@@ -96,7 +96,7 @@ export function MarketingNav() {
                   <Link
                     href={link.href}
                     className={cn(
-                      "font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] transition-colors",
+                      "font-helveticaText text-ff-label font-medium uppercase tracking-ff-label transition-colors",
                       active
                         ? "text-ff-ink"
                         : "text-ff-muted hover:text-ff-ink",
@@ -115,7 +115,7 @@ export function MarketingNav() {
           aria-label="Menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="md:hidden font-helveticaText text-[11px] font-medium uppercase tracking-[0.14em] text-ff-ink"
+          className="font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro text-ff-ink md:hidden"
         >
           {open ? "Close" : "Menu"}
         </button>
@@ -133,7 +133,7 @@ export function MarketingNav() {
                     setOpen(false);
                     setActivePartner(id);
                   }}
-                  className="font-helveticaText text-[var(--ff-type-label)] font-medium uppercase tracking-[var(--ff-track-label)] text-ff-muted"
+                  className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-label text-ff-muted"
                 >
                   {MARKETING_PARTNERS[id].label}
                 </button>
@@ -144,7 +144,7 @@ export function MarketingNav() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="block font-helveticaDisplay text-[30px] font-medium leading-none text-ff-ink"
+                    className="ff-font-display block text-ff-nav-drawer font-medium text-ff-ink"
                   >
                     {link.label}
                   </Link>

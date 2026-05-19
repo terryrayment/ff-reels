@@ -109,7 +109,7 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[70] overflow-y-auto bg-[#050505] text-[#F4F2EC] animate-[partnerPortalIn_680ms_cubic-bezier(0.76,0,0.24,1)_both]",
+        "fixed inset-0 z-[70] overflow-y-auto bg-ff-partner-bg text-ff-partner-fg animate-[partnerPortalIn_680ms_cubic-bezier(0.76,0,0.24,1)_both]",
         isColossal ? "partner-portal--colossal" : "partner-portal--youth",
       )}
       aria-modal="true"
@@ -133,15 +133,15 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
         <div className="absolute left-0 top-0 h-full w-full opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px)] [background-size:100%_6px]" />
       </div>
 
-      <header className="sticky top-0 z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-white/15 bg-[#050505]/84 px-ff-x backdrop-blur-md md:grid-cols-[1fr_auto_1fr]">
-        <p className="font-helveticaText text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">
+      <header className="sticky top-0 z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-ff-partner-line bg-ff-partner-bg/85 px-ff-x backdrop-blur-md md:grid-cols-[1fr_auto_1fr]">
+        <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-ff-partner-muted">
           Network / {partner.label}
         </p>
         <div className="hidden items-center gap-6 md:flex">
           {partner.nav.map((item) => (
             <span
               key={item}
-              className="font-helveticaText text-[10px] font-medium uppercase tracking-[0.18em] text-white/36"
+              className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/36"
             >
               {item}
             </span>
@@ -150,7 +150,7 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
         <button
           type="button"
           onClick={onClose}
-          className="justify-self-end font-helveticaText text-[10px] font-medium uppercase tracking-[0.18em] text-white/60 transition-colors hover:text-white"
+          className="justify-self-end font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/60 transition-colors hover:text-white"
         >
           Close
         </button>
@@ -160,16 +160,16 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
         <section className="mx-auto grid min-h-[calc(100vh-var(--ff-nav-height))] max-w-[1680px] grid-cols-1 gap-10 px-ff-x py-8 md:py-10 lg:grid-cols-12 lg:gap-10 lg:py-12">
           <div className="flex min-w-0 flex-col justify-between lg:col-span-6 xl:col-span-7">
             <div className="min-w-0">
-              <p className="mb-5 font-helveticaText text-[10px] font-medium uppercase tracking-[0.18em] text-white/45">
+              <p className="mb-5 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/45">
                 {partner.kicker}
               </p>
               <h2
                 id={titleId}
                 className={cn(
-                  "partner-portal__title font-helveticaDisplay font-normal text-white",
+                  "partner-portal__title ff-font-display font-normal text-white",
                   isColossal
-                    ? "text-[clamp(48px,9.2vw,146px)] leading-[0.82]"
-                    : "text-[clamp(72px,12.4vw,186px)] leading-[0.78]",
+                    ? "ff-partner-title-colossal"
+                    : "ff-partner-title-youth",
                 )}
               >
                 {partner.heroLines.map((line) => (
@@ -184,20 +184,20 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
                   </span>
                 ))}
               </h2>
-              <p className="mt-7 max-w-2xl font-helveticaText text-[22px] leading-[1.05] text-white/84 md:text-[32px]">
+              <p className="ff-partner-lede mt-7 max-w-2xl font-helveticaText">
                 {partner.headline}
               </p>
             </div>
 
-            <div className="mt-10 grid grid-cols-1 gap-7 border-t border-white/16 pt-7 md:grid-cols-12 md:items-end">
-              <p className="font-helveticaText text-[15px] leading-relaxed text-white/64 md:col-span-7">
+            <div className="mt-10 grid grid-cols-1 gap-7 border-t border-ff-partner-line pt-7 md:grid-cols-12 md:items-end">
+              <p className="font-helveticaText text-ff-form leading-relaxed text-white/64 md:col-span-7">
                 {partner.body}
               </p>
               <a
                 href={partner.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex justify-self-start border-b border-white/45 pb-1 font-helveticaText text-[10px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:border-white/80 hover:text-white/70 md:col-span-4 md:col-start-9"
+                className="inline-flex justify-self-start border-b border-white/45 pb-1 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white transition-colors hover:border-white/80 hover:text-white/70 md:col-span-4 md:col-start-9"
               >
                 Visit {partner.label} →
               </a>
@@ -215,13 +215,13 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
           </div>
         </section>
 
-        <section className="overflow-hidden border-y border-white/15 py-3">
+        <section className="overflow-hidden border-y border-ff-partner-line py-3">
           <div className="flex w-max animate-[partnerTicker_24s_linear_infinite] gap-8 whitespace-nowrap pr-8">
             {[...partner.ticker, ...partner.ticker, ...partner.ticker].map(
               (item, index) => (
                 <span
                   key={`${item}-${index}`}
-                  className="font-helveticaText text-[10px] font-medium uppercase tracking-[0.24em] text-white/58"
+                  className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-nav text-ff-partner-muted"
                 >
                   {item}
                 </span>
@@ -320,15 +320,15 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #050505;
+          background: var(--ff-color-partner-bg);
           pointer-events: none;
           animation: partnerIntro 860ms cubic-bezier(0.76, 0, 0.24, 1) both;
         }
 
         .partner-portal__intro span {
           color: white;
-          font-family: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
-          font-size: clamp(42px, 9vw, 132px);
+          font-family: var(--ff-font-display);
+          font-size: var(--ff-type-partner-intro);
           font-weight: 400;
           line-height: 0.82;
           text-transform: uppercase;
@@ -389,7 +389,7 @@ function PartnerSystem({
   return (
     <div
       className={cn(
-        "relative min-h-[520px] overflow-hidden border border-white/18 bg-black/72",
+        "relative min-h-[520px] overflow-hidden border border-ff-partner-line bg-black/72",
         isColossal ? "p-px" : "border-x-0 px-0 py-5 md:border-x md:px-5",
       )}
     >
@@ -411,19 +411,19 @@ function PartnerSystem({
                 onFocus={() => setActiveIndex(index)}
                 onPointerEnter={() => setActiveIndex(index)}
                 className={cn(
-                  "group flex min-h-[112px] flex-col justify-between bg-[#050505] p-5 text-left opacity-0 outline-none animate-[partnerTileIn_520ms_ease-out_forwards] transition-colors hover:bg-white/[0.06] focus-visible:bg-white/[0.06] md:min-h-[178px]",
+                  "group flex min-h-[112px] flex-col justify-between bg-ff-partner-bg p-5 text-left opacity-0 outline-none animate-[partnerTileIn_520ms_ease-out_forwards] transition-colors hover:bg-white/[0.06] focus-visible:bg-white/[0.06] md:min-h-[178px]",
                   active && "bg-white/[0.08]",
                 )}
                 style={{ animationDelay: `${180 + index * 90}ms` }}
               >
-                <span className="font-helveticaText text-[10px] uppercase tracking-[0.22em] text-white/36">
+                <span className="font-helveticaText text-ff-label uppercase tracking-ff-nav text-white/36">
                   {module.label}
                 </span>
                 <span>
-                  <span className="block font-helveticaDisplay text-[30px] font-normal leading-none text-white md:text-[38px]">
+                  <span className="ff-font-display ff-partner-tile-title block font-normal">
                     {module.title}
                   </span>
-                  <span className="mt-3 block max-w-[16rem] text-[12px] leading-snug text-white/48">
+                  <span className="ff-meta mt-3 block max-w-[16rem] text-white/48">
                     {module.text}
                   </span>
                 </span>
@@ -432,15 +432,15 @@ function PartnerSystem({
           })}
         </div>
 
-        <div className="relative border-t border-white/16 bg-[#050505]/92 p-5 md:p-6">
+        <div className="relative border-t border-ff-partner-line bg-ff-partner-bg/92 p-5 md:p-6">
           <div key={activeModule.title} className="partner-portal__detail">
-            <p className="font-helveticaText text-[10px] uppercase tracking-[0.22em] text-white/38">
+            <p className="font-helveticaText text-ff-label uppercase tracking-ff-nav text-white/38">
               {partner.cityCode} / {activeModule.label}
             </p>
-            <p className="mt-4 font-helveticaDisplay text-[42px] font-normal leading-none text-white md:text-[64px]">
+            <p className="ff-font-display ff-partner-detail-title mt-4 font-normal">
               {activeModule.title}
             </p>
-            <p className="mt-4 max-w-[34rem] text-[14px] leading-relaxed text-white/56">
+            <p className="ff-copy-small mt-4 max-w-[34rem] text-white/56">
               {activeModule.detail}
             </p>
           </div>
@@ -449,7 +449,7 @@ function PartnerSystem({
 
         <p
           className={cn(
-            "pointer-events-none absolute bottom-5 right-5 font-helveticaDisplay text-[72px] font-normal leading-none text-white/10 md:text-[96px]",
+            "ff-font-display ff-partner-code pointer-events-none absolute bottom-5 right-5 font-normal",
             isColossal ? "" : "right-auto left-5",
           )}
         >

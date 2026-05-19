@@ -131,14 +131,14 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
       )}
 
       <div className="marketing-transition-reveal" data-marketing-transition-reveal>
-        <header className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-12 lg:mb-14">
+        <header className="ff-shell mb-12 lg:mb-14">
           {positioning && (
-            <p className="text-[11px] uppercase tracking-[0.18em] text-[#666] mb-3">
+            <p className="ff-kicker-muted mb-3">
               {positioning}
             </p>
           )}
           <h1
-            className="text-[58px] md:text-[98px] lg:text-[128px] leading-[0.92] font-medium text-[#1A1A1A] font-helveticaDisplay"
+            className="ff-display-director"
             style={
               {
                 viewTransitionName: `director-name-${director.slug}`,
@@ -149,35 +149,35 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           </h1>
         </header>
 
-        <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-14">
-          <details className="group border-t border-b border-[#E8E7E3]">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[12px] uppercase tracking-[0.14em] text-[#666] transition-colors hover:text-[#1A1A1A] [&::-webkit-details-marker]:hidden">
+        <section className="ff-shell mb-14">
+          <details className="group border-y ff-rule">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-ff-micro uppercase tracking-ff-micro text-ff-muted transition-colors hover:text-ff-ink [&::-webkit-details-marker]:hidden">
               <span>Bio</span>
-              <span className="text-[18px] leading-none text-[#1A1A1A] group-open:hidden">
+              <span className="text-[18px] leading-none text-ff-ink group-open:hidden">
                 +
               </span>
-              <span className="hidden text-[18px] leading-none text-[#1A1A1A] group-open:block">
+              <span className="hidden text-[18px] leading-none text-ff-ink group-open:block">
                 -
               </span>
             </summary>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-10">
               <div className="lg:col-span-3">
-                <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
+                <p className="ff-kicker">
                   About {director.name}
                 </p>
               </div>
               <div className="lg:col-span-7 space-y-6">
                 {director.bio ? (
-                  <p className="text-[17px] md:text-[19px] leading-relaxed text-[#1A1A1A] whitespace-pre-line">
+                  <p className="ff-body whitespace-pre-line text-ff-ink">
                     {director.bio}
                   </p>
                 ) : (
-                  <p className="text-[17px] md:text-[19px] leading-relaxed text-[#666]">
+                  <p className="ff-body">
                     More background is being added to this profile.
                   </p>
                 )}
                 {director.statement && (
-                  <blockquote className="border-l-2 border-[#1A1A1A] pl-6 text-[16px] leading-relaxed text-[#444] italic whitespace-pre-line">
+                  <blockquote className="border-l-2 border-ff-ink pl-6 text-[16px] leading-relaxed text-ff-copy italic whitespace-pre-line">
                     {director.statement}
                   </blockquote>
                 )}
@@ -187,22 +187,22 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
         </section>
 
         {grouped.length > 0 && (
-          <section className="mx-auto max-w-[1400px] px-6 lg:px-10">
+          <section className="ff-shell">
             <div className="mb-9 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
-              <h2 className="text-[34px] md:text-[46px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-none">
+              <h2 className="ff-display-section">
                 Work gallery
               </h2>
-              <p className="text-[11px] uppercase tracking-[0.14em] text-[#999]">
+              <p className="ff-kicker">
                 {director.projects.length}{" "}
                 {director.projects.length === 1 ? "film" : "films"}
               </p>
             </div>
             {grouped.map((group) => (
               <div key={group.key} className="mb-20 last:mb-0">
-                <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-8">
+                <h2 className="ff-kicker mb-8">
                   {group.label}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-12">
+                <div className="ff-grid-work">
                   {group.items.map((p, i) => (
                     <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
                       <ProjectCard
@@ -230,14 +230,14 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
         )}
 
         {(awards.length > 0 || press.length > 0) && (
-          <section className="mx-auto max-w-[1400px] px-6 lg:px-10 mt-24 pt-16 border-t border-[#E8E7E3]">
+          <section className="ff-shell mt-24 border-t ff-rule pt-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {awards.length > 0 && (
                 <div>
-                  <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-6">
+                  <h2 className="ff-kicker mb-6">
                     Selected awards
                   </h2>
-                  <ul className="space-y-2 text-[14px] text-[#1A1A1A]">
+                  <ul className="space-y-2 text-ff-small text-ff-ink">
                     {awards.slice(0, 12).map((a: unknown, i: number) => (
                       <li key={i}>{typeof a === "string" ? a : JSON.stringify(a)}</li>
                     ))}
@@ -246,10 +246,10 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
               )}
               {press.length > 0 && (
                 <div>
-                  <h2 className="text-[11px] uppercase tracking-[0.12em] text-[#999] mb-6">
+                  <h2 className="ff-kicker mb-6">
                     Press
                   </h2>
-                  <ul className="space-y-2 text-[14px]">
+                  <ul className="space-y-2 text-ff-small">
                     {press.slice(0, 12).map((p: unknown, i: number) => {
                       if (typeof p === "string") {
                         return (
@@ -258,7 +258,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
                               href={p}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[#1A1A1A] hover:text-[#666] underline underline-offset-4"
+                              className="text-ff-ink hover:text-ff-muted underline underline-offset-4"
                             >
                               {p}
                             </a>
@@ -273,7 +273,7 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
                               href={obj.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[#1A1A1A] hover:text-[#666] underline underline-offset-4"
+                              className="text-ff-ink hover:text-ff-muted underline underline-offset-4"
                             >
                               {obj.label ?? obj.title ?? obj.url}
                             </a>
@@ -289,10 +289,10 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
           </section>
         )}
 
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 mt-24 pt-10 border-t border-[#E8E7E3]">
+        <div className="ff-shell mt-24 border-t ff-rule pt-10">
           <Link
             href="/site/directors"
-            className="text-[12px] uppercase tracking-[0.14em] text-[#666] hover:text-[#1A1A1A] transition-colors"
+            className="ff-link-small"
           >
             ← All directors
           </Link>

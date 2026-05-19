@@ -24,24 +24,24 @@ const SOCIALS = [
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-[#E8E7E3] mt-32">
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-16">
+    <footer className="border-t ff-rule mt-32">
+      <div className="ff-shell py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div>
-            <p className="font-helveticaDisplay text-[18px] font-medium leading-none text-[#1A1A1A]">
+            <p className="ff-footer-brand">
               Friends &amp; Family
             </p>
-            <p className="mt-2 text-[12px] text-[#666] max-w-xs leading-relaxed">
+            <p className="ff-meta mt-2 max-w-xs">
               A creative network. Los Angeles, New York, São Paulo, Curitiba.
             </p>
           </div>
 
           {OFFICES.map((office) => (
             <div key={office.city}>
-              <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
+              <p className="ff-kicker">
                 {office.city}
               </p>
-              <div className="mt-3 space-y-0.5 text-[13px] text-[#1A1A1A] leading-relaxed">
+              <div className="ff-footer-copy mt-3 space-y-0.5">
                 {office.lines.map((line) => (
                   <p key={line}>{line}</p>
                 ))}
@@ -50,15 +50,15 @@ export function MarketingFooter() {
           ))}
 
           <div>
-            <p className="text-[11px] uppercase tracking-[0.12em] text-[#999]">
+            <p className="ff-kicker">
               Contact
             </p>
-            <ul className="mt-3 space-y-1.5 text-[13px]">
+            <ul className="ff-footer-copy mt-3 space-y-1.5">
               {CONTACTS.map((c) => (
                 <li key={c.email}>
                   <a
                     href={`mailto:${c.email}`}
-                    className="text-[#1A1A1A] hover:text-[#666] transition-colors"
+                    className="transition-colors hover:text-ff-muted"
                   >
                     {c.name} &middot; {c.email}
                   </a>
@@ -68,7 +68,7 @@ export function MarketingFooter() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-[#E8E7E3] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="mt-12 pt-6 border-t ff-rule flex flex-col md:flex-row md:items-center justify-between gap-4">
           <ul className="flex items-center gap-6">
             {SOCIALS.map((s) => (
               <li key={s.label}>
@@ -76,7 +76,7 @@ export function MarketingFooter() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[12px] text-[#666] hover:text-[#1A1A1A] transition-colors"
+                  className="ff-meta transition-colors hover:text-ff-ink"
                 >
                   {s.label}
                 </a>
@@ -87,11 +87,11 @@ export function MarketingFooter() {
           <div className="flex items-center gap-6">
             <Link
               href="/site/contact"
-              className="text-[12px] text-[#666] hover:text-[#1A1A1A] transition-colors"
+              className="ff-meta transition-colors hover:text-ff-ink"
             >
               Get in touch
             </Link>
-            <p className="text-[12px] text-[#999]">
+            <p className="ff-meta text-ff-faint">
               &copy; {new Date().getFullYear()} Friends &amp; Family
             </p>
           </div>

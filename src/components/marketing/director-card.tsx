@@ -95,13 +95,13 @@ export function DirectorCard({
       </div>
       <div className="mt-3.5 flex items-baseline justify-between gap-4">
         <h3
-          className="text-[20px] md:text-[24px] text-ff-ink leading-none font-helveticaDisplay font-medium"
+          className="ff-display-card"
           style={{ viewTransitionName: nameTransitionName } as React.CSSProperties}
         >
           {name}
         </h3>
         {positioning && (
-          <span className="text-[9px] uppercase tracking-[0.14em] text-ff-faint shrink-0">
+          <span className="shrink-0 text-ff-label uppercase tracking-ff-micro text-ff-faint">
             {positioning}
           </span>
         )}

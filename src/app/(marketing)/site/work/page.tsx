@@ -62,19 +62,19 @@ export default async function WorkPage({
   const { items, totalCount } = await getWork(activeDiscipline.contentType);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 lg:px-10 pt-28 lg:pt-32 pb-24">
+    <div className="ff-shell ff-page">
       <header className="mb-10 flex items-baseline justify-between gap-6">
-        <h1 className="text-[58px] md:text-[92px] font-medium text-[#1A1A1A] font-helveticaDisplay leading-none">
+        <h1 className="ff-display-page">
           Work
         </h1>
-        <p className="text-[11px] uppercase tracking-[0.14em] text-[#999]">
+        <p className="ff-kicker">
           {totalCount} {totalCount === 1 ? "project" : "projects"}
         </p>
       </header>
 
       <nav
         aria-label="Filter by discipline"
-        className="mb-10 -mx-1 flex flex-wrap items-center gap-x-1 gap-y-2 border-b border-[#E8E7E3] pb-4"
+        className="mb-10 -mx-1 flex flex-wrap items-center gap-x-1 gap-y-2 border-b ff-rule pb-4"
       >
         {DISCIPLINES.map((d, i) => {
           const isActive = d.slug === active;
@@ -82,17 +82,17 @@ export default async function WorkPage({
           return (
             <span key={d.slug} className="flex items-center">
               {i > 0 && (
-                <span aria-hidden className="px-2 text-[10px] text-[#CBCAC6]">
+                <span aria-hidden className="px-2 text-ff-label text-ff-line">
                   ·
                 </span>
               )}
               <Link
                 href={href}
                 className={cn(
-                  "text-[11px] uppercase tracking-[0.16em] px-1 py-1 transition-colors",
+                  "px-1 py-1 text-ff-micro uppercase tracking-ff-label transition-colors",
                   isActive
-                    ? "text-[#1A1A1A] underline underline-offset-[6px] decoration-[#1A1A1A]"
-                    : "text-[#666] hover:text-[#1A1A1A]",
+                    ? "text-ff-ink underline underline-offset-[6px] decoration-ff-ink"
+                    : "text-ff-muted hover:text-ff-ink",
                 )}
               >
                 {d.label}
@@ -103,8 +103,8 @@ export default async function WorkPage({
       </nav>
 
       {items.length === 0 ? (
-        <div className="border border-dashed border-[#E8E7E3] py-24 text-center">
-          <p className="text-[14px] text-[#999]">
+        <div className="ff-empty-state">
+          <p>
             No projects in this view.{" "}
             <Link href="/site/work" className="underline">
               See all
@@ -113,7 +113,7 @@ export default async function WorkPage({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-12">
+        <div className="ff-grid-work">
           {items.map((p, i) => {
             const disciplineLabel = DISCIPLINES.find(
               (d) => d.contentType === p.contentType,
@@ -132,7 +132,7 @@ export default async function WorkPage({
       )}
 
       {items.length > 0 && items.length < totalCount && (
-        <p className="mt-12 text-[11px] uppercase tracking-[0.14em] text-[#999] text-center">
+        <p className="ff-kicker mt-12 text-center">
           Showing {items.length} of {totalCount}
         </p>
       )}

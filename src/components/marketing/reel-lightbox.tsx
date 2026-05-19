@@ -61,13 +61,13 @@ export function ReelLightbox({ project, onClose }: ReelLightboxProps) {
             exit={{ opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-[1400px]"
+            className="relative w-full max-w-ff"
           >
             <button
               type="button"
               onClick={onClose}
               aria-label="Close reel"
-              className="absolute -top-10 right-0 text-white/70 hover:text-white text-[11px] uppercase tracking-[0.18em] transition-colors font-helveticaText"
+              className="absolute -top-10 right-0 font-helveticaText text-ff-micro uppercase tracking-ff-wide text-white/70 transition-colors hover:text-white"
             >
               Close
             </button>
@@ -92,15 +92,15 @@ export function ReelLightbox({ project, onClose }: ReelLightboxProps) {
             <div className="mt-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-3 text-white font-helveticaText">
               <div>
                 {project.brand && (
-                  <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/70">
+                  <p className="text-ff-label font-medium uppercase tracking-ff-label text-white/70">
                     {project.brand}
                   </p>
                 )}
-                <p className="text-[20px] md:text-[24px] font-medium leading-[1.05] mt-1 font-helveticaDisplay">
+                <p className="ff-display-card mt-1 text-white">
                   {project.title}
                 </p>
               </div>
-              <p className="text-[12px] leading-snug text-white/60">
+              <p className="ff-meta text-white/60">
                 Dir. {project.director.name}
                 {project.agency ? ` · ${project.agency}` : ""}
                 {project.year ? ` · ${project.year}` : ""}
