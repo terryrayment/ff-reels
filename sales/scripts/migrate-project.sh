@@ -56,20 +56,32 @@ FIELDS=$(gh project field-list "$PROJECT_NUMBER" --owner "$OWNER" --format json)
 fid() { echo "$FIELDS" | jq -r --arg n "$1" '.fields[] | select(.name==$n) | .id' | head -1; }
 oid() { echo "$FIELDS" | jq -r --arg f "$1" --arg o "$2" '.fields[] | select(.name==$f) | .options[]? | select(.name==$o) | .id' | head -1; }
 
+echo "==> Cleaning up old fields..."
+# Drop the original emoji-prefixed "Sales Status" field — replaced by "Outreach Status"
+OLD_SALES_STATUS_ID=$(fid "Sales Status")
+if [ -n "$OLD_SALES_STATUS_ID" ]; then
+  echo "    Deleting old 'Sales Status' field"
+  gh project field-delete --id "$OLD_SALES_STATUS_ID" >/dev/null 2>&1 || true
+  FIELDS=$(gh project field-list "$PROJECT_NUMBER" --owner "$OWNER" --format json)
+fi
+
 echo "==> Ensuring fields..."
 
 # New "Status" field (separate from old "Sales Status")
-STATUS_FIELD_ID=$(fid "Status")
+# Custom field — must NOT be named "Status" because the built-in
+# ProjectV2 "Status" (Todo/In Progress/Done) blocks creation under that name.
+STATUS_FIELD_NAME="Outreach Status"
+STATUS_FIELD_ID=$(fid "$STATUS_FIELD_NAME")
 if [ -z "$STATUS_FIELD_ID" ]; then
-  echo "    Creating 'Status' field"
+  echo "    Creating '$STATUS_FIELD_NAME' field"
   STATUS_FIELD_ID=$(gh project field-create "$PROJECT_NUMBER" --owner "$OWNER" \
-    --name "Status" --data-type SINGLE_SELECT \
+    --name "$STATUS_FIELD_NAME" --data-type SINGLE_SELECT \
     --single-select-options "Not Contacted,Contacted,Followed Up,Replied,Call Booked,In Bid,Won,No Response,Pass" \
     --format json | jq -r '.id')
   # Re-read fields after creation so option IDs are visible
   FIELDS=$(gh project field-list "$PROJECT_NUMBER" --owner "$OWNER" --format json)
 fi
-NOT_CONTACTED_OPT_ID=$(oid "Status" "Not Contacted")
+NOT_CONTACTED_OPT_ID=$(oid "$STATUS_FIELD_NAME" "Not Contacted")
 
 # Contact Date field (date type)
 CONTACT_DATE_FIELD_ID=$(fid "Contact Date")
@@ -93,20 +105,26 @@ echo "    Status: $STATUS_FIELD_ID  ContactDate: $CONTACT_DATE_FIELD_ID"
 echo "==> Reading items..."
 EXISTING=$(gh project item-list "$PROJECT_NUMBER" --owner "$OWNER" --format json --limit 200)
 
-# Build a lookup: title -> item id
+# Build a lookup: title -> {item_id (PVTI_*), content_id (DI_*)}
 declare -a EXISTING_TITLES
 declare -a EXISTING_IDS
+declare -a EXISTING_CONTENT_IDS
 while IFS= read -r line; do
   EXISTING_TITLES+=("$(echo "$line" | jq -r '.title')")
   EXISTING_IDS+=("$(echo "$line" | jq -r '.id')")
-done < <(echo "$EXISTING" | jq -c '.items[] | {title: .content.title, id: .id}')
+  EXISTING_CONTENT_IDS+=("$(echo "$line" | jq -r '.content_id')")
+done < <(echo "$EXISTING" | jq -c '.items[] | {title: .content.title, id: .id, content_id: .content.id}')
 
-find_item_id() {
+# Sets ITEM_ID and CONTENT_ID globals
+find_item_ids() {
+  ITEM_ID=""
+  CONTENT_ID=""
   local n="$1"
   for i in "${!EXISTING_TITLES[@]}"; do
     case "${EXISTING_TITLES[$i]}" in
       "#${n} —"*|"#${n}—"*|"#${n} -"*)
-        echo "${EXISTING_IDS[$i]}"
+        ITEM_ID="${EXISTING_IDS[$i]}"
+        CONTENT_ID="${EXISTING_CONTENT_IDS[$i]}"
         return
         ;;
     esac
@@ -151,17 +169,19 @@ _Edit before sending. Personalize with one thing from their last 60 days of publ
 EOF
 )
 
-  ITEM_ID=$(find_item_id "$N")
+  find_item_ids "$N"
   if [ -n "${ITEM_ID:-}" ]; then
     echo "    [$((i+1))/$COUNT] $TITLE_STR (updating body + status)"
-    # Update title + body in case title format differs
-    gh project item-edit --id "$ITEM_ID" --project-id "$PROJECT_ID" \
-      --title "$TITLE_STR" --body "$BODY" >/dev/null
+    # Body edit is best-effort: gh errors "no changes to make" if body is identical.
+    set +e
+    gh project item-edit --id "$CONTENT_ID" --body "$BODY" >/dev/null 2>&1
+    set -e
     UPDATED=$((UPDATED+1))
   else
     echo "    [$((i+1))/$COUNT] $TITLE_STR (creating)"
-    ITEM_ID=$(gh project item-create "$PROJECT_NUMBER" --owner "$OWNER" \
-      --title "$TITLE_STR" --body "$BODY" --format json | jq -r '.id')
+    CREATE_OUT=$(gh project item-create "$PROJECT_NUMBER" --owner "$OWNER" \
+      --title "$TITLE_STR" --body "$BODY" --format json)
+    ITEM_ID=$(echo "$CREATE_OUT" | jq -r '.id')
     # Set the existing fields too (only for new items)
     gh project item-edit --id "$ITEM_ID" --project-id "$PROJECT_ID" \
       --field-id "$SECTOR_FIELD_ID" --text "$SECTOR" >/dev/null
@@ -179,9 +199,11 @@ EOF
     CREATED=$((CREATED+1))
   fi
 
-  # Always set new Status field to "Not Contacted"
+  # Always set "Outreach Status" to "Not Contacted" (best-effort; idempotent)
+  set +e
   gh project item-edit --id "$ITEM_ID" --project-id "$PROJECT_ID" \
-    --field-id "$STATUS_FIELD_ID" --single-select-option-id "$NOT_CONTACTED_OPT_ID" >/dev/null
+    --field-id "$STATUS_FIELD_ID" --single-select-option-id "$NOT_CONTACTED_OPT_ID" >/dev/null 2>&1
+  set -e
 
   sleep 2
 done
