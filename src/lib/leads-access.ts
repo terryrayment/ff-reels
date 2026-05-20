@@ -1,5 +1,6 @@
 const DEFAULT_LEADS_URL =
   "https://airtable.com/appfCBl4ZKJqaToNM/shrt6NYAnQ6fd4xg0";
+const DEFAULT_LEADS_PASSWORD = "ccco26";
 
 const BLOCKED_LEADS_EMAILS = [
   "katie.northy@talk-shop.tv",
@@ -39,7 +40,7 @@ export function getLeadsEmbedUrl() {
 }
 
 export function getLeadsPasswordHint() {
-  return process.env.LEADS_AIRTABLE_PASSWORD || "";
+  return process.env.LEADS_AIRTABLE_PASSWORD || DEFAULT_LEADS_PASSWORD;
 }
 
 export function canAccessLeads(user?: {
