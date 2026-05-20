@@ -54,6 +54,19 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // Vanity short paths on the main app host: /versant → /pitch/versant.
+  // Lets reels.friendsandfamily.tv/versant work as a shareable URL without
+  // requiring the dedicated subdomain to be DNS-configured.
+  const VANITY_PATH_REWRITES: Record<string, string> = {
+    "/versant": "/pitch/versant",
+  };
+  const vanityTarget = VANITY_PATH_REWRITES[req.nextUrl.pathname];
+  if (vanityTarget) {
+    const url = req.nextUrl.clone();
+    url.pathname = vanityTarget;
+    return NextResponse.rewrite(url);
+  }
+
   // Main app routes: DIRECTOR role guard
   const token = await getToken({ req });
 
