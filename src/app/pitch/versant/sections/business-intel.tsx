@@ -54,11 +54,11 @@ export function BusinessIntel() {
             body={
               <>
                 10,000+ hours of live events, studio shows, and originals
-                across USA Network, Golf Channel, and CNBC in 2026. NASCAR Cup
-                Playoffs: 7 of 10 Chase races on USA, 3 on NBC/Peacock.
-                USGA/PGA media rights through 2032. WNBA, WWE, EPL inside the
-                portfolio. Matt Hong: &ldquo;the best of both worlds — a
-                start-up mentality and $7 billion revenues.&rdquo;
+                across USA Network, Golf Channel, and CNBC in 2026.
+                USGA/PGA media rights through 2032. Motorsport, women&apos;s
+                basketball, WWE, and Premier League inside the portfolio.
+                Matt Hong: &ldquo;the best of both worlds — a start-up
+                mentality and $7 billion revenues.&rdquo;
               </>
             }
           />
@@ -70,10 +70,9 @@ export function BusinessIntel() {
           </p>
           <p className="text-[16px] font-light leading-relaxed tracking-tight text-white/80">
             Versant is six months into independence. Vendor relationships are
-            not yet entrenched. Professor Chase is exactly the kind of
-            high-visibility, well-defined first job that proves a partner.
-            Golf Channel is the longer-horizon opportunity. We&apos;re here
-            for both.
+            not yet entrenched. The vendor map drawn over the next twelve
+            months is the one Versant will be working from until the next
+            rights cycle. We&apos;d like to be on it.
           </p>
         </div>
       </div>

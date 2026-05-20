@@ -44,16 +44,16 @@ export function GolfTab() {
             </li>
             <li>
               <span className="text-white">The crossover is real.</span> USA
-              Sports as an umbrella means a NASCAR audience and a golf audience
-              now live under one marketing budget. A partner who can move
-              between those worlds is more valuable than a specialist in
-              either.
+              Sports as an umbrella means motorsport, golf, women&apos;s
+              basketball, and tentpole entertainment all live under one
+              marketing budget now. A partner who can move between those
+              worlds is more valuable than a specialist in any single one.
             </li>
           </ul>
 
           <p>
-            We&apos;d like the Professor Chase job. We&apos;d like the next ten
-            Golf Channel jobs more. Both conversations belong in this email.
+            We&apos;d like to be Versant&apos;s partner across the portfolio.
+            Golf Channel is where the conversation should start.
           </p>
         </div>
       </div>

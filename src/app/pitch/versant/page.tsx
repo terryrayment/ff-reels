@@ -3,32 +3,33 @@ import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { TerryIntro } from "./sections/terry-intro";
 import { GolfTab } from "./sections/golf-tab";
-import { BriefAnswer } from "./sections/brief-answer";
+import { OurWork } from "./sections/our-work";
 import { BusinessIntel } from "./sections/business-intel";
 import { FFCompanyCard } from "./sections/ff-company-card";
 import { ContactCta } from "./sections/contact-cta";
 
 /**
- * Branded pitch landing — Versant Media / NASCAR "Professor Chase".
+ * Branded pitch landing — Friends & Family for Versant Media.
+ *
+ * Big-picture partnership case: F&F as Versant's long-term creative vendor
+ * across USA Network, Golf Channel, CNBC, and the rest of the USA Sports
+ * portfolio. Intentionally brief-agnostic — separate project bids (e.g. the
+ * NASCAR Professor Chase pitch) live in their own channels.
  *
  * Served from:
- *   - https://versant.reels.friendsandfamily.tv/ (via middleware rewrite to /pitch/versant)
- *   - https://reels.friendsandfamily.tv/pitch/versant (direct, for preview)
+ *   - https://versant.reels.friendsandfamily.tv/ (subdomain → /pitch/versant)
+ *   - https://reels.friendsandfamily.tv/versant (vanity path)
+ *   - https://reels.friendsandfamily.tv/pitch/versant (direct)
  *
- * Personalization: a screening-link token can be passed as ?t=<token>. The
- * page reads the token's recipientName, customWelcomeMessage, ctaUrl, and
- * ctaLabel to personalize the greeting and CTA. Without a token, the page
- * renders a "for Versant Media" default.
- *
- * Routes used by section components:
- *   - /s/<screening token>  → the curated reel carousel (existing screening page)
- *   - /t/<treatment token>  → the Professor Chase PDF treatment
+ * Personalization: pass ?t=<token> for a screening link to read recipient
+ * name + ctaUrl + ctaLabel. Without a token, the page renders the "for
+ * Versant Media" default.
  */
 
 export const metadata: Metadata = {
   title: "Friends & Family for Versant Media",
   description:
-    "A pitch to Versant Media: Professor Chase as the entry, Golf Channel as the home.",
+    "A case for Friends & Family as Versant Media's long-term creative partner across USA Sports.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -36,9 +37,8 @@ interface PageProps {
   searchParams: { t?: string };
 }
 
-// Hardcoded for this specific pitch. Set when the reel is built and the treatment uploaded.
+// Hardcoded for this specific pitch. Set when the reel is built.
 const REEL_SCREENING_TOKEN_FALLBACK = process.env.VERSANT_DEMO_REEL_TOKEN ?? null;
-const TREATMENT_TOKEN_FALLBACK = process.env.VERSANT_DEMO_TREATMENT_TOKEN ?? null;
 const TERRY_INTRO_PLAYBACK_ID = process.env.VERSANT_TERRY_INTRO_MUX_ID ?? null;
 
 function firstNameOf(full: string | null | undefined): string | null {
@@ -92,10 +92,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
 
       <GolfTab />
 
-      <BriefAnswer
-        reelScreeningToken={reelScreeningToken}
-        treatmentToken={TREATMENT_TOKEN_FALLBACK}
-      />
+      <OurWork reelScreeningToken={reelScreeningToken} />
 
       <BusinessIntel />
 

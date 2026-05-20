@@ -4,7 +4,10 @@ import MuxPlayer from "@mux/mux-player-react";
 
 /**
  * Terry's director-EP statement. 60-90s video over a still fallback when the
- * video isn't yet recorded. Inter sans, light weights, reels-platform palette.
+ * video isn't yet recorded. Reels-platform design language.
+ *
+ * Intentionally brief-agnostic — this pitch is about a longer Versant
+ * partnership, not any single project bid.
  */
 interface Props {
   videoPlaybackId?: string | null;
@@ -45,21 +48,22 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
 
         <div className="space-y-5 text-[15px] leading-relaxed tracking-tight text-white/75">
           <p>
-            I watched the Professor Chase brief twice the day it arrived. The
-            ensemble-comedy-with-real-stakes register is exactly the register
-            Friends &amp; Family was built for. Sixteen drivers, one celebrity
-            Professor, a classroom that has to feel earned — that&apos;s a
-            staging problem we&apos;ve solved before, just not for NASCAR.
+            We built Friends &amp; Family to be the production company a
+            network like Versant would call when the brief mattered. Not the
+            volume vendor. Not the holding-company default. The director-led
+            shop you trust with the films that set a tone for a decade.
           </p>
           <p>
-            But this email isn&apos;t about Professor Chase. It&apos;s about
-            Versant. You&apos;re six months into independence. The next twelve
-            months decide who you call for the next decade of brand creative
-            across USA Network, Golf Channel, CNBC, and the rest. We want to be
-            on that short list — and we want to earn it on this brief.
+            You&apos;re six months into independence. The next twelve months
+            decide who you call for the next ten years of brand creative
+            across USA Network, Golf Channel, CNBC, and the rest of the USA
+            Sports portfolio. The vendor map you draw this year is the one
+            you&apos;ll work from until 2032.
           </p>
-          <p className="text-white">
-            Professor Chase is our entry. Golf Channel is our home.
+          <p>
+            This page is our argument for being on that map. Watch the reel.
+            Read the rest. Then let&apos;s find thirty minutes to talk about
+            what we&apos;d build together.
           </p>
         </div>
       </div>

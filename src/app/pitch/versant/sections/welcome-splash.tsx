@@ -5,9 +5,8 @@ interface Props {
 }
 
 /**
- * Personalized welcome splash. Two-logo (USA Sports + Friends & Family), one
- * sentence of intent. Matches the reels platform's design language — Inter
- * sans, light weights, tracking-tight-2, subtle labels.
+ * Personalized welcome splash. Big-picture partnership framing — no
+ * brief-specific anchoring. Reels-platform design language.
  */
 export function WelcomeSplash({ recipientFirstName }: Props) {
   return (
@@ -31,16 +30,17 @@ export function WelcomeSplash({ recipientFirstName }: Props) {
         </p>
 
         <h1 className="mb-7 text-[clamp(2rem,4.5vw,3.5rem)] font-light leading-[1.1] tracking-tight-2 text-white">
-          We&apos;re not pitching for one job.
+          The vendor map you draw this year
           <br />
           <span className="text-white/60">
-            We&apos;re pitching for the next ten years of USA Sports content.
+            is the one you&apos;ll work from until 2032.
           </span>
         </h1>
 
         <p className="mx-auto max-w-xl text-[13px] leading-relaxed text-white/50">
-          Professor Chase is the entry. Golf Channel is the home. This is what
-          Friends &amp; Family looks like as your long-term creative partner.
+          A case for Friends &amp; Family as Versant&apos;s long-term creative
+          partner across USA Network, Golf Channel, and the rest of the USA
+          Sports portfolio.
         </p>
 
         <div className="mt-16 flex flex-col items-center text-[10px] uppercase tracking-[0.25em] text-white/25">
