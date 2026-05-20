@@ -1,15 +1,17 @@
 /**
  * Caddie Cards — twelve F&F directors styled as scouting cards.
  *
- * Each card carries director name (serif), 2 lines of credits, and a
- * recommended Versant hole (monospace italic). Sits on the dark base,
- * with cream marginalia. No headshots yet — placeholder geometry
- * keeps cards consistent until images are uploaded.
+ * Server component. Pulls real headshots from the Director table by slug
+ * and falls back to a placeholder for directors whose portrait hasn't
+ * been uploaded yet.
  */
 
+import { prisma } from "@/lib/db";
+
 type Director = {
+  slug: string;
   name: string;
-  shot: string; // for the FIG label
+  shot: string; // FIG label
   signature: string; // 1-line directorial register
   credits: string[];
   hole: string; // suggested Versant hole + label
@@ -17,6 +19,7 @@ type Director = {
 
 const DIRECTORS: Director[] = [
   {
+    slug: "terry-rayment",
     name: "Terry Rayment",
     shot: "F&F · LA",
     signature: "Emotional narrative · human experience",
@@ -24,6 +27,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 02 · Firethorn / GolfPass",
   },
   {
+    slug: "jack-turits",
     name: "Jack Turits",
     shot: "F&F",
     signature: "Documentary charm · narrative skill",
@@ -31,13 +35,15 @@ const DIRECTORS: Director[] = [
     hole: "No. 04 · GolfNow course stories",
   },
   {
+    slug: "matt-dilmore",
     name: "Matt Dilmore",
     shot: "F&F",
     signature: "Offbeat campaigns · sports comedy",
-    credits: ["ESPN 30 for 30 — The Great Imposter", "Sports folklore work"],
+    credits: ["ESPN 30 for 30 — The Great Imposter", "Sports folklore"],
     hole: "No. 03 · Big Break × Good Good",
   },
   {
+    slug: "boma-iluma",
     name: "Boma Iluma",
     shot: "F&F",
     signature: "Culture-forward · athlete identity",
@@ -45,6 +51,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 03 · Good Good audience",
   },
   {
+    slug: "kelsey-larkin",
     name: "Kelsey Larkin",
     shot: "F&F",
     signature: "Precision · dignity · performance",
@@ -52,6 +59,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 05 · USA Sports identity",
   },
   {
+    slug: "caleb-slain",
     name: "Caleb Slain",
     shot: "F&F",
     signature: "Anthem craft · short-doc instincts",
@@ -59,6 +67,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 01 · The Anthem",
   },
   {
+    slug: "james-frost",
     name: "James Frost",
     shot: "F&F",
     signature: "Systems · scale · live-event",
@@ -66,6 +75,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 05 · Broadcast opens",
   },
   {
+    slug: "cody-cloud",
     name: "Cody Cloud",
     shot: "F&F",
     signature: "Editorial color · character portraits",
@@ -73,6 +83,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 08 · Talent portrait package",
   },
   {
+    slug: "bueno",
     name: "Bueno",
     shot: "F&F",
     signature: "Inventive mixed-media comedy",
@@ -80,6 +91,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 03 · Format / fan campaigns",
   },
   {
+    slug: "le-ged",
     name: "Le Ged",
     shot: "F&F",
     signature: "Kinetic camera · physical joy",
@@ -87,6 +99,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 04 · GolfNow social-first",
   },
   {
+    slug: "leigh-marling",
     name: "Leigh Marling",
     shot: "F&F",
     signature: "Design-forward · brand comedy",
@@ -94,6 +107,7 @@ const DIRECTORS: Director[] = [
     hole: "No. 09 · Fandango / Rotten Tomatoes",
   },
   {
+    slug: "brother-willis",
     name: "Brother Willis",
     shot: "F&F",
     signature: "Warm Americana · sports-card texture",
@@ -102,7 +116,14 @@ const DIRECTORS: Director[] = [
   },
 ];
 
-export function CaddieCards() {
+export async function CaddieCards() {
+  // Pull real headshots from the Director table.
+  const rows = await prisma.director.findMany({
+    where: { slug: { in: DIRECTORS.map((d) => d.slug) } },
+    select: { slug: true, headshotUrl: true },
+  });
+  const headshotBySlug = new Map(rows.map((r) => [r.slug, r.headshotUrl]));
+
   return (
     <section className="border-b border-white/[0.06] bg-[#0e0e0e] px-6 py-28">
       <div className="mx-auto max-w-6xl">
@@ -127,7 +148,11 @@ export function CaddieCards() {
 
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {DIRECTORS.map((d) => (
-            <CaddieCard key={d.name} dir={d} />
+            <CaddieCard
+              key={d.slug}
+              dir={d}
+              headshotUrl={headshotBySlug.get(d.slug) ?? null}
+            />
           ))}
         </div>
 
@@ -141,24 +166,40 @@ export function CaddieCards() {
   );
 }
 
-function CaddieCard({ dir }: { dir: Director }) {
+function CaddieCard({
+  dir,
+  headshotUrl,
+}: {
+  dir: Director;
+  headshotUrl: string | null;
+}) {
   return (
     <article className="group relative flex flex-col gap-4 rounded-sm border border-white/[0.08] bg-[#141312] p-5 transition hover:border-white/20 hover:bg-[#181614]">
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/35">
             {dir.shot}
           </p>
-          <h3 className="mt-1 font-serif text-[1.35rem] leading-none tracking-tight text-white">
+          <h3 className="mt-1 truncate font-serif text-[1.35rem] leading-none tracking-tight text-white">
             {dir.name}
           </h3>
         </div>
-        {/* placeholder portrait square — replace with headshot upload */}
-        <div className="grid h-14 w-14 shrink-0 place-items-center rounded-sm bg-gradient-to-br from-white/[0.06] to-white/[0.02] ring-1 ring-white/[0.06]">
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30">
-            FIG
-          </span>
-        </div>
+        {/* portrait or placeholder */}
+        {headshotUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={headshotUrl}
+            alt={`${dir.name} — portrait`}
+            className="h-14 w-14 shrink-0 rounded-sm object-cover ring-1 ring-white/10"
+            loading="lazy"
+          />
+        ) : (
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-sm bg-gradient-to-br from-white/[0.06] to-white/[0.02] ring-1 ring-white/[0.06]">
+            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30">
+              FIG
+            </span>
+          </div>
+        )}
       </div>
 
       <p className="font-serif text-[12px] italic leading-snug text-white/60">
