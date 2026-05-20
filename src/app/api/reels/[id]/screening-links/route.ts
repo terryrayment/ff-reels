@@ -18,7 +18,18 @@ export async function POST(
   }
 
   const body = await req.json();
-  const { recipientName, recipientEmail, recipientCompany, expiresInDays, password, contactId } = body;
+  const {
+    recipientName,
+    recipientEmail,
+    recipientCompany,
+    expiresInDays,
+    password,
+    contactId,
+    customWelcomeMessage,
+    customLogoUrl,
+    ctaUrl,
+    ctaLabel,
+  } = body;
 
   const expiresAt = expiresInDays
     ? new Date(Date.now() + expiresInDays * 86400000)
@@ -60,6 +71,10 @@ export async function POST(
       contactId: resolvedContactId,
       expiresAt,
       password: password || null,
+      customWelcomeMessage: customWelcomeMessage || null,
+      customLogoUrl: customLogoUrl || null,
+      ctaUrl: ctaUrl || null,
+      ctaLabel: ctaLabel || null,
     },
   });
 

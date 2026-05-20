@@ -94,6 +94,11 @@ const nextConfig = {
         source: "/preview/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
+      {
+        // Branded pitch landing pages (versant.reels.friendsandfamily.tv, etc.)
+        source: "/pitch/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
     ];
   },
 };

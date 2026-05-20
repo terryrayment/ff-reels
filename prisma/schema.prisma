@@ -268,6 +268,12 @@ model ScreeningLink {
   isActive         Boolean    @default(true)
   password         String?
 
+  // Pitch-customization (optional — reusable across any branded pitch)
+  customWelcomeMessage String? @db.Text  // e.g. "Kyra — built this for you"
+  customLogoUrl        String?           // Override F&F logo (e.g. partner brand)
+  ctaUrl               String?           // e.g. Cal.com calendar link
+  ctaLabel             String?           // e.g. "Schedule a 30-minute creative call"
+
   // Tracking
   views            ReelView[]
   createdAt        DateTime   @default(now())

@@ -18,8 +18,9 @@ const ADMIN_ROUTES = [
 ];
 
 export async function middleware(req: NextRequest) {
-  // Subdomain rewrite: treatments.friendsandfamily.tv/{token} → /t/{token}
   const host = req.headers.get("host") || "";
+
+  // Subdomain rewrite: treatments.friendsandfamily.tv/{token} → /t/{token}
   if (host.startsWith("treatments.")) {
     const url = req.nextUrl.clone();
     if (url.pathname === "/" || url.pathname === "") {
@@ -32,6 +33,25 @@ export async function middleware(req: NextRequest) {
       return NextResponse.rewrite(url);
     }
     return NextResponse.next();
+  }
+
+  // Pitch subdomains: versant.reels.friendsandfamily.tv → /pitch/versant
+  // Add new pitch subdomains here as branded pitch experiences are built.
+  const PITCH_SUBDOMAINS: Record<string, string> = {
+    versant: "/pitch/versant",
+  };
+  for (const [subdomain, pitchPath] of Object.entries(PITCH_SUBDOMAINS)) {
+    if (host.startsWith(`${subdomain}.`)) {
+      const url = req.nextUrl.clone();
+      // Root → pitch landing page (preserve query for ?t=<token> recipient personalization)
+      if (url.pathname === "/" || url.pathname === "") {
+        url.pathname = pitchPath;
+        return NextResponse.rewrite(url);
+      }
+      // Other paths (e.g. /s/[token], /t/[token], /api/*, /_next/*) pass through unchanged
+      // so the embedded reel viewer + treatment viewer keep working on the same subdomain.
+      return NextResponse.next();
+    }
   }
 
   // Main app routes: DIRECTOR role guard
