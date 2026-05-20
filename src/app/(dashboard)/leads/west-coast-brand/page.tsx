@@ -4,7 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { authOptions } from "@/lib/auth/options";
 import { canAccessLeads } from "@/lib/leads-access";
 import { WEST_COAST_BRAND_PROJECT } from "@/lib/github-projects";
-import { GitHubProjectTable } from "@/components/leads/github-project-table";
+import { WestCoastBrandTable } from "@/components/leads/west-coast-brand-table";
 
 export default async function WestCoastBrandLeadsPage() {
   const session = await getServerSession(authOptions);
@@ -35,7 +35,7 @@ export default async function WestCoastBrandLeadsPage() {
       </div>
 
       <div className="overflow-hidden rounded-xl border border-[#DEDDD7] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
-        <GitHubProjectTable />
+        <WestCoastBrandTable />
       </div>
     </div>
   );

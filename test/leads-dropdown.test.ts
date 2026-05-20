@@ -13,21 +13,24 @@ test("sidebar renders Leads as a dropdown with both lead tables", () => {
   assert.match(source, /WEST COAST - BRAND/);
 });
 
-test("West Coast Brand page uses the GitHub Projects-backed table", () => {
+test("West Coast Brand page uses the app-native editable table", () => {
   const source = read("src/app/(dashboard)/leads/west-coast-brand/page.tsx");
 
   assert.match(source, /WEST COAST - BRAND/);
-  assert.match(source, /GitHubProjectTable/);
+  assert.match(source, /WestCoastBrandTable/);
   assert.match(source, /Open GitHub/);
 });
 
-test("West Coast Brand API uses the GitHub project URL and token fallback", () => {
+test("West Coast Brand API seeds and edits app contacts without a GitHub token", () => {
   const source = read("src/app/api/leads/west-coast-brand/route.ts");
   const config = read("src/lib/github-projects.ts");
-  const env = read(".env.example");
+  const seed = read("src/lib/west-coast-brand-leads.ts");
 
   assert.match(config, /users\/terryrayment\/projects\/3/);
-  assert.match(config, /GITHUB_PROJECT_TOKEN/);
-  assert.match(env, /GITHUB_PROJECT_TOKEN/);
-  assert.match(source, /updateProjectV2ItemFieldValue/);
+  assert.doesNotMatch(source, /GITHUB_PROJECT_TOKEN/);
+  assert.doesNotMatch(source, /updateProjectV2ItemFieldValue/);
+  assert.match(source, /prisma\.contact/);
+  assert.match(source, /seedIfNeeded/);
+  assert.match(seed, /Chris Power/);
+  assert.match(seed, /Brandon Millman/);
 });

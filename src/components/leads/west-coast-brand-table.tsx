@@ -6,15 +6,13 @@ import { ExternalLink, RefreshCw } from "lucide-react";
 type ProjectField = {
   id: string;
   name: string;
-  type: "TEXT" | "SINGLE_SELECT" | "DATE" | "NUMBER";
-  options?: Array<{ id: string; name: string; color?: string }>;
+  type: "TEXT" | "SINGLE_SELECT";
+  options?: Array<{ id: string; name: string }>;
 };
 
 type ProjectRow = {
   id: string;
   title: string;
-  body?: string | null;
-  url?: string | null;
   values: Record<string, string | number | null>;
 };
 
@@ -73,16 +71,11 @@ function EditableCell({
 
   return (
     <input
-      type={field.type === "DATE" ? "date" : field.type === "NUMBER" ? "number" : "text"}
+      type="text"
       defaultValue={getDisplayValue(field, value)}
       disabled={disabled}
       onBlur={(event) => {
-        const nextValue =
-          field.type === "NUMBER"
-            ? event.target.value === ""
-              ? null
-              : Number(event.target.value)
-            : event.target.value;
+        const nextValue = event.target.value;
         if (String(nextValue ?? "") !== String(value ?? "")) {
           onSave(nextValue);
         }
@@ -92,7 +85,7 @@ function EditableCell({
   );
 }
 
-export function GitHubProjectTable() {
+export function WestCoastBrandTable() {
   const [data, setData] = useState<ProjectResponse | null>(null);
   const [error, setError] = useState<ErrorResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -184,10 +177,10 @@ export function GitHubProjectTable() {
     return (
       <div className="flex h-[calc(100vh-230px)] min-h-[620px] flex-col items-center justify-center px-8 text-center">
         <p className="max-w-md text-[18px] font-semibold text-[#111]">
-          WEST COAST - BRAND is ready, but GitHub access needs one server token.
+          WEST COAST - BRAND could not load.
         </p>
         <p className="mt-3 max-w-md text-[13px] leading-6 text-[#666]">
-          {error?.error || "The GitHub Projects table could not be loaded."}
+          {error?.error || "The lead table could not be loaded."}
         </p>
         <div className="mt-6 flex items-center gap-2">
           <button
@@ -218,7 +211,7 @@ export function GitHubProjectTable() {
         <thead className="sticky top-0 z-10 bg-[#F3F3F1]">
           <tr>
             <th className="w-[320px] border-b border-[#E8E6E1] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#777]">
-              Project
+              Lead
             </th>
             {visibleFields.map((field) => (
               <th
@@ -234,18 +227,7 @@ export function GitHubProjectTable() {
           {data.project.rows.map((row) => (
             <tr key={row.id} className="border-b border-[#EFEDE8]">
               <td className="max-w-[360px] px-4 py-3 text-[13px] font-medium text-[#222]">
-                {row.url ? (
-                  <a
-                    href={row.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                  >
-                    {row.title}
-                  </a>
-                ) : (
-                  row.title
-                )}
+                {row.title}
               </td>
               {visibleFields.map((field) => {
                 const cellKey = `${row.id}:${field.id}`;
@@ -267,7 +249,7 @@ export function GitHubProjectTable() {
 
       {data.project.rows.length === 0 && (
         <div className="flex h-64 items-center justify-center text-[13px] text-[#777]">
-          No rows found in this GitHub Project.
+          No rows found in this lead table.
         </div>
       )}
 

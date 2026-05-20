@@ -1,195 +1,84 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
+import { prisma } from "@/lib/db";
 import { canAccessLeads } from "@/lib/leads-access";
-import {
-  getGitHubProjectToken,
-  WEST_COAST_BRAND_PROJECT,
-} from "@/lib/github-projects";
+import { WEST_COAST_BRAND_PROJECT } from "@/lib/github-projects";
+import { westCoastBrandLeadSeed } from "@/lib/west-coast-brand-leads";
 
 export const dynamic = "force-dynamic";
 
-type GitHubField = {
+type LeadField = {
   id: string;
   name: string;
-  type: "TEXT" | "SINGLE_SELECT" | "DATE" | "NUMBER" | "UNKNOWN";
-  options?: Array<{ id: string; name: string; color?: string }>;
+  type: "TEXT" | "SINGLE_SELECT";
+  options?: Array<{ id: string; name: string }>;
 };
 
-type GitHubRow = {
+type LeadRow = {
   id: string;
   title: string;
-  body?: string | null;
-  url?: string | null;
   values: Record<string, string | number | null>;
 };
 
-type RawProjectField = {
-  id?: string;
-  name?: string;
-  dataType?: string;
-  options?: Array<{ id: string; name: string; color?: string }>;
-} | null | undefined;
-
-type RawProjectFieldValue = {
-  __typename?: string;
-  text?: string | null;
-  optionId?: string | null;
-  date?: string | null;
-  number?: number | null;
-  field?: RawProjectField;
-};
-
-type RawProjectItem = {
+type ContactWithCompany = {
   id: string;
-  content?: {
-    title?: string | null;
-    body?: string | null;
-    url?: string | null;
-  } | null;
-  fieldValues?: {
-    nodes?: RawProjectFieldValue[];
-  } | null;
+  name: string;
+  email: string;
+  notes: string | null;
+  tags: string[];
+  company: { name: string } | null;
 };
 
-type RawProjectData = {
-  user?: {
-    projectV2?: {
-      id: string;
-      title?: string | null;
-      url?: string | null;
-      fields?: {
-        nodes?: RawProjectField[];
-      } | null;
-      items?: {
-        nodes?: RawProjectItem[];
-      } | null;
-    } | null;
-  } | null;
-};
+const SOURCE = "west-coast-brand";
+const SOURCE_TAG = `lead-source:${SOURCE}`;
+const SYNTHETIC_EMAIL_DOMAIN = "ff.local";
 
-type ProjectPayload = {
-  project: {
-    id: string;
-    title: string;
-    url: string;
-    fields: GitHubField[];
-    rows: GitHubRow[];
-  };
-};
+const TAG_PREFIX = {
+  status: "lead-status:",
+  verified: "lead-verified:",
+  city: "lead-city:",
+  sector: "lead-sector:",
+  position: "lead-position:",
+  displayEmail: "lead-display-email:",
+} as const;
+const LEAD_TAG_PREFIXES = Object.values(TAG_PREFIX);
 
-const fieldFragment = `
-  __typename
-  ... on ProjectV2Field {
-    id
-    name
-    dataType
-  }
-  ... on ProjectV2SingleSelectField {
-    id
-    name
-    dataType
-    options {
-      id
-      name
-      color
-    }
-  }
-  ... on ProjectV2IterationField {
-    id
-    name
-    dataType
-  }
-`;
+const statusOptions = [
+  "Not Sent",
+  "Sent",
+  "Follow-up Sent",
+  "Replied",
+  "Call Booked",
+  "In Bid",
+  "Won",
+  "Cold",
+  "Pass",
+];
 
-const projectQuery = `
-  query WestCoastBrandProject($owner: String!, $number: Int!) {
-    user(login: $owner) {
-      projectV2(number: $number) {
-        id
-        title
-        url
-        fields(first: 50) {
-          nodes {
-            ${fieldFragment}
-          }
-        }
-        items(first: 100) {
-          nodes {
-            id
-            content {
-              __typename
-              ... on DraftIssue {
-                title
-                body
-              }
-              ... on Issue {
-                title
-                url
-              }
-              ... on PullRequest {
-                title
-                url
-              }
-            }
-            fieldValues(first: 50) {
-              nodes {
-                __typename
-                ... on ProjectV2ItemFieldTextValue {
-                  text
-                  field {
-                    ${fieldFragment}
-                  }
-                }
-                ... on ProjectV2ItemFieldSingleSelectValue {
-                  name
-                  optionId
-                  field {
-                    ${fieldFragment}
-                  }
-                }
-                ... on ProjectV2ItemFieldDateValue {
-                  date
-                  field {
-                    ${fieldFragment}
-                  }
-                }
-                ... on ProjectV2ItemFieldNumberValue {
-                  number
-                  field {
-                    ${fieldFragment}
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-const updateMutation = `
-  mutation UpdateWestCoastBrandCell(
-    $projectId: ID!
-    $itemId: ID!
-    $fieldId: ID!
-    $value: ProjectV2FieldValue!
-  ) {
-    updateProjectV2ItemFieldValue(
-      input: {
-        projectId: $projectId
-        itemId: $itemId
-        fieldId: $fieldId
-        value: $value
-      }
-    ) {
-      projectV2Item {
-        id
-      }
-    }
-  }
-`;
+const fields: LeadField[] = [
+  {
+    id: "status",
+    name: "Status",
+    type: "SINGLE_SELECT",
+    options: statusOptions.map((name) => ({ id: name, name })),
+  },
+  { id: "person", name: "Person", type: "TEXT" },
+  { id: "company", name: "Company", type: "TEXT" },
+  { id: "email", name: "Email", type: "TEXT" },
+  {
+    id: "emailVerified",
+    name: "Email Verified",
+    type: "SINGLE_SELECT",
+    options: [
+      { id: "verified", name: "Verified" },
+      { id: "verify", name: "Verify" },
+    ],
+  },
+  { id: "city", name: "City", type: "TEXT" },
+  { id: "sector", name: "Sector", type: "TEXT" },
+  { id: "note", name: "Note", type: "TEXT" },
+];
 
 async function requireLeadsAccess() {
   const session = await getServerSession(authOptions);
@@ -202,145 +91,144 @@ async function requireLeadsAccess() {
   return null;
 }
 
-async function githubGraphql<T>(
-  query: string,
-  variables: Record<string, unknown>,
-) {
-  const token = getGitHubProjectToken();
-  if (!token) {
-    return {
-      error: NextResponse.json(
-        {
-          error:
-            "GitHub project token is not configured. Set GITHUB_PROJECT_TOKEN with project read/write scope.",
-          projectUrl: WEST_COAST_BRAND_PROJECT.url,
-        },
-        { status: 503 },
-      ),
-    };
-  }
-
-  const response = await fetch("https://api.github.com/graphql", {
-    method: "POST",
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      "User-Agent": "ff-reels",
-    },
-    body: JSON.stringify({ query, variables }),
-    cache: "no-store",
-  });
-
-  const payload = await response.json();
-  if (!response.ok || payload.errors?.length) {
-    return {
-      error: NextResponse.json(
-        {
-          error:
-            payload.errors?.map((item: { message: string }) => item.message).join(", ") ||
-            "GitHub Projects request failed.",
-          projectUrl: WEST_COAST_BRAND_PROJECT.url,
-        },
-        { status: response.ok ? 502 : response.status },
-      ),
-    };
-  }
-
-  return { data: payload.data as T };
+function tagValue(tags: string[], prefix: string, fallback = "") {
+  return tags.find((tag) => tag.startsWith(prefix))?.slice(prefix.length) || fallback;
 }
 
-function normalizeField(field: RawProjectField): GitHubField | null {
-  if (!field?.id || !field?.name) return null;
-  if (field.dataType === "TEXT") {
-    return { id: field.id, name: field.name, type: "TEXT" };
-  }
-  if (field.dataType === "SINGLE_SELECT") {
-    return {
-      id: field.id,
-      name: field.name,
-      type: "SINGLE_SELECT",
-      options: field.options || [],
-    };
-  }
-  if (field.dataType === "DATE") {
-    return { id: field.id, name: field.name, type: "DATE" };
-  }
-  if (field.dataType === "NUMBER") {
-    return { id: field.id, name: field.name, type: "NUMBER" };
-  }
-  return { id: field.id, name: field.name, type: "UNKNOWN" };
+function setTag(tags: string[], prefix: string, value: string) {
+  const filtered = tags.filter((tag) => !tag.startsWith(prefix));
+  if (!value) return filtered;
+  return [...filtered, `${prefix}${value}`];
 }
 
-function normalizeProject(data: RawProjectData): ProjectPayload {
-  const project = data.user?.projectV2;
-  if (!project) {
-    throw new Error("GitHub project not found.");
-  }
-
-  const fields = (project?.fields?.nodes || [])
-    .map(normalizeField)
-    .filter((field: GitHubField | null): field is GitHubField => {
-      return !!field && field.type !== "UNKNOWN";
-    });
-
-  const rows = (project?.items?.nodes || []).map((item) => {
-    const values: GitHubRow["values"] = {};
-    for (const value of item.fieldValues?.nodes || []) {
-      const field = normalizeField(value.field);
-      if (!field || field.type === "UNKNOWN") continue;
-
-      if (value.__typename === "ProjectV2ItemFieldTextValue") {
-        values[field.id] = value.text || "";
-      } else if (value.__typename === "ProjectV2ItemFieldSingleSelectValue") {
-        values[field.id] = value.optionId || "";
-      } else if (value.__typename === "ProjectV2ItemFieldDateValue") {
-        values[field.id] = value.date || "";
-      } else if (value.__typename === "ProjectV2ItemFieldNumberValue") {
-        values[field.id] = value.number ?? null;
-      }
-    }
-
-    return {
-      id: item.id,
-      title: item.content?.title || "Untitled",
-      body: item.content?.body || null,
-      url: item.content?.url || null,
-      values,
-    };
+function mergeLeadTags(existingTags: string[], leadTags: string[]) {
+  const nonLeadTags = existingTags.filter((tag) => {
+    return tag !== SOURCE_TAG && !LEAD_TAG_PREFIXES.some((prefix) => tag.startsWith(prefix));
   });
+  return [...nonLeadTags, ...leadTags];
+}
+
+function syntheticEmail(position: number) {
+  return `${SOURCE}-${position}@${SYNTHETIC_EMAIL_DOMAIN}`;
+}
+
+function normalizeEmail(email: string, position: number) {
+  const trimmed = email.trim();
+  return trimmed.includes("@") ? trimmed.toLowerCase() : syntheticEmail(position);
+}
+
+function rowFromContact(contact: ContactWithCompany): LeadRow {
+  const tags = contact.tags || [];
+  const position = Number(tagValue(tags, TAG_PREFIX.position, "0")) || 0;
+  const email = tagValue(tags, TAG_PREFIX.displayEmail, contact.email);
+  const isSynthetic = contact.email.endsWith(`@${SYNTHETIC_EMAIL_DOMAIN}`);
+  const displayEmail = isSynthetic ? email : contact.email;
+  const company = contact.company?.name || "";
 
   return {
-    project: {
-      id: project.id,
-      title: project.title || WEST_COAST_BRAND_PROJECT.title,
-      url: project.url || WEST_COAST_BRAND_PROJECT.url,
-      fields,
-      rows,
+    id: contact.id,
+    title: position > 0 ? `#${position} - ${contact.name} - ${company}` : contact.name,
+    values: {
+      status: tagValue(tags, TAG_PREFIX.status, "Not Sent"),
+      person: contact.name,
+      company,
+      email: displayEmail,
+      emailVerified:
+        tagValue(tags, TAG_PREFIX.verified, "false") === "true" ? "verified" : "verify",
+      city: tagValue(tags, TAG_PREFIX.city),
+      sector: tagValue(tags, TAG_PREFIX.sector),
+      note: contact.notes || "",
     },
   };
+}
+
+async function seedIfNeeded() {
+  const existing = await prisma.contact.count({
+    where: { tags: { has: SOURCE_TAG } },
+  });
+  if (existing > 0) return;
+
+  for (const lead of westCoastBrandLeadSeed) {
+    const company = await prisma.company.upsert({
+      where: { name: lead.company },
+      create: { name: lead.company, type: "Brand" },
+      update: {},
+    });
+
+    const baseTags = [
+      SOURCE_TAG,
+      `${TAG_PREFIX.position}${lead.position}`,
+      `${TAG_PREFIX.status}Not Sent`,
+      `${TAG_PREFIX.verified}${lead.emailVerified ? "true" : "false"}`,
+      `${TAG_PREFIX.city}${lead.city}`,
+      `${TAG_PREFIX.sector}${lead.sector}`,
+      `${TAG_PREFIX.displayEmail}${lead.email}`,
+    ];
+
+    const email = normalizeEmail(lead.email, lead.position);
+    const existingContact = await prisma.contact.findUnique({
+      where: { email },
+      select: { tags: true },
+    });
+    const tags = mergeLeadTags(existingContact?.tags || [], baseTags);
+
+    if (existingContact) {
+      await prisma.contact.update({
+        where: { email },
+        data: {
+          companyId: company.id,
+          tags,
+        },
+      });
+    } else {
+      await prisma.contact.create({
+        data: {
+          name: lead.person,
+          email,
+          companyId: company.id,
+          role: "Brand lead",
+          notes: lead.note,
+          tags,
+        },
+      });
+    }
+  }
+}
+
+async function getRows() {
+  await seedIfNeeded();
+
+  const contacts = await prisma.contact.findMany({
+    where: { tags: { has: SOURCE_TAG } },
+    include: { company: { select: { name: true } } },
+    orderBy: { createdAt: "asc" },
+    take: 200,
+  });
+
+  return contacts
+    .map(rowFromContact)
+    .sort((a, b) => {
+      return (
+        Number(a.title.match(/^#(\d+)/)?.[1] || 0) -
+        Number(b.title.match(/^#(\d+)/)?.[1] || 0)
+      );
+    });
 }
 
 export async function GET() {
   const denied = await requireLeadsAccess();
   if (denied) return denied;
 
-  const result = await githubGraphql<RawProjectData>(projectQuery, {
-    owner: WEST_COAST_BRAND_PROJECT.owner,
-    number: WEST_COAST_BRAND_PROJECT.number,
+  const rows = await getRows();
+  return NextResponse.json({
+    project: {
+      id: SOURCE,
+      title: WEST_COAST_BRAND_PROJECT.title,
+      url: WEST_COAST_BRAND_PROJECT.url,
+      fields,
+      rows,
+    },
   });
-  if (result.error) return result.error;
-  if (!result.data.user?.projectV2?.id) {
-    return NextResponse.json(
-      {
-        error: "GitHub Project was not found or is not visible to this token.",
-        projectUrl: WEST_COAST_BRAND_PROJECT.url,
-      },
-      { status: 404 },
-    );
-  }
-
-  return NextResponse.json(normalizeProject(result.data));
 }
 
 export async function PATCH(request: Request) {
@@ -348,27 +236,75 @@ export async function PATCH(request: Request) {
   if (denied) return denied;
 
   const body = await request.json();
-  const { projectId, itemId, fieldId, type, value } = body || {};
-  if (!projectId || !itemId || !fieldId || !type) {
+  const { itemId, fieldId, value } = body || {};
+  if (!itemId || !fieldId) {
     return NextResponse.json({ error: "Missing field update data." }, { status: 400 });
   }
 
-  const fieldValue =
-    type === "SINGLE_SELECT"
-      ? { singleSelectOptionId: value || null }
-      : type === "DATE"
-        ? { date: value || null }
-        : type === "NUMBER"
-          ? { number: value === "" || value == null ? null : Number(value) }
-          : { text: value ?? "" };
-
-  const result = await githubGraphql(updateMutation, {
-    projectId,
-    itemId,
-    fieldId,
-    value: fieldValue,
+  const contact = await prisma.contact.findUnique({
+    where: { id: itemId },
+    include: { company: { select: { id: true, name: true } } },
   });
-  if (result.error) return result.error;
+  if (!contact || !contact.tags.includes(SOURCE_TAG)) {
+    return NextResponse.json({ error: "Lead not found." }, { status: 404 });
+  }
+
+  const nextValue = String(value ?? "").trim();
+  let nextTags = contact.tags;
+  const data: {
+    name?: string;
+    email?: string;
+    companyId?: string | null;
+    notes?: string | null;
+    tags?: string[];
+  } = {};
+
+  if (fieldId === "status") {
+    nextTags = setTag(nextTags, TAG_PREFIX.status, nextValue || "Not Sent");
+    data.tags = nextTags;
+  } else if (fieldId === "person") {
+    data.name = nextValue || contact.name;
+  } else if (fieldId === "company") {
+    if (nextValue) {
+      const company = await prisma.company.upsert({
+        where: { name: nextValue },
+        create: { name: nextValue, type: "Brand" },
+        update: {},
+      });
+      data.companyId = company.id;
+    }
+  } else if (fieldId === "email") {
+    nextTags = setTag(nextTags, TAG_PREFIX.displayEmail, nextValue);
+    data.tags = nextTags;
+    if (nextValue.includes("@")) {
+      data.email = nextValue.toLowerCase();
+    }
+  } else if (fieldId === "emailVerified") {
+    nextTags = setTag(nextTags, TAG_PREFIX.verified, nextValue === "verified" ? "true" : "false");
+    data.tags = nextTags;
+  } else if (fieldId === "city") {
+    nextTags = setTag(nextTags, TAG_PREFIX.city, nextValue);
+    data.tags = nextTags;
+  } else if (fieldId === "sector") {
+    nextTags = setTag(nextTags, TAG_PREFIX.sector, nextValue);
+    data.tags = nextTags;
+  } else if (fieldId === "note") {
+    data.notes = nextValue;
+  } else {
+    return NextResponse.json({ error: "Unsupported field." }, { status: 400 });
+  }
+
+  try {
+    await prisma.contact.update({
+      where: { id: itemId },
+      data,
+    });
+  } catch {
+    return NextResponse.json(
+      { error: "Could not save this cell. The email may already exist." },
+      { status: 409 },
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
