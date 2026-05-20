@@ -3,26 +3,23 @@
 import MuxPlayer from "@mux/mux-player-react";
 
 /**
- * Terry's director-EP statement. 60-90s video (Mux playback ID) over a still
- * fallback when video is not yet recorded. The text below it is the same
- * argument, written, so the value lands even without playback.
+ * Terry's director-EP statement. 60-90s video over a still fallback when the
+ * video isn't yet recorded. Inter sans, light weights, reels-platform palette.
  */
 interface Props {
-  /** Mux playback ID for Terry's recorded statement video (set when filmed). */
   videoPlaybackId?: string | null;
-  /** Fallback still image URL while the video is in production. */
   fallbackImageUrl?: string | null;
 }
 
 export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
   return (
-    <section className="border-b border-white/10 bg-[#111] px-6 py-24">
-      <div className="mx-auto max-w-4xl">
-        <p className="mb-6 text-xs uppercase tracking-[0.18em] text-white/40">
+    <section className="border-b border-white/[0.06] bg-[#111] px-6 py-24">
+      <div className="mx-auto max-w-3xl">
+        <p className="mb-6 text-[10px] uppercase tracking-[0.2em] text-white/40">
           A note from Terry Rayment — Founder &amp; Creative Director
         </p>
 
-        <div className="mb-12 aspect-video w-full overflow-hidden rounded-md bg-black ring-1 ring-white/10">
+        <div className="mb-12 aspect-video w-full overflow-hidden rounded-md bg-black ring-1 ring-white/[0.06]">
           {videoPlaybackId ? (
             <MuxPlayer
               playbackId={videoPlaybackId}
@@ -38,15 +35,15 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
               className="h-full w-full object-cover opacity-90"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-white/30">
-              <span className="font-serif text-3xl">
+            <div className="flex h-full w-full items-center justify-center">
+              <span className="text-[11px] uppercase tracking-[0.2em] text-white/25">
                 Statement video — coming this week
               </span>
             </div>
           )}
         </div>
 
-        <div className="space-y-5 font-serif text-xl leading-relaxed text-white/85">
+        <div className="space-y-5 text-[15px] leading-relaxed tracking-tight text-white/75">
           <p>
             I watched the Professor Chase brief twice the day it arrived. The
             ensemble-comedy-with-real-stakes register is exactly the register
@@ -61,9 +58,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             across USA Network, Golf Channel, CNBC, and the rest. We want to be
             on that short list — and we want to earn it on this brief.
           </p>
-          <p>
-            Professor Chase is our entry.{" "}
-            <span className="text-white">Golf Channel is our home.</span>
+          <p className="text-white">
+            Professor Chase is our entry. Golf Channel is our home.
           </p>
         </div>
       </div>

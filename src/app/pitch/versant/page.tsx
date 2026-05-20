@@ -77,7 +77,15 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
     : REEL_SCREENING_TOKEN_FALLBACK;
 
   return (
-    <main className="min-h-screen bg-black text-white antialiased">
+    <main className="min-h-screen bg-[#0e0e0e] font-sans text-white antialiased selection:bg-white/15">
+      {/* Top brand strip — mirrors the screening viewer's chrome */}
+      <div className="border-b border-white/[0.06] bg-[#080808] px-6 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between text-[10px] uppercase tracking-[0.2em] text-white/40">
+          <span>Friends &amp; Family</span>
+          <span>For Versant Media</span>
+        </div>
+      </div>
+
       <WelcomeSplash recipientFirstName={recipientFirstName} />
 
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
