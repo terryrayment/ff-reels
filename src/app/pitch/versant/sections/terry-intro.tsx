@@ -3,9 +3,9 @@
 import MuxPlayer from "@mux/mux-player-react";
 
 /**
- * Terry's director-EP statement — sounds like Terry actually wrote it.
- * Asymmetric layout (video full width on top, narrow text column below,
- * with a pulled quote at the side) for visual rhythm vs. neighbor sections.
+ * Founder's note — treatment-page styling. Sits on a warm-dark "manila"
+ * tone, with editorial serif heading + sans body + monospace marginalia.
+ * Asymmetric two-column layout for visual rhythm vs. the navy hero above.
  */
 interface Props {
   videoPlaybackId?: string | null;
@@ -14,71 +14,84 @@ interface Props {
 
 export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
   return (
-    <section className="border-b border-white/[0.06] bg-[#111] px-6 py-24">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-10 flex items-baseline justify-between gap-6">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
-            01 — A note from Terry
-          </p>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/25">
-            Friends &amp; Family · Founder
-          </p>
+    <section className="border-b border-white/[0.06] bg-[#161513] px-6 py-28">
+      <div className="mx-auto max-w-5xl">
+        {/* Section gutter strip */}
+        <div className="mb-10 flex items-baseline justify-between text-[10px] uppercase tracking-[0.3em] text-white/35">
+          <span>02 — A note from Terry</span>
+          <span className="font-mono normal-case tracking-normal text-white/25">
+            shot 1 of 3
+          </span>
         </div>
 
-        <div className="mb-12 aspect-video w-full overflow-hidden rounded-md bg-black ring-1 ring-white/[0.06]">
-          {videoPlaybackId ? (
-            <MuxPlayer
-              playbackId={videoPlaybackId}
-              metadata={{ video_title: "Terry Rayment — Versant Statement" }}
-              accentColor="#ffffff"
-              style={{ width: "100%", height: "100%" }}
-            />
-          ) : fallbackImageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={fallbackImageUrl}
-              alt="Terry Rayment, Friends & Family"
-              className="h-full w-full object-cover opacity-90"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <span className="text-[11px] uppercase tracking-[0.2em] text-white/25">
-                Statement video — filming this week
-              </span>
+        <div className="grid gap-12 md:grid-cols-[1.1fr_1.6fr]">
+          {/* Left column — video + marginalia */}
+          <div>
+            <div className="mb-4 aspect-[4/5] w-full overflow-hidden rounded-sm bg-black ring-1 ring-white/[0.06]">
+              {videoPlaybackId ? (
+                <MuxPlayer
+                  playbackId={videoPlaybackId}
+                  metadata={{ video_title: "Terry Rayment — Versant" }}
+                  accentColor="#ffffff"
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : fallbackImageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={fallbackImageUrl}
+                  alt="Terry Rayment"
+                  className="h-full w-full object-cover opacity-90"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#1a1a18] to-[#0e0e0e]">
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-white/30">
+                    Founder portrait · in cut
+                  </span>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-
-        <div className="grid gap-10 md:grid-cols-[1fr_2fr]">
-          <aside className="text-[12px] uppercase tracking-[0.2em] text-white/35 md:border-r md:border-white/[0.08] md:pr-6">
-            <p>
-              The thing we want
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/35">
+              FIG. 01 — Terry Rayment, founder
               <br />
-              <span className="text-white/70">is to be the one you call</span>
+              Friends &amp; Family · Los Angeles
             </p>
-          </aside>
+          </div>
 
-          <div className="space-y-5 text-[15px] leading-relaxed tracking-tight text-white/75">
+          {/* Right column — letter */}
+          <div className="space-y-5 text-[15.5px] leading-[1.7] tracking-tight text-white/80">
+            <p className="font-serif text-[clamp(1.6rem,2.6vw,2.1rem)] leading-[1.15] tracking-tight-2 text-white">
+              We&apos;d like to be on the short list.
+            </p>
+
             <p>
-              Friends &amp; Family is a small production company. We have a
-              roster of directors we love, two great reps, and an obsession
-              with making the kind of work that earns a second meeting. We&apos;ve
-              spent the last few years building the company we&apos;d want to
-              hire. Now we&apos;d like to be the one Versant hires.
+              We want to be on the short list for production work that matters
+              at Versant. We think the first place to prove that is golf. Golf
+              Channel has the rights, the talent, the events, the digital
+              surface, and a fan base that knows when the work is fake. The
+              independent Versant era needs the films that name that next
+              chapter. We&apos;d like to make them.
             </p>
+
             <p>
-              You&apos;re six months into independence. The vendor map you
-              draw between now and the end of the year is the one you&apos;ll
-              work from for a long time. We are politely raising our hand
-              from the back of the room.
+              We&apos;re small enough to care about the material and
+              experienced enough to deliver it at scale. We know the vendor map
+              is being drawn right now. We&apos;d rather be on it before it
+              hardens.
             </p>
-            <p className="text-white">
-              Watch the reel. Read the rest. Then let&apos;s steal thirty
-              minutes and talk about what we&apos;d actually make together.
+
+            <p>
+              Watch the reel. Read the holes. Call us before the next thing
+              becomes urgent.
             </p>
-            <p className="text-[12px] uppercase tracking-[0.18em] text-white/40">
-              — Terry
-            </p>
+
+            <div className="pt-4">
+              <p className="font-serif text-[1.5rem] leading-none tracking-tight-2 text-white">
+                — Terry
+              </p>
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
+                P.S. The reel is short. We didn&apos;t pad it.
+              </p>
+            </div>
           </div>
         </div>
       </div>

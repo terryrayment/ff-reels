@@ -2,34 +2,33 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { TerryIntro } from "./sections/terry-intro";
-import { GolfTab } from "./sections/golf-tab";
+import { FrontNine } from "./sections/front-nine";
 import { OurWork } from "./sections/our-work";
+import { CaddieCards } from "./sections/caddie-cards";
 import { BusinessIntel } from "./sections/business-intel";
-import { FFCompanyCard } from "./sections/ff-company-card";
 import { ContactCta } from "./sections/contact-cta";
 
 /**
  * Branded pitch landing — Friends & Family for Versant Media.
  *
- * Big-picture partnership case: F&F as Versant's long-term creative vendor
- * across USA Network, Golf Channel, CNBC, and the rest of the USA Sports
- * portfolio. Intentionally brief-agnostic — separate project bids (e.g. the
- * NASCAR Professor Chase pitch) live in their own channels.
+ * Architecture: tournament program. Golf-first hero, founder's note,
+ * front nine (production briefs), the reel (the turn), caddie cards
+ * (directors as scouting cards), the read (homework shrunk to a
+ * single page), the call sheet (contact close).
  *
  * Served from:
  *   - https://versant.reels.friendsandfamily.tv/ (subdomain → /pitch/versant)
- *   - https://reels.friendsandfamily.tv/versant (vanity path)
+ *   - https://reels.friendsandfamily.tv/versant (vanity)
  *   - https://reels.friendsandfamily.tv/pitch/versant (direct)
  *
- * Personalization: pass ?t=<token> for a screening link to read recipient
- * name + ctaUrl + ctaLabel. Without a token, the page renders the "for
- * Versant Media" default.
+ * Personalization: pass ?t=<token> to pull recipient name + ctaUrl
+ * from a ScreeningLink. Without a token, renders the default.
  */
 
 export const metadata: Metadata = {
   title: "Friends & Family for Versant Media",
   description:
-    "A case for Friends & Family as Versant Media's long-term creative partner across USA Sports.",
+    "A production case for Friends & Family — for Golf Channel, then everything else inside USA Sports.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -37,7 +36,6 @@ interface PageProps {
   searchParams: { t?: string };
 }
 
-// Hardcoded for this specific pitch. Set when the reel is built.
 const REEL_SCREENING_TOKEN_FALLBACK = process.env.VERSANT_DEMO_REEL_TOKEN ?? null;
 const TERRY_INTRO_PLAYBACK_ID = process.env.VERSANT_TERRY_INTRO_MUX_ID ?? null;
 
@@ -50,7 +48,6 @@ function firstNameOf(full: string | null | undefined): string | null {
 export default async function VersantPitchPage({ searchParams }: PageProps) {
   const token = typeof searchParams?.t === "string" ? searchParams.t : null;
 
-  // Look up personalization data, if a token is present.
   const link = token
     ? await prisma.screeningLink.findUnique({
         where: { token },
@@ -69,35 +66,24 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
     ? firstNameOf(link.recipientName)
     : null;
 
-  // If the token belongs to the Versant reel, use it as the deep-link to the reel.
-  // Otherwise, fall back to the env-configured demo token (so the page is usable
-  // without personalization while we finish wiring real screening links).
   const reelScreeningToken = link?.isActive
     ? link.token
     : REEL_SCREENING_TOKEN_FALLBACK;
 
   return (
-    <main className="min-h-screen bg-[#0e0e0e] font-sans text-white antialiased selection:bg-white/15">
-      {/* Top brand strip — mirrors the screening viewer's chrome */}
-      <div className="border-b border-white/[0.06] bg-[#080808] px-6 py-3">
-        <div className="mx-auto flex max-w-5xl items-center justify-between text-[10px] uppercase tracking-[0.2em] text-white/40">
-          <span>Friends &amp; Family</span>
-          <span>For Versant Media</span>
-        </div>
-      </div>
+    <main className="min-h-screen bg-[#0e0e0e] font-sans text-white antialiased selection:bg-[#c9a961]/30">
+      {/* hairline scroll progress (decorative) */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-x-0 top-0 z-50 h-px bg-gradient-to-r from-transparent via-[#c9a961]/60 to-transparent"
+      />
 
       <WelcomeSplash recipientFirstName={recipientFirstName} />
-
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
-
-      <GolfTab />
-
+      <FrontNine />
       <OurWork reelScreeningToken={reelScreeningToken} />
-
+      <CaddieCards />
       <BusinessIntel />
-
-      <FFCompanyCard />
-
       <ContactCta
         ctaUrl={link?.ctaUrl}
         ctaLabel={link?.ctaLabel}
