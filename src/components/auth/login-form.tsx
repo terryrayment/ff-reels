@@ -39,15 +39,10 @@ export function LoginForm() {
         <div className="flex flex-col items-center mb-16">
           <img
             src="/logo.svg"
-            alt="Friends & Family"
-            className="w-12 h-12 object-contain mb-5"
+            alt=""
+            aria-hidden="true"
+            className="w-12 h-12 object-contain"
           />
-          <h1 className="text-[32px] font-extralight tracking-tight-3 text-[#1A1A1A] leading-none">
-            Friends &amp; Family
-          </h1>
-          <span className="block mt-2.5 text-[9px] text-[#bbb] uppercase tracking-[0.25em]">
-            Reels
-          </span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-7">

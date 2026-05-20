@@ -27,7 +27,7 @@ export default async function LeadsPage() {
             Leads
           </h1>
           <p className="mt-3 max-w-xl text-[12px] text-[#666]">
-            CCCo Leads
+            Midwest Leads
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -54,7 +54,7 @@ export default async function LeadsPage() {
 
       <div className="overflow-hidden rounded-xl border border-[#DEDDD7] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
         <iframe
-          title="Friends & Family Leads Airtable"
+          title="Midwest Leads Airtable"
           src={embedUrl}
           className="h-[calc(100vh-230px)] min-h-[620px] w-full"
           loading="lazy"
