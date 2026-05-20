@@ -68,7 +68,10 @@ export default async function ScreeningPage({
 }: {
   params: { token: string };
 }) {
-  // Step 1: Fetch the screening link + reel + director + items
+  // Step 1: Fetch the screening link + reel + director + items.
+  // We also pull the new branding fields (customWelcomeMessage, customLogoUrl,
+  // ctaUrl, ctaLabel) which render as optional banners around the carousel
+  // when set — these are used by branded pitches like /pitch/versant.
   const link = await prisma.screeningLink.findUnique({
     where: { token: params.token, isActive: true },
     include: {
@@ -388,8 +391,30 @@ export default async function ScreeningPage({
   const { reel } = link;
   const { director } = reel;
 
+  // Optional per-link branding (set by branded pitches via the screening-link form)
+  const hasCustomBranding =
+    Boolean(link.customWelcomeMessage) || Boolean(link.ctaUrl) || Boolean(link.customLogoUrl);
+
   return (
     <ScreeningTracker screeningLinkId={link.id}>
+      {hasCustomBranding && link.customWelcomeMessage && (
+        <div className="border-b border-white/10 bg-black px-6 py-6">
+          <div className="mx-auto flex max-w-5xl items-center gap-4">
+            {link.customLogoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={link.customLogoUrl}
+                alt=""
+                className="h-8 w-auto opacity-90"
+              />
+            )}
+            <p className="font-serif text-base leading-snug text-white/85">
+              {link.customWelcomeMessage}
+            </p>
+          </div>
+        </div>
+      )}
+
       <ScreeningCarousel
         items={reel.items}
         director={director}
@@ -411,6 +436,18 @@ export default async function ScreeningPage({
         screeningToken={params.token}
         directorsData={isMultiDirector ? directorsData : undefined}
       />
+
+      {link.ctaUrl && (
+        <div className="border-t border-white/10 bg-black px-6 py-12 text-center">
+          <a
+            href={link.ctaUrl}
+            className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-medium text-black transition hover:bg-white/90"
+          >
+            {link.ctaLabel ?? "Get in touch"}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      )}
     </ScreeningTracker>
   );
 }

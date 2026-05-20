@@ -30,6 +30,12 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
   const [recipientCompany, setRecipientCompany] = useState("");
   const [expiresInDays, setExpiresInDays] = useState("");
   const [selectedContact, setSelectedContact] = useState<SelectedContact | null>(null);
+  // Pitch-branding (optional — used for custom pitches like versant.reels.friendsandfamily.tv)
+  const [showBranding, setShowBranding] = useState(false);
+  const [customWelcomeMessage, setCustomWelcomeMessage] = useState("");
+  const [customLogoUrl, setCustomLogoUrl] = useState("");
+  const [ctaUrl, setCtaUrl] = useState("");
+  const [ctaLabel, setCtaLabel] = useState("");
   const router = useRouter();
 
   const handleContactSelect = (contact: SelectedContact) => {
@@ -60,6 +66,10 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
           recipientCompany: recipientCompany || undefined,
           expiresInDays: expiresInDays ? parseInt(expiresInDays) : undefined,
           contactId: selectedContact?.id || undefined,
+          customWelcomeMessage: customWelcomeMessage || undefined,
+          customLogoUrl: customLogoUrl || undefined,
+          ctaUrl: ctaUrl || undefined,
+          ctaLabel: ctaLabel || undefined,
         }),
       });
 
@@ -88,6 +98,11 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
     setExpiresInDays("30");
     setSelectedContact(null);
     setCopied(false);
+    setShowBranding(false);
+    setCustomWelcomeMessage("");
+    setCustomLogoUrl("");
+    setCtaUrl("");
+    setCtaLabel("");
   };
 
   return (
@@ -171,6 +186,49 @@ export function CreateScreeningLink({ reelId }: CreateScreeningLinkProps) {
               onChange={(e) => setExpiresInDays(e.target.value)}
               placeholder="30"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowBranding((v) => !v)}
+              className="text-xs uppercase tracking-wide text-[#666] hover:text-[#1A1A1A]"
+            >
+              {showBranding ? "− Hide pitch branding" : "+ Add pitch branding (welcome message, logo, CTA)"}
+            </button>
+
+            {showBranding && (
+              <div className="space-y-3 rounded-sm border border-[#EEEDEA] bg-[#FCFBF9] p-4">
+                <Input
+                  id="customWelcomeMessage"
+                  label="Custom welcome message"
+                  value={customWelcomeMessage}
+                  onChange={(e) => setCustomWelcomeMessage(e.target.value)}
+                  placeholder="Kyra — built this for you. Scroll for the pitch."
+                />
+                <Input
+                  id="customLogoUrl"
+                  label="Custom logo URL (partner brand)"
+                  value={customLogoUrl}
+                  onChange={(e) => setCustomLogoUrl(e.target.value)}
+                  placeholder="https://…"
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    id="ctaLabel"
+                    label="CTA label"
+                    value={ctaLabel}
+                    onChange={(e) => setCtaLabel(e.target.value)}
+                    placeholder="Schedule a 30-min creative call"
+                  />
+                  <Input
+                    id="ctaUrl"
+                    label="CTA URL"
+                    value={ctaUrl}
+                    onChange={(e) => setCtaUrl(e.target.value)}
+                    placeholder="https://cal.com/terry-rayment/30min"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="ghost" onClick={handleClose}>
