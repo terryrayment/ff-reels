@@ -173,19 +173,6 @@ function BriefCard({
       >
         {brief.number}
       </span>
-      {preview.still && (
-        <div className="pointer-events-none absolute bottom-5 right-5 z-20 h-28 w-40 translate-y-3 overflow-hidden rounded-[24px] border border-current/20 bg-black opacity-0 shadow-[0_20px_60px_rgba(0,0,0,0.28)] transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:hidden">
-          {preview.animated && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={preview.animated}
-              alt=""
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          )}
-        </div>
-      )}
 
       <div className="relative z-10 flex h-full flex-col justify-between gap-10">
         <div>
@@ -207,13 +194,36 @@ function BriefCard({
           </p>
         </div>
 
-        <div className={`border-t pt-4 ${rule}`}>
-          <p className={`mb-3 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
-            Suggested director
-          </p>
-          <p className="text-[clamp(20px,2.5vw,34px)] font-medium leading-none tracking-[-0.04em]">
-            {brief.directors}
-          </p>
+        <div className={`grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-end`}>
+          <div className="min-w-0">
+            <p className={`mb-3 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
+              Suggested director
+            </p>
+            <p className="text-[clamp(20px,2.5vw,34px)] font-medium leading-[1.05] tracking-[-0.04em]">
+              {brief.directors}
+            </p>
+          </div>
+
+          {preview.still && (
+            <div className="relative h-24 w-full overflow-hidden rounded-[22px] border border-current/20 bg-black shadow-[0_16px_44px_rgba(0,0,0,0.18)] sm:w-36">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={preview.still}
+                alt=""
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+              {preview.animated && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={preview.animated}
+                  alt=""
+                  className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-300 group-hover:opacity-100 motion-safe:block"
+                  loading="lazy"
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </article>
