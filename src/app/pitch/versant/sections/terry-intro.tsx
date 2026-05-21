@@ -27,35 +27,52 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
 
           <div className="relative z-10 max-w-[760px] space-y-5 text-[clamp(17px,1.55vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/76">
             <h2 className="max-w-3xl pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em] text-black">
-              We&apos;d like to be on the short list.
+              We&apos;d love to be your shortlist.
             </h2>
 
             <p>
-              We&apos;re Friends &amp; Family. We care about the human part of
-              the job: the taste call, the set, the edit, and the version
-              nobody remembered until Friday.
+              We&apos;re a creative studio. A production company. A loose,
+              slightly feral network of production people who do our best work
+              with little or no plan. Hand us a napkin sketch. Hand us a
+              deadline. Hand us a vague feeling and a Tuesday. We&apos;ll find the
+              film inside it.
             </p>
 
             <p>
-              If we got to choose where to start, it&apos;d be golf. Golf Channel
-              has the pace, talent, live pressure, loyal audience, and
-              production surface to show what we do well.
+              We chase the good idea down the hall. We shoot the thing nobody
+              storyboarded. We&apos;ve made tears, made laughs, made a grown man
+              cry at a pickup truck. We are calm in the chaos and a little
+              weird in the calm. This is the part where most companies say
+              &quot;strategic partner.&quot; We&apos;d rather just make something great and
+              let you take the credit.
             </p>
 
             <p>
-              We are not here to sell Versant a stack of new concepts. We are
-              here to be useful inside the work already coming: films, opens,
-              promos, sponsor pieces, talent windows, cutdowns, and whatever
-              shape the brief takes.
+              If you let us pick where to start, we&apos;d pick golf every time.
+              Golf Channel has the pace, the talent, the live pressure, the
+              audience that can smell a fake from the back of the gallery, and
+              the room to actually show what we&apos;re good at. We&apos;d be honored to
+              make something for it.
             </p>
 
             <p>
-              We can stay small and exact. We can scale when the job needs it.
-              We can bring the right director, crew, post path, and delivery
-              plan without making the process heavier than it needs to be.
+              We&apos;re not here to hand you a deck of concepts you didn&apos;t ask
+              for. We&apos;re here to be genuinely useful inside the work already on
+              the way — films, opens, promos, sponsor pieces, talent windows,
+              cutdowns, whatever shape the brief shows up in.
             </p>
 
-            <p>Send us the assignment shape. We&apos;ll show you how we&apos;d make it.</p>
+            <p>
+              We stay small and exact when that&apos;s the move. We scale, fast and
+              calm, when the job calls for it. Either way you get the right
+              director, the right crew, a clean post path, and a delivery plan
+              — without the process ever getting heavier than the work.
+            </p>
+
+            <p>
+              So send us the shape of the thing. We&apos;ll show you — probably
+              with too much enthusiasm — exactly how we&apos;d make it.
+            </p>
 
             <p className="pt-4 text-[clamp(26px,3vw,44px)] font-medium leading-none tracking-[-0.045em] text-black">
               Terry

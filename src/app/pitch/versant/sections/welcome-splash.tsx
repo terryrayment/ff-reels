@@ -134,7 +134,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           </article>
 
           <article className="rounded-[34px] bg-[var(--versant-white)] p-6 sm:p-8 lg:rounded-[44px]">
-            <p className="mb-8 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-black/55">
+            <p className="mb-8 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2 text-[12px] font-medium uppercase tracking-[0.08em] text-black/62">
               What we are
             </p>
             <p className="max-w-lg text-[clamp(28px,4vw,54px)] font-medium leading-[0.95] tracking-[-0.055em]">
