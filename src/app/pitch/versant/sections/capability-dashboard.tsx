@@ -209,8 +209,8 @@ function BriefCard({
 
         <div className={`grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-start`}>
           <div className="min-w-0">
-            <p className={`mb-3 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
-              Suggested creative/director
+            <p className={`mb-3 font-sans text-[13px] font-semibold leading-none tracking-[-0.015em] ${muted}`}>
+              Suggested creative / director
             </p>
             <p className="text-[clamp(20px,2.5vw,34px)] font-medium leading-[1.05] tracking-[-0.04em]">
               {brief.directors}
