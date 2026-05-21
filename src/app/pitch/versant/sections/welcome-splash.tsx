@@ -38,9 +38,19 @@ export function WelcomeSplash({ recipientFirstName }: Props) {
             </h1>
           </div>
 
-          <div className="relative z-10 border-t border-white/14 pt-5 text-[10px] uppercase tracking-[0.18em] text-white/54">
-            Production partner · directors · live action · post · motion ·
-            social delivery
+          <div className="relative z-10 flex flex-wrap gap-2 border-t border-white/14 pt-5 text-[10px] uppercase tracking-[0.18em] text-white/62">
+            {[
+              "Production partner",
+              "Directors",
+              "Live action",
+              "Post",
+              "Motion",
+              "Social delivery",
+            ].map((item) => (
+              <span key={item} className="rounded-full border border-white/14 px-3 py-1.5">
+                {item}
+              </span>
+            ))}
           </div>
         </article>
 
@@ -84,10 +94,10 @@ export function WelcomeSplash({ recipientFirstName }: Props) {
 
           <article className="rounded-[34px] bg-[var(--versant-mint)] p-6 sm:p-8 lg:rounded-[44px]">
             <p className="mb-8 rounded-full bg-[var(--versant-ink)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
-              What we are not doing here
+              What we are doing here
             </p>
             <p className="max-w-md text-[clamp(28px,4vw,52px)] font-medium leading-[0.95] tracking-[-0.055em]">
-              Pitching Versant a slate of new ideas.
+              Showing range, fit, and production judgment.
             </p>
           </article>
         </div>

@@ -7,8 +7,6 @@ interface Props {
 }
 
 const TERRY_EMAIL = "terry@friendsandfamily.tv";
-const TERRY_PHONE_TEL = "+1-310-555-0100";
-const TERRY_PHONE_DISPLAY = "(310) 555-0100";
 
 const DETAILS = [
   ["Project", "Versant x Friends & Family"],
@@ -68,11 +66,10 @@ export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
         </div>
 
         <div className="mt-12 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div className="grid gap-x-8 gap-y-5 border-t border-white/12 pt-6 text-[13px] text-white/72 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-x-8 gap-y-5 border-t border-white/12 pt-6 text-[13px] text-white/72 sm:grid-cols-2 lg:grid-cols-3">
             <Contact label="Production Co." value="Friends & Family" sub="LA / NYC" />
             <Contact label="Call" value="Terry Rayment" sub="Founder & Creative Director" />
             <Contact label="Email" value={TERRY_EMAIL} href={`mailto:${TERRY_EMAIL}`} />
-            <Contact label="Mobile" value={TERRY_PHONE_DISPLAY} href={`tel:${TERRY_PHONE_TEL}`} />
           </div>
 
           <a

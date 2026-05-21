@@ -24,7 +24,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
               Note from Terry
             </span>
             <span className="rounded-full bg-[var(--versant-orange)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-black">
-              available before the fire drill
+              before the fire drill
             </span>
           </div>
 

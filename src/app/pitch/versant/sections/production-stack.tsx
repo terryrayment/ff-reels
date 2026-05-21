@@ -15,7 +15,7 @@ const STACK = [
     number: "02",
     className: "bg-[var(--versant-lime)] text-black lg:translate-y-14",
     copy:
-      "Partner production muscle when the job needs a wider footprint, more crew depth, more local production shape, or a different kind of making.",
+      "Collaborator production muscle when the job needs a wider footprint, more crew depth, more local production shape, or a different kind of making.",
     rows: [
       ["Role", "production partner when needed"],
       ["Useful for", "scaled shoots, complex builds, international production paths"],
@@ -26,7 +26,7 @@ const STACK = [
     number: "03",
     className: "bg-[var(--versant-blue)] text-white lg:translate-y-5",
     copy:
-      "Post and motion capability when the assignment needs design, animation, compositing, cleanup, finishing, or heavy versioning.",
+      "Collaborator post and motion capability when the assignment needs design, animation, compositing, cleanup, finishing, or heavy versioning.",
     rows: [
       ["Role", "post and motion partner when needed"],
       ["Useful for", "motion, comp, finish, delivery systems"],
@@ -61,9 +61,8 @@ export function ProductionStack() {
         </div>
 
         <p className="mt-8 max-w-3xl rounded-[30px] border border-white/12 p-5 text-[15px] leading-[1.4] text-white/64 lg:mt-0">
-          We have already worked in this kind of combined production and post
-          shape. The point for Versant is simple: the team can flex without
-          making the job feel bloated.
+          The point for Versant is simple: the team can flex without making the
+          job feel bloated.
         </p>
       </div>
     </section>

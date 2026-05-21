@@ -11,9 +11,9 @@ const CAPABILITIES: Capability[] = [
   {
     title: "Brand films",
     status: "Director-led",
-    copy: "For moments that need a point of view, not a generic anthem.",
+    copy: "For moments that need tone, taste, and a clear point of view.",
     rows: [
-      ["Best when", "the work needs tone"],
+      ["Best when", "the work needs a voice"],
       ["Output", "hero film, cutdowns, versioned edits"],
       ["F&F fit", "director match, production plan, finish path"],
     ],
@@ -47,7 +47,7 @@ const CAPABILITIES: Capability[] = [
   {
     title: "Sponsor work",
     status: "Editorial feel",
-    copy: "For brand-backed pieces that still need to feel watchable.",
+    copy: "For brand-backed pieces that still need to be watchable.",
     rows: [
       ["Best when", "the guardrails are real"],
       ["Output", "hero piece, cutdowns, clean versions"],

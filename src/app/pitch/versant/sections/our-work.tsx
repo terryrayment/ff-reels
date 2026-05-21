@@ -44,9 +44,8 @@ export function OurWork({ reelScreeningToken }: Props) {
           </div>
 
           <p className="max-w-[48ch] border-l-4 border-[var(--versant-orange)] pl-5 text-[17px] leading-[1.35] tracking-[-0.025em] text-black/68">
-            The reel is not here to prove one lane. It is here to show how
-            Friends &amp; Family moves between faces, timing, performance,
-            comedy, polish, motion, and scale.
+            The reel is here to show how Friends &amp; Family moves between
+            faces, timing, performance, comedy, polish, motion, and scale.
           </p>
 
           <div className="mt-10 space-y-3">
