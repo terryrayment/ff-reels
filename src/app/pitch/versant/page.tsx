@@ -4,11 +4,12 @@ import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { TerryIntro } from "./sections/terry-intro";
 import { CapabilityDashboard } from "./sections/capability-dashboard";
-import { ProductionStack } from "./sections/production-stack";
 import { OurWork } from "./sections/our-work";
 import { RosterModes } from "./sections/roster-modes";
+import { GolfReadStrip } from "./sections/golf-read-strip";
 import { VersantFit } from "./sections/versant-fit";
 import { ContactCta } from "./sections/contact-cta";
+import { VersantMotion } from "./sections/versant-motion";
 
 /**
  * Branded pitch landing — Friends & Family for Versant Media.
@@ -39,6 +40,20 @@ interface PageProps {
 
 const REEL_SCREENING_TOKEN_FALLBACK = process.env.VERSANT_DEMO_REEL_TOKEN ?? null;
 const TERRY_INTRO_PLAYBACK_ID = process.env.VERSANT_TERRY_INTRO_MUX_ID ?? null;
+const DIRECTOR_SLUGS = [
+  "terry-rayment",
+  "jack-turits",
+  "matt-dilmore",
+  "boma-iluma",
+  "kelsey-larkin",
+  "caleb-slain",
+  "james-frost",
+  "cody-cloud",
+  "bueno",
+  "le-ged",
+  "leigh-marling",
+  "brother-willis",
+] as const;
 
 const VERSANT_THEME = {
   "--versant-black": "#101010",
@@ -84,6 +99,35 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
     ? link.token
     : REEL_SCREENING_TOKEN_FALLBACK;
 
+  const directors = await prisma.director.findMany({
+    where: { slug: { in: [...DIRECTOR_SLUGS] } },
+    select: {
+      slug: true,
+      name: true,
+      headshotUrl: true,
+      projects: {
+        where: { isPublished: true, muxPlaybackId: { not: null } },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        take: 1,
+        select: {
+          title: true,
+          brand: true,
+          muxPlaybackId: true,
+          thumbnailUrl: true,
+          frameGrabs: {
+            orderBy: { sortOrder: "asc" },
+            take: 1,
+            select: { imageUrl: true },
+          },
+        },
+      },
+    },
+  });
+
+  const orderedDirectors = DIRECTOR_SLUGS.map((slug) =>
+    directors.find((director) => director.slug === slug),
+  ).filter((director): director is NonNullable<typeof director> => Boolean(director));
+
   return (
     <main
       className="min-h-screen bg-[var(--versant-soft-gray)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[#ff4b32]/25"
@@ -93,13 +137,56 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         aria-hidden="true"
         className="fixed inset-x-0 top-0 z-50 h-px bg-[#101010]/20"
       />
+      <VersantMotion />
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes versant-marquee {
+              from { transform: translate3d(0, 0, 0); }
+              to { transform: translate3d(-50%, 0, 0); }
+            }
+            .versant-marquee {
+              animation: versant-marquee 32s linear infinite;
+              padding-left: 1rem;
+            }
+            .versant-reveal {
+              opacity: 0;
+              transform: translateY(24px);
+              transition: opacity 400ms ease, transform 400ms ease;
+              will-change: opacity, transform;
+            }
+            .versant-reveal.is-visible,
+            .versant-reduce-motion .versant-reveal {
+              opacity: 1;
+              transform: translateY(0);
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .versant-marquee {
+                animation: none;
+                transform: none;
+              }
+              .versant-reveal {
+                opacity: 1;
+                transform: none;
+                transition: none;
+              }
+            }
+          `,
+        }}
+      />
 
-      <WelcomeSplash recipientFirstName={recipientFirstName} />
+      <WelcomeSplash
+        recipientFirstName={recipientFirstName}
+        directors={orderedDirectors}
+      />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
-      <CapabilityDashboard />
-      <ProductionStack />
-      <RosterModes />
-      <OurWork reelScreeningToken={reelScreeningToken} />
+      <OurWork
+        reelScreeningToken={reelScreeningToken}
+        directors={orderedDirectors}
+      />
+      <CapabilityDashboard directors={orderedDirectors} />
+      <RosterModes directors={orderedDirectors} />
+      <GolfReadStrip />
       <VersantFit />
       <ContactCta
         ctaUrl={link?.ctaUrl}

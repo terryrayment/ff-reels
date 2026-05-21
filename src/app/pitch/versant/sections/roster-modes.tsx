@@ -1,155 +1,229 @@
-const MODES = [
+import {
+  motionForDirector,
+  type VersantDirectorMedia,
+} from "./media";
+
+const CADDIES = [
   {
-    label: "Human + intimate",
-    directors: ["Terry Rayment", "Cody Cloud", "Kelsey Larkin"],
-    use:
-      "The work needs faces, restraint, warmth, or a performance that cannot feel pushed.",
-    className: "bg-[var(--versant-white)] text-black lg:col-span-5",
+    slug: "terry-rayment",
+    name: "Terry Rayment",
+    signature: "emotional narrative",
+    credits: "Kodak \"Understanding,\" Purina, Cadillac, Jaguar",
+    match: "Rory/GolfPass intimate films",
+    treatment: "bg-[var(--versant-white)] text-black",
   },
   {
-    label: "Sports + character",
-    directors: ["Jack Turits", "Matt Dilmore", "Brother Willis"],
-    use:
-      "The work needs real people, timing, sports texture, or the strange little details fans remember.",
-    className: "bg-[var(--versant-black)] text-white lg:col-span-7",
+    slug: "jack-turits",
+    name: "Jack Turits",
+    signature: "documentary charm",
+    credits: "Callaway \"Forefront\"",
+    match: "GolfNow portraits",
+    treatment: "bg-[var(--versant-black)] text-white",
   },
   {
-    label: "Culture + youth",
-    directors: ["Boma Iluma", "Bueno", "Le Ged"],
-    use:
-      "The work needs speed, creator fluency, mixed-media energy, or a younger audience without pandering.",
-    className: "bg-[var(--versant-orange)] text-black lg:col-span-4",
+    slug: "matt-dilmore",
+    name: "Matt Dilmore",
+    signature: "offbeat sports comedy",
+    credits: "ESPN 30 for 30 \"The Great Imposter\"",
+    match: "Big Break x Good Good",
+    treatment: "bg-[var(--versant-orange)] text-black",
   },
   {
-    label: "Premium film",
-    directors: ["Caleb Slain", "Terry Rayment", "Kelsey Larkin"],
-    use:
-      "The work needs polish, emotional control, doc craft, and brand scale.",
-    className: "bg-[var(--versant-mint)] text-black lg:col-span-4 lg:translate-y-10",
+    slug: "boma-iluma",
+    name: "Boma Iluma",
+    signature: "culture-forward",
+    credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
+    match: "Good Good / next-gen golf",
+    treatment: "bg-[var(--versant-mint)] text-black",
   },
   {
-    label: "Design + systems",
-    directors: ["James Frost", "Leigh Marling", "Bueno"],
-    use:
-      "The work needs motion language, identity, comedy systems, music, design, or visual invention.",
-    className: "bg-[var(--versant-blue)] text-white lg:col-span-4",
+    slug: "kelsey-larkin",
+    name: "Kelsey Larkin",
+    signature: "precision + dignity",
+    credits: "Gillette \"Look Good, Game Good\"",
+    match: "USA Sports identity / women's sports",
+    treatment: "bg-[var(--versant-blue)] text-white",
+  },
+  {
+    slug: "caleb-slain",
+    name: "Caleb Slain",
+    signature: "anthem craft",
+    credits: "SXSW/Telluride docs, Ford, Lexus, Toyota, Microsoft",
+    match: "Golf Channel anthem",
+    treatment: "bg-[var(--versant-white)] text-black",
+  },
+  {
+    slug: "james-frost",
+    name: "James Frost",
+    signature: "systems + scale",
+    credits: "Nike, IBM, AmEx, OK Go, Radiohead",
+    match: "USA Sports broadcast opens",
+    treatment: "bg-[var(--versant-black)] text-white",
+  },
+  {
+    slug: "cody-cloud",
+    name: "Cody Cloud",
+    signature: "editorial color, portraits",
+    credits: "Apple, Adidas, Asics, Gatorade, Nike, Target",
+    match: "talent portrait package",
+    treatment: "bg-[var(--versant-lime)] text-black",
+  },
+  {
+    slug: "bueno",
+    name: "Bueno",
+    signature: "mixed-media comedy",
+    credits: "Doritos, Netflix, CNN, Cannes Grand Prix",
+    match: "fan campaigns / Big Break energy",
+    treatment: "bg-[var(--versant-orange)] text-black",
+  },
+  {
+    slug: "le-ged",
+    name: "Le Ged",
+    signature: "kinetic camera",
+    credits: "Hilton, McDonald's, YouTube",
+    match: "GolfNow social-first / motion",
+    treatment: "bg-[var(--versant-mint)] text-black",
+  },
+  {
+    slug: "leigh-marling",
+    name: "Leigh Marling",
+    signature: "design-forward brand comedy",
+    credits: "Super Bowl, Snickers, T-Mobile, LEGO",
+    match: "Fandango / Rotten Tomatoes",
+    treatment: "bg-[var(--versant-blue)] text-white",
+  },
+  {
+    slug: "brother-willis",
+    name: "Brother Willis",
+    signature: "warm Americana, sports-card texture",
+    credits: "Topps Chrome Rush, Ford",
+    match: "GolfNow local heroes",
+    treatment: "bg-[var(--versant-white)] text-black",
   },
 ];
 
-const ROSTER = [
-  "Terry Rayment",
-  "Jack Turits",
-  "Matt Dilmore",
-  "Boma Iluma",
-  "Kelsey Larkin",
-  "Caleb Slain",
-  "James Frost",
-  "Cody Cloud",
-  "Bueno",
-  "Le Ged",
-  "Leigh Marling",
-  "Brother Willis",
-];
-
-export function RosterModes() {
+export function RosterModes({
+  directors,
+}: {
+  directors: VersantDirectorMedia[];
+}) {
   return (
     <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-7">
-            <p className="mb-4 rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
-              Roster modes
+          <div className="lg:col-span-8">
+            <p className="mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+              Caddie cards
             </p>
-            <h2 className="text-[clamp(44px,7vw,104px)] font-medium leading-[0.9] tracking-[-0.055em]">
-              A roster that changes with the brief.
+            <h2 className="pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em]">
+              Directors matched to the work.
             </h2>
           </div>
-          <p className="max-w-[58ch] text-[clamp(17px,1.5vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/66 lg:col-span-5">
-            The director choice should come from the assignment, not from a
-            preset style. Here is how we think about the roster when the mold
-            changes.
+          <p className="max-w-[58ch] text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/72 lg:col-span-4">
+            The director choice comes from the assignment: the pressure, the
+            tone, the access, and the delivery path.
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-12 lg:pb-10">
-          {MODES.map((mode) => (
-            <ModeCard key={mode.label} mode={mode} />
+        <div className="grid gap-4 lg:grid-cols-3">
+          {CADDIES.map((card) => (
+            <CaddieCard key={card.slug} card={card} directors={directors} />
           ))}
-        </div>
-
-        <div className="mt-8 overflow-hidden rounded-[32px] bg-[var(--versant-white)] p-4 shadow-[0_20px_70px_rgba(16,16,16,0.07)] lg:mt-0">
-          <div className="mb-4 flex items-center justify-between gap-4 px-2 text-[10px] uppercase tracking-[0.18em] text-black/45">
-            <span>Roster preset row</span>
-            <span>12 directors</span>
-          </div>
-          <div className="flex flex-col gap-2 md:flex-row md:flex-wrap">
-            {ROSTER.map((name) => (
-              <span
-                key={name}
-                className="rounded-full border border-black/12 px-4 py-2 text-[13px] text-black/74"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </section>
   );
 }
 
-function ModeCard({
-  mode,
+function CaddieCard({
+  card,
+  directors,
 }: {
-  mode: {
-    label: string;
-    directors: string[];
-    use: string;
-    className: string;
-  };
+  card: (typeof CADDIES)[number];
+  directors: VersantDirectorMedia[];
 }) {
-  const dark = mode.className.includes("text-white");
-  const rule = dark ? "border-white/18" : "border-black/14";
+  const media = motionForDirector(directors, card.slug, 640);
+  const headshot = media.director?.headshotUrl;
+  const usesFigurePlaceholder =
+    !headshot && (card.slug === "james-frost" || card.slug === "cody-cloud");
+  const dark = card.treatment.includes("text-white");
   const muted = dark ? "text-white/62" : "text-black/58";
+  const rule = dark ? "border-white/16" : "border-black/14";
   const pill = dark
-    ? "border-white/18 text-white/72"
-    : "border-black/14 text-black/62";
+    ? "border-white/18 bg-white/5 text-white/70"
+    : "border-black/14 bg-black/[0.03] text-black/62";
 
   return (
     <article
-      className={`min-h-[25rem] rounded-[36px] p-6 shadow-[0_20px_70px_rgba(16,16,16,0.08)] sm:p-8 lg:rounded-[48px] ${mode.className}`}
+      className={`versant-reveal group overflow-hidden rounded-[36px] p-4 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-5 lg:rounded-[48px] ${card.treatment}`}
     >
-      <div className="flex h-full flex-col justify-between gap-8">
-        <div>
-          <span className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.18em] ${pill}`}>
-            selectable mode
-          </span>
-          <h3 className="mt-8 text-[clamp(34px,5vw,76px)] font-medium leading-[0.9] tracking-[-0.06em]">
-            {mode.label}
-          </h3>
-        </div>
-
-        <div className="space-y-4">
-          <div className={`border-t pt-4 ${rule}`}>
-            <p className={`mb-3 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
-              Directors
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {mode.directors.map((director) => (
-                <span
-                  key={director}
-                  className={`rounded-full border px-3 py-1.5 text-[12px] ${pill}`}
-                >
-                  {director}
-                </span>
-              ))}
-            </div>
+      <div
+        className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
+        style={media.still ? { backgroundImage: `url(${media.still})` } : undefined}
+      >
+        {headshot ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={headshot}
+            alt={card.name}
+            className="h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100"
+            loading="lazy"
+          />
+        ) : usesFigurePlaceholder ? (
+          <div className="grid h-full place-items-center bg-[var(--versant-soft-gray)] text-black">
+            <span className="text-[clamp(54px,8vw,116px)] font-medium leading-none tracking-[-0.08em]">
+              FIG
+            </span>
           </div>
+        ) : media.still ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={media.still}
+            alt={card.name}
+            className="h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100"
+            loading="lazy"
+          />
+        ) : (
+          <div className="h-full w-full bg-black/10" />
+        )}
+
+        {media.animated && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={media.animated}
+            alt=""
+            className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100 motion-safe:block"
+            loading="lazy"
+          />
+        )}
+
+        <div className="absolute left-4 top-4 rounded-full bg-black px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-white">
+          matched card
+        </div>
+      </div>
+
+      <div className="p-2 pt-6">
+        <h3 className="pb-2 text-[clamp(34px,4vw,60px)] font-medium leading-[0.98] tracking-[-0.055em]">
+          {card.name}
+        </h3>
+        <p className={`mt-2 text-[clamp(20px,2.4vw,30px)] leading-[1.05] tracking-[-0.04em] ${muted}`}>
+          {card.signature}
+        </p>
+
+        <div className="mt-7 space-y-4">
           <div className={`border-t pt-4 ${rule}`}>
             <p className={`mb-2 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
-              Use when
+              Credits
             </p>
-            <p className="max-w-[45ch] text-[15px] leading-[1.35]">{mode.use}</p>
+            <p className="text-[14px] leading-[1.32]">{card.credits}</p>
+          </div>
+          <div className={`border-t pt-4 ${rule}`}>
+            <p className={`mb-3 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
+              Matched brief
+            </p>
+            <span className={`inline-flex rounded-full border px-4 py-2 text-[13px] ${pill}`}>
+              &rarr; {card.match}
+            </span>
           </div>
         </div>
       </div>

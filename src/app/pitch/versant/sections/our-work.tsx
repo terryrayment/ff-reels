@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { ArrowUpRight, Film } from "lucide-react";
+import {
+  motionForDirector,
+  type VersantDirectorMedia,
+} from "./media";
 
 interface Props {
   reelScreeningToken?: string | null;
+  directors: VersantDirectorMedia[];
 }
 
 const ROWS = [
@@ -11,21 +16,26 @@ const ROWS = [
   ["Send after watching", "format / deadline / assets / constraints"],
 ];
 
-export function OurWork({ reelScreeningToken }: Props) {
+const REEL_DIRECTORS = ["caleb-slain", "boma-iluma", "terry-rayment", "le-ged"];
+
+export function OurWork({ reelScreeningToken, directors }: Props) {
   const href = reelScreeningToken ? `/s/${reelScreeningToken}` : null;
+  const frames = REEL_DIRECTORS.map((slug) =>
+    motionForDirector(directors, slug, 640),
+  ).filter((frame) => frame.still);
 
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
+    <section className="bg-[var(--versant-black)] px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto grid min-w-0 max-w-[1500px] gap-4 lg:grid-cols-12">
-        <div className="min-w-0 rounded-[42px] bg-[var(--versant-black)] p-5 text-white shadow-[0_28px_90px_rgba(16,16,16,0.18)] sm:p-7 lg:col-span-8 lg:rounded-[52px]">
+        <div className="versant-reveal min-w-0 rounded-[42px] bg-[#050505] p-5 text-white shadow-[0_28px_90px_rgba(0,0,0,0.32)] sm:p-7 lg:col-span-8 lg:rounded-[52px]">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
             <span>F&amp;F reel</span>
             <span>media player</span>
           </div>
-          <ReelFrame href={href} />
+          <ReelFrame href={href} frames={frames} />
         </div>
 
-        <aside className="relative min-w-0 overflow-hidden rounded-[42px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-8 lg:col-span-4 lg:rounded-[52px]">
+        <aside className="versant-reveal relative min-w-0 overflow-hidden rounded-[42px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:p-8 lg:col-span-4 lg:rounded-[52px]">
           <span
             aria-hidden="true"
             className="absolute right-5 top-5 text-[clamp(58px,8vw,116px)] font-medium leading-none tracking-[-0.08em] text-[var(--versant-orange)]"
@@ -43,9 +53,8 @@ export function OurWork({ reelScreeningToken }: Props) {
             </div>
           </div>
 
-          <p className="max-w-[48ch] border-l-4 border-[var(--versant-orange)] pl-5 text-[17px] leading-[1.35] tracking-[-0.025em] text-black/68">
-            The reel is here to show how Friends &amp; Family moves between
-            faces, timing, performance, comedy, polish, motion, and scale.
+          <p className="max-w-[48ch] border-l-4 border-[var(--versant-orange)] pl-5 text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/78">
+            Here&apos;s the tape. Four minutes. Then call us.
           </p>
 
           <div className="mt-10 space-y-3">
@@ -67,7 +76,13 @@ export function OurWork({ reelScreeningToken }: Props) {
   );
 }
 
-function ReelFrame({ href }: { href: string | null }) {
+function ReelFrame({
+  href,
+  frames,
+}: {
+  href: string | null;
+  frames: ReturnType<typeof motionForDirector>[];
+}) {
   const inner = (
     <div className="group relative min-w-0 overflow-hidden rounded-[32px] border border-white/12 bg-[#050505] lg:rounded-[42px]">
       <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 text-[10px] uppercase tracking-[0.18em] text-white/45">
@@ -75,7 +90,39 @@ function ReelFrame({ href }: { href: string | null }) {
         <span>Watch for range</span>
       </div>
 
-      <div className="relative flex aspect-video min-h-[17rem] items-center justify-center bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.08),transparent_34%),#080808]">
+      <div className="relative flex aspect-video min-h-[17rem] items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.08),transparent_34%),#080808]">
+        {frames.length > 0 && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 grid grid-cols-2 opacity-55 transition duration-500 group-hover:opacity-75 md:grid-cols-4"
+          >
+            {frames.map((frame, index) => (
+              <div key={frame.director?.slug ?? index} className="overflow-hidden">
+                {frame.animated && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={frame.animated}
+                    alt=""
+                    className="hidden h-full w-full object-cover motion-safe:block"
+                    loading="lazy"
+                  />
+                )}
+                {frame.still && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={frame.still}
+                    alt=""
+                    className={`h-full w-full object-cover ${
+                      frame.animated ? "motion-safe:hidden" : ""
+                    }`}
+                    loading="lazy"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        <div aria-hidden="true" className="absolute inset-0 bg-black/38" />
         <span
           aria-hidden="true"
           className="absolute inset-5 rounded-[24px] border border-white/10"

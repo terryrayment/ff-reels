@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { getLeadsPasswordHint } from "../src/lib/leads-access.ts";
+import { getLeadsPasswordHint } from "../src/lib/leads-access";
 
 const pageSource = () =>
   readFileSync("src/app/(dashboard)/leads/midwest/page.tsx", "utf8");

@@ -1,115 +1,132 @@
-type Capability = {
-  title: string;
-  status: string;
-  copy: string;
-  rows: [string, string][];
-  metric: string;
-  treatment: string;
-};
+import {
+  motionForDirector,
+  type VersantDirectorMedia,
+} from "./media";
 
-const CAPABILITIES: Capability[] = [
+const BRIEFS = [
   {
-    title: "Brand films",
-    status: "Director-led",
-    copy: "For moments that need tone, taste, and a clear point of view.",
-    rows: [
-      ["Best when", "the work needs a voice"],
-      ["Output", "hero film, cutdowns, versioned edits"],
-      ["F&F fit", "director match, production plan, finish path"],
-    ],
-    metric: "01",
+    kicker: "Golf Channel",
+    title: "Independent era anthem",
+    copy:
+      "A defining film for the independent Versant era, built from the pressure and texture of the channel that already knows the game.",
+    directors: "Caleb Slain / James Frost",
+    previewSlug: "caleb-slain",
     treatment: "lg:col-span-7 bg-[var(--versant-lime)] text-black",
+    number: "01",
   },
   {
-    title: "Promos + opens",
-    status: "Broadcast-ready",
-    copy: "For work that has to move fast, hold a brand register, and survive repeat viewing.",
-    rows: [
-      ["Best when", "live schedules are tight"],
-      ["Output", "opens, stings, promo systems"],
-      ["F&F fit", "picture, motion, edit, delivery"],
-    ],
-    metric: "02",
+    kicker: "Rory / GolfPass / Firethorn",
+    title: "Life around the game",
+    copy:
+      "A short series that feels like a life around the game, not an endorsement reel.",
+    directors: "Terry Rayment / Cody Cloud",
+    previewSlug: "terry-rayment",
     treatment: "lg:col-span-5 bg-[var(--versant-black)] text-white",
+    number: "02",
   },
   {
-    title: "Talent windows",
-    status: "Fast capture",
-    copy: "For athletes, hosts, anchors, creators, and voices with limited time and a lot of deliverables attached.",
-    rows: [
-      ["Best when", "access is short"],
-      ["Output", "stills, motion, social, promo-safe versions"],
-      ["F&F fit", "calm sets, clear shot lists, strong faces"],
-    ],
-    metric: "18m",
-    treatment: "lg:col-span-4 bg-[var(--versant-white)] text-black",
+    kicker: "Big Break x Good Good",
+    title: "Old fans. New tempo.",
+    copy:
+      "Entertainment craft and comedy timing that respects old Golf Channel fans and new YouTube golf fans.",
+    directors: "Matt Dilmore / Boma Iluma / Bueno",
+    previewSlug: "matt-dilmore",
+    treatment: "lg:col-span-6 bg-[var(--versant-orange)] text-black",
+    number: "03",
   },
   {
-    title: "Sponsor work",
-    status: "Editorial feel",
-    copy: "For brand-backed pieces that still need to be watchable.",
-    rows: [
-      ["Best when", "the guardrails are real"],
-      ["Output", "hero piece, cutdowns, clean versions"],
-      ["F&F fit", "taste, restraint, performance"],
-    ],
-    metric: "04",
-    treatment: "lg:col-span-4 bg-[var(--versant-orange)] text-black",
+    kicker: "GolfNow",
+    title: "40M tee times is a map",
+    copy:
+      "Course stories: local rituals, club pros, strange holes, and the people who keep courses alive across 9,000 courses of material.",
+    directors: "Jack Turits / Le Ged / Brother Willis",
+    previewSlug: "jack-turits",
+    treatment: "lg:col-span-6 bg-[var(--versant-white)] text-black",
+    number: "04",
   },
   {
-    title: "Social cutdowns",
-    status: "Versioned delivery",
-    copy: "For work that needs to move across formats without feeling chopped up.",
-    rows: [
-      ["Best when", "one shoot has many homes"],
-      ["Output", "verticals, teasers, captions, crops"],
-      ["F&F fit", "plan for the edit before shoot day"],
-    ],
-    metric: "9:16",
+    kicker: "USA Sports",
+    title: "A voice people can feel",
+    copy:
+      "A visual identity that can carry opens, promos, social, motion language, and the pressure of live sports.",
+    directors: "James Frost / Kelsey Larkin",
+    previewSlug: "kelsey-larkin",
+    treatment: "lg:col-span-4 bg-[var(--versant-blue)] text-white",
+    number: "05",
+  },
+  {
+    kicker: "Ryder Cup / USGA",
+    title: "Tension, silence, weather",
+    copy:
+      "Mini-docs built on memory and reverence without getting sleepy.",
+    directors: "Kelsey Larkin / Caleb Slain",
+    previewSlug: "kelsey-larkin",
     treatment: "lg:col-span-4 bg-[var(--versant-mint)] text-black",
+    number: "06",
   },
   {
-    title: "Post + motion",
-    status: "With Colossal when needed",
-    copy: "For jobs that need design, motion, cleanup, compositing, finishing, or a post-heavy path.",
-    rows: [
-      ["Best when", "the idea lives in the finish"],
-      ["Output", "motion, comp, color, delivery"],
-      ["F&F fit", "creative production through final files"],
-    ],
-    metric: "100%",
-    treatment: "lg:col-span-8 bg-[var(--versant-blue)] text-white",
+    kicker: "Sponsor-friendly editorial",
+    title: "Branded golf people finish",
+    copy:
+      "Guardrailed pieces that still hold faces, timing, and a reason to watch past the logo.",
+    directors: "Terry Rayment / Le Ged",
+    previewSlug: "le-ged",
+    treatment: "lg:col-span-4 bg-[var(--versant-black)] text-white",
+    number: "07",
+  },
+  {
+    kicker: "Secondary call",
+    title: "Movie-culture work",
+    copy:
+      "Fandango and Rotten Tomatoes can use entertainment-brand comedy with craft.",
+    directors: "Leigh Marling / Brother Willis",
+    previewSlug: "leigh-marling",
+    treatment: "lg:col-span-6 bg-[var(--versant-white)] text-black",
+    number: "S1",
+    secondary: true,
+  },
+  {
+    kicker: "Secondary call",
+    title: "Talent + explainer craft",
+    copy:
+      "CNBC and MS NOW need voices, structure, and clean film language when the subject gets dense.",
+    directors: "Leigh Marling / Brother Willis",
+    previewSlug: "brother-willis",
+    treatment: "lg:col-span-6 bg-[var(--versant-orange)] text-black",
+    number: "S2",
+    secondary: true,
   },
 ];
 
-export function CapabilityDashboard() {
+export function CapabilityDashboard({
+  directors,
+}: {
+  directors: VersantDirectorMedia[];
+}) {
   return (
     <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-7">
-            <p className="mb-4 rounded-full bg-[var(--versant-white)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-black/55">
-              Capability dashboard
+          <div className="lg:col-span-8">
+            <p className="mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+              Production briefs
             </p>
-            <h2 className="text-[clamp(44px,7vw,104px)] font-medium leading-[0.9] tracking-[-0.055em]">
-              Many molds.
-              <br />
-              Same taste.
+            <h2 className="pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em]">
+              The calls we&apos;d want to get.
             </h2>
           </div>
-          <p className="max-w-[58ch] text-[clamp(17px,1.5vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/68 lg:col-span-5">
-            Versant does not need a vendor with one house style. It needs a
-            partner that can read the assignment, match the director, build the
-            production path, and finish the work in the right shape.
+          <p className="max-w-[58ch] text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/72 lg:col-span-4">
+            Golf first. Every card is a reason to call Friends &amp; Family to
+            make something, not another services matrix.
           </p>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-12">
-          {CAPABILITIES.map((capability, index) => (
-            <CapabilityCard
-              key={capability.title}
-              capability={capability}
-              tall={index < 2}
+          {BRIEFS.map((brief) => (
+            <BriefCard
+              key={`${brief.kicker}-${brief.title}`}
+              brief={brief}
+              directors={directors}
             />
           ))}
         </div>
@@ -118,69 +135,85 @@ export function CapabilityDashboard() {
   );
 }
 
-function CapabilityCard({
-  capability,
-  tall,
+function BriefCard({
+  brief,
+  directors,
 }: {
-  capability: Capability;
-  tall: boolean;
+  brief: {
+    kicker: string;
+    title: string;
+    copy: string;
+    directors: string;
+    previewSlug: string;
+    treatment: string;
+    number: string;
+    secondary?: boolean;
+  };
+  directors: VersantDirectorMedia[];
 }) {
-  const mutedText = capability.treatment.includes("text-white")
-    ? "text-white/68"
-    : "text-black/62";
-  const rule = capability.treatment.includes("text-white")
-    ? "border-white/18"
-    : "border-black/16";
+  const dark = brief.treatment.includes("text-white");
+  const muted = dark ? "text-white/62" : "text-black/56";
+  const rule = dark ? "border-white/16" : "border-black/14";
+  const pill = dark
+    ? "border-white/18 bg-white/5 text-white/70"
+    : "border-black/14 bg-black/[0.03] text-black/62";
+  const preview = motionForDirector(directors, brief.previewSlug, 420);
 
   return (
     <article
-      className={`relative overflow-hidden rounded-[34px] p-6 shadow-[0_20px_70px_rgba(16,16,16,0.08)] sm:p-8 lg:rounded-[46px] ${
-        tall ? "min-h-[31rem]" : "min-h-[25rem]"
-      } ${capability.treatment}`}
+      className={`versant-reveal group relative min-h-[28rem] overflow-hidden rounded-[36px] p-6 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-8 lg:rounded-[48px] ${brief.treatment} ${
+        brief.secondary ? "min-h-[22rem]" : ""
+      }`}
     >
       <span
         aria-hidden="true"
-        className={`absolute -right-3 -top-5 text-[clamp(110px,14vw,220px)] font-medium leading-none tracking-[-0.09em] ${
-          capability.treatment.includes("text-white")
-            ? "text-white/10"
-            : "text-black/8"
+        className={`pointer-events-none absolute right-5 top-5 z-0 text-[clamp(88px,12vw,190px)] font-medium leading-none tracking-[-0.09em] ${
+          dark ? "text-white/[0.08]" : "text-black/[0.07]"
         }`}
       >
-        {capability.metric}
+        {brief.number}
       </span>
+      {preview.still && (
+        <div className="pointer-events-none absolute bottom-5 right-5 z-20 h-28 w-40 translate-y-3 overflow-hidden rounded-[24px] border border-current/20 bg-black opacity-0 shadow-[0_20px_60px_rgba(0,0,0,0.28)] transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:hidden">
+          {preview.animated && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={preview.animated}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          )}
+        </div>
+      )}
 
-      <div className="relative z-10 flex h-full flex-col justify-between gap-8">
+      <div className="relative z-10 flex h-full flex-col justify-between gap-10">
         <div>
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-            <span
-              className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.18em] ${rule}`}
-            >
-              {capability.status}
+          <div className="mb-7 flex flex-wrap items-center gap-3">
+            <span className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.18em] ${pill}`}>
+              {brief.kicker}
             </span>
-            <span className={`text-[10px] uppercase tracking-[0.18em] ${mutedText}`}>
-              status · ready
-            </span>
+            {brief.secondary && (
+              <span className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.18em] ${pill}`}>
+                secondary
+              </span>
+            )}
           </div>
-          <h3 className="max-w-2xl text-[clamp(34px,5vw,74px)] font-medium leading-[0.9] tracking-[-0.06em]">
-            {capability.title}
+          <h3 className="max-w-3xl pb-2 text-[clamp(34px,5vw,76px)] font-medium leading-[0.98] tracking-[-0.055em]">
+            {brief.title}
           </h3>
-          <p className={`mt-5 max-w-[45ch] text-[16px] leading-[1.35] ${mutedText}`}>
-            {capability.copy}
+          <p className={`mt-5 max-w-[48ch] text-[17px] leading-[1.32] tracking-[-0.02em] ${muted}`}>
+            {brief.copy}
           </p>
         </div>
 
-        <div className="space-y-3">
-          {capability.rows.map(([label, value]) => (
-            <div
-              key={label}
-              className={`grid gap-2 border-t pt-3 text-[13px] sm:grid-cols-[6.5rem_1fr] ${rule}`}
-            >
-              <span className={`text-[10px] uppercase tracking-[0.18em] ${mutedText}`}>
-                {label}
-              </span>
-              <span>{value}</span>
-            </div>
-          ))}
+        <div className={`border-t pt-4 ${rule}`}>
+          <p className={`mb-3 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
+            Suggested director
+          </p>
+          <p className="text-[clamp(20px,2.5vw,34px)] font-medium leading-none tracking-[-0.04em]">
+            {brief.directors}
+          </p>
         </div>
       </div>
     </article>

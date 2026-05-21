@@ -1,5 +1,11 @@
+import {
+  motionForDirector,
+  type VersantDirectorMedia,
+} from "./media";
+
 interface Props {
   recipientFirstName?: string | null;
+  directors: VersantDirectorMedia[];
 }
 
 const FORMAT_ROWS = [
@@ -8,7 +14,15 @@ const FORMAT_ROWS = [
   ["Output", "finished, versioned, delivered"],
 ];
 
-export function WelcomeSplash({ recipientFirstName }: Props) {
+const HERO_DIRECTORS = ["caleb-slain", "boma-iluma", "cody-cloud", "le-ged"];
+const GOLF_TICKER =
+  "2,000+ live hours · 200+ events · 35% of golf hours watched · USGA through 2032 · Ryder Cup through 2033 · GolfNow 40M tee times · Rory through 2038";
+
+export function WelcomeSplash({ recipientFirstName, directors }: Props) {
+  const motionFrames = HERO_DIRECTORS.map((slug) =>
+    motionForDirector(directors, slug, 640),
+  ).filter((frame) => frame.still);
+
   return (
     <section className="px-4 py-4 text-[var(--versant-ink)] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[1600px] gap-4 lg:grid-cols-12">
@@ -21,6 +35,28 @@ export function WelcomeSplash({ recipientFirstName }: Props) {
             aria-hidden="true"
             className="absolute bottom-12 right-12 hidden h-2 w-2 rounded-full bg-[var(--versant-orange)] lg:block"
           />
+          {motionFrames.length > 0 && (
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-6 top-28 grid h-[42%] grid-cols-2 gap-2 opacity-[0.42] mix-blend-screen blur-[0.2px] sm:inset-x-auto sm:right-8 sm:top-32 sm:h-[48%] sm:w-[48%]"
+            >
+              {motionFrames.slice(0, 4).map((frame, index) => (
+                <div
+                  key={frame.director?.slug ?? index}
+                  className={`overflow-hidden rounded-[24px] bg-white/5 ${
+                    index === 0 ? "col-span-2 sm:col-span-1" : ""
+                  }`}
+                >
+                  <MotionFrame
+                    animated={frame.animated}
+                    still={frame.still}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="relative z-10 flex items-center justify-between gap-4 text-[10px] uppercase tracking-[0.18em] text-white/55">
             <span>Friends &amp; Family for Versant</span>
@@ -51,6 +87,13 @@ export function WelcomeSplash({ recipientFirstName }: Props) {
                 {item}
               </span>
             ))}
+          </div>
+
+          <div className="relative z-10 mt-4 overflow-hidden rounded-full border border-white/12 bg-white/[0.03] py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
+            <div className="versant-marquee flex w-max gap-8 motion-reduce:animate-none">
+              <span>{GOLF_TICKER}</span>
+              <span aria-hidden="true">{GOLF_TICKER}</span>
+            </div>
           </div>
         </article>
 
@@ -103,5 +146,40 @@ export function WelcomeSplash({ recipientFirstName }: Props) {
         </div>
       </div>
     </section>
+  );
+}
+
+function MotionFrame({
+  animated,
+  still,
+  alt,
+  className,
+}: {
+  animated: string | null;
+  still: string | null;
+  alt: string;
+  className?: string;
+}) {
+  if (!still) return null;
+
+  return (
+    <>
+      {animated && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={animated}
+          alt={alt}
+          className={`${className ?? ""} hidden motion-safe:block`}
+          loading="eager"
+        />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={still}
+        alt={alt}
+        className={`${className ?? ""} ${animated ? "motion-safe:hidden" : ""}`}
+        loading="eager"
+      />
+    </>
   );
 }
