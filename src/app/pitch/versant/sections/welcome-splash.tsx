@@ -17,6 +17,8 @@ const FORMAT_ROWS = [
 const HERO_DIRECTORS = ["caleb-slain", "boma-iluma", "cody-cloud", "le-ged"];
 const GOLF_TICKER =
   "2,000+ live hours · 200+ events · 35% of golf hours watched · USGA through 2032 · Ryder Cup through 2033 · GolfNow 40M tee times · Rory through 2038";
+const HERO_MICRO_LABEL =
+  "font-mono text-[10px] font-medium uppercase tracking-[0.08em]";
 
 export function WelcomeSplash({ recipientFirstName, directors }: Props) {
   const motionFrames = HERO_DIRECTORS.map((slug) =>
@@ -58,7 +60,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             </div>
           )}
 
-          <div className="relative z-10 flex items-center justify-between gap-4 text-[10px] uppercase tracking-[0.18em] text-white/55">
+          <div className={`relative z-10 flex items-center justify-between gap-4 text-white/55 ${HERO_MICRO_LABEL}`}>
             <span>Friends &amp; Family for Versant</span>
             <span>
               {recipientFirstName
@@ -68,16 +70,8 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           </div>
 
           <div className="relative z-10 max-w-5xl py-12 lg:py-16">
-            <p className="mb-6 inline-flex items-baseline gap-2 rounded-full border border-white/18 px-4 py-2 text-white/78">
-              <span className="font-serif text-[15px] italic normal-case leading-none tracking-[-0.03em]">
-                Friends &amp; Family
-              </span>
-              <span className="text-[9px] font-medium uppercase leading-none tracking-[0.08em] text-white/46">
-                for
-              </span>
-              <span className="font-serif text-[15px] italic normal-case leading-none tracking-[-0.03em]">
-                Versant
-              </span>
+            <p className={`mb-6 inline-flex rounded-full border border-white/18 px-4 py-2 text-white/76 ${HERO_MICRO_LABEL}`}>
+              Friends &amp; Family / Versant
             </p>
             <h1 className="pb-3 text-[clamp(58px,10vw,140px)] font-medium leading-[0.94] tracking-[-0.07em]">
               Hi Versant.
@@ -90,7 +84,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             </p>
           </div>
 
-          <div className="relative z-10 flex flex-wrap gap-2 border-t border-white/14 pt-5 text-[10px] uppercase tracking-[0.18em] text-white/62">
+          <div className={`relative z-10 flex flex-wrap gap-2 border-t border-white/14 pt-5 text-white/62 ${HERO_MICRO_LABEL}`}>
             {[
               "Production partner",
               "Directors",
@@ -105,7 +99,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             ))}
           </div>
 
-          <div className="relative z-10 mt-4 overflow-hidden rounded-full border border-white/12 bg-white/[0.03] py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/42">
+          <div className={`relative z-10 mt-4 overflow-hidden rounded-full border border-white/12 bg-white/[0.03] py-2 text-white/42 ${HERO_MICRO_LABEL}`}>
             <div className="versant-marquee flex w-max gap-8 motion-reduce:animate-none">
               <span>{GOLF_TICKER}</span>
               <span aria-hidden="true">{GOLF_TICKER}</span>
@@ -116,10 +110,10 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
         <div className="grid gap-4 lg:col-span-5 lg:grid-rows-[1.2fr_1fr]">
           <article className="rounded-[36px] bg-[var(--versant-orange)] p-6 text-[var(--versant-ink)] sm:p-8 lg:rounded-[44px]">
             <div className="mb-8 flex items-center justify-between gap-4">
-              <p className="rounded-full bg-[var(--versant-ink)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+              <p className={`rounded-full bg-[var(--versant-ink)] px-4 py-2 text-white ${HERO_MICRO_LABEL}`}>
                 Start here
               </p>
-              <span className="text-[12px] uppercase tracking-[0.16em] text-black/55">
+              <span className={`text-black/55 ${HERO_MICRO_LABEL}`}>
                 live input
               </span>
             </div>
@@ -132,7 +126,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                   key={label}
                   className="grid gap-2 border-t border-black/18 pt-3 text-[13px] sm:grid-cols-[5rem_1fr]"
                 >
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-black/50">
+                  <span className={`text-black/50 ${HERO_MICRO_LABEL}`}>
                     {label}
                   </span>
                   <span>{value}</span>
@@ -142,7 +136,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           </article>
 
           <article className="rounded-[34px] bg-[var(--versant-white)] p-6 sm:p-8 lg:rounded-[44px]">
-            <p className="mb-8 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2 text-[12px] font-medium uppercase tracking-[0.08em] text-black/62">
+            <p className={`mb-8 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2 text-black/62 ${HERO_MICRO_LABEL}`}>
               What we are
             </p>
             <p className="max-w-lg text-[clamp(28px,4vw,54px)] font-medium leading-[0.95] tracking-[-0.055em]">
