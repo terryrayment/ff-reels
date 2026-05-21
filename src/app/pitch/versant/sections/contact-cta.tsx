@@ -87,7 +87,7 @@ export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
             href={href}
             className="group flex min-h-[9rem] items-end justify-between rounded-[30px] bg-[var(--versant-orange)] p-5 text-left text-[clamp(24px,3vw,46px)] font-medium leading-[0.95] tracking-[-0.055em] text-black transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
-            <span>Send the brief</span>
+            <span>Share the brief when ready</span>
             <ArrowUpRight className="h-6 w-6 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
           </a>
         </div>

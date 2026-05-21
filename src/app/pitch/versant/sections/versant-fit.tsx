@@ -30,7 +30,7 @@ export function VersantFit() {
               Versant fit
             </p>
             <h2 className="max-w-4xl pb-2 text-[clamp(42px,6vw,86px)] font-medium leading-[0.96] tracking-[-0.055em]">
-              Why Golf Channel first.
+              Golf feels like the right first lane.
             </h2>
           </div>
 

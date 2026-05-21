@@ -7,18 +7,6 @@ import {
 
 const CADDIES = [
   {
-    slug: "terry-rayment",
-    name: "Terry Rayment",
-    signature: "emotional narrative",
-    credits: "Kodak \"Understanding,\" Purina, Cadillac, Jaguar",
-    match: "Rory/GolfPass intimate films",
-    treatment: "bg-[var(--versant-white)] text-black",
-    media: {
-      muxPlaybackId: "z3BCWiNoyvzWXlo17EFk4z02DwV800nPqgHbZcgoODgQ00",
-      duration: 165.166667,
-    },
-  },
-  {
     slug: "jack-turits",
     name: "Jack Turits",
     signature: "documentary charm",
@@ -41,6 +29,7 @@ const CADDIES = [
       muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
       duration: 587.536967,
     },
+    mediaClass: "scale-[1.24]",
   },
   {
     slug: "boma-iluma",
@@ -49,6 +38,7 @@ const CADDIES = [
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
     match: "Good Good / next-gen golf",
     treatment: "bg-[var(--versant-mint)] text-black",
+    mediaClass: "scale-[1.22]",
   },
   {
     slug: "kelsey-larkin",
@@ -69,22 +59,10 @@ const CADDIES = [
     credits: "SXSW/Telluride docs, Ford, Lexus, Toyota, Microsoft",
     match: "Golf Channel anthem",
     treatment: "bg-[var(--versant-white)] text-black",
-  },
-  {
-    slug: "james-frost",
-    name: "James Frost",
-    signature: "systems + scale",
-    credits: "Nike, IBM, AmEx, OK Go, Radiohead",
-    match: "USA Sports broadcast opens",
-    treatment: "bg-[var(--versant-black)] text-white",
-  },
-  {
-    slug: "cody-cloud",
-    name: "Cody Cloud",
-    signature: "editorial color, portraits",
-    credits: "Apple, Adidas, Asics, Gatorade, Nike, Target",
-    match: "talent portrait package",
-    treatment: "bg-[var(--versant-lime)] text-black",
+    media: {
+      muxPlaybackId: "ekGrtmsCnZ9yk1tw8Gez7jPwNUCY55KBCtCF7qThKIw",
+      duration: 85.336211,
+    },
   },
   {
     slug: "bueno",
@@ -117,6 +95,38 @@ const CADDIES = [
     credits: "Topps Chrome Rush, Ford",
     match: "GolfNow local heroes",
     treatment: "bg-[var(--versant-white)] text-black",
+  },
+  {
+    slug: "james-frost",
+    name: "James Frost",
+    signature: "systems + scale",
+    credits: "Nike, IBM, AmEx, OK Go, Radiohead",
+    match: "USA Sports broadcast opens",
+    treatment: "bg-[var(--versant-black)] text-white",
+  },
+  {
+    slug: "cody-cloud",
+    name: "Cody Cloud",
+    signature: "editorial color, portraits",
+    credits: "Apple, Adidas, Asics, Gatorade, Nike, Target",
+    match: "talent portrait package",
+    treatment: "bg-[var(--versant-lime)] text-black",
+    media: {
+      muxPlaybackId: "feQSUP17mpG4Ay8bAHFPHuXx66CQwudaK4uKlUMj4pw",
+      duration: 60.3603,
+    },
+  },
+  {
+    slug: "terry-rayment",
+    name: "Terry Rayment",
+    signature: "emotional narrative",
+    credits: "Kodak \"Understanding,\" Purina, Cadillac, Jaguar",
+    match: "Rory/GolfPass intimate films",
+    treatment: "bg-[var(--versant-white)] text-black",
+    media: {
+      muxPlaybackId: "z3BCWiNoyvzWXlo17EFk4z02DwV800nPqgHbZcgoODgQ00",
+      duration: 165.166667,
+    },
   },
 ];
 
@@ -173,6 +183,7 @@ function CaddieCard({
   const headshot = media.director?.headshotUrl;
   const still = overrideStill ?? media.still;
   const animated = overrideAnimated ?? media.animated;
+  const mediaClass = "mediaClass" in card ? card.mediaClass : "";
   const usesFigurePlaceholder =
     !headshot && (card.slug === "james-frost" || card.slug === "cody-cloud");
   const dark = card.treatment.includes("text-white");
@@ -195,7 +206,7 @@ function CaddieCard({
           <img
             src={overrideStill}
             alt={card.name}
-            className="h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100"
+            className={`h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
             loading="lazy"
           />
         ) : headshot ? (
@@ -203,7 +214,7 @@ function CaddieCard({
           <img
             src={headshot}
             alt={card.name}
-            className="h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100"
+            className={`h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
             loading="lazy"
           />
         ) : usesFigurePlaceholder ? (
@@ -217,7 +228,7 @@ function CaddieCard({
           <img
             src={still}
             alt={card.name}
-            className="h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100"
+            className={`h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
             loading="lazy"
           />
         ) : (
@@ -229,7 +240,7 @@ function CaddieCard({
           <img
             src={animated}
             alt=""
-            className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100 motion-safe:block"
+            className={`absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100 motion-safe:block ${mediaClass}`}
             loading="lazy"
           />
         )}
