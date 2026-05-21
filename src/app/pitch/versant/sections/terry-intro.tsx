@@ -23,20 +23,23 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             <span className="rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
               Note from Terry
             </span>
-            <span className="rounded-full bg-[var(--versant-orange)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-black">
-              before the fire drill
-            </span>
           </div>
 
           <div className="relative z-10 max-w-[760px] space-y-5 text-[clamp(17px,1.55vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/76">
-            <h2 className="max-w-3xl text-[clamp(44px,7vw,104px)] font-medium leading-[0.9] tracking-[-0.055em] text-black">
+            <h2 className="max-w-3xl pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em] text-black">
               We&apos;d like to be on the short list.
             </h2>
 
             <p>
-              Golf Channel feels like the right first lane because it has the
-              pace, talent, live pressure, loyal audience, and production
-              surface to show what we do well.
+              We&apos;re Friends &amp; Family. We care about the human part of
+              the job: the taste call, the set, the edit, and the version
+              nobody remembered until Friday.
+            </p>
+
+            <p>
+              If we got to choose where to start, it&apos;d be golf. Golf Channel
+              has the pace, talent, live pressure, loyal audience, and
+              production surface to show what we do well.
             </p>
 
             <p>

@@ -155,7 +155,7 @@ function CaddieCard({
 
   return (
     <article
-      className={`versant-reveal group overflow-hidden rounded-[36px] p-4 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-5 lg:rounded-[48px] ${card.treatment}`}
+      className={`versant-reveal group flex min-h-[40rem] flex-col overflow-hidden rounded-[36px] p-4 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-5 lg:rounded-[48px] ${card.treatment}`}
     >
       <div
         className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
@@ -202,7 +202,7 @@ function CaddieCard({
         </div>
       </div>
 
-      <div className="p-2 pt-6">
+      <div className="flex flex-1 flex-col p-2 pt-6">
         <h3 className="pb-2 text-[clamp(34px,4vw,60px)] font-medium leading-[0.98] tracking-[-0.055em]">
           {card.name}
         </h3>
@@ -210,7 +210,7 @@ function CaddieCard({
           {card.signature}
         </p>
 
-        <div className="mt-7 space-y-4">
+        <div className="mt-auto space-y-4 pt-7">
           <div className={`border-t pt-4 ${rule}`}>
             <p className={`mb-2 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
               Credits

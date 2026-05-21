@@ -1,6 +1,7 @@
 export type VersantProjectMedia = {
   title: string;
   brand: string | null;
+  duration: number | null;
   muxPlaybackId: string | null;
   thumbnailUrl: string | null;
   frameGrabs: { imageUrl: string }[];
@@ -19,19 +20,44 @@ export function topProjectOf(
   return director?.projects?.[0] ?? null;
 }
 
-export function muxAnimatedUrl(playbackId: string, width = 640) {
-  return `https://image.mux.com/${playbackId}/animated.webp?width=${width}&fps=15&start=2&end=7`;
+function sampleWindow(duration: number | null | undefined) {
+  const fallbackStart = 8;
+  if (!duration || duration <= 10) {
+    return { start: 2, still: 4, end: 7 };
+  }
+
+  const start = Math.max(fallbackStart, Math.round(duration * 0.45));
+  const end = Math.max(start + 1, Math.min(start + 5, Math.floor(duration - 1)));
+  const still = Math.min(start + 2, end);
+
+  return { start, still, end };
 }
 
-export function muxStillUrl(playbackId: string, width = 640) {
-  return `https://image.mux.com/${playbackId}/thumbnail.webp?time=3&width=${width}`;
+export function muxAnimatedUrl(
+  playbackId: string,
+  width = 640,
+  duration?: number | null,
+) {
+  const { start, end } = sampleWindow(duration);
+  return `https://image.mux.com/${playbackId}/animated.webp?width=${width}&fps=15&start=${start}&end=${end}`;
+}
+
+export function muxStillUrl(
+  playbackId: string,
+  width = 640,
+  duration?: number | null,
+) {
+  const { still } = sampleWindow(duration);
+  return `https://image.mux.com/${playbackId}/thumbnail.webp?width=${width}&time=${still}`;
 }
 
 export function projectStillUrl(project: VersantProjectMedia | null, width = 640) {
   if (!project) return null;
-  if (project.thumbnailUrl) return project.thumbnailUrl;
+  if (project.muxPlaybackId) {
+    return muxStillUrl(project.muxPlaybackId, width, project.duration);
+  }
   if (project.frameGrabs[0]?.imageUrl) return project.frameGrabs[0].imageUrl;
-  if (project.muxPlaybackId) return muxStillUrl(project.muxPlaybackId, width);
+  if (project.thumbnailUrl) return project.thumbnailUrl;
   return null;
 }
 
@@ -54,7 +80,8 @@ export function motionForDirector(
     director,
     project,
     still,
-    animated: project?.muxPlaybackId ? muxAnimatedUrl(project.muxPlaybackId, width) : still,
+    animated: project?.muxPlaybackId
+      ? muxAnimatedUrl(project.muxPlaybackId, width, project.duration)
+      : still,
   };
 }
-

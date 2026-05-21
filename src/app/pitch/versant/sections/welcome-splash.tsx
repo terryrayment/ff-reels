@@ -60,18 +60,26 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
 
           <div className="relative z-10 flex items-center justify-between gap-4 text-[10px] uppercase tracking-[0.18em] text-white/55">
             <span>Friends &amp; Family for Versant</span>
-            <span>{recipientFirstName ? `For ${recipientFirstName}` : "Golf Channel lead"}</span>
+            <span>
+              {recipientFirstName
+                ? `For ${recipientFirstName}`
+                : "Friends & Family · for Versant"}
+            </span>
           </div>
 
           <div className="relative z-10 max-w-5xl py-12 lg:py-16">
             <p className="mb-6 inline-flex rounded-full border border-white/18 px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white/70">
               Friends &amp; Family for Versant
             </p>
-            <h1 className="text-[clamp(64px,11vw,160px)] font-medium leading-[0.86] tracking-[-0.07em]">
-              Golf Channel first.{" "}
+            <h1 className="pb-3 text-[clamp(58px,10vw,140px)] font-medium leading-[0.94] tracking-[-0.07em]">
+              Hi Versant.
               <br />
-              Flexible for everything after.
+              We make the stuff worth caring about.
             </h1>
+            <p className="mt-5 max-w-[38rem] text-[clamp(22px,2.6vw,38px)] leading-[1.06] tracking-[-0.045em] text-white/72">
+              A director-led production company — and a not-so-secret golf
+              obsession we&apos;ll get to in a minute.
+            </p>
           </div>
 
           <div className="relative z-10 flex flex-wrap gap-2 border-t border-white/14 pt-5 text-[10px] uppercase tracking-[0.18em] text-white/62">
@@ -97,7 +105,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           </div>
         </article>
 
-        <div className="grid gap-4 lg:col-span-5 lg:grid-rows-[1.25fr_0.85fr_0.9fr]">
+        <div className="grid gap-4 lg:col-span-5 lg:grid-rows-[1.2fr_1fr]">
           <article className="rounded-[36px] bg-[var(--versant-orange)] p-6 text-[var(--versant-ink)] sm:p-8 lg:rounded-[44px]">
             <div className="mb-8 flex items-center justify-between gap-4">
               <p className="rounded-full bg-[var(--versant-ink)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
@@ -132,15 +140,6 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             <p className="max-w-lg text-[clamp(28px,4vw,54px)] font-medium leading-[0.95] tracking-[-0.055em]">
               A director-led production company that can flex around the
               assignment.
-            </p>
-          </article>
-
-          <article className="rounded-[34px] bg-[var(--versant-mint)] p-6 sm:p-8 lg:rounded-[44px]">
-            <p className="mb-8 rounded-full bg-[var(--versant-ink)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
-              What we are doing here
-            </p>
-            <p className="max-w-md text-[clamp(28px,4vw,52px)] font-medium leading-[0.95] tracking-[-0.055em]">
-              Showing range, fit, and production judgment.
             </p>
           </article>
         </div>

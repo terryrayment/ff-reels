@@ -79,7 +79,7 @@ const BRIEFS = [
     title: "Movie-culture work",
     copy:
       "Fandango and Rotten Tomatoes can use entertainment-brand comedy with craft.",
-    directors: "Leigh Marling / Brother Willis",
+    directors: "Leigh Marling",
     previewSlug: "leigh-marling",
     treatment: "lg:col-span-6 bg-[var(--versant-white)] text-black",
     number: "S1",
@@ -90,8 +90,8 @@ const BRIEFS = [
     title: "Talent + explainer craft",
     copy:
       "CNBC and MS NOW need voices, structure, and clean film language when the subject gets dense.",
-    directors: "Leigh Marling / Brother Willis",
-    previewSlug: "brother-willis",
+    directors: "James Frost / Caleb Slain",
+    previewSlug: "james-frost",
     treatment: "lg:col-span-6 bg-[var(--versant-orange)] text-black",
     number: "S2",
     secondary: true,
@@ -109,7 +109,7 @@ export function CapabilityDashboard({
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
             <p className="mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
-              Production briefs
+              Where we&apos;d start: golf
             </p>
             <h2 className="pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em]">
               The calls we&apos;d want to get.
@@ -167,8 +167,8 @@ function BriefCard({
     >
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute right-5 top-5 z-0 text-[clamp(88px,12vw,190px)] font-medium leading-none tracking-[-0.09em] ${
-          dark ? "text-white/[0.08]" : "text-black/[0.07]"
+        className={`pointer-events-none absolute bottom-6 right-7 z-0 text-[clamp(88px,12vw,190px)] font-medium leading-none tracking-[-0.09em] ${
+          dark ? "text-white/[0.05]" : "text-black/[0.045]"
         }`}
       >
         {brief.number}
@@ -199,7 +199,7 @@ function BriefCard({
               </span>
             )}
           </div>
-          <h3 className="max-w-3xl pb-2 text-[clamp(34px,5vw,76px)] font-medium leading-[0.98] tracking-[-0.055em]">
+          <h3 className="max-w-3xl pb-3 text-[clamp(34px,5vw,76px)] font-medium leading-[1.02] tracking-[-0.055em]">
             {brief.title}
           </h3>
           <p className={`mt-5 max-w-[48ch] text-[17px] leading-[1.32] tracking-[-0.02em] ${muted}`}>

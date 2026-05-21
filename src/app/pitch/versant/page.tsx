@@ -6,7 +6,6 @@ import { TerryIntro } from "./sections/terry-intro";
 import { CapabilityDashboard } from "./sections/capability-dashboard";
 import { OurWork } from "./sections/our-work";
 import { RosterModes } from "./sections/roster-modes";
-import { GolfReadStrip } from "./sections/golf-read-strip";
 import { VersantFit } from "./sections/versant-fit";
 import { ContactCta } from "./sections/contact-cta";
 import { VersantMotion } from "./sections/versant-motion";
@@ -54,6 +53,21 @@ const DIRECTOR_SLUGS = [
   "leigh-marling",
   "brother-willis",
 ] as const;
+const BLOCKED_MOTION_TITLES = /reel|sizzle|teaser|trailer|clip|short film|montage|^z_/i;
+const CLEAN_PROJECT_TITLES: Record<(typeof DIRECTOR_SLUGS)[number], string | null> = {
+  "terry-rayment": null,
+  "jack-turits": "Twins",
+  "matt-dilmore": "Mad Maxine",
+  "boma-iluma": "Switch",
+  "kelsey-larkin": "Made Precisely For You",
+  "caleb-slain": "4Runner - Getaway",
+  "james-frost": "Business",
+  "cody-cloud": "Thanos",
+  bueno: "Mejor Con Pepsi",
+  "le-ged": "Les Soprano Burger",
+  "leigh-marling": "Supermarket",
+  "brother-willis": "Oktoberfest Part Zwei",
+};
 
 const VERSANT_THEME = {
   "--versant-black": "#101010",
@@ -72,6 +86,56 @@ function firstNameOf(full: string | null | undefined): string | null {
   if (!full) return null;
   const [first] = full.trim().split(/\s+/);
   return first || null;
+}
+
+type DirectorWithProjects = {
+  slug: string;
+  name: string;
+  headshotUrl: string | null;
+  projects: {
+    title: string;
+    brand: string | null;
+    duration: number | null;
+    muxPlaybackId: string | null;
+    thumbnailUrl: string | null;
+    frameGrabs: { imageUrl: string }[];
+  }[];
+};
+
+function isCleanMotionProject(project: DirectorWithProjects["projects"][number]) {
+  return (
+    Boolean(project.brand) &&
+    Boolean(project.muxPlaybackId) &&
+    !BLOCKED_MOTION_TITLES.test(project.title) &&
+    (project.duration ?? 999) <= 75
+  );
+}
+
+function cleanProjectForDirector(
+  director: DirectorWithProjects,
+): DirectorWithProjects["projects"][number] | null {
+  const titleMatch = CLEAN_PROJECT_TITLES[director.slug as (typeof DIRECTOR_SLUGS)[number]];
+  const cleanProjects = director.projects.filter(isCleanMotionProject);
+
+  if (titleMatch) {
+    const explicit = cleanProjects.find((project) =>
+      project.title.toLowerCase().includes(titleMatch.toLowerCase()),
+    );
+    if (explicit) return explicit;
+  }
+
+  if (director.slug === "terry-rayment") {
+    return (
+      cleanProjects.find((project) => (project.duration ?? 999) <= 60) ??
+      director.projects.find((project) =>
+        project.title.toLowerCase().includes("wolverine"),
+      ) ??
+      cleanProjects[0] ??
+      null
+    );
+  }
+
+  return cleanProjects[0] ?? null;
 }
 
 export default async function VersantPitchPage({ searchParams }: PageProps) {
@@ -108,10 +172,10 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
       projects: {
         where: { isPublished: true, muxPlaybackId: { not: null } },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-        take: 1,
         select: {
           title: true,
           brand: true,
+          duration: true,
           muxPlaybackId: true,
           thumbnailUrl: true,
           frameGrabs: {
@@ -126,7 +190,12 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
 
   const orderedDirectors = DIRECTOR_SLUGS.map((slug) =>
     directors.find((director) => director.slug === slug),
-  ).filter((director): director is NonNullable<typeof director> => Boolean(director));
+  )
+    .filter((director): director is NonNullable<typeof director> => Boolean(director))
+    .map((director) => {
+      const project = cleanProjectForDirector(director);
+      return { ...director, projects: project ? [project] : [] };
+    });
 
   return (
     <main
@@ -179,14 +248,13 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         recipientFirstName={recipientFirstName}
         directors={orderedDirectors}
       />
-      <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
       <OurWork
         reelScreeningToken={reelScreeningToken}
         directors={orderedDirectors}
       />
+      <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
       <CapabilityDashboard directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />
-      <GolfReadStrip />
       <VersantFit />
       <ContactCta
         ctaUrl={link?.ctaUrl}
