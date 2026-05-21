@@ -8,12 +8,6 @@ interface Props {
   directors: VersantDirectorMedia[];
 }
 
-const FORMAT_ROWS = [
-  ["Format", "film / promo / open / portrait / cutdown"],
-  ["Inputs", "script / boards / footage / talent window"],
-  ["Output", "finished, versioned, delivered"],
-];
-
 const HERO_DIRECTORS = ["caleb-slain", "boma-iluma", "cody-cloud", "le-ged"];
 const GOLF_TICKER =
   "2,000+ live hours · 200+ events · 35% of golf hours watched · USGA through 2032 · Ryder Cup through 2033 · GolfNow 40M tee times · Rory through 2038";
@@ -114,34 +108,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           </div>
         </article>
 
-        <div className="grid gap-4 lg:col-span-5 lg:grid-rows-[1.2fr_1fr]">
-          <article className="rounded-[36px] bg-[var(--versant-orange)] p-6 text-[var(--versant-ink)] sm:p-8 lg:rounded-[44px]">
-            <div className="mb-8 flex items-center justify-between gap-4">
-              <p className={`rounded-full bg-[var(--versant-ink)] px-4 py-2.5 text-white ${HERO_MICRO_LABEL}`}>
-                Start here
-              </p>
-              <span className={`text-black/55 ${HERO_MICRO_LABEL}`}>
-                live input
-              </span>
-            </div>
-            <h2 className="mb-8 max-w-md text-[clamp(42px,6vw,88px)] font-medium leading-[0.88] tracking-[-0.06em]">
-              Send us the brief.
-            </h2>
-            <div className="space-y-3">
-              {FORMAT_ROWS.map(([label, value]) => (
-                <div
-                  key={label}
-                  className="grid gap-2 border-t border-black/18 pt-3 text-[13px] sm:grid-cols-[5rem_1fr]"
-                >
-                  <span className={`text-black/50 ${HERO_MICRO_LABEL}`}>
-                    {label}
-                  </span>
-                  <span>{value}</span>
-                </div>
-              ))}
-            </div>
-          </article>
-
+        <div className="grid gap-4 lg:col-span-5 lg:content-end">
           <article className="rounded-[34px] bg-[var(--versant-white)] p-6 sm:p-8 lg:rounded-[44px]">
             <p className={`mb-8 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2.5 text-black/62 ${HERO_MICRO_LABEL}`}>
               Who we are
