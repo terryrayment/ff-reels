@@ -4,7 +4,6 @@ import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { TerryIntro } from "./sections/terry-intro";
 import { CapabilityDashboard } from "./sections/capability-dashboard";
-import { OurWork } from "./sections/our-work";
 import { RosterModes } from "./sections/roster-modes";
 import { VersantFit } from "./sections/versant-fit";
 import { ContactCta } from "./sections/contact-cta";
@@ -37,7 +36,6 @@ interface PageProps {
   searchParams: { t?: string };
 }
 
-const REEL_SCREENING_TOKEN_FALLBACK = process.env.VERSANT_DEMO_REEL_TOKEN ?? null;
 const TERRY_INTRO_PLAYBACK_ID = process.env.VERSANT_TERRY_INTRO_MUX_ID ?? null;
 const DIRECTOR_SLUGS = [
   "terry-rayment",
@@ -159,10 +157,6 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
     ? firstNameOf(link.recipientName)
     : null;
 
-  const reelScreeningToken = link?.isActive
-    ? link.token
-    : REEL_SCREENING_TOKEN_FALLBACK;
-
   const directors = await prisma.director.findMany({
     where: { slug: { in: [...DIRECTOR_SLUGS] } },
     select: {
@@ -246,10 +240,6 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
 
       <WelcomeSplash
         recipientFirstName={recipientFirstName}
-        directors={orderedDirectors}
-      />
-      <OurWork
-        reelScreeningToken={reelScreeningToken}
         directors={orderedDirectors}
       />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />

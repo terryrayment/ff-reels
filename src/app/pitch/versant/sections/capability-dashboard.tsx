@@ -13,7 +13,7 @@ const BRIEFS = [
       "Course stories: local rituals, club pros, strange holes, and the people who keep courses alive across 9,000 courses of material.",
     directors: "Jack Turits / Le Ged / Brother Willis",
     previewSlug: "jack-turits",
-    treatment: "lg:col-span-7 bg-[var(--versant-white)] text-black",
+    treatment: "md:col-span-1 bg-[var(--versant-white)] text-black",
     number: "01",
     spots: [
       {
@@ -40,7 +40,7 @@ const BRIEFS = [
       "A defining film for the independent Versant era, built from the pressure and texture of the channel that already knows the game.",
     directors: "Caleb Slain",
     previewSlug: "caleb-slain",
-    treatment: "lg:col-span-5 bg-[var(--versant-lime)] text-black",
+    treatment: "md:col-span-1 bg-[var(--versant-lime)] text-black",
     number: "02",
   },
   {
@@ -50,7 +50,7 @@ const BRIEFS = [
       "A short series that feels like a life around the game, not an endorsement reel.",
     directors: "Terry Rayment",
     previewSlug: "terry-rayment",
-    treatment: "lg:col-span-5 bg-[var(--versant-black)] text-white",
+    treatment: "md:col-span-1 bg-[var(--versant-black)] text-white",
     number: "03",
   },
   {
@@ -60,7 +60,7 @@ const BRIEFS = [
       "Entertainment craft and comedy timing that respects old Golf Channel fans and new YouTube golf fans.",
     directors: "Matt Dilmore / Boma Iluma / Bueno",
     previewSlug: "matt-dilmore",
-    treatment: "lg:col-span-6 bg-[var(--versant-orange)] text-black",
+    treatment: "md:col-span-1 bg-[var(--versant-orange)] text-black",
     number: "04",
   },
   {
@@ -70,7 +70,7 @@ const BRIEFS = [
       "A visual identity that can carry opens, promos, social, motion language, and the pressure of live sports.",
     directors: "Kelsey Larkin",
     previewSlug: "kelsey-larkin",
-    treatment: "lg:col-span-4 bg-[var(--versant-blue)] text-white",
+    treatment: "md:col-span-1 bg-[var(--versant-blue)] text-white",
     number: "05",
   },
   {
@@ -80,7 +80,7 @@ const BRIEFS = [
       "Mini-docs built on memory and reverence without getting sleepy.",
     directors: "Kelsey Larkin / Caleb Slain",
     previewSlug: "kelsey-larkin",
-    treatment: "lg:col-span-4 bg-[var(--versant-mint)] text-black",
+    treatment: "md:col-span-1 bg-[var(--versant-mint)] text-black",
     number: "06",
   },
   {
@@ -90,7 +90,7 @@ const BRIEFS = [
       "Guardrailed pieces that still hold faces, timing, and a reason to watch past the logo.",
     directors: "Terry Rayment / Le Ged",
     previewSlug: "le-ged",
-    treatment: "lg:col-span-4 bg-[var(--versant-black)] text-white",
+    treatment: "md:col-span-1 bg-[var(--versant-black)] text-white",
     number: "07",
   },
   {
@@ -100,7 +100,7 @@ const BRIEFS = [
       "Fandango and Rotten Tomatoes can use entertainment-brand comedy with craft.",
     directors: "Leigh Marling",
     previewSlug: "leigh-marling",
-    treatment: "lg:col-span-6 bg-[var(--versant-white)] text-black",
+    treatment: "md:col-span-1 bg-[var(--versant-white)] text-black",
     number: "S1",
     secondary: true,
   },
@@ -111,7 +111,7 @@ const BRIEFS = [
       "CNBC and MS NOW need voices, structure, and clean film language when the subject gets dense.",
     directors: "Caleb Slain",
     previewSlug: "james-frost",
-    treatment: "lg:col-span-6 bg-[var(--versant-orange)] text-black",
+    treatment: "md:col-span-1 bg-[var(--versant-orange)] text-black",
     number: "S2",
     secondary: true,
   },
@@ -140,7 +140,7 @@ export function CapabilityDashboard({
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-12">
+        <div className="grid gap-4 md:grid-cols-2">
           {BRIEFS.map((brief) => (
             <BriefCard
               key={`${brief.kicker}-${brief.title}`}

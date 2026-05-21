@@ -20,6 +20,17 @@ const GOLF_TICKER =
 const HERO_MICRO_LABEL =
   "font-sans text-[12px] font-semibold leading-none tracking-[-0.015em]";
 
+function FFLogomark() {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/logo.svg"
+      alt="Friends & Family"
+      className="h-8 w-auto brightness-0 invert opacity-70"
+    />
+  );
+}
+
 export function WelcomeSplash({ recipientFirstName, directors }: Props) {
   const motionFrames = HERO_DIRECTORS.map((slug) =>
     motionForDirector(directors, slug, 640),
@@ -61,12 +72,8 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           )}
 
           <div className={`relative z-10 flex items-center justify-between gap-4 text-white/55 ${HERO_MICRO_LABEL}`}>
-            <span>Friends &amp; Family for Versant</span>
-            <span>
-              {recipientFirstName
-                ? `For ${recipientFirstName}`
-                : "Friends & Family · for Versant"}
-            </span>
+            <FFLogomark />
+            {recipientFirstName && <span>For {recipientFirstName}</span>}
           </div>
 
           <div className="relative z-10 max-w-5xl py-12 lg:py-16">
@@ -74,9 +81,9 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
               Friends &amp; Family for Versant
             </p>
             <h1 className="pb-3 text-[clamp(58px,10vw,140px)] font-medium leading-[0.94] tracking-[-0.07em]">
-              Hi Versant.
+              Versant, meet the makers.
               <br />
-              We make the stuff worth caring about.
+              Golf is where we&apos;d start.
             </h1>
             <p className="mt-5 max-w-[38rem] text-[clamp(22px,2.6vw,38px)] leading-[1.06] tracking-[-0.045em] text-white/72">
               A producer-led production company — and a not-so-secret golf

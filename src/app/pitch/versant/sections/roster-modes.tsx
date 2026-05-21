@@ -128,7 +128,7 @@ export function RosterModes({
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {CADDIES.map((card) => (
             <CaddieCard key={card.slug} card={card} directors={directors} />
           ))}
@@ -221,9 +221,6 @@ function CaddieCard({
             <p className="text-[14px] leading-[1.32]">{card.credits}</p>
           </div>
           <div className={`border-t pt-4 ${rule}`}>
-            <p className={`mb-3 ${muted} ${ROSTER_LABEL}`}>
-              Matched brief
-            </p>
             <span className={`inline-flex rounded-full border px-4 py-2 text-[13px] ${pill}`}>
               &rarr; {card.match}
             </span>
