@@ -73,9 +73,6 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
               of versions. That is enough for us to show you how we would build
               it.
             </p>
-            <p className="mt-5 text-[15px] text-white/42">
-              Or send the weird one first.
-            </p>
           </div>
 
           <aside className="rounded-[34px] border border-white/12 p-5 lg:col-span-5 lg:rounded-[44px]">
