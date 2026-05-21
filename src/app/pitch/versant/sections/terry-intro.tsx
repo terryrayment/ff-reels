@@ -19,12 +19,6 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             short list
           </span>
 
-          <div className="relative z-10 mb-10 flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
-              Note from Terry
-            </span>
-          </div>
-
           <div className="relative z-10 max-w-[760px] space-y-5 text-[clamp(17px,1.55vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/76">
             <h2 className="max-w-3xl pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em] text-black">
               We&apos;d love to be your shortlist.
@@ -72,10 +66,6 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             <p>
               So send us the shape of the thing. We&apos;ll show you — probably
               with too much enthusiasm — exactly how we&apos;d make it.
-            </p>
-
-            <p className="pt-4 text-[clamp(26px,3vw,44px)] font-medium leading-none tracking-[-0.045em] text-black">
-              Terry
             </p>
           </div>
         </article>
