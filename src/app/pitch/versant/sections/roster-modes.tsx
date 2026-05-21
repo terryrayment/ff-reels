@@ -81,28 +81,12 @@ const CADDIES = [
     treatment: "bg-[var(--versant-mint)] text-black",
   },
   {
-    slug: "leigh-marling",
-    name: "Leigh Marling",
-    signature: "design-forward brand comedy",
-    credits: "Super Bowl, Snickers, T-Mobile, LEGO",
-    match: "Fandango / Rotten Tomatoes",
-    treatment: "bg-[var(--versant-blue)] text-white",
-  },
-  {
     slug: "brother-willis",
     name: "Brother Willis",
     signature: "warm Americana, sports-card texture",
     credits: "Topps Chrome Rush, Ford",
     match: "GolfNow local heroes",
     treatment: "bg-[var(--versant-white)] text-black",
-  },
-  {
-    slug: "james-frost",
-    name: "James Frost",
-    signature: "systems + scale",
-    credits: "Nike, IBM, AmEx, OK Go, Radiohead",
-    match: "USA Sports broadcast opens",
-    treatment: "bg-[var(--versant-black)] text-white",
   },
   {
     slug: "cody-cloud",
@@ -185,7 +169,7 @@ function CaddieCard({
   const animated = overrideAnimated ?? media.animated;
   const mediaClass = "mediaClass" in card ? card.mediaClass : "";
   const usesFigurePlaceholder =
-    !headshot && (card.slug === "james-frost" || card.slug === "cody-cloud");
+    !headshot && card.slug === "cody-cloud";
   const dark = card.treatment.includes("text-white");
   const muted = dark ? "text-white/62" : "text-black/58";
   const rule = dark ? "border-white/16" : "border-black/14";

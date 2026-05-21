@@ -95,24 +95,13 @@ const BRIEFS = [
   },
   {
     kicker: "Secondary call",
-    title: "Movie-culture work",
-    copy:
-      "Fandango and Rotten Tomatoes can use entertainment-brand comedy with craft.",
-    directors: "Leigh Marling",
-    previewSlug: "leigh-marling",
-    treatment: "md:col-span-1 bg-[var(--versant-white)] text-black",
-    number: "S1",
-    secondary: true,
-  },
-  {
-    kicker: "Secondary call",
     title: "Talent + explainer craft",
     copy:
       "CNBC and MS NOW need voices, structure, and clean film language when the subject gets dense.",
     directors: "Caleb Slain",
-    previewSlug: "james-frost",
+    previewSlug: "caleb-slain",
     treatment: "md:col-span-1 bg-[var(--versant-orange)] text-black",
-    number: "S2",
+    number: "S1",
     secondary: true,
   },
 ];
