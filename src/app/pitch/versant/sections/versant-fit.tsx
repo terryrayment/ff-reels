@@ -15,8 +15,10 @@ const FF_BRINGS = [
   "post path",
   "motion support",
   "versioning",
-  "taste under pressure",
 ];
+
+const FIT_LABEL =
+  "text-[12px] font-semibold leading-none tracking-[-0.015em]";
 
 export function VersantFit() {
   return (
@@ -24,7 +26,7 @@ export function VersantFit() {
       <div className="versant-reveal mx-auto max-w-[1400px] rounded-[42px] bg-[var(--versant-white)] p-6 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-8 lg:rounded-[52px] lg:p-10">
         <div className="grid gap-8 lg:grid-cols-12">
           <div className="lg:col-span-6">
-            <p className="mb-5 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-black/54">
+            <p className={`mb-5 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2.5 text-black/54 ${FIT_LABEL}`}>
               Versant fit
             </p>
             <h2 className="max-w-4xl pb-2 text-[clamp(42px,6vw,86px)] font-medium leading-[0.96] tracking-[-0.055em]">

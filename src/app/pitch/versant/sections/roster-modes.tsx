@@ -102,6 +102,9 @@ const CADDIES = [
   },
 ];
 
+const ROSTER_LABEL =
+  "text-[12px] font-semibold leading-none tracking-[-0.015em]";
+
 export function RosterModes({
   directors,
 }: {
@@ -112,7 +115,7 @@ export function RosterModes({
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
-            <p className="mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+            <p className={`mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2.5 text-white ${ROSTER_LABEL}`}>
               Caddie cards
             </p>
             <h2 className="pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em]">
@@ -125,7 +128,7 @@ export function RosterModes({
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           {CADDIES.map((card) => (
             <CaddieCard key={card.slug} card={card} directors={directors} />
           ))}
@@ -197,7 +200,7 @@ function CaddieCard({
           />
         )}
 
-        <div className="absolute left-4 top-4 rounded-full bg-black px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-white">
+        <div className={`absolute left-4 top-4 rounded-full bg-black px-3 py-2 text-white ${ROSTER_LABEL}`}>
           matched card
         </div>
       </div>
@@ -212,13 +215,13 @@ function CaddieCard({
 
         <div className="mt-auto space-y-4 pt-7">
           <div className={`border-t pt-4 ${rule}`}>
-            <p className={`mb-2 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
+            <p className={`mb-2 ${muted} ${ROSTER_LABEL}`}>
               Credits
             </p>
             <p className="text-[14px] leading-[1.32]">{card.credits}</p>
           </div>
           <div className={`border-t pt-4 ${rule}`}>
-            <p className={`mb-3 text-[10px] uppercase tracking-[0.18em] ${muted}`}>
+            <p className={`mb-3 ${muted} ${ROSTER_LABEL}`}>
               Matched brief
             </p>
             <span className={`inline-flex rounded-full border px-4 py-2 text-[13px] ${pill}`}>

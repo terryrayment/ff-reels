@@ -17,6 +17,8 @@ const ROWS = [
 ];
 
 const REEL_DIRECTORS = ["caleb-slain", "boma-iluma", "terry-rayment", "le-ged"];
+const REEL_LABEL =
+  "text-[12px] font-semibold leading-none tracking-[-0.015em]";
 
 export function OurWork({ reelScreeningToken, directors }: Props) {
   const href = reelScreeningToken ? `/s/${reelScreeningToken}` : null;
@@ -28,10 +30,6 @@ export function OurWork({ reelScreeningToken, directors }: Props) {
     <section className="bg-[var(--versant-black)] px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto grid min-w-0 max-w-[1500px] gap-4 lg:grid-cols-12">
         <div className="versant-reveal min-w-0 rounded-[42px] bg-[#050505] p-5 text-white shadow-[0_28px_90px_rgba(0,0,0,0.32)] sm:p-7 lg:col-span-8 lg:rounded-[52px]">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
-            <span>F&amp;F reel</span>
-            <span>media player</span>
-          </div>
           <ReelFrame href={href} frames={frames} />
         </div>
 
@@ -44,7 +42,7 @@ export function OurWork({ reelScreeningToken, directors }: Props) {
           </span>
           <div className="relative z-10 mb-8 flex items-start justify-between gap-5">
             <div>
-              <p className="mb-4 rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+              <p className={`mb-4 rounded-full bg-[var(--versant-black)] px-4 py-2.5 text-white ${REEL_LABEL}`}>
                 Reel
               </p>
               <h2 className="max-w-[14rem] text-[clamp(44px,7vw,104px)] font-medium leading-[0.9] tracking-[-0.055em]">
@@ -63,7 +61,7 @@ export function OurWork({ reelScreeningToken, directors }: Props) {
                 key={label}
                 className="grid gap-2 border-t border-black/14 pt-3 text-[13px] sm:grid-cols-[8.5rem_1fr]"
               >
-                <span className="text-[10px] uppercase tracking-[0.18em] text-black/45">
+                <span className={`text-black/45 ${REEL_LABEL}`}>
                   {label}
                 </span>
                 <span className="min-w-0 break-words">{value}</span>
@@ -85,9 +83,9 @@ function ReelFrame({
 }) {
   const inner = (
     <div className="group relative min-w-0 overflow-hidden rounded-[32px] border border-white/12 bg-[#050505] lg:rounded-[42px]">
-      <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 text-[10px] uppercase tracking-[0.18em] text-white/45">
-        <span>F&amp;F reel</span>
-        <span>Watch for range</span>
+      <div className={`flex items-center justify-between border-b border-white/10 px-5 py-4 text-white/45 ${REEL_LABEL}`}>
+        <span>Reel</span>
+        <span>Range</span>
       </div>
 
       <div className="relative flex aspect-video min-h-[17rem] items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.08),transparent_34%),#080808]">
@@ -140,17 +138,14 @@ function ReelFrame({
           <span className="grid h-20 w-20 place-items-center rounded-full bg-white text-black transition group-hover:bg-[var(--versant-orange)]">
             <Film className="h-7 w-7" />
           </span>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-white/44">
-            Press play · 00:00 to 04:12
-          </p>
           <p className="text-[clamp(30px,4vw,64px)] font-medium leading-none tracking-[-0.055em]">
             Watch the reel
           </p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-[10px] uppercase tracking-[0.18em] text-white/45">
-        <span>range cut</span>
+      <div className={`flex items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-white/45 ${REEL_LABEL}`}>
+        <span>Range cut</span>
         <span className="inline-flex items-center gap-2 text-white transition group-hover:text-[var(--versant-orange)]">
           {href ? "Open" : "Loading"}
           <ArrowUpRight className="h-3.5 w-3.5" />

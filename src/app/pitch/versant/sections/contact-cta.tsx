@@ -6,7 +6,13 @@ interface Props {
   recipientFirstName?: string | null;
 }
 
-const TERRY_EMAIL = "terry@friendsandfamily.tv";
+const CONTACTS = [
+  ["Scott Kaplan, MD", "scott@friendsandfamily.tv"],
+  ["Terry Rayment, CD", "terry@friendsandfamily.tv"],
+  ["Jed Herold, EP", "jed@friendsandfamily.tv"],
+];
+
+const CONTACT_EMAILS = CONTACTS.map(([, email]) => email).join(",");
 
 const DETAILS = [
   ["Project", "Versant x Friends & Family"],
@@ -18,7 +24,7 @@ const DETAILS = [
 export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
   const href =
     ctaUrl ??
-    `mailto:${TERRY_EMAIL}?subject=${encodeURIComponent(
+    `mailto:${CONTACT_EMAILS}?subject=${encodeURIComponent(
       "Versant x Friends & Family brief",
     )}`;
 
@@ -67,9 +73,14 @@ export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
 
         <div className="mt-12 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
           <div className="grid gap-x-8 gap-y-5 border-t border-white/12 pt-6 text-[13px] text-white/72 sm:grid-cols-2 lg:grid-cols-3">
-            <Contact label="Production Co." value="Friends & Family" sub="LA / NYC" />
-            <Contact label="Call" value="Terry Rayment" sub="Founder & Creative Director" />
-            <Contact label="Email" value={TERRY_EMAIL} href={`mailto:${TERRY_EMAIL}`} />
+            {CONTACTS.map(([name, email]) => (
+              <Contact
+                key={email}
+                value={name}
+                sub={email}
+                href={`mailto:${email}`}
+              />
+            ))}
           </div>
 
           <a
@@ -86,23 +97,18 @@ export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
 }
 
 function Contact({
-  label,
   value,
   sub,
   href,
 }: {
-  label: string;
   value: string;
   sub?: string;
   href?: string;
 }) {
   const inner = (
     <>
-      <p className="mb-2 text-[10px] uppercase tracking-[0.18em] text-white/36">
-        {label}
-      </p>
       <p>{value}</p>
-      {sub && <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-white/36">{sub}</p>}
+      {sub && <p className="mt-1 text-[13px] text-white/46">{sub}</p>}
     </>
   );
 

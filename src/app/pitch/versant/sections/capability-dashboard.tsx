@@ -1,28 +1,57 @@
 import {
+  muxAnimatedUrl,
+  muxStillUrl,
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
 
 const BRIEFS = [
   {
+    kicker: "GolfNow",
+    title: "40M tee times is a map",
+    copy:
+      "Course stories: local rituals, club pros, strange holes, and the people who keep courses alive across 9,000 courses of material.",
+    directors: "Jack Turits / Le Ged / Brother Willis",
+    previewSlug: "jack-turits",
+    treatment: "lg:col-span-7 bg-[var(--versant-white)] text-black",
+    number: "01",
+    spots: [
+      {
+        title: "Callaway · Office :30",
+        muxPlaybackId: "BhZH005xwxQZJTuLSYOKSqFaGCSX5SlgFIAOeSntKqs8",
+        duration: 30.196844,
+      },
+      {
+        title: "Callaway · Kyle :30",
+        muxPlaybackId: "bYcHyck9AcxSPDZSx4x4gRM2fDYN02D00Y9JLSLqpa6HU",
+        duration: 30.196844,
+      },
+      {
+        title: "Callaway · Marty :30",
+        muxPlaybackId: "CrbJfBhLn4Dj1N00RP2O22hWgT7lGDmmNCpvXkRTXJoA",
+        duration: 30.196844,
+      },
+    ],
+  },
+  {
     kicker: "Golf Channel",
     title: "Independent era anthem",
     copy:
       "A defining film for the independent Versant era, built from the pressure and texture of the channel that already knows the game.",
-    directors: "Caleb Slain / James Frost",
+    directors: "Caleb Slain",
     previewSlug: "caleb-slain",
-    treatment: "lg:col-span-7 bg-[var(--versant-lime)] text-black",
-    number: "01",
+    treatment: "lg:col-span-5 bg-[var(--versant-lime)] text-black",
+    number: "02",
   },
   {
     kicker: "Rory / GolfPass / Firethorn",
     title: "Life around the game",
     copy:
       "A short series that feels like a life around the game, not an endorsement reel.",
-    directors: "Terry Rayment / Cody Cloud",
+    directors: "Terry Rayment",
     previewSlug: "terry-rayment",
     treatment: "lg:col-span-5 bg-[var(--versant-black)] text-white",
-    number: "02",
+    number: "03",
   },
   {
     kicker: "Big Break x Good Good",
@@ -32,24 +61,14 @@ const BRIEFS = [
     directors: "Matt Dilmore / Boma Iluma / Bueno",
     previewSlug: "matt-dilmore",
     treatment: "lg:col-span-6 bg-[var(--versant-orange)] text-black",
-    number: "03",
-  },
-  {
-    kicker: "GolfNow",
-    title: "40M tee times is a map",
-    copy:
-      "Course stories: local rituals, club pros, strange holes, and the people who keep courses alive across 9,000 courses of material.",
-    directors: "Jack Turits / Le Ged / Brother Willis",
-    previewSlug: "jack-turits",
-    treatment: "lg:col-span-6 bg-[var(--versant-white)] text-black",
     number: "04",
   },
   {
     kicker: "USA Sports",
-    title: "A voice people can feel",
+    title: "Give the game a house sound",
     copy:
       "A visual identity that can carry opens, promos, social, motion language, and the pressure of live sports.",
-    directors: "James Frost / Kelsey Larkin",
+    directors: "Kelsey Larkin",
     previewSlug: "kelsey-larkin",
     treatment: "lg:col-span-4 bg-[var(--versant-blue)] text-white",
     number: "05",
@@ -90,7 +109,7 @@ const BRIEFS = [
     title: "Talent + explainer craft",
     copy:
       "CNBC and MS NOW need voices, structure, and clean film language when the subject gets dense.",
-    directors: "James Frost / Caleb Slain",
+    directors: "Caleb Slain",
     previewSlug: "james-frost",
     treatment: "lg:col-span-6 bg-[var(--versant-orange)] text-black",
     number: "S2",
@@ -108,11 +127,11 @@ export function CapabilityDashboard({
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
-            <p className="mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+            <p className="mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2.5 text-[12px] font-semibold leading-none tracking-[-0.015em] text-white">
               Where we&apos;d start: golf
             </p>
             <h2 className="pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em]">
-              The calls we&apos;d want to get.
+              Where we can help first.
             </h2>
           </div>
           <p className="max-w-[58ch] text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/72 lg:col-span-4">
@@ -148,6 +167,11 @@ function BriefCard({
     treatment: string;
     number: string;
     secondary?: boolean;
+    spots?: {
+      title: string;
+      muxPlaybackId: string;
+      duration: number;
+    }[];
   };
   directors: VersantDirectorMedia[];
 }) {
@@ -161,8 +185,8 @@ function BriefCard({
 
   return (
     <article
-      className={`versant-reveal group relative min-h-[28rem] overflow-hidden rounded-[36px] p-6 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-8 lg:rounded-[48px] ${brief.treatment} ${
-        brief.secondary ? "min-h-[22rem]" : ""
+      className={`versant-reveal group relative min-h-[23rem] overflow-hidden rounded-[36px] p-6 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-7 lg:rounded-[48px] ${brief.treatment} ${
+        brief.secondary ? "min-h-[19rem]" : ""
       }`}
     >
       <span
@@ -174,9 +198,9 @@ function BriefCard({
         {brief.number}
       </span>
 
-      <div className="relative z-10 flex h-full flex-col justify-between gap-10">
+      <div className="relative z-10 flex h-full flex-col justify-between gap-6">
         <div>
-          <div className="mb-7 flex flex-wrap items-center gap-3">
+          <div className="mb-5 flex flex-wrap items-center gap-3">
             <span className={`rounded-full border px-4 py-2 text-[12px] font-medium uppercase tracking-[0.08em] ${pill}`}>
               {brief.kicker}
             </span>
@@ -189,9 +213,43 @@ function BriefCard({
           <h3 className="max-w-3xl pb-3 text-[clamp(34px,5vw,76px)] font-medium leading-[1.02] tracking-[-0.055em]">
             {brief.title}
           </h3>
-          <p className={`mt-5 max-w-[48ch] text-[17px] leading-[1.32] tracking-[-0.02em] ${muted}`}>
+          <p className={`mt-3 max-w-[48ch] text-[17px] leading-[1.28] tracking-[-0.02em] ${muted}`}>
             {brief.copy}
           </p>
+          {brief.spots && (
+            <div className="mt-5 grid gap-2 sm:grid-cols-3">
+              {brief.spots.map((spot) => (
+                <a
+                  key={spot.muxPlaybackId}
+                  href={`https://stream.mux.com/${spot.muxPlaybackId}.m3u8`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group/spot overflow-hidden rounded-[18px] border border-black/14 bg-black text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                >
+                  <div className="relative aspect-video overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={muxStillUrl(spot.muxPlaybackId, 360, spot.duration)}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={muxAnimatedUrl(spot.muxPlaybackId, 360, spot.duration)}
+                      alt=""
+                      className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-300 group-hover/spot:opacity-100 motion-safe:block"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-2 px-3 py-2 text-[11px] font-semibold tracking-[-0.01em]">
+                    <span>{spot.title}</span>
+                    <span>Open</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className={`grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-end`}>

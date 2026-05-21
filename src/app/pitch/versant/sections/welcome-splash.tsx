@@ -79,7 +79,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
               We make the stuff worth caring about.
             </h1>
             <p className="mt-5 max-w-[38rem] text-[clamp(22px,2.6vw,38px)] leading-[1.06] tracking-[-0.045em] text-white/72">
-              A director-led production company — and a not-so-secret golf
+              A producer-led production company — and a not-so-secret golf
               obsession we&apos;ll get to in a minute.
             </p>
           </div>
@@ -118,7 +118,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
               </span>
             </div>
             <h2 className="mb-8 max-w-md text-[clamp(42px,6vw,88px)] font-medium leading-[0.88] tracking-[-0.06em]">
-              Bring us the shape.
+              Send us the brief.
             </h2>
             <div className="space-y-3">
               {FORMAT_ROWS.map(([label, value]) => (
@@ -137,10 +137,10 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
 
           <article className="rounded-[34px] bg-[var(--versant-white)] p-6 sm:p-8 lg:rounded-[44px]">
             <p className={`mb-8 rounded-full bg-[var(--versant-soft-gray)] px-4 py-2.5 text-black/62 ${HERO_MICRO_LABEL}`}>
-              What we are
+              Who we are
             </p>
             <p className="max-w-lg text-[clamp(28px,4vw,54px)] font-medium leading-[0.95] tracking-[-0.055em]">
-              A director-led production company that can flex around the
+              A producer-led production company that can flex around the
               assignment.
             </p>
           </article>
