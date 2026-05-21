@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { AboutLiveField } from "@/components/marketing/about-live-field";
 import { InfinitePhotoLoop } from "@/components/marketing/infinite-photo-loop";
+import { RevealText } from "@/components/marketing/reveal-text";
 import { ABOUT_PHOTOS } from "@/lib/about/photos";
 
 export const metadata: Metadata = { title: "About" };
@@ -29,10 +31,10 @@ const REPS = [
 ];
 
 const PRINCIPLES = [
-  "Director-led",
-  "Independent",
-  "LA / NY / SP / CWB",
-  "Production / post / VFX",
+  { label: "01", title: "Director-led" },
+  { label: "02", title: "Independent" },
+  { label: "03", title: "LA / NY / SP / CWB" },
+  { label: "04", title: "Production / post / VFX" },
 ];
 
 export default function AboutPage() {
@@ -45,7 +47,7 @@ export default function AboutPage() {
               About
             </p>
             <h1 className="ff-display-page">
-              A creative network across the Americas.
+              <RevealText text="A creative network across the Americas." />
             </h1>
           </div>
           <p className="ff-body lg:col-span-4 lg:col-start-9">
@@ -54,18 +56,21 @@ export default function AboutPage() {
           </p>
         </header>
 
-        <InfinitePhotoLoop photos={ABOUT_PHOTOS} />
+        <AboutLiveField photos={ABOUT_PHOTOS} />
       </section>
 
       <section className="ff-shell ff-section-stack">
         <div className="ff-principles-grid">
           {PRINCIPLES.map((item) => (
             <div
-              key={item}
-              className="ff-principle"
+              key={item.title}
+              className="ff-principle flex min-h-[132px] flex-col justify-between md:min-h-[178px]"
             >
               <p className="ff-kicker-muted">
-                {item}
+                {item.label}
+              </p>
+              <p className="ff-display-feature mt-8 max-w-[12rem]">
+                {item.title}
               </p>
             </div>
           ))}
@@ -182,6 +187,24 @@ export default function AboutPage() {
             ))}
           </ul>
         </div>
+      </section>
+
+      <section className="ff-shell ff-section-stack ff-section-border">
+        <div className="ff-page-heading-row">
+          <div>
+            <p className="ff-kicker mb-4">
+              Archive
+            </p>
+            <h2 className="ff-display-section">
+              Scenes in motion
+            </h2>
+          </div>
+          <p className="ff-body max-w-xl">
+            Candid fragments from sets, edits, road days, offices, and the
+            in-between.
+          </p>
+        </div>
+        <InfinitePhotoLoop photos={ABOUT_PHOTOS} className="mt-8" />
       </section>
     </div>
   );

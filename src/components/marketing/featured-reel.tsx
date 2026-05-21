@@ -5,32 +5,42 @@ import { useEffect, useRef, useState } from "react";
 import {
   MARKETING_TRANSITION_FINISHED,
   clearMarketingTransitionDelay,
+  clearMarketingTransitionPoster,
   getMarketingTransitionDelay,
+  getMarketingTransitionPoster,
 } from "@/components/marketing/view-transition";
+
+const PLAY_AFTER_LAND_DELAY_MS = 280;
 
 interface FeaturedReelProps {
   projectId: string;
   muxPlaybackId: string;
+  posterUrl?: string | null;
   brand?: string | null;
   title: string;
-  directorName: string;
-  agency?: string | null;
-  year?: number | null;
 }
 
 export function FeaturedReel({
   projectId,
   muxPlaybackId,
+  posterUrl,
   brand,
   title,
-  directorName,
-  agency,
-  year,
 }: FeaturedReelProps) {
   const playerRef = useRef<HTMLElement | null>(null);
+  const [landingPoster] = useState(() =>
+    getMarketingTransitionPoster(posterUrl),
+  );
   const [canPlay, setCanPlay] = useState(
     () => getMarketingTransitionDelay() <= 0,
   );
+  const [shouldPlay, setShouldPlay] = useState(
+    () => getMarketingTransitionDelay() <= 0,
+  );
+
+  useEffect(() => {
+    clearMarketingTransitionPoster();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -39,17 +49,23 @@ export function FeaturedReel({
     if (delay <= 0) {
       clearMarketingTransitionDelay();
       setCanPlay(true);
+      setShouldPlay(true);
       return;
     }
 
     setCanPlay(false);
+    setShouldPlay(false);
 
     let released = false;
+    let playTimer: number | undefined;
     const release = () => {
       if (released) return;
       released = true;
       clearMarketingTransitionDelay();
       setCanPlay(true);
+      playTimer = window.setTimeout(() => {
+        setShouldPlay(true);
+      }, PLAY_AFTER_LAND_DELAY_MS);
     };
 
     const timer = window.setTimeout(release, delay);
@@ -57,6 +73,7 @@ export function FeaturedReel({
 
     return () => {
       window.clearTimeout(timer);
+      if (playTimer) window.clearTimeout(playTimer);
       window.removeEventListener(MARKETING_TRANSITION_FINISHED, release);
     };
   }, [muxPlaybackId]);
@@ -64,7 +81,7 @@ export function FeaturedReel({
   // Some browsers do not honor autoplay on a custom element after a route
   // view transition, so nudge playback once the shared-media morph has ended.
   useEffect(() => {
-    if (!canPlay) return;
+    if (!shouldPlay) return;
 
     const el = playerRef.current as
       | (HTMLElement & { play?: () => Promise<void>; muted?: boolean })
@@ -82,7 +99,7 @@ export function FeaturedReel({
       cancelled = true;
       clearTimeout(t);
     };
-  }, [canPlay, muxPlaybackId]);
+  }, [shouldPlay, muxPlaybackId]);
 
   return (
     <section className="mx-auto w-[calc(100vw-48px)] md:w-[64vw] max-w-[920px] mb-14 lg:mb-20">
@@ -96,18 +113,32 @@ export function FeaturedReel({
           } as React.CSSProperties
         }
         data-featured-project-id={projectId}
+        data-marketing-featured-media-target
       >
+        {landingPoster && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={landingPoster}
+            alt=""
+            aria-hidden="true"
+            className={`ff-media-fill z-10 object-cover pointer-events-none transition-opacity duration-150 ${
+              shouldPlay ? "opacity-0" : "opacity-100"
+            }`}
+            decoding="async"
+          />
+        )}
         <MuxPlayer
           ref={playerRef as React.RefObject<never>}
           playbackId={muxPlaybackId}
+          poster={landingPoster ?? posterUrl ?? undefined}
           streamType="on-demand"
-          {...(canPlay ? { autoPlay: "muted" as const } : {})}
+          {...(shouldPlay ? { autoPlay: "muted" as const } : {})}
           muted
           playsInline
-          preload={canPlay ? "auto" : "metadata"}
+          preload={shouldPlay ? "auto" : "metadata"}
         />
       </div>
-      <div className="mt-5 flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
+      <div className="mt-5">
         <div>
           {brand && (
             <p className="ff-card-brand">
@@ -118,11 +149,6 @@ export function FeaturedReel({
             {title}
           </p>
         </div>
-        <p className="ff-meta">
-          Dir. {directorName}
-          {agency ? ` · ${agency}` : ""}
-          {year ? ` · ${year}` : ""}
-        </p>
       </div>
     </section>
   );

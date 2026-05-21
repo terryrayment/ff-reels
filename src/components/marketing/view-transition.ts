@@ -1,6 +1,7 @@
 "use client";
 
 const TRANSITION_UNTIL_KEY = "ff:marketing-transition-until";
+const TRANSITION_POSTER_KEY = "ff:marketing-transition-poster";
 const TRANSITION_DURATION_MS = 1320;
 const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
 const MEDIA_TRANSITION_ACTIVE_CLASS = "marketing-media-transition-active";
@@ -38,6 +39,14 @@ export function clearMarketingTransitionDelay() {
   getStorage()?.removeItem(TRANSITION_UNTIL_KEY);
 }
 
+export function getMarketingTransitionPoster(fallback?: string | null) {
+  return getStorage()?.getItem(TRANSITION_POSTER_KEY) ?? fallback ?? null;
+}
+
+export function clearMarketingTransitionPoster() {
+  getStorage()?.removeItem(TRANSITION_POSTER_KEY);
+}
+
 function getFeaturedReelTargetRect() {
   const viewportWidth = window.innerWidth;
   const width =
@@ -45,10 +54,45 @@ function getFeaturedReelTargetRect() {
       ? Math.min(viewportWidth * 0.64, 920)
       : viewportWidth - 48;
   const x = (viewportWidth - width) / 2;
-  const y = viewportWidth >= 1024 ? 104 : 88;
+  const directorNameTarget = document.querySelector<HTMLElement>(
+    "[data-marketing-director-name-target]",
+  );
+  const directorNameRect = directorNameTarget?.getBoundingClientRect();
+  const y = directorNameRect
+    ? directorNameRect.bottom + (viewportWidth >= 1024 ? 40 : 32)
+    : viewportWidth >= 1024
+      ? 104
+      : 88;
   const height = width * (9 / 16);
 
   return { x, y, width, height };
+}
+
+function getFeaturedReelTarget() {
+  return document.querySelector<HTMLElement>(
+    "[data-marketing-featured-media-target]",
+  );
+}
+
+function waitForFeaturedReelTarget(timeoutMs = 900) {
+  const startedAt = performance.now();
+
+  return new Promise<DOMRect | null>((resolve) => {
+    const tick = () => {
+      const target = getFeaturedReelTarget();
+      if (target) {
+        resolve(target.getBoundingClientRect());
+        return;
+      }
+      if (performance.now() - startedAt >= timeoutMs) {
+        resolve(null);
+        return;
+      }
+      window.requestAnimationFrame(tick);
+    };
+
+    tick();
+  });
 }
 
 function finishMarketingMediaTransition() {
@@ -65,7 +109,6 @@ function animateMediaFrame({
   const from = sourceElement.getBoundingClientRect();
   if (from.width <= 0 || from.height <= 0) return false;
 
-  const to = getFeaturedReelTargetRect();
   const overlay = document.createElement("div");
   overlay.setAttribute("aria-hidden", "true");
   overlay.className = "marketing-media-transition";
@@ -94,22 +137,31 @@ function animateMediaFrame({
 
   document.body.appendChild(overlay);
 
-  const animation = overlay.animate(
-    [
-      { transform: "translate3d(0, 0, 0) scale(1)", opacity: 1 },
-      {
-        transform: `translate3d(${to.x - from.left}px, ${to.y - from.top}px, 0) scale(${to.width / from.width}, ${to.height / from.height})`,
-        opacity: 1,
-      },
-    ],
-    {
-      duration: TRANSITION_DURATION_MS,
-      easing: TRANSITION_EASING,
-      fill: "forwards",
-    },
-  );
+  const startedAt = performance.now();
 
-  animation.finished
+  waitForFeaturedReelTarget()
+    .then((targetRect) => {
+      const to = targetRect ?? getFeaturedReelTargetRect();
+      const remaining = Math.max(
+        TRANSITION_DURATION_MS - (performance.now() - startedAt),
+        760,
+      );
+
+      return overlay.animate(
+        [
+          { transform: "translate3d(0, 0, 0) scale(1)", opacity: 1 },
+          {
+            transform: `translate3d(${to.x - from.left}px, ${to.y - from.top}px, 0) scale(${to.width / from.width}, ${to.height / from.height})`,
+            opacity: 1,
+          },
+        ],
+        {
+          duration: remaining,
+          easing: TRANSITION_EASING,
+          fill: "forwards",
+        },
+      ).finished;
+    })
     .then(() => {
       finishMarketingMediaTransition();
       return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
@@ -263,11 +315,20 @@ export function startMarketingViewTransition(
       TRANSITION_UNTIL_KEY,
       String(Date.now() + TRANSITION_DURATION_MS),
     );
+    if (options.imageUrl) {
+      getStorage()?.setItem(TRANSITION_POSTER_KEY, options.imageUrl);
+    } else {
+      clearMarketingTransitionPoster();
+    }
     document.documentElement.classList.add(MEDIA_TRANSITION_ACTIVE_CLASS);
     const hasMediaOverlay = animateMediaFrame(options);
-    animateDirectorName(options);
+    const hasNameOverlay = animateDirectorName(options);
     if (!hasMediaOverlay) {
       window.setTimeout(finishMarketingMediaTransition, TRANSITION_DURATION_MS);
+    }
+    if (hasMediaOverlay || hasNameOverlay) {
+      router.push(href);
+      return;
     }
   }
 

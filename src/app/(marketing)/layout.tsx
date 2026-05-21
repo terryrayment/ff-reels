@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { MarketingNav } from "@/components/marketing/nav";
 import { MarketingFooter } from "@/components/marketing/footer";
+import { Cursor } from "@/components/marketing/cursor";
+import { LenisProvider } from "@/components/marketing/lenis-provider";
 
 export const metadata: Metadata = {
   title: {
@@ -35,10 +37,13 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
-      <MarketingNav />
-      <main className="flex-1">{children}</main>
-      <MarketingFooter />
-    </div>
+    <LenisProvider>
+      <div className="min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
+        <Cursor />
+        <MarketingNav />
+        <main className="flex-1">{children}</main>
+        <MarketingFooter />
+      </div>
+    </LenisProvider>
   );
 }

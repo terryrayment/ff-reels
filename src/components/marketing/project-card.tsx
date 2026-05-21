@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
+import { useRevealOnce } from "@/components/marketing/use-reveal-once";
 
 export interface ProjectCardData {
   id: string;
@@ -27,6 +28,12 @@ interface ProjectCardProps {
   showAgency?: boolean;
   /** Thumbnail width to request from Mux. Default 1000. */
   thumbnailWidth?: number;
+  /** Optional archive index label, e.g. "01". */
+  indexLabel?: string;
+  /** Optional archive index meta, e.g. "Commercial". */
+  indexMeta?: string | null;
+  /** Optional editorial tags shown below card meta. */
+  tags?: readonly string[];
 }
 
 export function ProjectCard({
@@ -36,9 +43,13 @@ export function ProjectCard({
   showYear = false,
   showAgency = false,
   thumbnailWidth = 1000,
+  indexLabel,
+  indexMeta,
+  tags,
 }: ProjectCardProps) {
   const router = useRouter();
   const href = `/site/directors/${project.director.slug}?play=${project.id}`;
+  const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
 
   const still =
     project.thumbnailUrl ??
@@ -52,6 +63,12 @@ export function ProjectCard({
   if (disciplineLabel) metaParts.push(disciplineLabel);
   if (showYear && project.year) metaParts.push(String(project.year));
   const metaLine = metaParts.join(" · ");
+  const displayIndexMeta =
+    indexMeta && indexMeta.trim().toLowerCase() !== project.brand?.trim().toLowerCase()
+      ? indexMeta
+      : null;
+  const fallbackLabel = project.brand || project.title;
+  const thumbnailHeight = Math.round(thumbnailWidth * 9 / 16);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Let modified clicks (cmd/ctrl/shift) and middle-click follow default browser behaviour.
@@ -70,21 +87,36 @@ export function ProjectCard({
     <Link
       href={href}
       onClick={handleClick}
-      className="ff-focusable group block"
+      className="ff-focusable ff-fluid-card group block"
       prefetch
+      data-cursor="play"
     >
+      {(indexLabel || displayIndexMeta) && (
+        <div className="ff-card-index-row">
+          <span>{indexLabel}</span>
+          <span>{displayIndexMeta}</span>
+        </div>
+      )}
       <div
+        ref={mediaRef}
         data-marketing-media-frame
-        className="ff-media-frame aspect-video"
+        className={`ff-media-frame ff-media-reveal aspect-video${mediaVisible ? " is-visible" : ""}`}
       >
-        {still && (
+        {still ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={still}
             alt={project.title}
             loading="lazy"
+            decoding="async"
+            width={thumbnailWidth}
+            height={thumbnailHeight}
             className="ff-media-image"
           />
+        ) : (
+          <div className="ff-media-fallback">
+            <span>{fallbackLabel}</span>
+          </div>
         )}
       </div>
       <div className="mt-4">
@@ -100,6 +132,13 @@ export function ProjectCard({
           <p className="ff-meta mt-2">
             {metaLine}
           </p>
+        )}
+        {tags && tags.length > 0 && (
+          <div className="ff-card-tag-row">
+            {tags.map((tag) => (
+              <span key={tag}>{tag}</span>
+            ))}
+          </div>
         )}
       </div>
     </Link>

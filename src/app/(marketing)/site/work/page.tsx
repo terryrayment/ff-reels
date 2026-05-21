@@ -3,7 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { ProjectCard } from "@/components/marketing/project-card";
-import { ScrollReveal } from "@/components/marketing/scroll-reveal";
+import { RevealText } from "@/components/marketing/reveal-text";
 
 export const metadata: Metadata = { title: "Work" };
 export const revalidate = 300;
@@ -65,7 +65,7 @@ export default async function WorkPage({
     <div className="ff-shell ff-page">
       <header className="ff-page-heading-row">
         <h1 className="ff-display-page">
-          Work
+          <RevealText text="Work" />
         </h1>
         <p className="ff-kicker">
           {totalCount} {totalCount === 1 ? "project" : "projects"}
@@ -114,18 +114,17 @@ export default async function WorkPage({
         </div>
       ) : (
         <div className="ff-grid-work">
-          {items.map((p, i) => {
+          {items.map((p) => {
             const disciplineLabel = DISCIPLINES.find(
               (d) => d.contentType === p.contentType,
             )?.label;
             return (
-              <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
-                <ProjectCard
-                  project={p}
-                  disciplineLabel={disciplineLabel ?? null}
-                  showYear
-                />
-              </ScrollReveal>
+              <ProjectCard
+                key={p.id}
+                project={p}
+                disciplineLabel={disciplineLabel ?? null}
+                showYear
+              />
             );
           })}
         </div>
@@ -133,7 +132,7 @@ export default async function WorkPage({
 
       {items.length > 0 && items.length < totalCount && (
         <p className="ff-kicker mt-12 text-center">
-          Showing {items.length} of {totalCount}
+          {items.length} most recent
         </p>
       )}
     </div>
