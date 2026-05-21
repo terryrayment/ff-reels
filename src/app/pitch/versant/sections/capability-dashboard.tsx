@@ -1,9 +1,8 @@
 import {
-  muxAnimatedUrl,
-  muxStillUrl,
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
+import { CallawaySpotLightbox } from "./callaway-spot-lightbox";
 
 const BRIEFS = [
   {
@@ -205,47 +204,7 @@ function BriefCard({
           <p className={`mt-3 max-w-[48ch] text-[17px] leading-[1.28] tracking-[-0.02em] ${muted}`}>
             {brief.copy}
           </p>
-          {brief.spots && (
-            <div className="mt-5 grid gap-2 sm:grid-cols-3">
-              {brief.spots.map((spot) => {
-                const [brand, detail] = spot.title.split(" · ");
-
-                return (
-                  <a
-                    key={spot.muxPlaybackId}
-                    href={`https://stream.mux.com/${spot.muxPlaybackId}.m3u8`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group/spot overflow-hidden rounded-[18px] border border-black/14 bg-black text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                  >
-                    <div className="relative aspect-video overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={muxStillUrl(spot.muxPlaybackId, 360, spot.duration)}
-                        alt=""
-                        className="h-full w-full object-cover"
-                        loading="lazy"
-                      />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={muxAnimatedUrl(spot.muxPlaybackId, 360, spot.duration)}
-                        alt=""
-                        className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-300 group-hover/spot:opacity-100 motion-safe:block"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="grid min-h-[4.5rem] grid-cols-[1fr_auto] gap-3 px-3 py-2.5 text-[11px] font-semibold tracking-[-0.01em]">
-                      <span className="min-w-0">
-                        <span className="block truncate">{brand}</span>
-                        <span className="block text-white/62">{detail}</span>
-                      </span>
-                      <span className="pt-0.5 text-white/72">Open</span>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          )}
+          {brief.spots && <CallawaySpotLightbox spots={brief.spots} />}
         </div>
 
         <div className={`grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-start`}>
