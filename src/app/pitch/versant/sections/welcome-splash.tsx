@@ -68,8 +68,16 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           </div>
 
           <div className="relative z-10 max-w-5xl py-12 lg:py-16">
-            <p className="mb-6 inline-flex rounded-full border border-white/18 px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white/70">
-              Friends &amp; Family for Versant
+            <p className="mb-6 inline-flex items-baseline gap-2 rounded-full border border-white/18 px-4 py-2 text-white/78">
+              <span className="font-serif text-[15px] italic normal-case leading-none tracking-[-0.03em]">
+                Friends &amp; Family
+              </span>
+              <span className="text-[9px] font-medium uppercase leading-none tracking-[0.08em] text-white/46">
+                for
+              </span>
+              <span className="font-serif text-[15px] italic normal-case leading-none tracking-[-0.03em]">
+                Versant
+              </span>
             </p>
             <h1 className="pb-3 text-[clamp(58px,10vw,140px)] font-medium leading-[0.94] tracking-[-0.07em]">
               Hi Versant.
