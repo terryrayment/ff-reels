@@ -2,11 +2,6 @@
 
 import MuxPlayer from "@mux/mux-player-react";
 
-/**
- * Founder's note — treatment-page styling. Sits on a warm-dark "manila"
- * tone, with editorial serif heading + sans body + monospace marginalia.
- * Asymmetric two-column layout for visual rhythm vs. the navy hero above.
- */
 interface Props {
   videoPlaybackId?: string | null;
   fallbackImageUrl?: string | null;
@@ -14,86 +9,82 @@ interface Props {
 
 export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
   return (
-    <section className="border-b border-white/[0.06] bg-[#161513] px-6 py-28">
-      <div className="mx-auto max-w-5xl">
-        {/* Section gutter strip */}
-        <div className="mb-10 flex items-baseline justify-between text-[10px] uppercase tracking-[0.3em] text-white/35">
-          <span>02 — A note from Terry</span>
-          <span className="font-mono normal-case tracking-normal text-white/25">
-            shot 1 of 3
+    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
+      <div className="mx-auto grid max-w-[1400px] gap-4 lg:grid-cols-12">
+        <article className="relative overflow-hidden rounded-[42px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-10 lg:col-span-9 lg:p-12 xl:rounded-[52px]">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -left-8 top-8 text-[clamp(120px,18vw,260px)] font-medium leading-none tracking-[-0.08em] text-black/[0.035]"
+          >
+            short list
           </span>
-        </div>
 
-        <div className="grid gap-12 md:grid-cols-[1.1fr_1.6fr]">
-          {/* Left column — video + marginalia */}
-          <div>
-            <div className="mb-4 aspect-[4/5] w-full overflow-hidden rounded-sm bg-black ring-1 ring-white/[0.06]">
+          <div className="relative z-10 mb-10 flex flex-wrap items-center gap-3">
+            <span className="rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+              Note from Terry
+            </span>
+            <span className="rounded-full bg-[var(--versant-orange)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-black">
+              available before the fire drill
+            </span>
+          </div>
+
+          <div className="relative z-10 max-w-[760px] space-y-5 text-[clamp(17px,1.55vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/76">
+            <h2 className="max-w-3xl text-[clamp(44px,7vw,104px)] font-medium leading-[0.9] tracking-[-0.055em] text-black">
+              We&apos;d like to be on the short list.
+            </h2>
+
+            <p>
+              Golf Channel feels like the right first lane because it has the
+              pace, talent, live pressure, loyal audience, and production
+              surface to show what we do well.
+            </p>
+
+            <p>
+              We are not here to sell Versant a stack of new concepts. We are
+              here to be useful inside the work already coming: films, opens,
+              promos, sponsor pieces, talent windows, cutdowns, and whatever
+              shape the brief takes.
+            </p>
+
+            <p>
+              We can stay small and exact. We can scale when the job needs it.
+              We can bring the right director, crew, post path, and delivery
+              plan without making the process heavier than it needs to be.
+            </p>
+
+            <p>Send us the assignment shape. We&apos;ll show you how we&apos;d make it.</p>
+
+            <p className="pt-4 text-[clamp(26px,3vw,44px)] font-medium leading-none tracking-[-0.045em] text-black">
+              Terry
+            </p>
+          </div>
+        </article>
+
+        {(videoPlaybackId || fallbackImageUrl) && (
+          <aside className="overflow-hidden rounded-[36px] bg-[var(--versant-black)] p-4 text-white lg:col-span-3 xl:rounded-[48px]">
+            <div className="mb-4 flex items-center justify-between px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
+              <span>Founder message</span>
+              <span>optional</span>
+            </div>
+            <div className="aspect-[4/5] overflow-hidden rounded-[28px] bg-black">
               {videoPlaybackId ? (
                 <MuxPlayer
                   playbackId={videoPlaybackId}
-                  metadata={{ video_title: "Terry Rayment — Versant" }}
-                  accentColor="#ffffff"
+                  metadata={{ video_title: "Terry Rayment - Versant" }}
+                  accentColor="#ff4b32"
                   style={{ width: "100%", height: "100%" }}
                 />
-              ) : fallbackImageUrl ? (
+              ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={fallbackImageUrl}
+                  src={fallbackImageUrl ?? ""}
                   alt="Terry Rayment"
-                  className="h-full w-full object-cover opacity-90"
+                  className="h-full w-full object-cover"
                 />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#1a1a18] to-[#0e0e0e]">
-                  <span className="text-[10px] uppercase tracking-[0.25em] text-white/30">
-                    Founder portrait · in cut
-                  </span>
-                </div>
               )}
             </div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/35">
-              FIG. 01 — Terry Rayment, founder
-              <br />
-              Friends &amp; Family · Los Angeles
-            </p>
-          </div>
-
-          {/* Right column — letter */}
-          <div className="space-y-5 text-[15.5px] leading-[1.7] tracking-tight text-white/80">
-            <p className="font-serif text-[clamp(1.6rem,2.6vw,2.1rem)] leading-[1.15] tracking-tight-2 text-white">
-              We&apos;d like to be on the short list.
-            </p>
-
-            <p>
-              We want to be on the short list for production work that matters
-              at Versant. We think the first place to prove that is golf. Golf
-              Channel has the rights, the talent, the events, the digital
-              surface, and a fan base that knows when the work is fake. The
-              independent Versant era needs the films that name that next
-              chapter. We&apos;d like to make them.
-            </p>
-
-            <p>
-              We&apos;re small enough to care about the material and
-              experienced enough to deliver it at scale. We know the vendor map
-              is being drawn right now. We&apos;d rather be on it before it
-              hardens.
-            </p>
-
-            <p>
-              Watch the reel. Read the holes. Call us before the next thing
-              becomes urgent.
-            </p>
-
-            <div className="pt-4">
-              <p className="font-serif text-[1.5rem] leading-none tracking-tight-2 text-white">
-                — Terry
-              </p>
-              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
-                P.S. The reel is short. We didn&apos;t pad it.
-              </p>
-            </div>
-          </div>
-        </div>
+          </aside>
+        )}
       </div>
     </section>
   );

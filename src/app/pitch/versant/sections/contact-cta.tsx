@@ -1,10 +1,4 @@
-/**
- * The Call Sheet — close styled as the back cover of a production
- * document. Fixed-width grid of ROLE / PROD CO / CALL / CONTACT fields.
- * Single CTA: a 30-minute call.
- */
-
-import { Calendar } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 interface Props {
   ctaUrl?: string | null;
@@ -13,93 +7,88 @@ interface Props {
 }
 
 const TERRY_EMAIL = "terry@friendsandfamily.tv";
-const TERRY_PHONE_TEL = "+1-310-555-0100"; // TODO: replace before send
+const TERRY_PHONE_TEL = "+1-310-555-0100";
 const TERRY_PHONE_DISPLAY = "(310) 555-0100";
 
-export function ContactCta({ ctaUrl, ctaLabel, recipientFirstName }: Props) {
-  const finalCta = ctaLabel ?? "Grab 30 minutes on the calendar";
-  const finalCtaUrl = ctaUrl ?? `mailto:${TERRY_EMAIL}`;
+const DETAILS = [
+  ["Project", "Versant x Friends & Family"],
+  ["First lane", "Golf Channel"],
+  ["Need", "flexible production partner"],
+  ["Next move", "one assignment shape"],
+];
+
+export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
+  const href =
+    ctaUrl ??
+    `mailto:${TERRY_EMAIL}?subject=${encodeURIComponent(
+      "Versant x Friends & Family brief",
+    )}`;
 
   return (
-    <section className="bg-[#080808] px-6 py-28">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-10 flex items-baseline justify-between text-[10px] uppercase tracking-[0.3em] text-white/35">
-          <span>07 — The Call Sheet</span>
-          <span className="font-mono normal-case tracking-normal text-white/25">
-            END OF DAY · Hand-off to Versant
-          </span>
+    <section className="px-4 pb-4 pt-12 sm:px-6 lg:px-8 lg:pb-8 lg:pt-20">
+      <div className="mx-auto max-w-[1500px] rounded-[42px] bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(16,16,16,0.2)] sm:p-10 lg:rounded-[52px] lg:p-12">
+        <div className="mb-12 flex flex-wrap items-center justify-between gap-4 border-b border-white/12 pb-5 text-[10px] uppercase tracking-[0.18em] text-white/44">
+          <span>{recipientFirstName ? `${recipientFirstName} / next move` : "Ready for input"}</span>
+          <span>Status · assignment shape requested</span>
         </div>
 
-        <div className="grid items-end gap-6 md:grid-cols-[1.4fr_1fr]">
-          <div>
-            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
-              {recipientFirstName
-                ? `${recipientFirstName} — over to you`
-                : "Over to you"}
-            </p>
-            <h2 className="font-serif text-[clamp(2.5rem,5.5vw,4.25rem)] font-normal leading-[0.95] tracking-tight-2 text-white">
-              Call us.
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
+            <h2 className="text-[clamp(64px,10vw,150px)] font-medium leading-[0.86] tracking-[-0.07em]">
+              Send us the shape.
             </h2>
-            <p className="mt-4 max-w-md text-[16px] font-light leading-snug tracking-tight text-white/60">
-              Probably on the first ring. Definitely by the second.
+            <p className="mt-6 max-w-[58ch] text-[clamp(18px,1.6vw,24px)] leading-[1.35] tracking-[-0.025em] text-white/66">
+              A format. A deadline. The assets. The restrictions. The number
+              of versions. That is enough for us to show you how we would build
+              it.
             </p>
+            <p className="mt-5 text-[15px] text-white/42">
+              Or send the weird one first.
+            </p>
+          </div>
+
+          <aside className="rounded-[34px] border border-white/12 p-5 lg:col-span-5 lg:rounded-[44px]">
+            <p className="mb-5 text-[10px] uppercase tracking-[0.18em] text-white/42">
+              Detail card
+            </p>
+            <dl className="space-y-4">
+              {DETAILS.map(([label, value]) => (
+                <div
+                  key={label}
+                  className="grid gap-2 border-t border-white/12 pt-4 text-[13px] sm:grid-cols-[7rem_1fr]"
+                >
+                  <dt className="text-[10px] uppercase tracking-[0.18em] text-white/42">
+                    {label}
+                  </dt>
+                  <dd className="text-white/78">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </aside>
+        </div>
+
+        <div className="mt-12 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div className="grid gap-x-8 gap-y-5 border-t border-white/12 pt-6 text-[13px] text-white/72 sm:grid-cols-2 lg:grid-cols-4">
+            <Contact label="Production Co." value="Friends & Family" sub="LA / NYC" />
+            <Contact label="Call" value="Terry Rayment" sub="Founder & Creative Director" />
+            <Contact label="Email" value={TERRY_EMAIL} href={`mailto:${TERRY_EMAIL}`} />
+            <Contact label="Mobile" value={TERRY_PHONE_DISPLAY} href={`tel:${TERRY_PHONE_TEL}`} />
           </div>
 
           <a
-            href={finalCtaUrl}
-            className="group inline-flex items-center justify-between gap-3 self-end rounded-sm border border-white/15 bg-white px-6 py-4 font-mono text-[11px] uppercase tracking-[0.22em] text-black transition hover:bg-white/90"
+            href={href}
+            className="group flex min-h-[9rem] items-end justify-between rounded-[30px] bg-[var(--versant-orange)] p-5 text-left text-[clamp(24px,3vw,46px)] font-medium leading-[0.95] tracking-[-0.055em] text-black transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
-            <span className="inline-flex items-center gap-2.5">
-              <Calendar className="h-3.5 w-3.5" />
-              {finalCta}
-            </span>
-            <span className="transition-transform group-hover:translate-x-0.5">
-              →
-            </span>
+            <span>Send the brief</span>
+            <ArrowUpRight className="h-6 w-6 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
           </a>
         </div>
-
-        {/* Call-sheet grid */}
-        <div className="mt-16 border-t border-white/10 pt-10">
-          <div className="grid gap-x-10 gap-y-6 font-mono text-[12px] uppercase tracking-[0.15em] sm:grid-cols-2 md:grid-cols-3">
-            <Field label="Production Co." value="Friends & Family" sub="LA · NYC" />
-            <Field
-              label="Call"
-              value="Terry Rayment"
-              sub="Founder & Creative Director"
-            />
-            <Field
-              label="Email"
-              value={TERRY_EMAIL}
-              href={`mailto:${TERRY_EMAIL}`}
-            />
-            <Field
-              label="Mobile"
-              value={TERRY_PHONE_DISPLAY}
-              href={`tel:${TERRY_PHONE_TEL}`}
-            />
-            <Field
-              label="Reps"
-              value="Talk Shop · CCCo."
-              sub="NYC · Chicago + LA"
-            />
-            <Field
-              label="Next"
-              value="A 30-min call"
-              sub="Before the next thing becomes urgent"
-            />
-          </div>
-        </div>
-
-        <p className="mt-16 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-white/20">
-          Friends &amp; Family · reels.friendsandfamily.tv · vol. I · 2026
-        </p>
       </div>
     </section>
   );
 }
 
-function Field({
+function Contact({
   label,
   value,
   sub,
@@ -110,27 +99,24 @@ function Field({
   sub?: string;
   href?: string;
 }) {
-  const valueClass = "text-white";
   const inner = (
     <>
-      <p className="text-[10px] tracking-[0.22em] text-white/35">{label}</p>
-      <p className={`mt-2 normal-case tracking-tight text-[14.5px] font-light ${valueClass}`}>
-        {value}
+      <p className="mb-2 text-[10px] uppercase tracking-[0.18em] text-white/36">
+        {label}
       </p>
-      {sub && (
-        <p className="mt-1 text-[10px] tracking-[0.18em] text-white/40">
-          {sub}
-        </p>
-      )}
+      <p>{value}</p>
+      {sub && <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-white/36">{sub}</p>}
     </>
   );
 
-  if (href) {
-    return (
-      <a href={href} className="block transition hover:bg-white/[0.02]">
-        {inner}
-      </a>
-    );
-  }
-  return <div>{inner}</div>;
+  if (!href) return <div>{inner}</div>;
+
+  return (
+    <a
+      href={href}
+      className="block rounded-[18px] transition hover:text-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+    >
+      {inner}
+    </a>
+  );
 }

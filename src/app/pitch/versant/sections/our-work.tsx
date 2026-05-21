@@ -1,142 +1,126 @@
-/**
- * "The Tape" — the reel turn.
- *
- * Styled as a broadcast-monitor frame with corner ticks, a timecode bar,
- * and a camera ID. The turn from pitch to proof.
- */
-
 import Link from "next/link";
-import { Film, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Film } from "lucide-react";
 
 interface Props {
   reelScreeningToken?: string | null;
 }
 
+const ROWS = [
+  ["Runtime", "4:12"],
+  ["Watch for", "faces / timing / restraint / color / finish / scale"],
+  ["Send after watching", "format / deadline / assets / constraints"],
+];
+
 export function OurWork({ reelScreeningToken }: Props) {
   const href = reelScreeningToken ? `/s/${reelScreeningToken}` : null;
 
   return (
-    <section className="border-b border-white/[0.06] bg-[#0e0e0e] px-6 py-28">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-10 flex items-baseline justify-between text-[10px] uppercase tracking-[0.3em] text-white/35">
-          <span>04 — The Tape</span>
-          <span className="font-mono normal-case tracking-normal text-white/25">
-            BTV-1 · 00:00:00:00
+    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
+      <div className="mx-auto grid min-w-0 max-w-[1500px] gap-4 lg:grid-cols-12">
+        <div className="min-w-0 rounded-[42px] bg-[var(--versant-black)] p-5 text-white shadow-[0_28px_90px_rgba(16,16,16,0.18)] sm:p-7 lg:col-span-8 lg:rounded-[52px]">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
+            <span>F&amp;F reel</span>
+            <span>media player</span>
+          </div>
+          <ReelFrame href={href} />
+        </div>
+
+        <aside className="relative min-w-0 overflow-hidden rounded-[42px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-8 lg:col-span-4 lg:rounded-[52px]">
+          <span
+            aria-hidden="true"
+            className="absolute right-5 top-5 text-[clamp(58px,8vw,116px)] font-medium leading-none tracking-[-0.08em] text-[var(--versant-orange)]"
+          >
+            04:12
           </span>
-        </div>
+          <div className="relative z-10 mb-8 flex items-start justify-between gap-5">
+            <div>
+              <p className="mb-4 rounded-full bg-[var(--versant-black)] px-4 py-2 text-[10px] uppercase tracking-[0.18em] text-white">
+                Reel
+              </p>
+              <h2 className="max-w-[14rem] text-[clamp(44px,7vw,104px)] font-medium leading-[0.9] tracking-[-0.055em]">
+                Watch for range.
+              </h2>
+            </div>
+          </div>
 
-        <div className="mb-12 grid items-end gap-4 md:grid-cols-[1.6fr_1fr]">
-          <h2 className="font-serif text-[clamp(2.25rem,5vw,3.75rem)] font-normal leading-[0.95] tracking-tight-2 text-white">
-            Here&apos;s the tape.
-            <br />
-            <span className="text-white/55">Four minutes. Then call us.</span>
-          </h2>
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/45">
-            Director notes
-            <br />
-            in the screening-room cut.
+          <p className="max-w-[48ch] border-l-4 border-[var(--versant-orange)] pl-5 text-[17px] leading-[1.35] tracking-[-0.025em] text-black/68">
+            The reel is not here to prove one lane. It is here to show how
+            Friends &amp; Family moves between faces, timing, performance,
+            comedy, polish, motion, and scale.
           </p>
-        </div>
 
-        {/* Broadcast monitor */}
-        <BroadcastFrame href={href} />
-
-        {/* Watch-for notes */}
-        <div className="mt-10 grid gap-5 text-[13px] leading-relaxed text-white/65 sm:grid-cols-3">
-          <Cue
-            tc="00:12"
-            label="Tone"
-            body="Comedy with stakes. Ensemble with point of view."
-          />
-          <Cue
-            tc="01:36"
-            label="Talent"
-            body="How we hold a face. How we let a moment land."
-          />
-          <Cue
-            tc="03:04"
-            label="Craft"
-            body="Format-agnostic but format-aware. The lighting earns the cut."
-          />
-        </div>
+          <div className="mt-10 space-y-3">
+            {ROWS.map(([label, value]) => (
+              <div
+                key={label}
+                className="grid gap-2 border-t border-black/14 pt-3 text-[13px] sm:grid-cols-[8.5rem_1fr]"
+              >
+                <span className="text-[10px] uppercase tracking-[0.18em] text-black/45">
+                  {label}
+                </span>
+                <span className="min-w-0 break-words">{value}</span>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
     </section>
   );
 }
 
-function BroadcastFrame({ href }: { href: string | null }) {
+function ReelFrame({ href }: { href: string | null }) {
   const inner = (
-    <div className="group relative rounded-sm border border-white/15 bg-[#080808] p-4">
-      {/* corner tick marks */}
-      <Corner pos="tl" />
-      <Corner pos="tr" />
-      <Corner pos="bl" />
-      <Corner pos="br" />
+    <div className="group relative min-w-0 overflow-hidden rounded-[32px] border border-white/12 bg-[#050505] lg:rounded-[42px]">
+      <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 text-[10px] uppercase tracking-[0.18em] text-white/45">
+        <span>F&amp;F reel</span>
+        <span>Watch for range</span>
+      </div>
 
-      <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-sm bg-gradient-to-br from-[#111] via-[#0a0a0a] to-[#000]">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <span className="grid h-16 w-16 place-items-center rounded-full border border-white/20 text-white/80 transition group-hover:border-white/50 group-hover:text-white">
-            <Film className="h-6 w-6" />
+      <div className="relative flex aspect-video min-h-[17rem] items-center justify-center bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.08),transparent_34%),#080808]">
+        <span
+          aria-hidden="true"
+          className="absolute inset-5 rounded-[24px] border border-white/10"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute left-6 top-6 h-8 w-8 border-l border-t border-white/36"
+        />
+        <span
+          aria-hidden="true"
+          className="absolute bottom-6 right-6 h-8 w-8 border-b border-r border-white/36"
+        />
+
+        <div className="relative z-10 flex flex-col items-center gap-4 text-center">
+          <span className="grid h-20 w-20 place-items-center rounded-full bg-white text-black transition group-hover:bg-[var(--versant-orange)]">
+            <Film className="h-7 w-7" />
           </span>
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
-            Press play · 00:00:00 — 00:04:12
+          <p className="text-[10px] uppercase tracking-[0.22em] text-white/44">
+            Press play · 00:00 to 04:12
           </p>
-          <p className="font-serif text-[1.5rem] font-light tracking-tight text-white">
+          <p className="text-[clamp(30px,4vw,64px)] font-medium leading-none tracking-[-0.055em]">
             Watch the reel
           </p>
         </div>
       </div>
 
-      {/* Bottom timecode bar */}
-      <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
-        <span>F&amp;F · for Versant</span>
-        <span className="hidden sm:inline">SH 01 / 03 · Reel cut</span>
-        <span className="inline-flex items-center gap-1.5 text-white/70 transition group-hover:text-white">
+      <div className="flex items-center justify-between gap-4 border-t border-white/10 px-5 py-4 text-[10px] uppercase tracking-[0.18em] text-white/45">
+        <span>range cut</span>
+        <span className="inline-flex items-center gap-2 text-white transition group-hover:text-[var(--versant-orange)]">
           {href ? "Open" : "Loading"}
-          <ArrowUpRight className="h-3 w-3" />
+          <ArrowUpRight className="h-3.5 w-3.5" />
         </span>
       </div>
     </div>
   );
 
   if (!href) return inner;
+
   return (
-    <Link href={href} className="block">
+    <Link
+      href={href}
+      className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+    >
       {inner}
     </Link>
-  );
-}
-
-function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
-  const map: Record<typeof pos, string> = {
-    tl: "left-1 top-1 border-l border-t",
-    tr: "right-1 top-1 border-r border-t",
-    bl: "left-1 bottom-1 border-l border-b",
-    br: "right-1 bottom-1 border-r border-b",
-  };
-  return (
-    <span
-      aria-hidden="true"
-      className={`pointer-events-none absolute h-3 w-3 border-white/35 ${map[pos]}`}
-    />
-  );
-}
-
-function Cue({
-  tc,
-  label,
-  body,
-}: {
-  tc: string;
-  label: string;
-  body: string;
-}) {
-  return (
-    <div className="rounded-sm border border-white/[0.06] bg-white/[0.02] p-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#c9a961]">
-        {tc} · {label}
-      </p>
-      <p className="mt-2 text-white/70">{body}</p>
-    </div>
   );
 }
