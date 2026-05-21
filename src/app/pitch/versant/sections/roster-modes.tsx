@@ -1,4 +1,6 @@
 import {
+  muxAnimatedUrl,
+  muxStillUrl,
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
@@ -11,6 +13,10 @@ const CADDIES = [
     credits: "Kodak \"Understanding,\" Purina, Cadillac, Jaguar",
     match: "Rory/GolfPass intimate films",
     treatment: "bg-[var(--versant-white)] text-black",
+    media: {
+      muxPlaybackId: "z3BCWiNoyvzWXlo17EFk4z02DwV800nPqgHbZcgoODgQ00",
+      duration: 165.166667,
+    },
   },
   {
     slug: "jack-turits",
@@ -19,6 +25,10 @@ const CADDIES = [
     credits: "Callaway \"Forefront\"",
     match: "GolfNow portraits",
     treatment: "bg-[var(--versant-black)] text-white",
+    media: {
+      muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
+      duration: 32.074667,
+    },
   },
   {
     slug: "matt-dilmore",
@@ -27,6 +37,10 @@ const CADDIES = [
     credits: "ESPN 30 for 30 \"The Great Imposter\"",
     match: "Big Break x Good Good",
     treatment: "bg-[var(--versant-orange)] text-black",
+    media: {
+      muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
+      duration: 587.536967,
+    },
   },
   {
     slug: "boma-iluma",
@@ -43,6 +57,10 @@ const CADDIES = [
     credits: "Gillette \"Look Good, Game Good\"",
     match: "USA Sports identity / women's sports",
     treatment: "bg-[var(--versant-blue)] text-white",
+    media: {
+      muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
+      duration: 50.550511,
+    },
   },
   {
     slug: "caleb-slain",
@@ -146,7 +164,15 @@ function CaddieCard({
   directors: VersantDirectorMedia[];
 }) {
   const media = motionForDirector(directors, card.slug, 640);
+  const overrideStill = card.media
+    ? muxStillUrl(card.media.muxPlaybackId, 640, card.media.duration)
+    : null;
+  const overrideAnimated = card.media
+    ? muxAnimatedUrl(card.media.muxPlaybackId, 640, card.media.duration)
+    : null;
   const headshot = media.director?.headshotUrl;
+  const still = overrideStill ?? media.still;
+  const animated = overrideAnimated ?? media.animated;
   const usesFigurePlaceholder =
     !headshot && (card.slug === "james-frost" || card.slug === "cody-cloud");
   const dark = card.treatment.includes("text-white");
@@ -162,9 +188,17 @@ function CaddieCard({
     >
       <div
         className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
-        style={media.still ? { backgroundImage: `url(${media.still})` } : undefined}
+        style={still ? { backgroundImage: `url(${still})` } : undefined}
       >
-        {headshot ? (
+        {overrideStill ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={overrideStill}
+            alt={card.name}
+            className="h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100"
+            loading="lazy"
+          />
+        ) : headshot ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={headshot}
@@ -178,10 +212,10 @@ function CaddieCard({
               FIG
             </span>
           </div>
-        ) : media.still ? (
+        ) : still ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={media.still}
+            src={still}
             alt={card.name}
             className="h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100"
             loading="lazy"
@@ -190,10 +224,10 @@ function CaddieCard({
           <div className="h-full w-full bg-black/10" />
         )}
 
-        {media.animated && (
+        {animated && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={media.animated}
+            src={animated}
             alt=""
             className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100 motion-safe:block"
             loading="lazy"
