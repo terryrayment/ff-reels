@@ -56,7 +56,7 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
           Friends &amp; Family
         </h1>
         <p className="ff-body mt-4 max-w-md text-white/80">
-          Director-led. Los Angeles, New York, São Paulo, Curitiba.
+          Creative led: Los Angeles, New York, São Paulo, Curitiba.
         </p>
       </div>
     </section>

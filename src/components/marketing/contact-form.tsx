@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Magnetic } from "@/components/marketing/magnetic";
 
 const PROJECT_TYPES = [
   "Commercial",
@@ -75,6 +76,7 @@ export function ContactForm() {
             type="text"
             required
             autoComplete="name"
+            placeholder="Your name"
             className={inputCls}
           />
         </div>
@@ -87,6 +89,7 @@ export function ContactForm() {
             name="company"
             type="text"
             autoComplete="organization"
+            placeholder="Company / agency"
             className={inputCls}
           />
         </div>
@@ -100,6 +103,7 @@ export function ContactForm() {
             type="email"
             required
             autoComplete="email"
+            placeholder="you@email.com"
             className={inputCls}
           />
         </div>
@@ -114,7 +118,7 @@ export function ContactForm() {
             defaultValue=""
           >
             <option value="" disabled>
-              Select
+              Project type
             </option>
             {PROJECT_TYPES.map((t) => (
               <option key={t} value={t}>
@@ -144,6 +148,7 @@ export function ContactForm() {
             name="message"
             required
             rows={5}
+            placeholder="Tell us what you are making"
             className={`${inputCls} resize-none`}
           />
         </div>
@@ -153,13 +158,15 @@ export function ContactForm() {
         {status === "error" && errorMsg && (
           <p className="text-ff-footer text-red-600">{errorMsg}</p>
         )}
-        <button
-          type="submit"
-          disabled={status === "submitting"}
-          className="ff-button-primary ml-auto"
-        >
-          {status === "submitting" ? "Sending…" : "Send inquiry"}
-        </button>
+        <Magnetic className="ml-auto">
+          <button
+            type="submit"
+            disabled={status === "submitting"}
+            className="ff-button-primary"
+          >
+            {status === "submitting" ? "Sending…" : "Send inquiry"}
+          </button>
+        </Magnetic>
       </div>
     </form>
   );

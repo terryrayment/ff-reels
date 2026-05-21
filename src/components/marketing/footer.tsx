@@ -1,16 +1,5 @@
 import Link from "next/link";
 
-const OFFICES = [
-  {
-    city: "Los Angeles",
-    lines: ["1234 Sunset Blvd", "Los Angeles, CA 90026"],
-  },
-  {
-    city: "New York",
-    lines: ["456 Greene Street", "New York, NY 10012"],
-  },
-];
-
 const CONTACTS = [
   { name: "Scott", email: "scott@friendsandfamily.tv" },
   { name: "Jed", email: "jed@friendsandfamily.tv" },
@@ -26,7 +15,7 @@ export function MarketingFooter() {
   return (
     <footer className="border-t ff-rule mt-32">
       <div className="ff-shell py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-12">
           <div>
             <p className="ff-footer-brand">
               Friends &amp; Family
@@ -35,19 +24,6 @@ export function MarketingFooter() {
               A creative network. Los Angeles, New York, São Paulo, Curitiba.
             </p>
           </div>
-
-          {OFFICES.map((office) => (
-            <div key={office.city}>
-              <p className="ff-kicker">
-                {office.city}
-              </p>
-              <div className="ff-footer-copy mt-3 space-y-0.5">
-                {office.lines.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </div>
-            </div>
-          ))}
 
           <div>
             <p className="ff-kicker">

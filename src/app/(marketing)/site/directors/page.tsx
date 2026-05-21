@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { DirectorCard } from "@/components/marketing/director-card";
+import { RevealText } from "@/components/marketing/reveal-text";
 
 export const metadata: Metadata = { title: "Directors" };
 export const revalidate = 300;
@@ -80,7 +81,7 @@ export default async function DirectorsPage() {
     <div className="ff-shell ff-page">
       <header className="ff-page-heading-row">
         <h1 className="ff-display-page">
-          Directors
+          <RevealText text="Directors" />
         </h1>
         <p className="ff-kicker">
           {directors.length} on roster

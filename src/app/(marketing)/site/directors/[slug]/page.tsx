@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ProjectCard } from "@/components/marketing/project-card";
-import { ScrollReveal } from "@/components/marketing/scroll-reveal";
 import { FeaturedReel } from "@/components/marketing/featured-reel";
+import { RevealText } from "@/components/marketing/reveal-text";
 
 interface Props {
   params: { slug: string };
@@ -98,6 +98,11 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
   const visibleProjects = featuredProject
     ? director.projects.filter((p) => p.id !== featuredProject.id)
     : director.projects;
+  const featuredPosterUrl =
+    featuredProject?.thumbnailUrl ??
+    (featuredProject?.muxPlaybackId
+      ? `https://image.mux.com/${featuredProject.muxPlaybackId}/thumbnail.jpg?width=1280`
+      : null);
 
   const grouped = groupProjects(visibleProjects);
   const positioning = director.categories?.[0] ?? null;
@@ -106,32 +111,8 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
 
   return (
     <article className="pt-[88px] lg:pt-[104px] pb-24">
-      {featuredProject?.muxPlaybackId && (
-        <FeaturedReel
-          projectId={featuredProject.id}
-          muxPlaybackId={featuredProject.muxPlaybackId}
-          brand={featuredProject.brand}
-          title={featuredProject.title}
-          directorName={director.name}
-          agency={featuredProject.agency}
-          year={featuredProject.year}
-        />
-      )}
-
-      {!featuredProject && director.videoIntroUrl && (
-        <FeaturedReel
-          projectId={`intro-${director.slug}`}
-          muxPlaybackId={director.videoIntroUrl}
-          brand={null}
-          title={`${director.name} — Reel`}
-          directorName={director.name}
-          agency={null}
-          year={null}
-        />
-      )}
-
       <div className="marketing-transition-reveal" data-marketing-transition-reveal>
-        <header className="ff-shell mb-12 lg:mb-14">
+        <header className="ff-shell mb-8 lg:mb-10">
           {positioning && (
             <p className="ff-kicker-muted mb-3">
               {positioning}
@@ -141,12 +122,33 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
             className="ff-display-director"
             data-marketing-director-name-target={director.slug}
           >
-            {director.name}
+            <RevealText text={director.name} />
           </h1>
         </header>
+      </div>
 
+      {featuredProject?.muxPlaybackId && (
+        <FeaturedReel
+          projectId={featuredProject.id}
+          muxPlaybackId={featuredProject.muxPlaybackId}
+          posterUrl={featuredPosterUrl}
+          brand={featuredProject.brand}
+          title={featuredProject.title}
+        />
+      )}
+
+      {!featuredProject && director.videoIntroUrl && (
+        <FeaturedReel
+          projectId={`intro-${director.slug}`}
+          muxPlaybackId={director.videoIntroUrl}
+          brand={null}
+          title={`${director.name} — Reel`}
+        />
+      )}
+
+      <div className="marketing-transition-reveal" data-marketing-transition-reveal>
         <section className="ff-shell mb-14">
-          <details className="group border-y ff-rule">
+          <details className="group border-y ff-rule" open>
             <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-ff-micro uppercase tracking-ff-micro text-ff-muted transition-colors hover:text-ff-ink [&::-webkit-details-marker]:hidden">
               <span>Bio</span>
               <span className="ff-accordion-mark group-open:hidden">
@@ -195,29 +197,28 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
             </div>
             {grouped.map((group) => (
               <div key={group.key} className="mb-20 last:mb-0">
-                <h2 className="ff-kicker mb-8">
+                <p className="ff-kicker-muted mb-8">
                   {group.label}
-                </h2>
+                </p>
                 <div className="ff-grid-work">
-                  {group.items.map((p, i) => (
-                    <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
-                      <ProjectCard
-                        project={{
-                          id: p.id,
-                          title: p.title,
-                          brand: p.brand,
-                          year: p.year,
-                          agency: p.agency,
-                          thumbnailUrl: p.thumbnailUrl,
-                          muxPlaybackId: p.muxPlaybackId,
-                          director: { slug: director.slug, name: director.name },
-                        }}
-                        showDirector={false}
-                        showAgency
-                        showYear
-                        thumbnailWidth={1280}
-                      />
-                    </ScrollReveal>
+                  {group.items.map((p) => (
+                    <ProjectCard
+                      key={p.id}
+                      project={{
+                        id: p.id,
+                        title: p.title,
+                        brand: p.brand,
+                        year: p.year,
+                        agency: p.agency,
+                        thumbnailUrl: p.thumbnailUrl,
+                        muxPlaybackId: p.muxPlaybackId,
+                        director: { slug: director.slug, name: director.name },
+                      }}
+                      showDirector={false}
+                      showAgency
+                      showYear
+                      thumbnailWidth={1280}
+                    />
                   ))}
                 </div>
               </div>
@@ -230,9 +231,9 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {awards.length > 0 && (
                 <div>
-                  <h2 className="ff-kicker mb-6">
+                  <p className="ff-kicker-muted mb-6">
                     Selected awards
-                  </h2>
+                  </p>
                   <ul className="space-y-2 text-ff-small text-ff-ink">
                     {awards.slice(0, 12).map((a: unknown, i: number) => (
                       <li key={i}>{typeof a === "string" ? a : JSON.stringify(a)}</li>
@@ -242,9 +243,9 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
               )}
               {press.length > 0 && (
                 <div>
-                  <h2 className="ff-kicker mb-6">
+                  <p className="ff-kicker-muted mb-6">
                     Press
-                  </h2>
+                  </p>
                   <ul className="space-y-2 text-ff-small">
                     {press.slice(0, 12).map((p: unknown, i: number) => {
                       if (typeof p === "string") {

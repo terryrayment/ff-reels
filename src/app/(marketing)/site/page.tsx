@@ -2,14 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { DirectorCard } from "@/components/marketing/director-card";
+import { Magnetic } from "@/components/marketing/magnetic";
 import { ProjectCard } from "@/components/marketing/project-card";
-import { ScrollReveal } from "@/components/marketing/scroll-reveal";
+import { RevealText } from "@/components/marketing/reveal-text";
 
 export const metadata: Metadata = {
   title: { absolute: "Friends & Family — Creative Network" },
 };
 
 export const revalidate = 300;
+
+const PROJECT_TAG_SETS = [
+  ["Direction", "Production", "Film"],
+  ["Motion", "Campaign", "Edit"],
+  ["Post", "Animation", "VFX"],
+  ["Culture", "Commercial", "Finish"],
+] as const;
+
+function formatIndex(index: number) {
+  return String(index + 1).padStart(2, "0");
+}
 
 async function getHomepageData() {
   const [directors, recentProjects] = await Promise.all([
@@ -102,17 +114,15 @@ export default async function MarketingHomePage() {
   return (
     <>
       <section className="ff-shell ff-page">
-        <div className="ff-hero-heading-row">
+        <div className="ff-home-statement-row">
           <div>
-            <p className="ff-kicker mb-3">
-              A creative network
-            </p>
-            <h1 className="ff-display-hero">
-              Friends &amp; Family
+            <h1 className="ff-display-hero ff-home-statement">
+              <RevealText text="Friends & Family" />
             </h1>
           </div>
-          <p className="ff-body max-w-lg">
-            Director-led. Los Angeles, New York, São Paulo, Curitiba.
+          <p className="ff-body ff-home-statement-side">
+            Creative led: Los Angeles, New York, São Paulo, Curitiba.
+            Production, post, animation, and VFX.
           </p>
         </div>
 
@@ -120,7 +130,7 @@ export default async function MarketingHomePage() {
           <EmptyMessage message="No directors published yet." />
         ) : (
           <div className="ff-grid-directors">
-            {featuredDirectors.map((d) => (
+            {featuredDirectors.map((d, i) => (
               <DirectorCard
                 key={d.id}
                 slug={d.slug}
@@ -129,6 +139,9 @@ export default async function MarketingHomePage() {
                 stillUrl={d.stillUrl}
                 muxPlaybackId={d.cardPlaybackId}
                 playProjectId={d.playProjectId}
+                indexLabel={formatIndex(i)}
+                indexMeta={d.categories?.[0] ?? "Director"}
+                tags={d.categories?.slice(0, 3) ?? ["Director"]}
               />
             ))}
           </div>
@@ -139,24 +152,31 @@ export default async function MarketingHomePage() {
         <div className="ff-shell ff-section-y">
           <div className="ff-page-heading-row">
             <h2 className="ff-display-section">
-              Latest work
+              Selected work
             </h2>
-            <Link
-              href="/site/work"
-              className="ff-link-small"
-            >
-              View archive →
-            </Link>
+            <Magnetic>
+              <Link
+                href="/site/work"
+                className="ff-link-small"
+                data-cursor="link"
+              >
+                View archive →
+              </Link>
+            </Magnetic>
           </div>
 
           {recentProjects.length === 0 ? (
             <EmptyMessage message="No projects published yet." />
           ) : (
-            <div className="ff-grid-work">
+            <div className="ff-grid-work md:grid-cols-4">
               {recentProjects.map((p, i) => (
-                <ScrollReveal key={p.id} delay={Math.min(i, 4) * 0.05}>
-                  <ProjectCard project={p} />
-                </ScrollReveal>
+                <ProjectCard
+                  key={p.id}
+                  project={p}
+                  indexLabel={formatIndex(i)}
+                  indexMeta={p.brand ?? "Work"}
+                  tags={PROJECT_TAG_SETS[i % PROJECT_TAG_SETS.length]}
+                />
               ))}
             </div>
           )}

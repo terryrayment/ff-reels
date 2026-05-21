@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/marketing/contact-form";
+import { RevealText } from "@/components/marketing/reveal-text";
 
 export const metadata: Metadata = { title: "Contact" };
 
@@ -14,7 +15,7 @@ export default function ContactPage() {
     <div className="ff-shell ff-page">
       <header className="ff-page-heading-row">
         <h1 className="ff-display-page max-w-5xl">
-          Let&rsquo;s talk about your next project.
+          <RevealText text="Let’s talk about your next project." />
         </h1>
       </header>
 
@@ -44,27 +45,6 @@ export default function ContactPage() {
             </ul>
           </div>
 
-          <div>
-            <p className="ff-kicker mb-3">
-              Los Angeles
-            </p>
-            <p className="ff-footer-copy">
-              1234 Sunset Blvd
-              <br />
-              Los Angeles, CA 90026
-            </p>
-          </div>
-
-          <div>
-            <p className="ff-kicker mb-3">
-              New York
-            </p>
-            <p className="ff-footer-copy">
-              456 Greene Street
-              <br />
-              New York, NY 10012
-            </p>
-          </div>
         </aside>
 
         <section className="lg:col-span-8">

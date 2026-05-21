@@ -97,56 +97,62 @@ interface PartnerPortalProps {
 
 export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
   const partner = MARKETING_PARTNERS[partnerId];
-  const [activeIndex, setActiveIndex] = useState(0);
   const titleId = `partner-portal-${partnerId}`;
-  const isColossal = partnerId === "colossal";
-  const activeModule = partner.modules[activeIndex] ?? partner.modules[0];
+
+  return (
+    <PartnerSitePortal
+      partner={partner}
+      titleId={titleId}
+      onClose={onClose}
+    />
+  );
+}
+
+interface PartnerSitePortalProps {
+  partner: PartnerConfig;
+  titleId: string;
+  onClose: () => void;
+}
+
+function PartnerSitePortal({
+  partner,
+  titleId,
+  onClose,
+}: PartnerSitePortalProps) {
+  const [loaded, setLoaded] = useState(false);
+  const isColossal = partner.label === "COLOSSAL";
+  const host = partner.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
   useEffect(() => {
-    setActiveIndex(0);
-  }, [partnerId]);
+    setLoaded(false);
+    const loadFallback = window.setTimeout(() => setLoaded(true), 2200);
+    return () => window.clearTimeout(loadFallback);
+  }, [partner.href]);
 
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[70] overflow-y-auto bg-ff-partner-bg text-ff-partner-fg animate-[partnerPortalIn_680ms_cubic-bezier(0.76,0,0.24,1)_both]",
-        isColossal ? "partner-portal--colossal" : "partner-portal--youth",
+        "partner-site-portal fixed inset-0 z-[70] overflow-hidden bg-black text-white",
+        isColossal ? "partner-site-portal--colossal" : "partner-site-portal--youth",
       )}
       aria-modal="true"
       role="dialog"
       aria-labelledby={titleId}
     >
-      <div className="partner-portal__intro" aria-hidden="true">
+      <span id={titleId} className="sr-only">
+        {partner.label}
+      </span>
+      <div className="partner-site-portal__curtain" aria-hidden="true">
         <span>{partner.label}</span>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="partner-portal__grain" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0,transparent_calc(25%-1px),rgba(255,255,255,0.08)_25%,transparent_calc(25%+1px),transparent_calc(50%-1px),rgba(255,255,255,0.08)_50%,transparent_calc(50%+1px),transparent_calc(75%-1px),rgba(255,255,255,0.08)_75%,transparent_calc(75%+1px))]" />
-        <div className="absolute inset-x-0 top-[18vh] h-px bg-white/20 animate-[partnerScan_4.8s_linear_infinite]" />
-        <div
-          className={cn(
-            "absolute -left-[12vw] top-[58vh] h-[34vh] w-[130vw] origin-left bg-white/[0.035]",
-            isColossal ? "-rotate-5" : "rotate-2",
-          )}
-        />
-        <div className="absolute left-0 top-0 h-full w-full opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.8)_1px,transparent_1px)] [background-size:100%_6px]" />
-      </div>
-
-      <header className="sticky top-0 z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-ff-partner-line bg-ff-partner-bg/85 px-ff-x backdrop-blur-md md:grid-cols-[1fr_auto_1fr]">
-        <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-ff-partner-muted">
-          Network / {partner.label}
+      <header className="relative z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-white/15 bg-black px-ff-x md:grid-cols-[1fr_auto_1fr]">
+        <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/48">
+          Network / Live
         </p>
-        <div className="hidden items-center gap-6 md:flex">
-          {partner.nav.map((item) => (
-            <span
-              key={item}
-              className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/36"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
+        <p className="hidden font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white md:block">
+          {partner.label}
+        </p>
         <button
           type="button"
           onClick={onClose}
@@ -156,112 +162,116 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
         </button>
       </header>
 
-      <main className="relative z-10">
-        <section className="mx-auto grid min-h-[calc(100vh-var(--ff-nav-height))] max-w-[1680px] grid-cols-1 gap-10 px-ff-x py-8 md:py-10 lg:grid-cols-12 lg:gap-10 lg:py-12">
-          <div className="flex min-w-0 flex-col justify-between lg:col-span-6 xl:col-span-7">
-            <div className="min-w-0">
-              <p className="mb-5 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/45">
-                {partner.kicker}
-              </p>
-              <h2
-                id={titleId}
-                className={cn(
-                  "partner-portal__title ff-font-display font-normal text-white",
-                  isColossal
-                    ? "ff-partner-title-colossal"
-                    : "ff-partner-title-youth",
-                )}
-              >
-                {partner.heroLines.map((line) => (
-                  <span
-                    key={line}
-                    className={cn(
-                      "block",
-                      isColossal ? "whitespace-nowrap" : "whitespace-nowrap",
-                    )}
-                  >
-                    {line}
-                  </span>
-                ))}
-              </h2>
-              <p className="ff-partner-lede mt-7 max-w-2xl font-helveticaText">
-                {partner.headline}
-              </p>
-            </div>
-
-            <div className="mt-10 grid grid-cols-1 gap-7 border-t border-ff-partner-line pt-7 md:grid-cols-12 md:items-end">
-              <p className="font-helveticaText text-ff-form leading-relaxed text-white/64 md:col-span-7">
-                {partner.body}
-              </p>
-              <a
-                href={partner.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex justify-self-start border-b border-white/45 pb-1 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white transition-colors hover:border-white/80 hover:text-white/70 md:col-span-4 md:col-start-9"
-              >
-                Visit {partner.label} →
-              </a>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6 xl:col-span-5">
-            <PartnerSystem
-              partner={partner}
-              activeIndex={activeIndex}
-              activeModule={activeModule}
-              isColossal={isColossal}
-              setActiveIndex={setActiveIndex}
-            />
-          </div>
-        </section>
-
-        <section className="overflow-hidden border-y border-ff-partner-line py-3">
-          <div className="flex w-max animate-[partnerTicker_24s_linear_infinite] gap-8 whitespace-nowrap pr-8">
-            {[...partner.ticker, ...partner.ticker, ...partner.ticker].map(
-              (item, index) => (
+      <main
+        className={cn(
+          "partner-site-portal__main relative z-10 grid h-[calc(100svh-var(--ff-nav-height))] grid-cols-1 gap-4 px-ff-x py-4 md:gap-6 md:py-6",
+          isColossal
+            ? "md:grid-cols-[minmax(15rem,0.18fr)_1fr]"
+            : "md:grid-cols-[minmax(7rem,0.14fr)_1fr]",
+        )}
+      >
+        <aside className="partner-site-portal__rail hidden border-r border-white/15 pr-5 md:flex md:flex-col md:justify-between">
+          <div>
+            <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/42">
+              {partner.location}
+            </p>
+            <p
+              className={cn(
+                "ff-font-display mt-4 font-semibold uppercase leading-[0.86] tracking-normal",
+                isColossal
+                  ? "text-[clamp(2.25rem,3.25vw,3.25rem)]"
+                  : "text-[clamp(2.75rem,6vw,5.5rem)]",
+              )}
+            >
+              {partner.heroLines.map((line) => (
+                <span key={line} className="block">
+                  {line}
+                </span>
+              ))}
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-px border border-white/12 bg-white/12">
+              {partner.index.map((item) => (
                 <span
-                  key={`${item}-${index}`}
-                  className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-nav text-ff-partner-muted"
+                  key={item}
+                  className="bg-black px-3 py-3 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/56"
                 >
                   {item}
                 </span>
-              ),
+              ))}
+            </div>
+          </div>
+          <a
+            href={partner.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/70 transition-colors hover:text-white"
+          >
+            Open full site →
+          </a>
+        </aside>
+
+        <section className="partner-site-portal__browser min-h-0 overflow-hidden border border-white/18 bg-[#050505]">
+          <div className="flex h-11 items-center justify-between border-b border-white/14 bg-black px-3 md:px-4">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-white/80" />
+              <span className="h-2 w-2 rounded-full bg-white/42" />
+              <span className="h-2 w-2 rounded-full bg-white/22" />
+            </div>
+            <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/52">
+              {host}
+            </p>
+            <a
+              href={partner.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/62 transition-colors hover:text-white"
+            >
+              Open →
+            </a>
+          </div>
+
+          <div className="relative h-[calc(100%-2.75rem)] bg-black">
+            {!loaded && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
+                <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/50">
+                  Loading {partner.label}
+                </p>
+              </div>
             )}
+            <iframe
+              key={partner.href}
+              title={`${partner.label} live site`}
+              src={partner.href}
+              loading="eager"
+              referrerPolicy="no-referrer-when-downgrade"
+              sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+              onLoad={() => setLoaded(true)}
+              className="h-full w-full border-0 bg-black"
+            />
           </div>
         </section>
       </main>
 
       <style>{`
-        @keyframes partnerPortalIn {
-          from {
-            opacity: 0;
-            clip-path: inset(0 0 100% 0);
-          }
-          to {
-            opacity: 1;
-            clip-path: inset(0 0 0 0);
-          }
-        }
-
-        @keyframes partnerIntro {
+        @keyframes partnerSiteCurtain {
           0% {
             opacity: 1;
-            transform: translate3d(0, 0, 0) scaleY(1);
+            transform: translate3d(0, 0, 0);
           }
-          62% {
+          64% {
             opacity: 1;
           }
           100% {
             opacity: 0;
             visibility: hidden;
-            transform: translate3d(0, -1.25rem, 0) scaleY(0.92);
+            transform: translate3d(-100%, 0, 0);
           }
         }
 
-        @keyframes partnerIntroType {
+        @keyframes partnerSiteCurtainType {
           from {
             opacity: 0;
-            transform: translate3d(0, 1.3rem, 0);
+            transform: translate3d(2rem, 0, 0);
           }
           to {
             opacity: 1;
@@ -269,193 +279,84 @@ export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
           }
         }
 
-        @keyframes partnerScan {
-          0% {
-            transform: translate3d(0, -18vh, 0);
-            opacity: 0;
-          }
-          12%,
-          72% {
-            opacity: 1;
-          }
-          100% {
-            transform: translate3d(0, 88vh, 0);
-            opacity: 0;
-          }
-        }
-
-        @keyframes partnerTicker {
-          from {
-            transform: translate3d(0, 0, 0);
-          }
-          to {
-            transform: translate3d(-33.333%, 0, 0);
-          }
-        }
-
-        @keyframes partnerTileIn {
+        @keyframes partnerSiteBrowserIn {
           from {
             opacity: 0;
-            transform: translate3d(0, 1rem, 0);
+            transform: translate3d(5vw, 0, 0) scaleX(0.96);
           }
           to {
             opacity: 1;
-            transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0) scaleX(1);
           }
         }
 
-        @keyframes partnerMeter {
-          from {
-            transform: scaleX(0.08);
-          }
-          to {
-            transform: scaleX(1);
-          }
-        }
-
-        .partner-portal__intro {
+        .partner-site-portal__curtain {
           position: fixed;
           inset: 0;
-          z-index: 90;
+          z-index: 80;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: var(--ff-color-partner-bg);
+          background: #000;
           pointer-events: none;
-          animation: partnerIntro 860ms cubic-bezier(0.76, 0, 0.24, 1) both;
+          animation: partnerSiteCurtain 980ms cubic-bezier(0.76, 0, 0.24, 1) both;
         }
 
-        .partner-portal__intro span {
-          color: white;
+        .partner-site-portal__curtain span {
           font-family: var(--ff-font-display);
-          font-size: var(--ff-type-partner-intro);
-          font-weight: 400;
-          line-height: 0.82;
-          text-transform: uppercase;
+          font-size: clamp(4rem, 15vw, 16rem);
+          font-weight: 650;
+          font-stretch: 92%;
+          font-variation-settings: "wdth" 92, "wght" 650;
+          line-height: 0.8;
           letter-spacing: 0;
-          animation: partnerIntroType 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+          text-transform: uppercase;
+          animation: partnerSiteCurtainType 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        .partner-portal__grain {
-          position: absolute;
-          inset: 0;
-          opacity: 0.22;
-          background-image:
-            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 0 1px, transparent 1px),
-            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.05) 0 1px, transparent 1px);
-          background-size: 17px 17px, 29px 29px;
+        .partner-site-portal__main {
+          background: #000;
         }
 
-        .partner-portal__title {
-          max-width: 100%;
-          animation: partnerTileIn 620ms cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
+        .partner-site-portal__rail,
+        .partner-site-portal__browser {
+          opacity: 0;
+          animation: partnerSiteBrowserIn 720ms cubic-bezier(0.16, 1, 0.3, 1) 300ms both;
         }
 
-        .partner-portal__detail {
-          animation: partnerTileIn 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        .partner-site-portal__browser {
+          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+        }
+
+        @media (max-width: 767px) {
+          .partner-site-portal__main {
+            padding-inline: 0;
+            padding-bottom: 0;
+          }
+
+          .partner-site-portal__browser {
+            border-inline: 0;
+            border-bottom: 0;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .partner-portal--colossal *,
-          .partner-portal--youth * {
+          .partner-site-portal *,
+          .partner-site-portal__curtain {
             animation: none !important;
             transition: none !important;
           }
 
-          .partner-portal__intro {
+          .partner-site-portal__curtain {
             display: none;
+          }
+
+          .partner-site-portal__rail,
+          .partner-site-portal__browser {
+            opacity: 1;
           }
         }
       `}</style>
-    </div>
-  );
-}
-
-interface PartnerSystemProps {
-  partner: PartnerConfig;
-  activeIndex: number;
-  activeModule: PartnerConfig["modules"][number];
-  isColossal: boolean;
-  setActiveIndex: (index: number) => void;
-}
-
-function PartnerSystem({
-  partner,
-  activeIndex,
-  activeModule,
-  isColossal,
-  setActiveIndex,
-}: PartnerSystemProps) {
-  return (
-    <div
-      className={cn(
-        "relative min-h-[520px] overflow-hidden border border-ff-partner-line bg-black/72",
-        isColossal ? "p-px" : "border-x-0 px-0 py-5 md:border-x md:px-5",
-      )}
-    >
-      <div className="pointer-events-none absolute inset-0 grid grid-cols-4 grid-rows-6 opacity-25">
-        {Array.from({ length: 24 }).map((_, index) => (
-          <div key={index} className="border-r border-t border-white/10" />
-        ))}
-      </div>
-
-      <div className="relative flex min-h-[520px] flex-col justify-between">
-        <div className="grid grid-cols-1 gap-px bg-white/12 md:grid-cols-2">
-          {partner.modules.map((module, index) => {
-            const active = index === activeIndex;
-            return (
-              <button
-                key={module.title}
-                type="button"
-                onClick={() => setActiveIndex(index)}
-                onFocus={() => setActiveIndex(index)}
-                onPointerEnter={() => setActiveIndex(index)}
-                className={cn(
-                  "group flex min-h-[112px] flex-col justify-between bg-ff-partner-bg p-5 text-left opacity-0 outline-none animate-[partnerTileIn_520ms_ease-out_forwards] transition-colors hover:bg-white/[0.06] focus-visible:bg-white/[0.06] md:min-h-[178px]",
-                  active && "bg-white/[0.08]",
-                )}
-                style={{ animationDelay: `${180 + index * 90}ms` }}
-              >
-                <span className="font-helveticaText text-ff-label uppercase tracking-ff-nav text-white/36">
-                  {module.label}
-                </span>
-                <span>
-                  <span className="ff-font-display ff-partner-tile-title block font-normal">
-                    {module.title}
-                  </span>
-                  <span className="ff-meta mt-3 block max-w-[16rem] text-white/48">
-                    {module.text}
-                  </span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="relative border-t border-ff-partner-line bg-ff-partner-bg/92 p-5 md:p-6">
-          <div key={activeModule.title} className="partner-portal__detail">
-            <p className="font-helveticaText text-ff-label uppercase tracking-ff-nav text-white/38">
-              {partner.cityCode} / {activeModule.label}
-            </p>
-            <p className="ff-font-display ff-partner-detail-title mt-4 font-normal">
-              {activeModule.title}
-            </p>
-            <p className="ff-copy-small mt-4 max-w-[34rem] text-white/56">
-              {activeModule.detail}
-            </p>
-          </div>
-          <div className="mt-7 h-px origin-left bg-white/60 animate-[partnerMeter_880ms_cubic-bezier(0.76,0,0.24,1)_both]" />
-        </div>
-
-        <p
-          className={cn(
-            "ff-font-display ff-partner-code pointer-events-none absolute bottom-5 right-5 font-normal",
-            isColossal ? "" : "right-auto left-5",
-          )}
-        >
-          {partner.cityCode}
-        </p>
-      </div>
     </div>
   );
 }

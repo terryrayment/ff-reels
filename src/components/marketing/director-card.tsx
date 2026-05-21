@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
+import { useRevealOnce } from "@/components/marketing/use-reveal-once";
 
 interface DirectorCardProps {
   slug: string;
@@ -17,6 +18,12 @@ interface DirectorCardProps {
   muxPlaybackId?: string | null;
   /** Optional project to open and autoplay when the director has no intro reel. */
   playProjectId?: string | null;
+  /** Optional archive index label, e.g. "01". */
+  indexLabel?: string;
+  /** Optional archive index meta, e.g. "Director". */
+  indexMeta?: string | null;
+  /** Optional tags shown under the director name. */
+  tags?: readonly string[];
 }
 
 export function DirectorCard({
@@ -26,9 +33,13 @@ export function DirectorCard({
   stillUrl,
   muxPlaybackId,
   playProjectId,
+  indexLabel,
+  indexMeta,
+  tags,
 }: DirectorCardProps) {
   const [hovering, setHovering] = useState(false);
   const router = useRouter();
+  const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
   const href = playProjectId
     ? `/site/directors/${slug}?play=${playProjectId}`
     : `/site/directors/${slug}`;
@@ -60,21 +71,35 @@ export function DirectorCard({
       onClick={handleClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      className="ff-focusable group block"
+      className="ff-focusable ff-fluid-card group block"
       prefetch
     >
+      {(indexLabel || indexMeta) && (
+        <div className="ff-card-index-row">
+          <span>{indexLabel}</span>
+          <span>{indexMeta}</span>
+        </div>
+      )}
       <div
+        ref={mediaRef}
         data-marketing-media-frame
-        className="ff-media-frame aspect-video"
+        className={`ff-media-frame ff-media-reveal ${stillUrl ? "aspect-video" : "aspect-[16/10]"}${mediaVisible ? " is-visible" : ""}`}
       >
-        {stillUrl && (
+        {stillUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={stillUrl}
             alt={name}
             className="ff-media-image ff-media-fill"
             loading="lazy"
+            decoding="async"
+            width={1280}
+            height={720}
           />
+        ) : (
+          <div className="ff-media-fallback">
+            <span>{name}</span>
+          </div>
         )}
         {muxPlaybackId && hovering && (
           <div
@@ -111,6 +136,13 @@ export function DirectorCard({
           </span>
         )}
       </div>
+      {tags && tags.length > 0 && (
+        <div className="ff-card-tag-row">
+          {tags.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+      )}
     </Link>
   );
 }
