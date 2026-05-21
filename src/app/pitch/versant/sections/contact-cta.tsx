@@ -28,6 +28,18 @@ const DETAILS = [
 
 const COLLAGE_SLUGS = [
   "jack-turits",
+  "matt-dilmore",
+  "boma-iluma",
+  "kelsey-larkin",
+  "caleb-slain",
+  "bueno",
+  "le-ged",
+  "brother-willis",
+  "cody-cloud",
+  "terry-rayment",
+  "jack-turits",
+  "matt-dilmore",
+  "boma-iluma",
   "kelsey-larkin",
   "caleb-slain",
   "le-ged",
@@ -104,9 +116,9 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
           >
             <div
               aria-hidden="true"
-              className="absolute inset-0 grid grid-cols-2 gap-1 opacity-80"
+              className="absolute inset-0 grid grid-cols-4 gap-1 opacity-82"
             >
-              {frames.slice(0, 4).map((frame, index) => (
+              {frames.slice(0, 16).map((frame, index) => (
                 <div
                   key={frame.director?.slug ?? index}
                   className="relative overflow-hidden bg-black"
@@ -130,9 +142,9 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
                 </div>
               ))}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--versant-orange)] via-[var(--versant-orange)]/55 to-black/20 transition group-hover:from-[var(--versant-lime)] group-hover:via-[var(--versant-lime)]/50" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--versant-lime)]/72 via-[var(--versant-orange)]/18 to-black/10 transition group-hover:from-[var(--versant-orange)]/74 group-hover:via-[var(--versant-lime)]/16" />
             <div className="relative z-10 flex min-h-[16rem] w-full items-end justify-between gap-6 p-5">
-              <span className="max-w-[11ch] text-[clamp(28px,3.5vw,54px)] font-medium leading-[0.92] tracking-[-0.055em]">
+              <span className="rounded-full bg-black/70 px-3 py-2 text-[12px] font-semibold leading-none tracking-[-0.015em] text-white backdrop-blur-sm">
                 Share the brief when ready
               </span>
               <ArrowUpRight className="h-7 w-7 shrink-0 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
