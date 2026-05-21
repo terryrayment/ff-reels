@@ -177,11 +177,11 @@ function BriefCard({
       <div className="relative z-10 flex h-full flex-col justify-between gap-10">
         <div>
           <div className="mb-7 flex flex-wrap items-center gap-3">
-            <span className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.18em] ${pill}`}>
+            <span className={`rounded-full border px-4 py-2 text-[12px] font-medium uppercase tracking-[0.08em] ${pill}`}>
               {brief.kicker}
             </span>
             {brief.secondary && (
-              <span className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.18em] ${pill}`}>
+              <span className={`rounded-full border px-4 py-2 text-[12px] font-medium uppercase tracking-[0.08em] ${pill}`}>
                 secondary
               </span>
             )}
