@@ -1,9 +1,14 @@
 import { ArrowUpRight } from "lucide-react";
+import {
+  motionForDirector,
+  type VersantDirectorMedia,
+} from "./media";
 
 interface Props {
   ctaUrl?: string | null;
   ctaLabel?: string | null;
   recipientFirstName?: string | null;
+  directors: VersantDirectorMedia[];
 }
 
 const CONTACTS = [
@@ -21,12 +26,22 @@ const DETAILS = [
   ["Next move", "one assignment shape"],
 ];
 
-export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
+const COLLAGE_SLUGS = [
+  "jack-turits",
+  "kelsey-larkin",
+  "caleb-slain",
+  "le-ged",
+];
+
+export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
   const href =
     ctaUrl ??
     `mailto:${CONTACT_EMAILS}?subject=${encodeURIComponent(
       "Versant x Friends & Family brief",
     )}`;
+  const frames = COLLAGE_SLUGS.map((slug) =>
+    motionForDirector(directors, slug, 640),
+  ).filter((frame) => frame.still);
 
   return (
     <section className="px-4 pb-4 pt-12 sm:px-6 lg:px-8 lg:pb-8 lg:pt-20">
@@ -85,10 +100,43 @@ export function ContactCta({ ctaUrl, recipientFirstName }: Props) {
 
           <a
             href={href}
-            className="group flex min-h-[9rem] items-end justify-between rounded-[30px] bg-[var(--versant-orange)] p-5 text-left text-[clamp(24px,3vw,46px)] font-medium leading-[0.95] tracking-[-0.055em] text-black transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            className="group relative flex min-h-[16rem] overflow-hidden rounded-[30px] bg-[var(--versant-orange)] text-left text-black transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:w-[34rem]"
           >
-            <span>Share the brief when ready</span>
-            <ArrowUpRight className="h-6 w-6 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 grid grid-cols-2 gap-1 opacity-80"
+            >
+              {frames.slice(0, 4).map((frame, index) => (
+                <div
+                  key={frame.director?.slug ?? index}
+                  className="relative overflow-hidden bg-black"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={frame.still ?? ""}
+                    alt=""
+                    className="h-full w-full object-cover motion-safe:hidden"
+                    loading="lazy"
+                  />
+                  {frame.animated && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={frame.animated}
+                      alt=""
+                      className="hidden h-full w-full object-cover motion-safe:block"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--versant-orange)] via-[var(--versant-orange)]/55 to-black/20 transition group-hover:from-[var(--versant-lime)] group-hover:via-[var(--versant-lime)]/50" />
+            <div className="relative z-10 flex min-h-[16rem] w-full items-end justify-between gap-6 p-5">
+              <span className="max-w-[11ch] text-[clamp(28px,3.5vw,54px)] font-medium leading-[0.92] tracking-[-0.055em]">
+                Share the brief when ready
+              </span>
+              <ArrowUpRight className="h-7 w-7 shrink-0 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
+            </div>
           </a>
         </div>
       </div>

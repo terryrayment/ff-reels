@@ -250,6 +250,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         ctaUrl={link?.ctaUrl}
         ctaLabel={link?.ctaLabel}
         recipientFirstName={recipientFirstName}
+        directors={orderedDirectors}
       />
     </main>
   );
