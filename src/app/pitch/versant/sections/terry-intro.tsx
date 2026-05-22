@@ -42,8 +42,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             <p>
               Throw it at us. A napkin sketch. A brutal deadline. A hard drive
               nobody labeled. A talent window cracking shut on Thursday at 4.
-              We grab it midair, find the cleanest line to the finish, and keep
-              the process so light you forget it is happening.
+              We grab it, find the cleanest line to the finish, and keep the
+              process so light you forget it is happening.
             </p>
 
             <p>

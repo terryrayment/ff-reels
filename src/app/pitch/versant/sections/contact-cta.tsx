@@ -100,19 +100,10 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
   return (
     <section className="px-4 pb-4 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-16">
       <div className="mx-auto max-w-[1500px] rounded-[42px] bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.2)] sm:p-10 lg:rounded-[52px] lg:p-12">
-        <div className="mb-16 grid gap-8 border-b border-white/12 pb-8 lg:grid-cols-12">
+        <div className="mb-10 border-b border-white/12 pb-8">
           <p className="text-[15px] font-medium text-white/46 lg:col-span-3">
             {recipientFirstName ? `${recipientFirstName}, next move` : "Friends & Family — for Versant"}
           </p>
-          <div className="lg:col-span-8 lg:col-start-5">
-            <h2 className="versant-display text-[clamp(64px,10vw,150px)] font-medium tracking-[-0.04em]">
-              Send the brief.
-            </h2>
-            <p className="mt-6 max-w-[48rem] text-[clamp(22px,2.2vw,34px)] leading-[1.16] tracking-[-0.035em] text-white/68">
-              We&apos;ll send back how we&apos;d shoot it: the director, the crew,
-              the post path, and the delivery plan.
-            </p>
-          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-12">

@@ -6,6 +6,7 @@ import { VersantReferenceStrip } from "./sections/versant-reference-strip";
 import { TerryIntro } from "./sections/terry-intro";
 import { CapabilityDashboard } from "./sections/capability-dashboard";
 import { RosterModes } from "./sections/roster-modes";
+import { PartnerBench } from "./sections/partner-bench";
 import { VersantFit } from "./sections/versant-fit";
 import { ContactCta } from "./sections/contact-cta";
 import { VersantMotion } from "./sections/versant-motion";
@@ -251,6 +252,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
       <VersantReferenceStrip directors={orderedDirectors} />
       <CapabilityDashboard directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />
+      <PartnerBench />
       <VersantFit />
       <ContactCta
         ctaUrl={link?.ctaUrl}

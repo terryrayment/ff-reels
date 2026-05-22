@@ -107,6 +107,7 @@ const BRIEFS = [
       duration: 45.170122,
       start: 11,
     },
+    mediaClass: "scale-[1.16]",
   },
 ];
 
