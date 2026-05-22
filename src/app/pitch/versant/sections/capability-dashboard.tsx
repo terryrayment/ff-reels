@@ -65,6 +65,7 @@ const BRIEFS = [
       duration: 94.594511,
       start: 38,
     },
+    mediaClass: "scale-[1.28]",
   },
   {
     kicker: "Big Break x Good Good",
@@ -148,9 +149,8 @@ export function CapabilityDashboard({
             </h2>
           </div>
           <p className="max-w-[44rem] text-[clamp(23px,3vw,38px)] leading-[1.08] tracking-[-0.035em] text-black/66 lg:col-span-5">
-            Golf gives the page its spine: live pressure, course texture,
-            talent windows, sponsor guardrails, and fans who know when a note
-            rings false.
+            Golf is a good first test: live pressure, course access, short
+            talent windows, sponsor rules, and an audience that knows the game.
           </p>
         </div>
 

@@ -25,28 +25,23 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             </h2>
 
             <p>
-              We&apos;re a creative studio. A production company. A loose,
-              slightly feral network of production people who do our best work
-              with little or no plan. Hand us a napkin sketch. Hand us a
-              deadline. Hand us a vague feeling and a Tuesday. We&apos;ll find the
-              film inside it.
+              We&apos;re a creative studio and production company built around good
+              people making good work. We care about the taste call, the set,
+              the edit, the version nobody remembered until Friday, and the
+              small decisions that make a piece feel considered.
             </p>
 
             <p>
-              We chase the good idea down the hall. We shoot the thing nobody
-              storyboarded. We&apos;ve made tears, made laughs, made a grown man
-              cry at a pickup truck. We are calm in the chaos and a little
-              weird in the calm. This is the part where most companies say
-              &quot;strategic partner.&quot; We&apos;d rather just make something great and
-              let you take the credit.
+              Bring us a sketch, a deadline, a footage pull, a talent window,
+              or a brief that is still finding its edges. We&apos;ll find the
+              cleanest way to make it, keep the process light, and protect the
+              work all the way through delivery.
             </p>
 
             <p>
-              If you let us pick where to start, we&apos;d pick golf every time.
-              Golf Channel has the pace, the talent, the live pressure, the
-              audience that can smell a fake from the back of the gallery, and
-              the room to actually show what we&apos;re good at. We&apos;d be honored to
-              make something for it.
+              If we got to choose where to start, we&apos;d choose golf. Golf
+              Channel has live pressure, real personalities, loyal fans, and a
+              tone that has to be earned.
             </p>
 
             <p>
@@ -64,8 +59,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
 
             <p>
               Send us the assignment. We&apos;ll come back with the director, the
-              crew, the post path, and a clean way to make it — probably with
-              too much enthusiasm.
+              crew, the post path, and a clean way to make it.
             </p>
           </div>
         </article>
