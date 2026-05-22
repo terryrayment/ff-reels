@@ -228,7 +228,7 @@ function BriefCard({
         <div className={`flex min-h-[22rem] flex-col justify-between rounded-[26px] bg-[var(--versant-paper)]/80 p-5 text-black ${brief.dark ? "bg-white/[0.08] text-white" : ""}`}>
           <div>
             <p className={`text-[13px] font-medium ${brief.dark ? "text-white/46" : "text-black/46"}`}>
-              your thing
+              Versant reference
             </p>
             <h3 className="versant-display mt-4 text-[clamp(34px,5vw,68px)] font-medium tracking-[-0.04em]">
               {brief.title}
