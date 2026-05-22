@@ -11,6 +11,7 @@ test("sidebar renders Leads as a dropdown with both lead tables", () => {
   assert.match(source, /\/leads\/midwest/);
   assert.match(source, /\/leads\/west-coast-brand/);
   assert.match(source, /West Coast - Brand/);
+  assert.match(source, /normal-case/);
   assert.doesNotMatch(source, /WEST COAST - BRAND/);
 });
 

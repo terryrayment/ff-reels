@@ -212,13 +212,13 @@ export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
                           key={leadItem.href}
                           href={leadItem.href}
                           className={cn(
-                            "block rounded-md px-3 py-1.5 text-[12px] transition-colors duration-200",
+                            "block rounded-md px-3 py-1.5 text-[12px] normal-case transition-colors duration-200",
                             isLeadActive
                               ? "bg-[#EDEDEA] font-medium text-[#111]"
                               : "text-[#7B7B76] hover:bg-[#EDEDEA]/55 hover:text-[#111]",
                           )}
                         >
-                          <span className="block truncate leading-none">
+                          <span className="block truncate normal-case leading-none">
                             {leadItem.label}
                           </span>
                         </Link>
