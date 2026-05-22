@@ -74,7 +74,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             </h1>
             <p className="mt-5 max-w-[34rem] text-[clamp(22px,2.6vw,36px)] leading-[1.12] tracking-[-0.035em] text-white/68">
               A production company that happens to be quietly obsessed with
-              golf.
+              sports.
             </p>
           </div>
 
