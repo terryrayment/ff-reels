@@ -52,7 +52,7 @@ export function VersantReferenceStrip({
             return (
               <article
                 key={item.title}
-                className="versant-reveal flex min-h-[18rem] flex-col overflow-hidden rounded-[30px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.06)]"
+                className="versant-reveal flex min-h-[18rem] flex-col overflow-hidden rounded-[30px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.05)]"
               >
                 <div
                   aria-hidden="true"
@@ -63,14 +63,19 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.still}
                       alt=""
-                      className="h-full w-full scale-110 object-cover opacity-72"
+                      className={`h-full w-full scale-110 object-cover opacity-72 ${
+                        frame.animated ? "motion-safe:hidden" : ""
+                      }`}
                       loading="lazy"
                     />
                   )}
                   {frame.animated && (
-                    <div
-                      className="absolute inset-0 hidden scale-110 bg-cover bg-center opacity-72 motion-safe:block"
-                      style={{ backgroundImage: `url(${frame.animated})` }}
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={frame.animated}
+                      alt=""
+                      className="absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-72 motion-safe:block"
+                      loading="lazy"
                     />
                   )}
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,59,46,0.02),rgba(12,59,46,0.46))]" />

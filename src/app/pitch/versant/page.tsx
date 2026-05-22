@@ -71,7 +71,7 @@ const VERSANT_THEME = {
   "--versant-black": "#0C3B2E",
   "--versant-ink": "#11110e",
   "--versant-paper": "#F2ECDD",
-  "--versant-white": "#fffaf0",
+  "--versant-white": "#FBF6EA",
   "--versant-orange": "#C6A24C",
   "--versant-lime": "#f7f0df",
   "--versant-blue": "#0C3B2E",

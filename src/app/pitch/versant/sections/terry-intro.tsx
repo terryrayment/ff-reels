@@ -25,17 +25,16 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             </h2>
 
             <p>
-              We&apos;re a creative studio and production company built around good
-              people making good work. We care about the taste call, the set,
-              the edit, the version nobody remembered until Friday, and the
-              small decisions that make a piece feel considered.
+              We&apos;re a creative studio and production company built around
+              people who care about the work. The idea matters. So does the
+              set, the edit, the late version, the quiet fix, and the person
+              who has to approve it on Friday.
             </p>
 
             <p>
-              Bring us a sketch, a deadline, a footage pull, a talent window,
-              or a brief that is still finding its edges. We&apos;ll find the
-              cleanest way to make it, keep the process light, and protect the
-              work all the way through delivery.
+              Bring us a sketch, a deadline, a footage pull, or a short talent
+              window. We&apos;ll find the cleanest way to make it, keep the process
+              light, and protect the work all the way through delivery.
             </p>
 
             <p>
@@ -52,14 +51,13 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
 
             <p>
               We stay small and exact when that&apos;s the move. We scale, fast and
-              calm, when the job calls for it. Either way you get the right
-              director, the right crew, a clean post path, and a delivery plan
-              — without the process ever getting heavier than the work.
+              calm, when the job calls for it. Either way, the director, crew,
+              post path, and delivery plan fit the assignment.
             </p>
 
             <p>
-              Send us the assignment. We&apos;ll come back with the director, the
-              crew, the post path, and a clean way to make it.
+              Send us the assignment. We&apos;ll come back with a clean way to make
+              it.
             </p>
           </div>
         </article>

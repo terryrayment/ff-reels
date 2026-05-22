@@ -38,7 +38,7 @@ const CADDIES = [
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
     match: "Good Good / next-gen golf",
     treatment: "bg-[var(--versant-paper)] text-black",
-    mediaClass: "scale-[1.38]",
+    mediaClass: "scale-[1.55]",
   },
   {
     slug: "kelsey-larkin",
@@ -123,7 +123,7 @@ const CADDIES = [
       duration: 94.594511,
       start: 38,
     },
-    mediaClass: "scale-[1.28]",
+    mediaClass: "scale-[1.45]",
   },
 ];
 
@@ -196,7 +196,7 @@ function CaddieCard({
 
   return (
     <article
-      className={`versant-reveal group flex min-h-[34rem] flex-col overflow-hidden rounded-[34px] p-4 shadow-[0_22px_70px_rgba(17,17,14,0.07)] sm:p-5 lg:rounded-[46px] ${card.treatment}`}
+      className={`versant-reveal group flex min-h-[30rem] flex-col overflow-hidden rounded-[34px] p-4 shadow-[0_18px_58px_rgba(17,17,14,0.06)] sm:p-5 lg:rounded-[46px] ${card.treatment}`}
     >
       <div
         className="-m-1 mb-0 relative aspect-[16/10] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
@@ -256,7 +256,7 @@ function CaddieCard({
           {card.signature}
         </p>
 
-        <div className="mt-8 space-y-3 pt-4">
+        <div className="mt-5 space-y-3 pt-3">
           <div className={`border-t pt-3 ${rule}`}>
             <p className={`mb-2 text-[13px] font-medium leading-none tracking-[-0.01em] ${muted}`}>
               Credits

@@ -65,7 +65,7 @@ const BRIEFS = [
       duration: 94.594511,
       start: 38,
     },
-    mediaClass: "scale-[1.28]",
+    mediaClass: "scale-[1.45]",
   },
   {
     kicker: "Big Break x Good Good",
@@ -149,8 +149,9 @@ export function CapabilityDashboard({
             </h2>
           </div>
           <p className="max-w-[44rem] text-[clamp(23px,3vw,38px)] leading-[1.08] tracking-[-0.035em] text-black/66 lg:col-span-5">
-            Golf is a good first test: live pressure, course access, short
-            talent windows, sponsor rules, and an audience that knows the game.
+            Start with golf because the work is already moving: live pressure,
+            course access, short talent windows, sponsor rules, and fans who
+            know the difference.
           </p>
         </div>
 
