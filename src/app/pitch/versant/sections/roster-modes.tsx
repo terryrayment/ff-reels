@@ -17,6 +17,21 @@ const CADDIES = [
       muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
       duration: 32.074667,
     },
+    mediaClass: "scale-[1.14]",
+  },
+  {
+    slug: "le-ged",
+    name: "Le Ged",
+    signature: "kinetic camera",
+    credits: "Hilton, McDonald's, YouTube",
+    match: "GolfNow social-first / motion",
+    treatment: "bg-[var(--versant-paper)] text-black",
+    media: {
+      muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
+      duration: 45.170122,
+      start: 11,
+    },
+    mediaClass: "scale-[1.16]",
   },
   {
     slug: "matt-dilmore",
@@ -29,7 +44,7 @@ const CADDIES = [
       muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
       duration: 587.536967,
     },
-    mediaClass: "scale-[1.24]",
+    mediaClass: "scale-[1.26]",
   },
   {
     slug: "boma-iluma",
@@ -73,19 +88,6 @@ const CADDIES = [
     treatment: "bg-[var(--versant-white)] text-black",
   },
   {
-    slug: "le-ged",
-    name: "Le Ged",
-    signature: "kinetic camera",
-    credits: "Hilton, McDonald's, YouTube",
-    match: "GolfNow social-first / motion",
-    treatment: "bg-[var(--versant-paper)] text-black",
-    media: {
-      muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
-      duration: 45.170122,
-      start: 11,
-    },
-  },
-  {
     slug: "brother-willis",
     name: "Brother Willis",
     signature: "warm Americana, sports-card texture",
@@ -123,7 +125,7 @@ const CADDIES = [
       duration: 94.594511,
       start: 38,
     },
-    mediaClass: "scale-[1.45]",
+    mediaClass: "scale-[1.58]",
   },
 ];
 

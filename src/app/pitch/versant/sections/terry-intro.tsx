@@ -38,21 +38,9 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             </p>
 
             <p>
-              If we got to choose where to start, we&apos;d choose golf. Golf
-              Channel has live pressure, real personalities, loyal fans, and a
-              tone that has to be earned.
-            </p>
-
-            <p>
-              Versant has real work already moving: films, opens, promos,
-              sponsor pieces, talent windows, cutdowns, and the assignments
-              that arrive with half the answers missing.
-            </p>
-
-            <p>
-              We stay small and exact when that&apos;s the move. We scale, fast and
-              calm, when the job calls for it. Either way, the director, crew,
-              post path, and delivery plan fit the assignment.
+              We stay small and exact when that&apos;s the move. We scale when the
+              job calls for it. Either way, the director, crew, post path, and
+              delivery plan fit the assignment.
             </p>
 
             <p>

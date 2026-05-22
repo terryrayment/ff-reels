@@ -65,7 +65,7 @@ const BRIEFS = [
       duration: 94.594511,
       start: 38,
     },
-    mediaClass: "scale-[1.45]",
+    mediaClass: "scale-[1.58]",
   },
   {
     kicker: "Big Break x Good Good",

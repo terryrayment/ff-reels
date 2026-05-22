@@ -35,12 +35,24 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
         <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[42px] bg-[var(--versant-black)] p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[52px]">
           <div
             aria-hidden="true"
+            className="absolute inset-0 bg-[radial-gradient(circle_at_78%_26%,rgba(198,162,76,0.18),transparent_30%),radial-gradient(circle_at_12%_84%,rgba(242,236,221,0.09),transparent_34%),linear-gradient(132deg,rgba(255,255,255,0.08),transparent_46%)]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(116deg,transparent_0,transparent_47%,rgba(242,236,221,0.5)_47.5%,transparent_48%),linear-gradient(0deg,rgba(242,236,221,0.18)_1px,transparent_1px)] [background-size:150px_150px,100%_74px]"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute -right-24 bottom-20 h-80 w-80 rounded-full bg-[var(--versant-orange)]/14 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
             className="absolute -right-16 top-20 h-52 w-52 rounded-full border border-white/10 sm:h-72 sm:w-72"
           />
           {motionFrames.length > 0 && (
             <div
               aria-hidden="true"
-              className="absolute inset-x-6 top-28 grid h-[42%] grid-cols-2 gap-2 opacity-[0.42] mix-blend-screen blur-[0.2px] sm:inset-x-auto sm:right-8 sm:top-32 sm:h-[48%] sm:w-[48%]"
+              className="absolute inset-x-6 top-28 grid h-[42%] grid-cols-2 gap-2 opacity-[0.5] mix-blend-screen blur-[0.2px] sm:inset-x-auto sm:right-8 sm:top-32 sm:h-[48%] sm:w-[48%]"
             >
               {motionFrames.slice(0, 4).map((frame, index) => (
                 <div
@@ -74,7 +86,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             </h1>
             <p className="mt-5 max-w-[34rem] text-[clamp(22px,2.6vw,36px)] leading-[1.12] tracking-[-0.035em] text-white/68">
               A production company that happens to be quietly obsessed with
-              golf.
+              sports.
             </p>
           </div>
 

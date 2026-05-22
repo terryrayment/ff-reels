@@ -1,4 +1,9 @@
-import { motionForDirector, type VersantDirectorMedia } from "./media";
+import {
+  motionForDirector,
+  muxAnimatedUrl,
+  muxStillUrl,
+  type VersantDirectorMedia,
+} from "./media";
 
 const REFERENCES = [
   {
@@ -12,6 +17,11 @@ const REFERENCES = [
     detail: "booking surface / local courses",
     marks: ["tee times", "course maps", "club pros"],
     slug: "jack-turits",
+    media: {
+      muxPlaybackId: "BhZH005xwxQZJTuLSYOKSqFaGCSX5SlgFIAOeSntKqs8",
+      duration: 30.196844,
+      start: 9,
+    },
   },
   {
     title: "Big Break x Good Good",
@@ -47,7 +57,22 @@ export function VersantReferenceStrip({
 
         <div className="grid gap-3 md:grid-cols-4">
           {REFERENCES.map((item, index) => {
-            const frame = motionForDirector(directors, item.slug, 640);
+            const frame = "media" in item && item.media
+              ? {
+                  still: muxStillUrl(
+                    item.media.muxPlaybackId,
+                    640,
+                    item.media.duration,
+                    item.media.start,
+                  ),
+                  animated: muxAnimatedUrl(
+                    item.media.muxPlaybackId,
+                    640,
+                    item.media.duration,
+                    item.media.start,
+                  ),
+                }
+              : motionForDirector(directors, item.slug, 640);
 
             return (
               <article
