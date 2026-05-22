@@ -38,7 +38,7 @@ const CADDIES = [
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
     match: "Good Good / next-gen golf",
     treatment: "bg-[var(--versant-paper)] text-black",
-    mediaClass: "scale-[1.22]",
+    mediaClass: "scale-[1.38]",
   },
   {
     slug: "kelsey-larkin",
@@ -196,7 +196,7 @@ function CaddieCard({
 
   return (
     <article
-      className={`versant-reveal group flex min-h-[40rem] flex-col overflow-hidden rounded-[34px] p-4 shadow-[0_22px_70px_rgba(17,17,14,0.07)] sm:p-5 lg:rounded-[46px] ${card.treatment}`}
+      className={`versant-reveal group flex min-h-[34rem] flex-col overflow-hidden rounded-[34px] p-4 shadow-[0_22px_70px_rgba(17,17,14,0.07)] sm:p-5 lg:rounded-[46px] ${card.treatment}`}
     >
       <div
         className="-m-1 mb-0 relative aspect-[16/10] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
@@ -248,7 +248,7 @@ function CaddieCard({
 
       </div>
 
-      <div className="flex flex-1 flex-col p-2 pt-6">
+      <div className="flex flex-1 flex-col p-2 pt-5">
         <h3 className="versant-display text-[clamp(34px,4vw,60px)] font-medium tracking-[-0.04em]">
           {card.name}
         </h3>
@@ -256,14 +256,14 @@ function CaddieCard({
           {card.signature}
         </p>
 
-        <div className="mt-auto space-y-4 pt-7">
-          <div className={`border-t pt-4 ${rule}`}>
+        <div className="mt-8 space-y-3 pt-4">
+          <div className={`border-t pt-3 ${rule}`}>
             <p className={`mb-2 text-[13px] font-medium leading-none tracking-[-0.01em] ${muted}`}>
               Credits
             </p>
             <p className="text-[14px] leading-[1.32]">{card.credits}</p>
           </div>
-          <div className={`border-t pt-4 ${rule}`}>
+          <div className={`border-t pt-3 ${rule}`}>
             <p className={`text-[15px] leading-[1.25] ${muted}`}>
               &rarr; {card.match}
             </p>

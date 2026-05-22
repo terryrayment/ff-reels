@@ -12,7 +12,7 @@ const BRIEFS = [
     title: "40M tee times is a map",
     copy:
       "Course stories: local rituals, club pros, strange holes, and the people who keep courses alive across 9,000 courses of material.",
-    directors: "Jack Turits / Le Ged / Brother Willis",
+    directors: "Jack Turits, Le Ged, Brother Willis",
     previewSlug: "jack-turits",
     reference: "tee sheet / course map / local habit",
     proof: "Callaway real-player texture",
@@ -71,7 +71,7 @@ const BRIEFS = [
     title: "Old fans. New tempo.",
     copy:
       "Entertainment craft and comedy timing for old Golf Channel fans and new YouTube golf fans.",
-    directors: "Matt Dilmore / Boma Iluma / Bueno",
+    directors: "Matt Dilmore, Boma Iluma, Bueno",
     previewSlug: "matt-dilmore",
     reference: "format pressure / cast chemistry",
     proof: "timing, bite, and real performances",
@@ -102,7 +102,7 @@ const BRIEFS = [
     title: "Tension, silence, weather",
     copy:
       "Mini-docs built on memory and reverence without getting sleepy.",
-    directors: "Kelsey Larkin / Caleb Slain",
+    directors: "Kelsey Larkin, Caleb Slain",
     previewSlug: "kelsey-larkin",
     reference: "gallery ropes / weather hold / last putt",
     proof: "restraint with a pulse",
@@ -117,7 +117,7 @@ const BRIEFS = [
     title: "Branded golf people finish",
     copy:
       "Guardrailed pieces that still hold faces, timing, and a reason to watch past the logo.",
-    directors: "Terry Rayment / Le Ged",
+    directors: "Terry Rayment, Le Ged",
     previewSlug: "le-ged",
     reference: "sponsor line / versioning / clean cut",
     proof: "watchable inside the rules",
@@ -195,11 +195,11 @@ function BriefCard({
   };
   directors: VersantDirectorMedia[];
 }) {
-  const preview = motionForDirector(directors, brief.previewSlug, 720);
+  const preview = motionForDirector(directors, brief.previewSlug, 640);
   const overrideStill = brief.media
     ? muxStillUrl(
         brief.media.muxPlaybackId,
-        720,
+        640,
         brief.media.duration,
         brief.media.start,
       )
@@ -207,7 +207,7 @@ function BriefCard({
   const overrideAnimated = brief.media
     ? muxAnimatedUrl(
         brief.media.muxPlaybackId,
-        720,
+        640,
         brief.media.duration,
         brief.media.start,
       )
@@ -227,9 +227,6 @@ function BriefCard({
       <div className="grid h-full gap-5 lg:grid-cols-2">
         <div className={`flex min-h-[22rem] flex-col justify-between rounded-[26px] bg-[var(--versant-paper)]/80 p-5 text-black ${brief.dark ? "bg-white/[0.08] text-white" : ""}`}>
           <div>
-            <p className={`text-[13px] font-medium ${brief.dark ? "text-white/46" : "text-black/46"}`}>
-              Versant reference
-            </p>
             <h3 className="versant-display mt-4 text-[clamp(34px,5vw,68px)] font-medium tracking-[-0.04em]">
               {brief.title}
             </h3>
@@ -262,12 +259,10 @@ function BriefCard({
                   />
                 )}
                 {animated && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={animated}
-                    alt=""
-                    className={`absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100 motion-safe:block ${brief.mediaClass ?? ""}`}
-                    loading="lazy"
+                  <div
+                    aria-hidden="true"
+                    className={`absolute inset-0 hidden bg-cover bg-center opacity-0 transition duration-500 group-hover:opacity-100 motion-safe:block ${brief.mediaClass ?? ""}`}
+                    style={{ backgroundImage: `url(${animated})` }}
                   />
                 )}
               </>
@@ -275,10 +270,7 @@ function BriefCard({
           </div>
           <div className={`mt-5 grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-start`}>
             <div>
-              <p className={`text-[13px] leading-[1.25] ${muted}`}>
-                how we&apos;d shoot it
-              </p>
-              <p className="mt-2 max-w-[20rem] text-[clamp(20px,2vw,28px)] font-medium leading-[1.04] tracking-[-0.025em]">
+              <p className="max-w-[26rem] text-[clamp(20px,2vw,28px)] font-medium leading-[1.08] tracking-[-0.02em]">
                 {brief.directors}
               </p>
             </div>

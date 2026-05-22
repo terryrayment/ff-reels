@@ -1,27 +1,37 @@
+import { motionForDirector, type VersantDirectorMedia } from "./media";
+
 const REFERENCES = [
   {
     title: "Golf Channel",
     detail: "promo pace / live pressure",
     marks: ["first tee", "truck", "weather"],
+    slug: "caleb-slain",
   },
   {
     title: "GolfNow",
     detail: "booking surface / local courses",
     marks: ["tee times", "course maps", "club pros"],
+    slug: "jack-turits",
   },
   {
     title: "Big Break x Good Good",
     detail: "format energy / new audience",
     marks: ["games", "timing", "creator tempo"],
+    slug: "matt-dilmore",
   },
   {
     title: "Rory / GolfPass",
     detail: "talent access / quiet golf",
     marks: ["range", "family", "after the round"],
+    slug: "terry-rayment",
   },
 ];
 
-export function VersantReferenceStrip() {
+export function VersantReferenceStrip({
+  directors,
+}: {
+  directors: VersantDirectorMedia[];
+}) {
   return (
     <section className="px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-[1500px]">
@@ -36,26 +46,34 @@ export function VersantReferenceStrip() {
         </div>
 
         <div className="grid gap-3 md:grid-cols-4">
-          {REFERENCES.map((item, index) => (
-            <article
-              key={item.title}
-              className="versant-reveal min-h-[18rem] overflow-hidden rounded-[30px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.06)]"
-            >
-              <div
-                aria-hidden="true"
-                className="mb-8 aspect-[4/3] rounded-[22px] bg-[linear-gradient(135deg,rgba(12,59,46,0.12),rgba(198,162,76,0.16)),repeating-linear-gradient(90deg,rgba(12,59,46,0.16)_0,rgba(12,59,46,0.16)_1px,transparent_1px,transparent_18px)]"
+          {REFERENCES.map((item, index) => {
+            const frame = motionForDirector(directors, item.slug, 640);
+
+            return (
+              <article
+                key={item.title}
+                className="versant-reveal min-h-[18rem] overflow-hidden rounded-[30px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.06)]"
               >
-                <div className="grid h-full grid-cols-3 gap-px p-3 opacity-70">
-                  {item.marks.map((mark) => (
-                    <div
-                      key={mark}
-                      className="flex items-end rounded-[14px] bg-[var(--versant-paper)]/80 p-2 text-[11px] leading-none text-black/42"
-                    >
-                      {mark}
-                    </div>
-                  ))}
+                <div
+                  aria-hidden="true"
+                  className="relative mb-8 aspect-[4/3] overflow-hidden rounded-[22px] bg-[var(--versant-soft-gray)]"
+                >
+                  {frame.still && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={frame.still}
+                      alt=""
+                      className="h-full w-full scale-110 object-cover opacity-72"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,59,46,0.02),rgba(12,59,46,0.46))]" />
+                  <div className="absolute inset-x-3 bottom-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] leading-none text-white/72">
+                    {item.marks.map((mark) => (
+                      <span key={mark}>{mark}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
               <div className="flex items-start justify-between gap-4 border-t border-black/10 pt-4">
                 <div>
                   <h3 className="text-[26px] font-medium leading-[1.02] tracking-[-0.035em]">
@@ -70,7 +88,8 @@ export function VersantReferenceStrip() {
                 </span>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
