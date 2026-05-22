@@ -9,13 +9,16 @@ const REFERENCES = [
   {
     title: "Golf Channel",
     detail: "promo pace / live pressure",
-    marks: ["first tee", "truck", "weather"],
     slug: "caleb-slain",
+    media: {
+      muxPlaybackId: "CrbJfBhLn4Dj1N00RP2O22hWgT7lGDmmNCpvXkRTXJoA",
+      duration: 30.196844,
+      start: 12,
+    },
   },
   {
     title: "GolfNow",
     detail: "booking surface / local courses",
-    marks: ["tee times", "course maps", "club pros"],
     slug: "jack-turits",
     media: {
       muxPlaybackId: "BhZH005xwxQZJTuLSYOKSqFaGCSX5SlgFIAOeSntKqs8",
@@ -26,13 +29,11 @@ const REFERENCES = [
   {
     title: "Big Break x Good Good",
     detail: "format energy / new audience",
-    marks: ["games", "timing", "creator tempo"],
     slug: "matt-dilmore",
   },
   {
     title: "Rory / GolfPass",
     detail: "talent access / quiet golf",
-    marks: ["range", "family", "after the round"],
     slug: "terry-rayment",
   },
 ];
@@ -104,11 +105,6 @@ export function VersantReferenceStrip({
                     />
                   )}
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,59,46,0.02),rgba(12,59,46,0.46))]" />
-                  <div className="absolute inset-x-3 bottom-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] leading-none text-white/72">
-                    {item.marks.map((mark) => (
-                      <span key={mark}>{mark}</span>
-                    ))}
-                  </div>
                 </div>
               <div className="mt-auto grid min-h-[9.5rem] grid-cols-[1fr_auto] items-start gap-4 border-t border-black/10 pt-4">
                 <div className="grid h-full grid-rows-[minmax(4.7rem,auto)_auto]">

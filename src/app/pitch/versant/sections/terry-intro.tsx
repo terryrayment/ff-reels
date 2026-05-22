@@ -21,7 +21,15 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
 
           <div className="relative z-10 max-w-[760px] space-y-5 text-[clamp(17px,1.55vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/76">
             <h2 className="versant-display max-w-3xl text-[clamp(44px,7vw,104px)] font-medium tracking-[-0.04em] text-black">
-              We&apos;d love to be your shortlist.
+              We&apos;d love to be{" "}
+              <span className="relative inline-block">
+                on
+                <span
+                  aria-hidden="true"
+                  className="absolute left-[-0.08em] right-[-0.08em] top-[54%] h-[0.12em] -translate-y-1/2 -rotate-6 rounded-full bg-[var(--versant-orange)]"
+                />
+              </span>{" "}
+              your shortlist.
             </h2>
 
             <p>

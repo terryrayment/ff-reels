@@ -15,7 +15,6 @@ const BRIEFS = [
     directors: "Jack Turits, Le Ged, Brother Willis",
     previewSlug: "jack-turits",
     reference: "tee sheet / course map / local habit",
-    proof: "Callaway real-player texture",
     dark: false,
     spots: [
       {
@@ -43,7 +42,6 @@ const BRIEFS = [
     directors: "Caleb Slain",
     previewSlug: "caleb-slain",
     reference: "live hours / broadcast open / archive",
-    proof: "anthem craft, not wallpaper",
     dark: true,
     media: {
       muxPlaybackId: "ekGrtmsCnZ9yk1tw8Gez7jPwNUCY55KBCtCF7qThKIw",
@@ -58,7 +56,6 @@ const BRIEFS = [
     directors: "Terry Rayment",
     previewSlug: "terry-rayment",
     reference: "range access / family rhythm / quiet day",
-    proof: "faces held long enough to matter",
     dark: false,
     media: {
       muxPlaybackId: "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM",
@@ -75,7 +72,6 @@ const BRIEFS = [
     directors: "Matt Dilmore, Boma Iluma, Bueno",
     previewSlug: "matt-dilmore",
     reference: "format pressure / cast chemistry",
-    proof: "timing, bite, and real performances",
     dark: false,
     media: {
       muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
@@ -91,7 +87,6 @@ const BRIEFS = [
     directors: "Kelsey Larkin",
     previewSlug: "kelsey-larkin",
     reference: "monitor wall / live package / promo clock",
-    proof: "controlled, clean, repeatable",
     dark: true,
     media: {
       muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
@@ -106,7 +101,6 @@ const BRIEFS = [
     directors: "Kelsey Larkin, Caleb Slain",
     previewSlug: "kelsey-larkin",
     reference: "gallery ropes / weather hold / last putt",
-    proof: "restraint with a pulse",
     dark: false,
     media: {
       muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
@@ -121,7 +115,6 @@ const BRIEFS = [
     directors: "Terry Rayment, Le Ged",
     previewSlug: "le-ged",
     reference: "sponsor line / versioning / clean cut",
-    proof: "watchable inside the rules",
     dark: true,
     media: {
       muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
@@ -180,7 +173,6 @@ function BriefCard({
     directors: string;
     previewSlug: string;
     reference: string;
-    proof: string;
     dark: boolean;
     media?: {
       muxPlaybackId: string;
@@ -269,14 +261,9 @@ function BriefCard({
               </>
             )}
           </div>
-          <div className={`mt-5 grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-start`}>
-            <div>
-              <p className="max-w-[26rem] text-[clamp(20px,2vw,28px)] font-medium leading-[1.08] tracking-[-0.02em]">
-                {brief.directors}
-              </p>
-            </div>
-            <p className={`max-w-[16rem] text-left text-[14px] leading-[1.25] ${muted} sm:text-right`}>
-              {brief.proof}
+          <div className={`mt-5 border-t pt-4 ${rule}`}>
+            <p className="max-w-[28rem] text-[clamp(20px,2vw,28px)] font-medium leading-[1.08] tracking-[-0.02em]">
+              {brief.directors}
             </p>
           </div>
         </div>

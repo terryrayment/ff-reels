@@ -1,5 +1,7 @@
 import {
   motionForDirector,
+  muxAnimatedUrl,
+  muxStillUrl,
   type VersantDirectorMedia,
 } from "./media";
 
@@ -8,7 +10,39 @@ interface Props {
   directors: VersantDirectorMedia[];
 }
 
-const HERO_DIRECTORS = ["caleb-slain", "boma-iluma", "cody-cloud", "le-ged"];
+type HeroFrameSource =
+  | {
+      slug: string;
+      className?: string;
+    }
+  | {
+      media: {
+        muxPlaybackId: string;
+        duration: number;
+        start?: number;
+      };
+      className?: string;
+    };
+
+const HERO_FRAMES: HeroFrameSource[] = [
+  { slug: "caleb-slain" },
+  { slug: "boma-iluma", className: "scale-[1.18]" },
+  {
+    media: {
+      muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
+      duration: 50.550511,
+    },
+    className: "scale-[1.12]",
+  },
+  {
+    media: {
+      muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
+      duration: 45.170122,
+      start: 11,
+    },
+    className: "scale-[1.14]",
+  },
+];
 const GOLF_TICKER =
   "2,000+ live hours · 200+ events · 35% of golf hours watched · USGA through 2032 · Ryder Cup through 2033 · GolfNow 40M tee times · Rory through 2038";
 const HERO_MICRO_LABEL = "text-[13px] font-medium leading-none tracking-[-0.01em]";
@@ -25,26 +59,43 @@ function FFLogomark() {
 }
 
 export function WelcomeSplash({ recipientFirstName, directors }: Props) {
-  const motionFrames = HERO_DIRECTORS.map((slug) =>
-    motionForDirector(directors, slug, 640),
-  ).filter((frame) => frame.still);
+  const motionFrames = HERO_FRAMES.map((frame) => {
+    if ("media" in frame && frame.media) {
+      return {
+        still: muxStillUrl(
+          frame.media.muxPlaybackId,
+          640,
+          frame.media.duration,
+          frame.media.start,
+        ),
+        animated: muxAnimatedUrl(
+          frame.media.muxPlaybackId,
+          640,
+          frame.media.duration,
+          frame.media.start,
+        ),
+        className: frame.className,
+      };
+    }
+
+    if ("slug" in frame) {
+      return {
+        ...motionForDirector(directors, frame.slug, 640),
+        className: frame.className,
+      };
+    }
+
+    return {
+      still: null,
+      animated: null,
+      className: frame.className,
+    };
+  }).filter((frame) => frame.still);
 
   return (
     <section className="px-4 py-4 text-[var(--versant-ink)] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[1600px] gap-4 lg:grid-cols-12">
         <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[42px] bg-[var(--versant-black)] p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[52px]">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(circle_at_78%_26%,rgba(198,162,76,0.18),transparent_30%),radial-gradient(circle_at_12%_84%,rgba(242,236,221,0.09),transparent_34%),linear-gradient(132deg,rgba(255,255,255,0.08),transparent_46%)]"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(116deg,transparent_0,transparent_47%,rgba(242,236,221,0.5)_47.5%,transparent_48%),linear-gradient(0deg,rgba(242,236,221,0.18)_1px,transparent_1px)] [background-size:150px_150px,100%_74px]"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute -right-24 bottom-20 h-80 w-80 rounded-full bg-[var(--versant-orange)]/14 blur-3xl"
-          />
           <div
             aria-hidden="true"
             className="absolute -right-16 top-20 h-52 w-52 rounded-full border border-white/10 sm:h-72 sm:w-72"
@@ -56,7 +107,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             >
               {motionFrames.slice(0, 4).map((frame, index) => (
                 <div
-                  key={frame.director?.slug ?? index}
+                  key={frame.still ?? index}
                   className={`overflow-hidden rounded-[24px] bg-white/5 ${
                     index === 0 ? "col-span-2 sm:col-span-1" : ""
                   }`}
@@ -65,7 +116,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                     animated={frame.animated}
                     still={frame.still}
                     alt=""
-                    className="h-full w-full object-cover"
+                    className={`h-full w-full object-cover ${frame.className ?? ""}`}
                   />
                 </div>
               ))}

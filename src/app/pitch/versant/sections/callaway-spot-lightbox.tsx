@@ -64,12 +64,16 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
                   loading="lazy"
                 />
               </div>
-              <div className="grid min-h-[5rem] grid-cols-[minmax(0,1fr)_auto] items-start gap-3 px-3 py-2.5 text-[12px] font-semibold leading-[1.12] tracking-[-0.01em]">
-                <span className="min-w-0">
-                  <span className="block">{brand}</span>
-                  <span className="mt-0.5 block text-white/62">{detail}</span>
+              <div className="grid min-h-[5.2rem] grid-cols-[minmax(0,1fr)_auto] items-start gap-3 px-3 py-2.5 text-[12px] font-semibold leading-[1.08] tracking-[-0.01em]">
+                <span className="min-w-0 overflow-hidden">
+                  <span className="block truncate">{brand}</span>
+                  <span className="mt-0.5 block whitespace-normal break-words text-white/62">
+                    {detail}
+                  </span>
                 </span>
-                <span className="pt-0.5 text-right text-white/72">Open</span>
+                <span className="shrink-0 pt-0.5 text-right text-white/72">
+                  Open
+                </span>
               </div>
             </button>
           );
