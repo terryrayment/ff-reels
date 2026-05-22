@@ -79,6 +79,11 @@ const CADDIES = [
     credits: "Hilton, McDonald's, YouTube",
     match: "GolfNow social-first / motion",
     treatment: "bg-[var(--versant-mint)] text-black",
+    media: {
+      muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
+      duration: 45.170122,
+      start: 11,
+    },
   },
   {
     slug: "brother-willis",
@@ -87,6 +92,11 @@ const CADDIES = [
     credits: "Topps Chrome Rush, Ford",
     match: "GolfNow local heroes",
     treatment: "bg-[var(--versant-white)] text-black",
+    media: {
+      muxPlaybackId: "vqAlDQVGkErsXS00VKhafavM02viB4crudGcbSX397bfQ",
+      duration: 68.359967,
+      start: 20,
+    },
   },
   {
     slug: "cody-cloud",
@@ -98,6 +108,7 @@ const CADDIES = [
     media: {
       muxPlaybackId: "feQSUP17mpG4Ay8bAHFPHuXx66CQwudaK4uKlUMj4pw",
       duration: 60.3603,
+      start: 38,
     },
   },
   {
@@ -108,9 +119,11 @@ const CADDIES = [
     match: "Rory/GolfPass intimate films",
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
-      muxPlaybackId: "z3BCWiNoyvzWXlo17EFk4z02DwV800nPqgHbZcgoODgQ00",
-      duration: 165.166667,
+      muxPlaybackId: "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM",
+      duration: 94.594511,
+      start: 38,
     },
+    mediaClass: "scale-[1.28]",
   },
 ];
 
@@ -159,10 +172,20 @@ function CaddieCard({
 }) {
   const media = motionForDirector(directors, card.slug, 640);
   const overrideStill = card.media
-    ? muxStillUrl(card.media.muxPlaybackId, 640, card.media.duration)
+    ? muxStillUrl(
+        card.media.muxPlaybackId,
+        640,
+        card.media.duration,
+        "start" in card.media ? card.media.start : undefined,
+      )
     : null;
   const overrideAnimated = card.media
-    ? muxAnimatedUrl(card.media.muxPlaybackId, 640, card.media.duration)
+    ? muxAnimatedUrl(
+        card.media.muxPlaybackId,
+        640,
+        card.media.duration,
+        "start" in card.media ? card.media.start : undefined,
+      )
     : null;
   const headshot = media.director?.headshotUrl;
   const still = overrideStill ?? media.still;

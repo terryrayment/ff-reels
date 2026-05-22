@@ -20,8 +20,20 @@ export function topProjectOf(
   return director?.projects?.[0] ?? null;
 }
 
-function sampleWindow(duration: number | null | undefined) {
+function sampleWindow(
+  duration: number | null | undefined,
+  sampleStart?: number | null,
+) {
   const fallbackStart = 8;
+  if (sampleStart && sampleStart > 0) {
+    const start = sampleStart;
+    const maxEnd = duration ? Math.floor(duration - 1) : start + 5;
+    const end = Math.max(start + 1, Math.min(start + 5, maxEnd));
+    const still = Math.min(start + 2, end);
+
+    return { start, still, end };
+  }
+
   if (!duration || duration <= 10) {
     return { start: 2, still: 4, end: 7 };
   }
@@ -37,8 +49,9 @@ export function muxAnimatedUrl(
   playbackId: string,
   width = 640,
   duration?: number | null,
+  sampleStart?: number | null,
 ) {
-  const { start, end } = sampleWindow(duration);
+  const { start, end } = sampleWindow(duration, sampleStart);
   return `https://image.mux.com/${playbackId}/animated.webp?width=${width}&fps=15&start=${start}&end=${end}`;
 }
 
@@ -46,8 +59,9 @@ export function muxStillUrl(
   playbackId: string,
   width = 640,
   duration?: number | null,
+  sampleStart?: number | null,
 ) {
-  const { still } = sampleWindow(duration);
+  const { still } = sampleWindow(duration, sampleStart);
   return `https://image.mux.com/${playbackId}/thumbnail.webp?width=${width}&time=${still}`;
 }
 

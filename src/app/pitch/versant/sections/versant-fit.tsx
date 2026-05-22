@@ -42,8 +42,9 @@ export function VersantFit() {
               and a fan base that can tell when the tone is off.
             </p>
             <p className="mt-5">
-              We do not need to invent a new lane for Versant. We need to fit
-              the lanes already moving.
+              Versant already has lanes in motion. Our job is to read the
+              shape, build the right crew and post path, and make the work feel
+              like it belongs there.
             </p>
           </div>
         </div>
