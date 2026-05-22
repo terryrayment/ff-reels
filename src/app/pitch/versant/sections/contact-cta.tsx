@@ -1,4 +1,6 @@
 import {
+  muxAnimatedUrl,
+  muxStillUrl,
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
@@ -18,24 +20,74 @@ const CONTACTS = [
 
 const CONTACT_EMAILS = CONTACTS.map(([, email]) => email).join(",");
 
-const COLLAGE_SLUGS = [
+const COLLAGE_SPOTS = [
+  ["Callaway office", "BhZH005xwxQZJTuLSYOKSqFaGCSX5SlgFIAOeSntKqs8", 30.196844],
+  ["Callaway Kyle", "bYcHyck9AcxSPDZSx4x4gRM2fDYN02D00Y9JLSLqpa6HU", 30.196844],
+  ["Callaway Marty", "CrbJfBhLn4Dj1N00RP2O22hWgT7lGDmmNCpvXkRTXJoA", 30.196844],
+  ["Jack Turits", "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ", 32.074667],
+  ["Matt Dilmore", "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU", 587.536967],
+  ["Kelsey Larkin", "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po", 50.550511],
+  ["Caleb Slain", "ekGrtmsCnZ9yk1tw8Gez7jPwNUCY55KBCtCF7qThKIw", 85.336211],
+  ["Le Ged", "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY", 45.170122],
+  ["Brother Willis", "vqAlDQVGkErsXS00VKhafavM02viB4crudGcbSX397bfQ", 68.359967],
+  ["Cody Cloud Adidas", "feQSUP17mpG4Ay8bAHFPHuXx66CQwudaK4uKlUMj4pw", 60.3603],
+  ["Terry Rayment", "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM", 94.594511],
+] as const;
+
+const COLLAGE_FALLBACK_SLUGS = [
   "jack-turits",
   "matt-dilmore",
   "boma-iluma",
-  "kelsey-larkin",
-  "caleb-slain",
   "bueno",
-  "le-ged",
-  "brother-willis",
-  "cody-cloud",
+  "james-frost",
+  "leigh-marling",
   "terry-rayment",
-  "jack-turits",
-  "matt-dilmore",
-  "boma-iluma",
-  "kelsey-larkin",
   "caleb-slain",
-  "le-ged",
+  "kelsey-larkin",
+  "brother-willis",
 ];
+
+type CollageFrame = {
+  key: string;
+  still: string | null;
+  animated: string | null;
+};
+
+function contactCollageFrames(directors: VersantDirectorMedia[]) {
+  const seen = new Set<string>();
+  const frames: CollageFrame[] = [];
+
+  const addFrame = (frame: CollageFrame) => {
+    if (!frame.still || seen.has(frame.key)) return;
+    seen.add(frame.key);
+    frames.push(frame);
+  };
+
+  COLLAGE_SPOTS.forEach(([, playbackId, duration]) => {
+    addFrame({
+      key: playbackId,
+      still: muxStillUrl(playbackId, 640, duration),
+      animated: muxAnimatedUrl(playbackId, 640, duration),
+    });
+  });
+
+  COLLAGE_FALLBACK_SLUGS.forEach((slug) => {
+    const frame = motionForDirector(directors, slug, 640);
+    const title = frame.project?.title ?? "";
+    const brand = frame.project?.brand ?? "";
+    const playbackId = frame.project?.muxPlaybackId ?? frame.director?.slug ?? slug;
+
+    if (/target|thanos/i.test(`${brand} ${title}`)) return;
+
+    addFrame({
+      key: playbackId,
+      still: frame.still,
+      animated: frame.animated,
+    });
+  });
+
+  return frames.slice(0, 16);
+}
 
 export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
   const href =
@@ -43,9 +95,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
     `mailto:${CONTACT_EMAILS}?subject=${encodeURIComponent(
       "Versant x Friends & Family brief",
     )}`;
-  const frames = COLLAGE_SLUGS.map((slug) =>
-    motionForDirector(directors, slug, 640),
-  ).filter((frame) => frame.still);
+  const frames = contactCollageFrames(directors);
 
   return (
     <section className="px-4 pb-4 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-16">
@@ -86,9 +136,9 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
               aria-hidden="true"
               className="absolute inset-0 grid grid-cols-4 gap-px opacity-80"
             >
-              {frames.slice(0, 16).map((frame, index) => (
+              {frames.map((frame) => (
                 <div
-                  key={frame.director?.slug ?? index}
+                  key={frame.key}
                   className="relative overflow-hidden bg-black"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
