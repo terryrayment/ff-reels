@@ -165,8 +165,8 @@ export function WestCoastBrandTable() {
 
   if (loading) {
     return (
-      <div className="flex h-[calc(100vh-230px)] min-h-[620px] items-center justify-center text-[12px] uppercase tracking-[0.14em] text-[#999]">
-        Loading WEST COAST - BRAND
+      <div className="flex h-[calc(100vh-230px)] min-h-[620px] items-center justify-center text-[12px] tracking-[0.14em] text-[#999]">
+        Loading West Coast - Brand
       </div>
     );
   }
@@ -177,7 +177,7 @@ export function WestCoastBrandTable() {
     return (
       <div className="flex h-[calc(100vh-230px)] min-h-[620px] flex-col items-center justify-center px-8 text-center">
         <p className="max-w-md text-[18px] font-semibold text-[#111]">
-          WEST COAST - BRAND could not load.
+          West Coast - Brand could not load.
         </p>
         <p className="mt-3 max-w-md text-[13px] leading-6 text-[#666]">
           {error?.error || "The lead table could not be loaded."}

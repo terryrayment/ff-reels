@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
 
 const leadNavItems = [
   { href: "/leads/midwest", label: "Midwest" },
-  { href: "/leads/west-coast-brand", label: "WEST COAST - BRAND" },
+  { href: "/leads/west-coast-brand", label: "West Coast - Brand" },
 ];
 
 function getRoleDisplayName(role: string): string {

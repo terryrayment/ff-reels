@@ -20,7 +20,7 @@ export default async function WestCoastBrandLeadsPage() {
             Leads
           </h1>
           <p className="mt-3 max-w-xl text-[12px] text-[#666]">
-            WEST COAST - BRAND
+            West Coast - Brand
           </p>
         </div>
         <a

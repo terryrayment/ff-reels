@@ -10,15 +10,25 @@ test("sidebar renders Leads as a dropdown with both lead tables", () => {
   assert.match(source, /aria-expanded=\{leadsOpen\}/);
   assert.match(source, /\/leads\/midwest/);
   assert.match(source, /\/leads\/west-coast-brand/);
-  assert.match(source, /WEST COAST - BRAND/);
+  assert.match(source, /West Coast - Brand/);
+  assert.doesNotMatch(source, /WEST COAST - BRAND/);
 });
 
 test("West Coast Brand page uses the app-native editable table", () => {
   const source = read("src/app/(dashboard)/leads/west-coast-brand/page.tsx");
 
-  assert.match(source, /WEST COAST - BRAND/);
+  assert.match(source, /West Coast - Brand/);
+  assert.doesNotMatch(source, /WEST COAST - BRAND/);
   assert.match(source, /WestCoastBrandTable/);
   assert.match(source, /Open GitHub/);
+});
+
+test("West Coast Brand table status copy stays title case", () => {
+  const source = read("src/components/leads/west-coast-brand-table.tsx");
+
+  assert.match(source, /Loading West Coast - Brand/);
+  assert.match(source, /West Coast - Brand could not load\./);
+  assert.doesNotMatch(source, /WEST COAST - BRAND/);
 });
 
 test("West Coast Brand API seeds and edits app contacts without a GitHub token", () => {
