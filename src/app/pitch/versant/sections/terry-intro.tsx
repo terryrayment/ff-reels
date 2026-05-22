@@ -33,27 +33,28 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             </h2>
 
             <p>
-              We&apos;re a creative studio and production company built around
-              people who care about the work. The idea matters. So does the
-              set, the edit, the late version, the quiet fix, and the person
-              who has to approve it on Friday.
+              We are a creative studio and a production company stacked with
+              people who lose their minds over a good idea. We chase it down
+              the hallway. We knock over a chair. Somebody cries a little. Then
+              the work shows up better than the brief had any right to expect.
             </p>
 
             <p>
-              Bring us a sketch, a deadline, a footage pull, or a short talent
-              window. We&apos;ll find the cleanest way to make it, keep the process
-              light, and protect the work all the way through delivery.
+              Throw it at us. A napkin sketch. A brutal deadline. A hard drive
+              nobody labeled. A talent window cracking shut on Thursday at 4.
+              We grab it midair, find the cleanest line to the finish, and keep
+              the process so light you forget it is happening.
             </p>
 
             <p>
-              We stay small and exact when that&apos;s the move. We scale when the
-              job calls for it. Either way, the director, crew, post path, and
-              delivery plan fit the assignment.
+              Tiny and surgical or enormous and ridiculous, we shape to the
+              job. Director, crew, post, delivery, all of it bent around the
+              work like the work is the only thing in the building. Because to
+              us it is.
             </p>
 
             <p>
-              Send us the assignment. We&apos;ll come back with a clean way to make
-              it.
+              Send the assignment. We send back the sharpest way to make it.
             </p>
           </div>
         </article>

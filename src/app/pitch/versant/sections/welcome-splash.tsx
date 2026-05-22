@@ -25,8 +25,20 @@ type HeroFrameSource =
     };
 
 const HERO_FRAMES: HeroFrameSource[] = [
-  { slug: "caleb-slain" },
-  { slug: "boma-iluma", className: "scale-[1.18]" },
+  {
+    media: {
+      muxPlaybackId: "sn3KQhbwqIZkB68027UK005KQ6G2NOmVAdUEYBPmXH00as",
+      duration: 30.072667,
+    },
+    className: "scale-[1.16]",
+  },
+  {
+    media: {
+      muxPlaybackId: "mldgNDnlz8jpGULSbIQHAaNyHQrdk9rRXfmt4QWbjbY",
+      duration: 30.780756,
+    },
+    className: "scale-[1.2]",
+  },
   {
     media: {
       muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
@@ -95,11 +107,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
   return (
     <section className="px-4 py-4 text-[var(--versant-ink)] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[1600px] gap-4 lg:grid-cols-12">
-        <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[42px] bg-[var(--versant-black)] p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[52px]">
-          <div
-            aria-hidden="true"
-            className="absolute -right-16 top-20 h-52 w-52 rounded-full border border-white/10 sm:h-72 sm:w-72"
-          />
+        <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[42px] bg-black p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[52px]">
           {motionFrames.length > 0 && (
             <div
               aria-hidden="true"

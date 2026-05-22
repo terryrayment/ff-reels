@@ -80,20 +80,6 @@ const BRIEFS = [
     mediaClass: "scale-[1.24]",
   },
   {
-    kicker: "USA Sports",
-    title: "Give the game a house sound",
-    copy:
-      "Opens, promos, social, motion language, and the pressure of live sports need one strong visual register.",
-    directors: "Kelsey Larkin",
-    previewSlug: "kelsey-larkin",
-    reference: "monitor wall / live package / promo clock",
-    dark: true,
-    media: {
-      muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
-      duration: 50.550511,
-    },
-  },
-  {
     kicker: "Ryder Cup / USGA",
     title: "Tension, silence, weather",
     copy:

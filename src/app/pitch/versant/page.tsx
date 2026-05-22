@@ -247,8 +247,8 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         recipientFirstName={recipientFirstName}
         directors={orderedDirectors}
       />
-      <VersantReferenceStrip directors={orderedDirectors} />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
+      <VersantReferenceStrip directors={orderedDirectors} />
       <CapabilityDashboard directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />
       <VersantFit />

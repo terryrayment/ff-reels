@@ -47,12 +47,9 @@ export function VersantReferenceStrip({
     <section className="px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 grid gap-5 lg:grid-cols-12 lg:items-end">
-          <p className="max-w-[46rem] text-[clamp(30px,4.8vw,74px)] font-medium leading-[1.02] tracking-[-0.045em] lg:col-span-7">
-            We watch the pace, the quiet, the miss, the cut after the miss.
-          </p>
-          <p className="max-w-[38rem] text-[18px] leading-[1.35] tracking-[-0.02em] text-black/55 lg:col-span-4 lg:col-start-9">
-            Editorial references only. Versant&apos;s world gives us the rhythm;
-            the F&amp;F work below shows how we&apos;d carry it.
+          <p className="max-w-[62rem] text-[clamp(30px,4.8vw,74px)] font-medium leading-[1.02] tracking-[-0.045em] lg:col-span-9">
+            This is Versant&apos;s world, not ours. We&apos;re just showing you
+            we actually watch it. Our work is right below.
           </p>
         </div>
 
@@ -78,7 +75,7 @@ export function VersantReferenceStrip({
             return (
               <article
                 key={item.title}
-                className="versant-reveal flex min-h-[18rem] flex-col overflow-hidden rounded-[30px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.05)]"
+                className="versant-reveal group flex min-h-[18rem] flex-col overflow-hidden rounded-[30px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.05)] transition-transform duration-500 ease-out motion-reduce:transition-none motion-safe:hover:scale-[1.015]"
               >
                 <div
                   aria-hidden="true"
@@ -89,7 +86,7 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.still}
                       alt=""
-                      className={`h-full w-full scale-110 object-cover opacity-72 ${
+                      className={`h-full w-full scale-110 object-cover opacity-72 transition-transform duration-700 ease-out motion-reduce:transition-none motion-safe:group-hover:scale-[1.16] ${
                         frame.animated ? "motion-safe:hidden" : ""
                       }`}
                       loading="lazy"
@@ -100,7 +97,7 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.animated}
                       alt=""
-                      className="absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-72 motion-safe:block"
+                      className="absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-72 transition-transform duration-700 ease-out motion-safe:block motion-safe:group-hover:scale-[1.16]"
                       loading="lazy"
                     />
                   )}
