@@ -24,7 +24,7 @@ const CADDIES = [
     signature: "offbeat sports comedy",
     credits: "ESPN 30 for 30 \"The Great Imposter\"",
     match: "Big Break x Good Good",
-    treatment: "bg-[var(--versant-orange)] text-black",
+    treatment: "bg-[var(--versant-white)] text-black",
     media: {
       muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
       duration: 587.536967,
@@ -37,7 +37,7 @@ const CADDIES = [
     signature: "culture-forward",
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
     match: "Good Good / next-gen golf",
-    treatment: "bg-[var(--versant-mint)] text-black",
+    treatment: "bg-[var(--versant-paper)] text-black",
     mediaClass: "scale-[1.22]",
   },
   {
@@ -46,7 +46,7 @@ const CADDIES = [
     signature: "precision + dignity",
     credits: "Gillette \"Look Good, Game Good\"",
     match: "USA Sports identity / women's sports",
-    treatment: "bg-[var(--versant-blue)] text-white",
+    treatment: "bg-[var(--versant-black)] text-white",
     media: {
       muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
       duration: 50.550511,
@@ -70,7 +70,7 @@ const CADDIES = [
     signature: "mixed-media comedy",
     credits: "Doritos, Netflix, CNN, Cannes Grand Prix",
     match: "fan campaigns / Big Break energy",
-    treatment: "bg-[var(--versant-orange)] text-black",
+    treatment: "bg-[var(--versant-white)] text-black",
   },
   {
     slug: "le-ged",
@@ -78,7 +78,7 @@ const CADDIES = [
     signature: "kinetic camera",
     credits: "Hilton, McDonald's, YouTube",
     match: "GolfNow social-first / motion",
-    treatment: "bg-[var(--versant-mint)] text-black",
+    treatment: "bg-[var(--versant-paper)] text-black",
     media: {
       muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
       duration: 45.170122,
@@ -104,7 +104,7 @@ const CADDIES = [
     signature: "editorial color, portraits",
     credits: "Apple, Adidas, Asics, Gatorade, Nike, Target",
     match: "talent portrait package",
-    treatment: "bg-[var(--versant-lime)] text-black",
+    treatment: "bg-[var(--versant-paper)] text-black",
     media: {
       muxPlaybackId: "feQSUP17mpG4Ay8bAHFPHuXx66CQwudaK4uKlUMj4pw",
       duration: 60.3603,
@@ -127,9 +127,6 @@ const CADDIES = [
   },
 ];
 
-const ROSTER_LABEL =
-  "text-[12px] font-semibold leading-none tracking-[-0.015em]";
-
 export function RosterModes({
   directors,
 }: {
@@ -140,10 +137,10 @@ export function RosterModes({
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
-            <p className={`mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2.5 text-white ${ROSTER_LABEL}`}>
-              Caddie cards
+            <p className="mb-4 text-[15px] font-medium text-black/48">
+              The directors
             </p>
-            <h2 className="pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em]">
+            <h2 className="versant-display text-[clamp(44px,7vw,104px)] font-medium tracking-[-0.04em]">
               Directors matched to the work.
             </h2>
           </div>
@@ -196,16 +193,13 @@ function CaddieCard({
   const dark = card.treatment.includes("text-white");
   const muted = dark ? "text-white/62" : "text-black/58";
   const rule = dark ? "border-white/16" : "border-black/14";
-  const pill = dark
-    ? "border-white/18 bg-white/5 text-white/70"
-    : "border-black/14 bg-black/[0.03] text-black/62";
 
   return (
     <article
-      className={`versant-reveal group flex min-h-[40rem] flex-col overflow-hidden rounded-[36px] p-4 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-5 lg:rounded-[48px] ${card.treatment}`}
+      className={`versant-reveal group flex min-h-[40rem] flex-col overflow-hidden rounded-[34px] p-4 shadow-[0_22px_70px_rgba(17,17,14,0.07)] sm:p-5 lg:rounded-[46px] ${card.treatment}`}
     >
       <div
-        className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
+        className="-m-1 mb-0 relative aspect-[16/10] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
         style={still ? { backgroundImage: `url(${still})` } : undefined}
       >
         {overrideStill ? (
@@ -252,13 +246,10 @@ function CaddieCard({
           />
         )}
 
-        <div className={`absolute left-4 top-4 rounded-full bg-black px-3 py-2 text-white ${ROSTER_LABEL}`}>
-          matched card
-        </div>
       </div>
 
       <div className="flex flex-1 flex-col p-2 pt-6">
-        <h3 className="pb-2 text-[clamp(34px,4vw,60px)] font-medium leading-[0.98] tracking-[-0.055em]">
+        <h3 className="versant-display text-[clamp(34px,4vw,60px)] font-medium tracking-[-0.04em]">
           {card.name}
         </h3>
         <p className={`mt-2 text-[clamp(20px,2.4vw,30px)] leading-[1.05] tracking-[-0.04em] ${muted}`}>
@@ -267,15 +258,15 @@ function CaddieCard({
 
         <div className="mt-auto space-y-4 pt-7">
           <div className={`border-t pt-4 ${rule}`}>
-            <p className={`mb-2 ${muted} ${ROSTER_LABEL}`}>
+            <p className={`mb-2 text-[13px] font-medium leading-none tracking-[-0.01em] ${muted}`}>
               Credits
             </p>
             <p className="text-[14px] leading-[1.32]">{card.credits}</p>
           </div>
           <div className={`border-t pt-4 ${rule}`}>
-            <span className={`inline-flex rounded-full border px-4 py-2 text-[13px] ${pill}`}>
+            <p className={`text-[15px] leading-[1.25] ${muted}`}>
               &rarr; {card.match}
-            </span>
+            </p>
           </div>
         </div>
       </div>

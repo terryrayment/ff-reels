@@ -11,8 +11,7 @@ interface Props {
 const HERO_DIRECTORS = ["caleb-slain", "boma-iluma", "cody-cloud", "le-ged"];
 const GOLF_TICKER =
   "2,000+ live hours · 200+ events · 35% of golf hours watched · USGA through 2032 · Ryder Cup through 2033 · GolfNow 40M tee times · Rory through 2038";
-const HERO_MICRO_LABEL =
-  "font-sans text-[12px] font-semibold leading-none tracking-[-0.015em]";
+const HERO_MICRO_LABEL = "text-[13px] font-medium leading-none tracking-[-0.01em]";
 
 function FFLogomark() {
   return (
@@ -36,11 +35,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
         <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[42px] bg-[var(--versant-black)] p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[52px]">
           <div
             aria-hidden="true"
-            className="absolute -right-16 top-20 h-52 w-52 rounded-full border border-white/12 sm:h-72 sm:w-72"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute bottom-12 right-12 hidden h-2 w-2 rounded-full bg-[var(--versant-orange)] lg:block"
+            className="absolute -right-16 top-20 h-52 w-52 rounded-full border border-white/10 sm:h-72 sm:w-72"
           />
           {motionFrames.length > 0 && (
             <div
@@ -65,27 +60,27 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             </div>
           )}
 
-          <div className={`relative z-10 flex items-center justify-between gap-4 text-white/55 ${HERO_MICRO_LABEL}`}>
+          <div className={`relative z-10 flex items-center justify-between gap-4 text-white/48 ${HERO_MICRO_LABEL}`}>
             <FFLogomark />
             {recipientFirstName && <span>For {recipientFirstName}</span>}
           </div>
 
           <div className="relative z-10 max-w-5xl py-12 lg:py-16">
-            <p className={`mb-6 inline-flex rounded-full border border-white/18 px-4 py-2.5 text-white/78 ${HERO_MICRO_LABEL}`}>
+            <p className={`mb-8 text-white/62 ${HERO_MICRO_LABEL}`}>
               Friends &amp; Family for Versant
             </p>
-            <h1 className="pb-3 text-[clamp(58px,10vw,140px)] font-medium leading-[0.94] tracking-[-0.045em]">
+            <h1 className="versant-display text-[clamp(58px,10vw,140px)] font-medium tracking-[-0.03em]">
               Versant, meet the makers.
               <br />
               Golf is where we&apos;d start.
             </h1>
-            <p className="mt-5 max-w-[38rem] text-[clamp(22px,2.6vw,38px)] leading-[1.06] tracking-[-0.045em] text-white/72">
-              A producer-led production company — and a not-so-secret golf
-              obsession we&apos;ll get to in a minute.
+            <p className="mt-5 max-w-[34rem] text-[clamp(22px,2.6vw,36px)] leading-[1.12] tracking-[-0.035em] text-white/68">
+              A production company that happens to be quietly obsessed with
+              golf.
             </p>
           </div>
 
-          <div className={`relative z-10 flex flex-wrap gap-2 border-t border-white/14 pt-5 text-white/62 ${HERO_MICRO_LABEL}`}>
+          <div className={`relative z-10 grid gap-2 border-t border-white/12 pt-5 text-white/54 sm:grid-cols-3 lg:grid-cols-6 ${HERO_MICRO_LABEL}`}>
             {[
               "Production partner",
               "Directors",
@@ -94,13 +89,13 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
               "Motion",
               "Social delivery",
             ].map((item) => (
-              <span key={item} className="rounded-full border border-white/14 px-3.5 py-2">
+              <span key={item} className="text-left sm:text-right">
                 {item}
               </span>
             ))}
           </div>
 
-          <div className={`relative z-10 mt-4 overflow-hidden rounded-full border border-white/12 bg-white/[0.03] py-2.5 text-white/42 ${HERO_MICRO_LABEL}`}>
+          <div className={`relative z-10 mt-4 overflow-hidden border-t border-white/10 pt-3 text-white/36 ${HERO_MICRO_LABEL}`}>
             <div className="versant-marquee flex w-max gap-8 motion-reduce:animate-none">
               <span>{GOLF_TICKER}</span>
               <span aria-hidden="true">{GOLF_TICKER}</span>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
+import { VersantReferenceStrip } from "./sections/versant-reference-strip";
 import { TerryIntro } from "./sections/terry-intro";
 import { CapabilityDashboard } from "./sections/capability-dashboard";
 import { RosterModes } from "./sections/roster-modes";
@@ -12,9 +13,8 @@ import { VersantMotion } from "./sections/versant-motion";
 /**
  * Branded pitch landing — Friends & Family for Versant Media.
  *
- * Architecture: media/product interface. Golf Channel lead, founder note,
- * capability dashboard, flexible production/post partners, roster modes,
- * range reel, Versant fit, and assignment-shape close.
+ * Architecture: restrained media/product interface. Warm intro, Versant
+ * reference read, golf-first production opportunities, roster, fit, and close.
  *
  * Served from:
  *   - https://versant.reels.friendsandfamily.tv/ (subdomain → /pitch/versant)
@@ -68,16 +68,16 @@ const CLEAN_PROJECT_TITLES: Record<(typeof DIRECTOR_SLUGS)[number], string | nul
 };
 
 const VERSANT_THEME = {
-  "--versant-black": "#101010",
-  "--versant-ink": "#0b0b0b",
-  "--versant-paper": "#eeeeeb",
-  "--versant-white": "#ffffff",
-  "--versant-orange": "#ff4b32",
-  "--versant-lime": "#d8f000",
-  "--versant-blue": "#2637ff",
-  "--versant-mint": "#dcefee",
-  "--versant-gray": "#b8b8b5",
-  "--versant-soft-gray": "#e2e2df",
+  "--versant-black": "#0C3B2E",
+  "--versant-ink": "#11110e",
+  "--versant-paper": "#F2ECDD",
+  "--versant-white": "#fffaf0",
+  "--versant-orange": "#C6A24C",
+  "--versant-lime": "#f7f0df",
+  "--versant-blue": "#0C3B2E",
+  "--versant-mint": "#ebe3cf",
+  "--versant-gray": "#8f8879",
+  "--versant-soft-gray": "#e6decc",
 } as CSSProperties;
 
 function firstNameOf(full: string | null | undefined): string | null {
@@ -193,7 +193,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
 
   return (
     <main
-      className="min-h-screen bg-[var(--versant-soft-gray)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[#ff4b32]/25"
+      className="min-h-screen bg-[var(--versant-paper)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[var(--versant-orange)]/30"
       style={VERSANT_THEME}
     >
       <div
@@ -223,6 +223,11 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               opacity: 1;
               transform: translateY(0);
             }
+            .versant-display {
+              line-height: 0.98;
+              padding-bottom: 0.08em;
+              text-wrap: balance;
+            }
             @media (prefers-reduced-motion: reduce) {
               .versant-marquee {
                 animation: none;
@@ -242,6 +247,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         recipientFirstName={recipientFirstName}
         directors={orderedDirectors}
       />
+      <VersantReferenceStrip />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
       <CapabilityDashboard directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />

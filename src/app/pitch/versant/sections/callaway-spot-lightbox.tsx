@@ -64,12 +64,12 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
                   loading="lazy"
                 />
               </div>
-              <div className="grid min-h-[4.5rem] grid-cols-[1fr_auto] gap-3 px-3 py-2.5 text-[11px] font-semibold tracking-[-0.01em]">
+              <div className="grid min-h-[5rem] grid-cols-[minmax(0,1fr)_auto] items-start gap-3 px-3 py-2.5 text-[12px] font-semibold leading-[1.12] tracking-[-0.01em]">
                 <span className="min-w-0">
-                  <span className="block truncate">{brand}</span>
-                  <span className="block text-white/62">{detail}</span>
+                  <span className="block">{brand}</span>
+                  <span className="mt-0.5 block text-white/62">{detail}</span>
                 </span>
-                <span className="pt-0.5 text-white/72">Open</span>
+                <span className="pt-0.5 text-right text-white/72">Open</span>
               </div>
             </button>
           );
@@ -95,7 +95,7 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
               <button
                 type="button"
                 onClick={() => setActiveSpot(null)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:bg-[var(--versant-lime)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:bg-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 aria-label="Close video"
               >
                 <X size={18} aria-hidden="true" />
@@ -108,7 +108,7 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
               metadata={{ video_title: activeSpot.title }}
               primaryColor="#ffffff"
               secondaryColor="#101010"
-              accentColor="#ff4b32"
+              accentColor="#C6A24C"
               style={{ width: "100%", aspectRatio: "16 / 9" }}
             />
           </div>

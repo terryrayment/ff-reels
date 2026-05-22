@@ -14,13 +14,13 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
         <article className="relative overflow-hidden rounded-[42px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-10 lg:col-span-9 lg:p-12 xl:rounded-[52px]">
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -left-8 top-8 text-[clamp(120px,18vw,260px)] font-medium leading-none tracking-[-0.08em] text-black/[0.035]"
+            className="pointer-events-none absolute -left-8 top-8 text-[clamp(120px,18vw,260px)] font-medium leading-none tracking-[-0.05em] text-black/[0.026]"
           >
             short list
           </span>
 
           <div className="relative z-10 max-w-[760px] space-y-5 text-[clamp(17px,1.55vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/76">
-            <h2 className="max-w-3xl pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em] text-black">
+            <h2 className="versant-display max-w-3xl text-[clamp(44px,7vw,104px)] font-medium tracking-[-0.04em] text-black">
               We&apos;d love to be your shortlist.
             </h2>
 
@@ -50,10 +50,9 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             </p>
 
             <p>
-              We&apos;re not here to hand you a deck of concepts you didn&apos;t ask
-              for. We&apos;re here to be genuinely useful inside the work already on
-              the way — films, opens, promos, sponsor pieces, talent windows,
-              cutdowns, whatever shape the brief shows up in.
+              Versant has real work already moving: films, opens, promos,
+              sponsor pieces, talent windows, cutdowns, and the assignments
+              that arrive with half the answers missing.
             </p>
 
             <p>
@@ -64,8 +63,9 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             </p>
 
             <p>
-              So send us the shape of the thing. We&apos;ll show you — probably
-              with too much enthusiasm — exactly how we&apos;d make it.
+              Send us the assignment. We&apos;ll come back with the director, the
+              crew, the post path, and a clean way to make it — probably with
+              too much enthusiasm.
             </p>
           </div>
         </article>

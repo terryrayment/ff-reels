@@ -1,4 +1,6 @@
 import {
+  muxAnimatedUrl,
+  muxStillUrl,
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
@@ -12,8 +14,9 @@ const BRIEFS = [
       "Course stories: local rituals, club pros, strange holes, and the people who keep courses alive across 9,000 courses of material.",
     directors: "Jack Turits / Le Ged / Brother Willis",
     previewSlug: "jack-turits",
-    treatment: "md:col-span-1 bg-[var(--versant-white)] text-black",
-    number: "01",
+    reference: "tee sheet / course map / local habit",
+    proof: "Callaway real-player texture",
+    dark: false,
     spots: [
       {
         title: "Callaway · Office :30",
@@ -36,11 +39,16 @@ const BRIEFS = [
     kicker: "Golf Channel",
     title: "Independent era anthem",
     copy:
-      "A defining film for the independent Versant era, built from the pressure and texture of the channel that already knows the game.",
+      "A defining film for the independent Versant era, built from pressure, live texture, and the channel that already knows the game.",
     directors: "Caleb Slain",
     previewSlug: "caleb-slain",
-    treatment: "md:col-span-1 bg-[var(--versant-lime)] text-black",
-    number: "02",
+    reference: "live hours / broadcast open / archive",
+    proof: "anthem craft, not wallpaper",
+    dark: true,
+    media: {
+      muxPlaybackId: "ekGrtmsCnZ9yk1tw8Gez7jPwNUCY55KBCtCF7qThKIw",
+      duration: 85.336211,
+    },
   },
   {
     kicker: "Rory / GolfPass / Firethorn",
@@ -49,28 +57,45 @@ const BRIEFS = [
       "A short series that feels like a life around the game, not an endorsement reel.",
     directors: "Terry Rayment",
     previewSlug: "terry-rayment",
-    treatment: "md:col-span-1 bg-[var(--versant-black)] text-white",
-    number: "03",
+    reference: "range access / family rhythm / quiet day",
+    proof: "faces held long enough to matter",
+    dark: false,
+    media: {
+      muxPlaybackId: "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM",
+      duration: 94.594511,
+      start: 38,
+    },
   },
   {
     kicker: "Big Break x Good Good",
     title: "Old fans. New tempo.",
     copy:
-      "Entertainment craft and comedy timing that respects old Golf Channel fans and new YouTube golf fans.",
+      "Entertainment craft and comedy timing for old Golf Channel fans and new YouTube golf fans.",
     directors: "Matt Dilmore / Boma Iluma / Bueno",
     previewSlug: "matt-dilmore",
-    treatment: "md:col-span-1 bg-[var(--versant-orange)] text-black",
-    number: "04",
+    reference: "format pressure / cast chemistry",
+    proof: "timing, bite, and real performances",
+    dark: false,
+    media: {
+      muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
+      duration: 587.536967,
+    },
+    mediaClass: "scale-[1.24]",
   },
   {
     kicker: "USA Sports",
     title: "Give the game a house sound",
     copy:
-      "A visual identity that can carry opens, promos, social, motion language, and the pressure of live sports.",
+      "Opens, promos, social, motion language, and the pressure of live sports need one strong visual register.",
     directors: "Kelsey Larkin",
     previewSlug: "kelsey-larkin",
-    treatment: "md:col-span-1 bg-[var(--versant-blue)] text-white",
-    number: "05",
+    reference: "monitor wall / live package / promo clock",
+    proof: "controlled, clean, repeatable",
+    dark: true,
+    media: {
+      muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
+      duration: 50.550511,
+    },
   },
   {
     kicker: "Ryder Cup / USGA",
@@ -79,8 +104,13 @@ const BRIEFS = [
       "Mini-docs built on memory and reverence without getting sleepy.",
     directors: "Kelsey Larkin / Caleb Slain",
     previewSlug: "kelsey-larkin",
-    treatment: "md:col-span-1 bg-[var(--versant-mint)] text-black",
-    number: "06",
+    reference: "gallery ropes / weather hold / last putt",
+    proof: "restraint with a pulse",
+    dark: false,
+    media: {
+      muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
+      duration: 50.550511,
+    },
   },
   {
     kicker: "Sponsor-friendly editorial",
@@ -89,19 +119,14 @@ const BRIEFS = [
       "Guardrailed pieces that still hold faces, timing, and a reason to watch past the logo.",
     directors: "Terry Rayment / Le Ged",
     previewSlug: "le-ged",
-    treatment: "md:col-span-1 bg-[var(--versant-black)] text-white",
-    number: "07",
-  },
-  {
-    kicker: "Secondary call",
-    title: "Talent + explainer craft",
-    copy:
-      "CNBC and MS NOW need voices, structure, and clean film language when the subject gets dense.",
-    directors: "Caleb Slain",
-    previewSlug: "caleb-slain",
-    treatment: "md:col-span-1 bg-[var(--versant-orange)] text-black",
-    number: "S1",
-    secondary: true,
+    reference: "sponsor line / versioning / clean cut",
+    proof: "watchable inside the rules",
+    dark: true,
+    media: {
+      muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
+      duration: 45.170122,
+      start: 11,
+    },
   },
 ];
 
@@ -113,18 +138,19 @@ export function CapabilityDashboard({
   return (
     <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-[1500px]">
-        <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-8">
-            <p className="mb-4 w-fit rounded-full bg-[var(--versant-black)] px-4 py-2.5 text-[12px] font-semibold leading-none tracking-[-0.015em] text-white">
+        <div className="mb-12 grid gap-8 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
+            <p className="mb-5 text-[15px] font-medium text-black/50">
               Where we&apos;d start: golf
             </p>
-            <h2 className="pb-2 text-[clamp(44px,7vw,104px)] font-medium leading-[0.96] tracking-[-0.055em]">
+            <h2 className="versant-display text-[clamp(44px,7vw,104px)] font-medium tracking-[-0.04em]">
               Where we can help first.
             </h2>
           </div>
-          <p className="max-w-[58ch] text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/72 lg:col-span-4">
-            Golf first. Every card is a reason to call Friends &amp; Family to
-            make something, not another services matrix.
+          <p className="max-w-[44rem] text-[clamp(23px,3vw,38px)] leading-[1.08] tracking-[-0.035em] text-black/66 lg:col-span-5">
+            Golf gives the page its spine: live pressure, course texture,
+            talent windows, sponsor guardrails, and fans who know when a note
+            rings false.
           </p>
         </div>
 
@@ -152,9 +178,15 @@ function BriefCard({
     copy: string;
     directors: string;
     previewSlug: string;
-    treatment: string;
-    number: string;
-    secondary?: boolean;
+    reference: string;
+    proof: string;
+    dark: boolean;
+    media?: {
+      muxPlaybackId: string;
+      duration: number;
+      start?: number;
+    };
+    mediaClass?: string;
     spots?: {
       title: string;
       muxPlaybackId: string;
@@ -163,80 +195,97 @@ function BriefCard({
   };
   directors: VersantDirectorMedia[];
 }) {
-  const dark = brief.treatment.includes("text-white");
-  const muted = dark ? "text-white/62" : "text-black/56";
-  const rule = dark ? "border-white/16" : "border-black/14";
-  const pill = dark
-    ? "border-white/18 bg-white/5 text-white/70"
-    : "border-black/14 bg-black/[0.03] text-black/62";
-  const preview = motionForDirector(directors, brief.previewSlug, 420);
+  const preview = motionForDirector(directors, brief.previewSlug, 720);
+  const overrideStill = brief.media
+    ? muxStillUrl(
+        brief.media.muxPlaybackId,
+        720,
+        brief.media.duration,
+        brief.media.start,
+      )
+    : null;
+  const overrideAnimated = brief.media
+    ? muxAnimatedUrl(
+        brief.media.muxPlaybackId,
+        720,
+        brief.media.duration,
+        brief.media.start,
+      )
+    : null;
+  const still = overrideStill ?? preview.still;
+  const animated = overrideAnimated ?? preview.animated;
+  const cardTone = brief.dark
+    ? "bg-[var(--versant-black)] text-[var(--versant-white)]"
+    : "bg-[var(--versant-white)] text-black";
+  const muted = brief.dark ? "text-white/62" : "text-black/58";
+  const rule = brief.dark ? "border-white/14" : "border-black/12";
 
   return (
     <article
-      className={`versant-reveal group relative min-h-[23rem] overflow-hidden rounded-[36px] p-6 shadow-[0_22px_70px_rgba(16,16,16,0.08)] sm:p-7 lg:rounded-[48px] ${brief.treatment} ${
-        brief.secondary ? "min-h-[19rem]" : ""
-      }`}
+      className={`versant-reveal group min-h-[34rem] overflow-hidden rounded-[34px] p-5 shadow-[0_22px_70px_rgba(17,17,14,0.07)] lg:rounded-[46px] lg:p-7 ${cardTone}`}
     >
-      <span
-        aria-hidden="true"
-        className={`pointer-events-none absolute bottom-6 right-7 z-0 text-[clamp(88px,12vw,190px)] font-medium leading-none tracking-[-0.09em] ${
-          dark ? "text-white/[0.05]" : "text-black/[0.045]"
-        }`}
-      >
-        {brief.number}
-      </span>
-
-      <div className="relative z-10 flex h-full flex-col justify-between gap-6">
-        <div>
-          <div className="mb-5 flex flex-wrap items-center gap-3">
-            <span className={`rounded-full border px-4 py-2 text-[12px] font-medium uppercase tracking-[0.08em] ${pill}`}>
-              {brief.kicker}
-            </span>
-            {brief.secondary && (
-              <span className={`rounded-full border px-4 py-2 text-[12px] font-medium uppercase tracking-[0.08em] ${pill}`}>
-                secondary
-              </span>
-            )}
+      <div className="grid h-full gap-5 lg:grid-cols-2">
+        <div className={`flex min-h-[22rem] flex-col justify-between rounded-[26px] bg-[var(--versant-paper)]/80 p-5 text-black ${brief.dark ? "bg-white/[0.08] text-white" : ""}`}>
+          <div>
+            <p className={`text-[13px] font-medium ${brief.dark ? "text-white/46" : "text-black/46"}`}>
+              your thing
+            </p>
+            <h3 className="versant-display mt-4 text-[clamp(34px,5vw,68px)] font-medium tracking-[-0.04em]">
+              {brief.title}
+            </h3>
+            <p className={`mt-5 max-w-[32rem] text-[18px] leading-[1.28] tracking-[-0.02em] ${muted}`}>
+              {brief.copy}
+            </p>
           </div>
-          <h3 className="max-w-3xl pb-3 text-[clamp(34px,5vw,76px)] font-medium leading-[1.02] tracking-[-0.055em]">
-            {brief.title}
-          </h3>
-          <p className={`mt-3 max-w-[48ch] text-[17px] leading-[1.28] tracking-[-0.02em] ${muted}`}>
-            {brief.copy}
-          </p>
-          {brief.spots && <CallawaySpotLightbox spots={brief.spots} />}
+          <div className={`mt-8 border-t pt-4 ${rule}`}>
+            <p className={`text-[13px] leading-[1.25] ${muted}`}>
+              {brief.kicker} · {brief.reference}
+            </p>
+          </div>
         </div>
 
-        <div className={`grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-start`}>
-          <div className="min-w-0">
-            <p className={`mb-3 font-sans text-[13px] font-semibold leading-none tracking-[-0.015em] ${muted}`}>
-              Suggested creative / director
-            </p>
-            <p className="text-[clamp(20px,2.5vw,34px)] font-medium leading-[1.05] tracking-[-0.04em]">
-              {brief.directors}
+        <div className="flex min-h-[22rem] flex-col justify-between">
+          <div className="relative min-h-[18rem] flex-1 overflow-hidden rounded-[26px] bg-black">
+            {brief.spots ? (
+              <div className="h-full p-4">
+                <CallawaySpotLightbox spots={brief.spots} />
+              </div>
+            ) : (
+              <>
+                {still && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={still}
+                    alt=""
+                    className={`h-full min-h-[18rem] w-full object-cover ${brief.mediaClass ?? ""}`}
+                    loading="lazy"
+                  />
+                )}
+                {animated && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={animated}
+                    alt=""
+                    className={`absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100 motion-safe:block ${brief.mediaClass ?? ""}`}
+                    loading="lazy"
+                  />
+                )}
+              </>
+            )}
+          </div>
+          <div className={`mt-5 grid gap-4 border-t pt-4 ${rule} sm:grid-cols-[1fr_auto] sm:items-start`}>
+            <div>
+              <p className={`text-[13px] leading-[1.25] ${muted}`}>
+                how we&apos;d shoot it
+              </p>
+              <p className="mt-2 max-w-[20rem] text-[clamp(20px,2vw,28px)] font-medium leading-[1.04] tracking-[-0.025em]">
+                {brief.directors}
+              </p>
+            </div>
+            <p className={`max-w-[16rem] text-left text-[14px] leading-[1.25] ${muted} sm:text-right`}>
+              {brief.proof}
             </p>
           </div>
-
-          {preview.still && (
-            <div className="relative h-24 w-full overflow-hidden rounded-[22px] border border-current/20 bg-black shadow-[0_16px_44px_rgba(0,0,0,0.18)] sm:w-36">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={preview.still}
-                alt=""
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
-              {preview.animated && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={preview.animated}
-                  alt=""
-                  className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-300 group-hover:opacity-100 motion-safe:block"
-                  loading="lazy"
-                />
-              )}
-            </div>
-          )}
         </div>
       </div>
     </article>
