@@ -71,8 +71,6 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             </p>
             <h1 className="versant-display text-[clamp(58px,10vw,140px)] font-medium tracking-[-0.03em]">
               Versant, meet the makers.
-              <br />
-              Golf is where we&apos;d start.
             </h1>
             <p className="mt-5 max-w-[34rem] text-[clamp(22px,2.6vw,36px)] leading-[1.12] tracking-[-0.035em] text-white/68">
               A production company that happens to be quietly obsessed with
