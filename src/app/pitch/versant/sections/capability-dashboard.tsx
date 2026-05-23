@@ -222,9 +222,14 @@ function BriefCard({
         </div>
 
         <div className="flex min-h-[22rem] flex-col justify-between">
-          <div className="relative min-h-[18rem] flex-1 overflow-hidden rounded-[26px] bg-black">
+          <div
+            className={[
+              "relative overflow-hidden rounded-[26px] bg-black",
+              brief.spots ? "min-h-0" : "min-h-[18rem] flex-1",
+            ].join(" ")}
+          >
             {brief.spots ? (
-              <div className="h-full p-4">
+              <div className="p-4">
                 <CallawaySpotLightbox spots={brief.spots} />
               </div>
             ) : (

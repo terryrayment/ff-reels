@@ -36,7 +36,7 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
 
   return (
     <>
-      <div className="mt-5 grid gap-2 sm:grid-cols-3">
+      <div className="mt-5 grid gap-2">
         {spots.map((spot) => {
           const [brand, detail] = spot.title.split(" · ");
 
@@ -45,10 +45,10 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
               key={spot.muxPlaybackId}
               type="button"
               onClick={() => setActiveSpot(spot)}
-              className="group/spot overflow-hidden rounded-[18px] border border-black/14 bg-black text-left text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+              className="group/spot grid min-w-0 grid-cols-[84px_minmax(0,1fr)_auto] items-center gap-3 rounded-[18px] border border-white/22 bg-black p-2 text-left text-white transition hover:border-white/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:grid-cols-[96px_minmax(0,1fr)_auto]"
               aria-label={`Open ${spot.title}`}
             >
-              <div className="relative aspect-video overflow-hidden">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[12px] bg-white/8">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={muxStillUrl(spot.muxPlaybackId, 360, spot.duration)}
@@ -64,17 +64,15 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
                   loading="lazy"
                 />
               </div>
-              <div className="grid min-h-[5.2rem] grid-cols-[minmax(0,1fr)_auto] items-start gap-3 px-3 py-2.5 text-[12px] font-semibold leading-[1.08] tracking-[-0.01em]">
-                <span className="min-w-0 overflow-hidden">
-                  <span className="block truncate">{brand}</span>
-                  <span className="mt-0.5 block whitespace-normal break-words text-white/62">
-                    {detail}
-                  </span>
+              <span className="min-w-0 text-[13px] font-semibold leading-[1.05] tracking-[-0.01em]">
+                <span className="block truncate">{brand}</span>
+                <span className="mt-1 block truncate text-white/62">
+                  {detail}
                 </span>
-                <span className="shrink-0 pt-0.5 text-right text-white/72">
-                  Open
-                </span>
-              </div>
+              </span>
+              <span className="shrink-0 text-[12px] font-semibold text-white/72">
+                Open
+              </span>
             </button>
           );
         })}

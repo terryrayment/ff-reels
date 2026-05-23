@@ -249,10 +249,10 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         directors={orderedDirectors}
       />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
+      <PartnerBench />
       <VersantReferenceStrip directors={orderedDirectors} />
       <CapabilityDashboard directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />
-      <PartnerBench />
       <VersantFit />
       <ContactCta
         ctaUrl={link?.ctaUrl}
