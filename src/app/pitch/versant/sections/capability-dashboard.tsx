@@ -9,7 +9,7 @@ import { CallawaySpotLightbox } from "./callaway-spot-lightbox";
 const BRIEFS = [
   {
     kicker: "GolfNow",
-    title: "40M tee times is a map",
+    title: "9,000 courses. Real characters.",
     copy:
       "Course stories: local rituals, club pros, strange holes, and the people who keep courses alive across 9,000 courses of material.",
     directors: "Jack Turits, Le Ged, Brother Willis",
