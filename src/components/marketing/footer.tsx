@@ -21,7 +21,7 @@ export function MarketingFooter() {
               Friends &amp; Family
             </p>
             <p className="ff-meta mt-2 max-w-xs">
-              A creative network. Los Angeles, New York, São Paulo, Curitiba.
+              A creative studio. Los Angeles, New York, São Paulo, Curitiba.
             </p>
           </div>
 

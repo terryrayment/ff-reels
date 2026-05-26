@@ -127,15 +127,15 @@ export function AboutLiveField({ photos }: AboutLiveFieldProps) {
   if (livePhotos.length === 0) return null;
 
   return (
-    <section className="ff-about-live-field" aria-label="Friends & Family network">
+    <section className="ff-about-live-field" aria-label="Friends & Family studio system">
       <div className="ff-about-live-field__copy">
         <div className="ff-about-live-field__route">
           <p className="ff-kicker">
-            Network signal
+            Studio system
           </p>
           <div
             className="ff-about-live-field__codes"
-            aria-label="Switch network signal"
+            aria-label="Switch studio city"
           >
             {SIGNALS.map((item, index) => (
               <button

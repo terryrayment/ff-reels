@@ -31,10 +31,10 @@ const REPS = [
 ];
 
 const PRINCIPLES = [
-  { label: "01", title: "Director-led" },
+  { label: "01", title: "Direction first" },
   { label: "02", title: "Independent" },
   { label: "03", title: "LA / NY / SP / CWB" },
-  { label: "04", title: "Production / post / VFX" },
+  { label: "04", title: "Post / motion / VFX" },
 ];
 
 export default function AboutPage() {
@@ -47,12 +47,12 @@ export default function AboutPage() {
               About
             </p>
             <h1 className="ff-display-page">
-              <RevealText text="A creative network across the Americas." />
+              <RevealText text="A creative studio for moving image work." />
             </h1>
           </div>
           <p className="ff-body lg:col-span-4 lg:col-start-9">
-            Director-led and independently run from Los Angeles and New York,
-            connected with production, post, animation, and VFX in Brazil.
+            Directors, production, post, animation, and VFX connected across
+            Los Angeles, New York, São Paulo, and Curitiba.
           </p>
         </header>
 
@@ -85,14 +85,13 @@ export default function AboutPage() {
         </div>
         <div className="ff-copy-column space-y-5 ff-lede">
           <p>
-            Friends &amp; Family is a creative network of three connected
-            practices across the Americas: production in Los Angeles and New
-            York, post and animation in Curitiba, and a wider culture practice
-            in São Paulo. Director-led, independently run.
+            Friends &amp; Family is a creative studio built around directors.
+            We shape the idea, the production, the edit, the finish, and the
+            wider moving-image system around a campaign.
           </p>
           <p className="text-ff-copy">
-            A small roster, picked carefully. Long relationships with
-            directors, brands, and the people that come back.
+            A small roster, picked carefully. Long relationships with directors,
+            brands, and the people who come back.
           </p>
         </div>
       </section>
@@ -100,15 +99,14 @@ export default function AboutPage() {
       <section className="ff-shell ff-section-stack ff-section-border ff-section-grid">
         <div className="ff-label-column">
           <p className="ff-kicker">
-            NETWORK
+            Studio system
           </p>
         </div>
         <div className="ff-copy-column space-y-6 ff-lede">
           <p>
-            COLOSSAL in Curitiba and THE YOUTH in São Paulo connect post,
-            animation, VFX, production, and culture work to Friends &amp;
-            Family&apos;s Los Angeles and New York offices. One network across the
-            Americas.
+            THE YOUTH in São Paulo and COLOSSAL in Curitiba extend the studio
+            practice into culture, production, post, animation, and VFX. Three
+            connected studios, one working system across the Americas.
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-3 pt-1">
             <a

@@ -7,16 +7,39 @@ import { ProjectCard } from "@/components/marketing/project-card";
 import { RevealText } from "@/components/marketing/reveal-text";
 
 export const metadata: Metadata = {
-  title: { absolute: "Friends & Family — Creative Network" },
+  title: { absolute: "Friends & Family — Creative Studio" },
 };
 
 export const revalidate = 300;
 
 const PROJECT_TAG_SETS = [
-  ["Direction", "Production", "Film"],
-  ["Motion", "Campaign", "Edit"],
+  ["Direction", "Production", "Campaign"],
+  ["Creative Direction", "Edit", "Finish"],
   ["Post", "Animation", "VFX"],
-  ["Culture", "Commercial", "Finish"],
+  ["Culture", "Design", "Motion"],
+] as const;
+
+const STUDIO_CAPABILITIES = [
+  {
+    label: "01",
+    title: "Direction",
+    body: "Directors at the center of the work.",
+  },
+  {
+    label: "02",
+    title: "Production",
+    body: "Los Angeles, New York, São Paulo.",
+  },
+  {
+    label: "03",
+    title: "Post",
+    body: "Editorial, finish, color, delivery.",
+  },
+  {
+    label: "04",
+    title: "Motion / VFX",
+    body: "Animation, compositing, design systems.",
+  },
 ] as const;
 
 function formatIndex(index: number) {
@@ -121,10 +144,35 @@ export default async function MarketingHomePage() {
             </h1>
           </div>
           <p className="ff-body ff-home-statement-side">
-            Creative led: Los Angeles, New York, São Paulo, Curitiba.
-            Production, post, animation, and VFX.
+            A creative studio built around directors, production, post,
+            animation, and VFX across Los Angeles, New York, São Paulo, and
+            Curitiba.
           </p>
         </div>
+
+        <section
+          className="ff-home-capability-board"
+          aria-label="Studio capabilities"
+        >
+          <div className="ff-home-capability-intro">
+            <p className="ff-kicker">
+              Studio system
+            </p>
+            <p>
+              Direction stays close to the idea. Production, post, animation,
+              and VFX move with it.
+            </p>
+          </div>
+          <ol className="ff-home-capability-list">
+            {STUDIO_CAPABILITIES.map((capability) => (
+              <li key={capability.label}>
+                <span>{capability.label}</span>
+                <strong>{capability.title}</strong>
+                <p>{capability.body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
 
         {featuredDirectors.length === 0 ? (
           <EmptyMessage message="No directors published yet." />

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s — Friends & Family",
   },
   description:
-    "Friends & Family is a creative network across Los Angeles, New York, São Paulo, and Curitiba. Independently run, director-led.",
+    "Friends & Family is a creative studio for directors, production, post, animation, and VFX across Los Angeles, New York, São Paulo, and Curitiba.",
   robots: {
     index: false,
     follow: false,
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Friends & Family",
     description:
-      "A creative network. Los Angeles, New York, São Paulo, Curitiba. Independently run, director-led.",
+      "A creative studio for moving-image work across Los Angeles, New York, São Paulo, and Curitiba.",
     type: "website",
     siteName: "Friends & Family",
   },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Friends & Family",
     description:
-      "A creative network. Los Angeles, New York, São Paulo, Curitiba. Independently run, director-led.",
+      "A creative studio for moving-image work across Los Angeles, New York, São Paulo, and Curitiba.",
   },
 };
 

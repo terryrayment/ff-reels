@@ -12,7 +12,7 @@ export const MARKETING_PARTNERS = {
     kicker: "CURITIBA / POST / ANIMATION / VFX",
     headline: "Finish with force.",
     body:
-      "COLOSSAL connects the network to post, animation, VFX, compositing, motion design, and finishing from Curitiba.",
+      "COLOSSAL extends the studio system into post, animation, VFX, compositing, motion design, and finishing from Curitiba.",
     nav: ["HOME", "ABOUT", "WORK", "CONTACT"],
     heroLines: ["COLOSSAL"],
     index: ["POST", "ANIMATION", "VFX", "FINISHING"],
@@ -52,7 +52,7 @@ export const MARKETING_PARTNERS = {
     kicker: "SÃO PAULO / DIRECTORS / CULTURE / PRODUCTION",
     headline: "Culture first. Production close.",
     body:
-      "THE YOUTH connects São Paulo directors, casting, production, and culture work into the Friends & Family network across the Americas.",
+      "THE YOUTH extends the studio system through São Paulo directors, casting, production, and culture work across the Americas.",
     nav: ["DIRECTORS", "ABOUT", "CULTURE", "COLOSSAL"],
     heroLines: ["THE", "YOUTH"],
     index: ["DIRECTORS", "CULTURE", "CASTING", "PRODUCTION"],
@@ -148,7 +148,7 @@ function PartnerSitePortal({
 
       <header className="relative z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-white/15 bg-black px-ff-x md:grid-cols-[1fr_auto_1fr]">
         <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/48">
-          Network / Live
+          Studio / Live
         </p>
         <p className="hidden font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white md:block">
           {partner.label}

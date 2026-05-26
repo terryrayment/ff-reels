@@ -50,13 +50,13 @@ export function HeroVideo({ muxPlaybackId, posterUrl }: HeroVideoProps) {
 
       <div className="ff-shell pointer-events-none relative flex h-full flex-col justify-end pb-16">
         <p className="ff-nav-label text-white/70">
-          A creative network
+          Creative studio
         </p>
         <h1 className="ff-display-hero mt-3 max-w-5xl text-white">
           Friends &amp; Family
         </h1>
         <p className="ff-body mt-4 max-w-md text-white/80">
-          Creative led: Los Angeles, New York, São Paulo, Curitiba.
+          Directors, production, post, animation, and VFX across the Americas.
         </p>
       </div>
     </section>

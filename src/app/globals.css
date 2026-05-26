@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #F7F7F4;
+  --background: #FCFCFA;
   --foreground: #111111;
   --border: #DEDDD7;
   --border-subtle: #ECEBE6;
@@ -26,14 +26,14 @@
   --transition-fast: 0.15s ease;
 
   /* Friends & Family marketing design tokens */
-  --ff-color-paper: #F5F4F0;
-  --ff-color-paper-soft: #FAFAF7;
-  --ff-color-ink: #1A1A1A;
-  --ff-color-body: #55524D;
+  --ff-color-paper: #FCFCFA;
+  --ff-color-paper-soft: #FFFFFF;
+  --ff-color-ink: #111111;
+  --ff-color-body: #3F3F3A;
   --ff-color-muted: #66645F;
-  --ff-color-faint: #999790;
-  --ff-color-line: #E1E0DA;
-  --ff-color-line-soft: #E8E7E3;
+  --ff-color-faint: #9B9A94;
+  --ff-color-line: #DEDDD7;
+  --ff-color-line-soft: #ECEBE7;
   --ff-color-media: #050505;
   --ff-color-media-soft: #2A2A2A;
   --ff-color-signal: #D7FF38;
@@ -41,17 +41,18 @@
   --ff-color-partner-fg: #F4F2EC;
   --ff-color-partner-line: rgba(255, 255, 255, 0.16);
   --ff-color-partner-muted: rgba(255, 255, 255, 0.58);
-  --ff-rgb-paper: 245 244 240;
-  --ff-rgb-ink: 26 26 26;
+  --ff-rgb-paper: 252 252 250;
+  --ff-rgb-ink: 17 17 17;
   --ff-rgb-partner-bg: 5 5 5;
-  --ff-font-display: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --ff-font-text: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-display: var(--font-archivo), "Arial Narrow", "HelveticaNeue-CondensedBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-text: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-mono: var(--font-ibm-plex-mono), "SFMono-Regular", "Roboto Mono", monospace;
   --ff-container: 1400px;
   --ff-page-x: clamp(1.5rem, 2.75vw, 2.5rem);
   --ff-nav-height: 4rem;
   --ff-space-page-top: 7rem;
   --ff-space-page-bottom: 6rem;
-  --ff-space-header-gap: 2.5rem;
+  --ff-space-header-gap: 2.25rem;
   --ff-space-section-stack: 5rem;
   --ff-space-section-inset: 3rem;
   --ff-space-section-y: 5rem;
@@ -61,12 +62,12 @@
   --ff-grid-gap-x: 0.75rem;
   --ff-grid-gap-y: 2.5rem;
   --ff-grid-gap-y-loose: 3rem;
-  --ff-leading-display: 0.92;
+  --ff-leading-display: 0.88;
   --ff-leading-tight: 1.05;
   --ff-leading-body: 1.55;
-  --ff-type-hero: 58px;
-  --ff-type-page: 58px;
-  --ff-type-director: 58px;
+  --ff-type-hero: 62px;
+  --ff-type-page: 60px;
+  --ff-type-director: 60px;
   --ff-type-section: 38px;
   --ff-type-feature: 24px;
   --ff-type-card: 20px;
@@ -79,10 +80,10 @@
   --ff-type-form: 15px;
   --ff-type-label: 10px;
   --ff-type-nav-drawer: 30px;
-  --ff-track-micro: 0.032em;
-  --ff-track-label: 0.052em;
-  --ff-track-wide: 0.068em;
-  --ff-track-nav: 0.082em;
+  --ff-track-micro: 0.008em;
+  --ff-track-label: 0.016em;
+  --ff-track-wide: 0.026em;
+  --ff-track-nav: 0.036em;
   --ff-type-partner-intro: 42px;
   --ff-type-partner-colossal: 48px;
   --ff-type-partner-youth: 72px;
@@ -117,9 +118,9 @@
     --ff-space-section-stack: 7rem;
     --ff-space-section-inset: 4rem;
     --ff-space-section-y: 6rem;
-    --ff-type-hero: 96px;
-    --ff-type-page: 98px;
-    --ff-type-director: 98px;
+    --ff-type-hero: 104px;
+    --ff-type-page: 102px;
+    --ff-type-director: 102px;
     --ff-type-section: 56px;
     --ff-type-feature: 34px;
     --ff-type-card: 24px;
@@ -141,7 +142,7 @@
     --ff-space-section-y-lg: 7rem;
     --ff-space-section-grid-gap: 2.5rem;
     --ff-grid-gap-y: 3rem;
-    --ff-type-hero: 124px;
+    --ff-type-hero: 136px;
     --ff-type-page: 128px;
     --ff-type-director: 128px;
     --ff-type-partner-intro: 132px;
@@ -189,8 +190,9 @@
 }
 
 body {
-  --ff-font-display: var(--font-archivo), "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --ff-font-text: var(--font-archivo), var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-display: var(--font-archivo), "Arial Narrow", "HelveticaNeue-CondensedBold", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-text: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ff-font-mono: var(--font-ibm-plex-mono), "SFMono-Regular", "Roboto Mono", monospace;
   color: var(--foreground);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
@@ -558,22 +560,127 @@ mux-player {
   }
 
   .ff-home-statement-row {
-    @apply grid grid-cols-1 lg:grid-cols-12 lg:items-end;
-    gap: clamp(2rem, 4vw, 4rem);
-    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    @apply grid grid-cols-1 lg:grid-cols-12 lg:items-start;
+    gap: clamp(1.75rem, 4vw, 4rem);
+    margin-bottom: clamp(2rem, 4.5vw, 3.5rem);
   }
 
   .ff-home-statement-row > div {
-    @apply lg:col-span-10;
+    @apply lg:col-span-8;
   }
 
   .ff-home-statement {
-    max-width: 14.25ch;
+    max-width: 13.25ch;
   }
 
   .ff-home-statement-side {
-    @apply lg:col-span-2;
-    max-width: 19rem;
+    @apply lg:col-span-4;
+    max-width: 34rem;
+    padding-top: 0.62em;
+  }
+
+  .ff-home-capability-board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid var(--ff-color-line-soft);
+    border-bottom: 1px solid var(--ff-color-line-soft);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+    padding-block: clamp(1rem, 2.4vw, 1.75rem);
+  }
+
+  .ff-home-capability-intro {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .ff-home-capability-intro p:last-child {
+    max-width: 36rem;
+    font-family: var(--ff-font-text);
+    font-size: clamp(1.05rem, 1.6vw, 1.45rem);
+    font-weight: 390;
+    line-height: 1.18;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-home-capability-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--ff-color-line-soft);
+  }
+
+  .ff-home-capability-list li {
+    display: grid;
+    min-height: 9.5rem;
+    align-content: space-between;
+    gap: 1.25rem;
+    border-bottom: 1px solid var(--ff-color-line-soft);
+    padding-block: 1rem;
+  }
+
+  .ff-home-capability-list li:nth-child(odd) {
+    padding-right: 1rem;
+  }
+
+  .ff-home-capability-list li:nth-child(even) {
+    border-left: 1px solid var(--ff-color-line-soft);
+    padding-left: 1rem;
+  }
+
+  .ff-home-capability-list span {
+    font-family: var(--ff-font-mono);
+    font-size: var(--ff-type-label);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--ff-track-label);
+    color: var(--ff-color-faint);
+  }
+
+  .ff-home-capability-list strong {
+    font-family: var(--ff-font-display);
+    font-size: clamp(1.45rem, 2.1vw, 2rem);
+    font-weight: 660;
+    font-stretch: 86%;
+    font-variation-settings: "wdth" 86, "wght" 660;
+    line-height: 0.95;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-home-capability-list p {
+    max-width: 16rem;
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-small);
+    line-height: 1.35;
+    color: var(--ff-color-body);
+  }
+
+  @media (min-width: 768px) {
+    .ff-home-capability-board {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.55fr);
+    }
+
+    .ff-home-capability-list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 0;
+    }
+
+    .ff-home-capability-list li {
+      min-height: clamp(10rem, 16vw, 14rem);
+      border-bottom: 0;
+      border-left: 1px solid var(--ff-color-line-soft);
+      padding: 0 1rem;
+    }
+
+    .ff-home-capability-list li:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .ff-home-capability-list li:nth-child(odd),
+    .ff-home-capability-list li:nth-child(even) {
+      padding-right: 1rem;
+      padding-left: 1rem;
+    }
   }
 
   @media (max-width: 767px) {
@@ -588,8 +695,18 @@ mux-player {
 
     .ff-home-statement-side {
       max-width: 23rem;
+      padding-top: 0;
     }
 
+    .ff-home-capability-list {
+      grid-template-columns: 1fr;
+    }
+
+    .ff-home-capability-list li:nth-child(odd),
+    .ff-home-capability-list li:nth-child(even) {
+      border-left: 0;
+      padding-inline: 0;
+    }
   }
 
   .ff-intro-grid {
@@ -648,21 +765,21 @@ mux-player {
 
   .font-helveticaDisplay,
   .font-helveticaText {
-    font-stretch: 92%;
+    font-stretch: normal;
     font-kerning: normal;
-    font-variation-settings: "wdth" 92;
+    font-variation-settings: normal;
   }
 
   .ff-kicker,
   .ff-kicker-muted {
-    font-family: var(--ff-font-text);
+    font-family: var(--ff-font-mono);
     font-size: var(--ff-type-micro);
     font-weight: 500;
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;
-    font-stretch: 92%;
-    font-variation-settings: "wdth" 92, "wght" 560;
+    font-stretch: normal;
+    font-variation-settings: normal;
   }
 
   .ff-kicker {
@@ -677,7 +794,7 @@ mux-player {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-meta);
     line-height: 1.25;
-    font-variation-settings: "wdth" 96, "wght" 420;
+    font-variation-settings: normal;
     color: var(--ff-color-muted);
   }
 
@@ -688,9 +805,9 @@ mux-player {
   .ff-display-feature,
   .ff-display-card {
     font-family: var(--ff-font-display);
-    font-weight: 690;
-    font-stretch: 88%;
-    font-variation-settings: "wdth" 88, "wght" 690;
+    font-weight: 660;
+    font-stretch: 86%;
+    font-variation-settings: "wdth" 86, "wght" 660;
     font-kerning: normal;
     text-rendering: geometricPrecision;
     letter-spacing: 0;
@@ -776,52 +893,52 @@ mux-player {
   .ff-body {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-body);
-    font-weight: 420;
+    font-weight: 400;
     line-height: var(--ff-leading-body);
-    font-variation-settings: "wdth" 96, "wght" 420;
+    font-variation-settings: normal;
     color: var(--ff-color-body);
   }
 
   .ff-lede {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-lede);
-    font-weight: 460;
+    font-weight: 420;
     line-height: var(--ff-leading-tight);
-    font-variation-settings: "wdth" 96, "wght" 460;
+    font-variation-settings: normal;
     color: var(--ff-color-ink);
   }
 
   .ff-copy-small {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-small);
-    font-weight: 420;
+    font-weight: 400;
     line-height: var(--ff-leading-body);
-    font-variation-settings: "wdth" 96, "wght" 420;
+    font-variation-settings: normal;
     color: var(--ff-color-body);
   }
 
   .ff-card-brand {
-    font-family: var(--ff-font-text);
+    font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 500;
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;
-    font-stretch: 92%;
-    font-variation-settings: "wdth" 92, "wght" 560;
+    font-stretch: normal;
+    font-variation-settings: normal;
     color: var(--ff-color-ink);
   }
 
   .ff-card-positioning {
     flex-shrink: 0;
-    font-family: var(--ff-font-text);
+    font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 520;
     line-height: 1;
     letter-spacing: var(--ff-track-micro);
     text-transform: uppercase;
-    font-stretch: 92%;
-    font-variation-settings: "wdth" 92, "wght" 520;
+    font-stretch: normal;
+    font-variation-settings: normal;
     color: var(--ff-color-faint);
   }
 
@@ -833,7 +950,7 @@ mux-player {
     min-height: 1.45rem;
     border-top: 1px solid var(--ff-color-line-soft);
     padding-top: 0.5rem;
-    font-family: var(--ff-font-text);
+    font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 520;
     line-height: 1;
@@ -863,7 +980,7 @@ mux-player {
     min-height: 1.45rem;
     border: 1px solid var(--ff-color-line-soft);
     padding-inline: 0.45rem;
-    font-family: var(--ff-font-text);
+    font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 520;
     line-height: 1;
@@ -877,25 +994,25 @@ mux-player {
   }
 
   .ff-nav-label {
-    font-family: var(--ff-font-text);
+    font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 560;
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;
-    font-stretch: 92%;
-    font-variation-settings: "wdth" 92, "wght" 560;
+    font-stretch: normal;
+    font-variation-settings: normal;
   }
 
   .ff-link-small {
-    font-family: var(--ff-font-text);
+    font-family: var(--ff-font-mono);
     font-size: var(--ff-type-meta);
     font-weight: 560;
     line-height: 1;
     letter-spacing: var(--ff-track-micro);
     text-transform: uppercase;
-    font-stretch: 92%;
-    font-variation-settings: "wdth" 92, "wght" 560;
+    font-stretch: normal;
+    font-variation-settings: normal;
     color: var(--ff-color-muted);
     transition: color var(--ff-duration-fast) var(--ff-ease-out);
   }
