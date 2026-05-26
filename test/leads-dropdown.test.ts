@@ -32,6 +32,20 @@ test("West Coast Brand table status copy stays title case", () => {
   assert.doesNotMatch(source, /WEST COAST - BRAND/);
 });
 
+test("West Coast Brand table color codes lead statuses", () => {
+  const source = read("src/components/leads/west-coast-brand-table.tsx");
+
+  assert.match(source, /const statusStyles/);
+  assert.match(source, /"Not Sent"/);
+  assert.match(source, /Replied/);
+  assert.match(source, /"Call Booked"/);
+  assert.match(source, /Won/);
+  assert.match(source, /bg-emerald-50/);
+  assert.match(source, /bg-amber-50/);
+  assert.match(source, /bg-sky-50/);
+  assert.match(source, /getStatusStyle\(rowStatus\)/);
+});
+
 test("West Coast Brand API seeds and edits app contacts without a GitHub token", () => {
   const source = read("src/app/api/leads/west-coast-brand/route.ts");
   const config = read("src/lib/github-projects.ts");

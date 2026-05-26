@@ -32,6 +32,50 @@ type ErrorResponse = {
 };
 
 const endpoint = "/api/leads/west-coast-brand";
+const statusFieldName = "Status";
+
+const statusStyles: Record<string, { cell: string; row: string }> = {
+  "Not Sent": {
+    cell: "border-[#D8D6D0] bg-[#F4F3EF] text-[#666]",
+    row: "bg-white",
+  },
+  Sent: {
+    cell: "border-sky-200 bg-sky-50 text-sky-700",
+    row: "bg-sky-50/20",
+  },
+  "Follow-up Sent": {
+    cell: "border-indigo-200 bg-indigo-50 text-indigo-700",
+    row: "bg-indigo-50/20",
+  },
+  Replied: {
+    cell: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    row: "bg-emerald-50/25",
+  },
+  "Call Booked": {
+    cell: "border-amber-200 bg-amber-50 text-amber-700",
+    row: "bg-amber-50/25",
+  },
+  "In Bid": {
+    cell: "border-orange-200 bg-orange-50 text-orange-700",
+    row: "bg-orange-50/25",
+  },
+  Won: {
+    cell: "border-green-200 bg-green-50 text-green-700",
+    row: "bg-green-50/30",
+  },
+  Cold: {
+    cell: "border-rose-200 bg-rose-50 text-rose-700",
+    row: "bg-rose-50/20",
+  },
+  Pass: {
+    cell: "border-stone-200 bg-stone-100 text-stone-600",
+    row: "bg-stone-50/50",
+  },
+};
+
+function getStatusStyle(status: string | number | null) {
+  return statusStyles[String(status || "Not Sent")] || statusStyles["Not Sent"];
+}
 
 function getDisplayValue(field: ProjectField, value: string | number | null) {
   if (field.type === "SINGLE_SELECT") {
@@ -51,21 +95,31 @@ function EditableCell({
   disabled: boolean;
   onSave: (value: string | number | null) => void;
 }) {
+  const displayValue = getDisplayValue(field, value);
+
   if (field.type === "SINGLE_SELECT") {
+    const statusStyle = field.name === statusFieldName ? getStatusStyle(displayValue) : null;
+
     return (
-      <select
-        value={typeof value === "string" ? value : ""}
-        disabled={disabled}
-        onChange={(event) => onSave(event.target.value)}
-        className="h-8 min-w-[150px] rounded-md border border-transparent bg-transparent px-2 text-[13px] text-[#222] outline-none transition-colors hover:border-[#D8D6D0] focus:border-[#111] disabled:opacity-50"
-      >
-        <option value="">-</option>
-        {(field.options || []).map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
-          </option>
-        ))}
-      </select>
+      <div className={statusStyle ? `inline-flex rounded-full border px-1 ${statusStyle.cell}` : ""}>
+        <select
+          value={typeof value === "string" ? value : ""}
+          disabled={disabled}
+          onChange={(event) => onSave(event.target.value)}
+          className={
+            statusStyle
+              ? "h-7 min-w-[132px] rounded-full bg-transparent px-2 text-[12px] font-semibold outline-none disabled:opacity-50"
+              : "h-8 min-w-[150px] rounded-md border border-transparent bg-transparent px-2 text-[13px] text-[#222] outline-none transition-colors hover:border-[#D8D6D0] focus:border-[#111] disabled:opacity-50"
+          }
+        >
+          <option value="">-</option>
+          {(field.options || []).map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+      </div>
     );
   }
 
@@ -224,26 +278,34 @@ export function WestCoastBrandTable() {
           </tr>
         </thead>
         <tbody>
-          {data.project.rows.map((row) => (
-            <tr key={row.id} className="border-b border-[#EFEDE8]">
-              <td className="max-w-[360px] px-4 py-3 text-[13px] font-medium text-[#222]">
-                {row.title}
-              </td>
-              {visibleFields.map((field) => {
-                const cellKey = `${row.id}:${field.id}`;
-                return (
-                  <td key={field.id} className="px-2 py-2 align-middle">
-                    <EditableCell
-                      field={field}
-                      value={row.values[field.id] ?? ""}
-                      disabled={savingCell === cellKey}
-                      onSave={(value) => void saveCell(row, field, value)}
-                    />
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+          {data.project.rows.map((row) => {
+            const rowStatus = row.values.status ?? "Not Sent";
+            const rowStyle = getStatusStyle(rowStatus);
+
+            return (
+              <tr
+                key={row.id}
+                className={`border-b border-[#EFEDE8] transition-colors hover:bg-[#F7F6F3] ${rowStyle.row}`}
+              >
+                <td className="max-w-[360px] px-4 py-3 text-[13px] font-medium text-[#222]">
+                  {row.title}
+                </td>
+                {visibleFields.map((field) => {
+                  const cellKey = `${row.id}:${field.id}`;
+                  return (
+                    <td key={field.id} className="px-2 py-2 align-middle">
+                      <EditableCell
+                        field={field}
+                        value={row.values[field.id] ?? ""}
+                        disabled={savingCell === cellKey}
+                        onSave={(value) => void saveCell(row, field, value)}
+                      />
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
