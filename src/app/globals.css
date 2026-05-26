@@ -579,110 +579,6 @@ mux-player {
     padding-top: 0.62em;
   }
 
-  .ff-home-capability-board {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    border-top: 1px solid var(--ff-color-line-soft);
-    border-bottom: 1px solid var(--ff-color-line-soft);
-    margin-bottom: clamp(3rem, 6vw, 5rem);
-    padding-block: clamp(1rem, 2.4vw, 1.75rem);
-  }
-
-  .ff-home-capability-intro {
-    display: grid;
-    gap: 0.8rem;
-  }
-
-  .ff-home-capability-intro p:last-child {
-    max-width: 36rem;
-    font-family: var(--ff-font-text);
-    font-size: clamp(1.05rem, 1.6vw, 1.45rem);
-    font-weight: 390;
-    line-height: 1.18;
-    color: var(--ff-color-ink);
-  }
-
-  .ff-home-capability-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 1px solid var(--ff-color-line-soft);
-  }
-
-  .ff-home-capability-list li {
-    display: grid;
-    min-height: 9.5rem;
-    align-content: space-between;
-    gap: 1.25rem;
-    border-bottom: 1px solid var(--ff-color-line-soft);
-    padding-block: 1rem;
-  }
-
-  .ff-home-capability-list li:nth-child(odd) {
-    padding-right: 1rem;
-  }
-
-  .ff-home-capability-list li:nth-child(even) {
-    border-left: 1px solid var(--ff-color-line-soft);
-    padding-left: 1rem;
-  }
-
-  .ff-home-capability-list span {
-    font-family: var(--ff-font-mono);
-    font-size: var(--ff-type-label);
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: var(--ff-track-label);
-    color: var(--ff-color-faint);
-  }
-
-  .ff-home-capability-list strong {
-    font-family: var(--ff-font-display);
-    font-size: clamp(1.45rem, 2.1vw, 2rem);
-    font-weight: 660;
-    font-stretch: 86%;
-    font-variation-settings: "wdth" 86, "wght" 660;
-    line-height: 0.95;
-    color: var(--ff-color-ink);
-  }
-
-  .ff-home-capability-list p {
-    max-width: 16rem;
-    font-family: var(--ff-font-text);
-    font-size: var(--ff-type-small);
-    line-height: 1.35;
-    color: var(--ff-color-body);
-  }
-
-  @media (min-width: 768px) {
-    .ff-home-capability-board {
-      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.55fr);
-    }
-
-    .ff-home-capability-list {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      border-top: 0;
-    }
-
-    .ff-home-capability-list li {
-      min-height: clamp(10rem, 16vw, 14rem);
-      border-bottom: 0;
-      border-left: 1px solid var(--ff-color-line-soft);
-      padding: 0 1rem;
-    }
-
-    .ff-home-capability-list li:first-child {
-      padding-left: 0;
-      border-left: 0;
-    }
-
-    .ff-home-capability-list li:nth-child(odd),
-    .ff-home-capability-list li:nth-child(even) {
-      padding-right: 1rem;
-      padding-left: 1rem;
-    }
-  }
-
   @media (max-width: 767px) {
     .ff-home-statement-row {
       gap: 1.2rem;
@@ -696,16 +592,6 @@ mux-player {
     .ff-home-statement-side {
       max-width: 23rem;
       padding-top: 0;
-    }
-
-    .ff-home-capability-list {
-      grid-template-columns: 1fr;
-    }
-
-    .ff-home-capability-list li:nth-child(odd),
-    .ff-home-capability-list li:nth-child(even) {
-      border-left: 0;
-      padding-inline: 0;
     }
   }
 

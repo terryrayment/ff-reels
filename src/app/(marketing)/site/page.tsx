@@ -19,29 +19,6 @@ const PROJECT_TAG_SETS = [
   ["Culture", "Design", "Motion"],
 ] as const;
 
-const STUDIO_CAPABILITIES = [
-  {
-    label: "01",
-    title: "Direction",
-    body: "Directors at the center of the work.",
-  },
-  {
-    label: "02",
-    title: "Production",
-    body: "Los Angeles, New York, São Paulo.",
-  },
-  {
-    label: "03",
-    title: "Post",
-    body: "Editorial, finish, color, delivery.",
-  },
-  {
-    label: "04",
-    title: "Motion / VFX",
-    body: "Animation, compositing, design systems.",
-  },
-] as const;
-
 function formatIndex(index: number) {
   return String(index + 1).padStart(2, "0");
 }
@@ -149,30 +126,6 @@ export default async function MarketingHomePage() {
             Curitiba.
           </p>
         </div>
-
-        <section
-          className="ff-home-capability-board"
-          aria-label="Studio capabilities"
-        >
-          <div className="ff-home-capability-intro">
-            <p className="ff-kicker">
-              Studio system
-            </p>
-            <p>
-              Direction stays close to the idea. Production, post, animation,
-              and VFX move with it.
-            </p>
-          </div>
-          <ol className="ff-home-capability-list">
-            {STUDIO_CAPABILITIES.map((capability) => (
-              <li key={capability.label}>
-                <span>{capability.label}</span>
-                <strong>{capability.title}</strong>
-                <p>{capability.body}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
 
         {featuredDirectors.length === 0 ? (
           <EmptyMessage message="No directors published yet." />
