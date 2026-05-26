@@ -12,12 +12,14 @@ import {
 import { Magnetic } from "@/components/marketing/magnetic";
 import { cn } from "@/lib/utils";
 
-const LINKS = [
-  { href: "/site/directors", label: "Directors" },
-  { href: "/site/work", label: "Work" },
-  { href: "/site/about", label: "About" },
-  { href: "/site/contact", label: "Contact" },
-];
+const NAV_ITEMS = [
+  { type: "link", href: "/site/work", label: "Work" },
+  { type: "link", href: "/site/directors", label: "Talent" },
+  { type: "partner", partnerId: "youth" },
+  { type: "partner", partnerId: "colossal" },
+  { type: "link", href: "/site/about", label: "About" },
+  { type: "link", href: "/site/contact", label: "Contact" },
+] as const;
 
 export function MarketingNav() {
   const pathname = usePathname();
@@ -78,35 +80,37 @@ export function MarketingNav() {
           </Magnetic>
         </div>
 
-        <div className="hidden md:flex items-center gap-8">
-          <div className="flex items-center gap-5 pr-1">
-            {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setActivePartner(id)}
-                className="ff-nav-label text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
-              >
-                {MARKETING_PARTNERS[id].label}
-              </button>
-            ))}
-          </div>
+        <div className="hidden md:flex items-center">
+          <ul className="flex items-center gap-6 lg:gap-9">
+            {NAV_ITEMS.map((item) => {
+              if (item.type === "partner") {
+                const partner = MARKETING_PARTNERS[item.partnerId];
+                return (
+                  <li key={item.partnerId} className="flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setActivePartner(item.partnerId)}
+                      className="ff-nav-label inline-flex h-ff-nav items-center text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
+                    >
+                      {partner.label}
+                    </button>
+                  </li>
+                );
+              }
 
-          <ul className="flex items-center gap-7">
-            {LINKS.map((link) => {
-              const active = pathname?.startsWith(link.href);
+              const active = pathname?.startsWith(item.href);
               return (
-                <li key={link.href}>
+                <li key={item.href} className="flex items-center">
                   <Link
-                    href={link.href}
+                    href={item.href}
                     className={cn(
-                      "ff-nav-label transition-colors",
+                      "ff-nav-label inline-flex h-ff-nav items-center transition-colors",
                       active
                         ? "text-ff-ink"
                         : "text-ff-muted hover:text-ff-ink",
                     )}
                   >
-                    {link.label}
+                    {item.label}
                   </Link>
                 </li>
               );
@@ -128,32 +132,37 @@ export function MarketingNav() {
       {open && (
         <div className="md:hidden border-t border-ff-line-soft bg-ff-paper">
           <div className="px-6 py-5">
-            <div className="mb-5 flex flex-wrap gap-x-5 gap-y-3 border-b border-ff-line-soft pb-5">
-              {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => {
-                    setOpen(false);
-                    setActivePartner(id);
-                  }}
-                  className="ff-nav-label text-ff-muted"
-                >
-                  {MARKETING_PARTNERS[id].label}
-                </button>
-              ))}
-            </div>
             <ul className="space-y-3">
-              {LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="ff-font-display block text-ff-nav-drawer font-medium text-ff-ink"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                if (item.type === "partner") {
+                  const partner = MARKETING_PARTNERS[item.partnerId];
+                  return (
+                    <li key={item.partnerId}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpen(false);
+                          setActivePartner(item.partnerId);
+                        }}
+                        className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
+                      >
+                        {partner.label}
+                      </button>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="ff-font-display block text-ff-nav-drawer font-medium text-ff-ink"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
