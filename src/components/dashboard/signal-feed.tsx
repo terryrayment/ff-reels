@@ -427,12 +427,12 @@ export function SignalFeed({
   };
 
   if (compact) {
-    const displayUpdates = updates.slice(0, 6);
+    const displayUpdates = updates.slice(0, 8);
 
     return (
       <div>
         {displayUpdates.length > 0 ? (
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
             {displayUpdates.map((update) => {
               const Icon = getUpdateIcon(update);
               const mediaUrl = getMediaUrl(update);

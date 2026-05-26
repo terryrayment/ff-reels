@@ -15,3 +15,11 @@ test("signal feed renders uploaded spots with an inline Mux player", () => {
   assert.match(text, /<SpotInlinePlayer update=\{update\} \/>/);
   assert.match(text, /playbackId=\{playbackId\}/);
 });
+
+test("compact signal feed shows two rows of four cards", () => {
+  const text = source();
+
+  assert.match(text, /updates\.slice\(0, 8\)/);
+  assert.match(text, /lg:grid-cols-4/);
+  assert.doesNotMatch(text, /md:grid-cols-3/);
+});
