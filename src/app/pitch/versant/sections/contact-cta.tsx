@@ -19,6 +19,7 @@ const CONTACTS = [
 ];
 
 const CONTACT_EMAILS = CONTACTS.map(([, email]) => email).join(",");
+const COLLAGE_MEDIA_CLASS = "h-full w-full scale-[1.34] object-cover";
 
 const COLLAGE_SPOTS = [
   ["Callaway office", "BhZH005xwxQZJTuLSYOKSqFaGCSX5SlgFIAOeSntKqs8", 30.196844],
@@ -139,7 +140,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
                   <img
                     src={frame.still ?? ""}
                     alt=""
-                    className="h-full w-full object-cover motion-safe:hidden"
+                    className={`${COLLAGE_MEDIA_CLASS} motion-safe:hidden`}
                     loading="lazy"
                   />
                   {frame.animated && (
@@ -147,7 +148,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
                     <img
                       src={frame.animated}
                       alt=""
-                      className="hidden h-full w-full object-cover motion-safe:block"
+                      className={`hidden ${COLLAGE_MEDIA_CLASS} motion-safe:block`}
                       loading="lazy"
                     />
                   )}
@@ -155,14 +156,6 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
               ))}
             </div>
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,59,46,0.12),rgba(12,59,46,0.84))]" />
-            <div className="relative z-10 flex h-full min-h-[18rem] items-end justify-between gap-5 p-5 text-white/78">
-              <span className="max-w-[16rem] text-[15px] leading-[1.2]">
-                One brief, one deadline, one assignment shape.
-              </span>
-              <span aria-hidden="true" className="text-[24px] leading-none">
-                &rarr;
-              </span>
-            </div>
           </a>
         </div>
       </div>
