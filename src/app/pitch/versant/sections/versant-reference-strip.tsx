@@ -4,6 +4,7 @@ import {
   muxStillUrl,
   type VersantDirectorMedia,
 } from "./media";
+import { ReferenceVideoFrame } from "./reference-video-frame";
 
 const REFERENCES = [
   {
@@ -34,6 +35,8 @@ const REFERENCES = [
       muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
       duration: 32.074667,
     },
+    playVideo: true,
+    videoTitle: "Callaway Forefront",
   },
   {
     title: "Rory / GolfPass",
@@ -66,6 +69,7 @@ export function VersantReferenceStrip({
           {REFERENCES.map((item, index) => {
             const frame = "media" in item && item.media
               ? {
+                  playbackId: item.media.muxPlaybackId,
                   still: muxStillUrl(
                     item.media.muxPlaybackId,
                     640,
@@ -79,7 +83,13 @@ export function VersantReferenceStrip({
                     item.media.start,
                   ),
                 }
-              : motionForDirector(directors, item.slug, 640);
+              : {
+                  playbackId: null,
+                  ...motionForDirector(directors, item.slug, 640),
+                };
+            const playVideo = "playVideo" in item && item.playVideo;
+            const videoTitle =
+              "videoTitle" in item ? item.videoTitle ?? item.title : item.title;
 
             return (
               <article
@@ -90,7 +100,13 @@ export function VersantReferenceStrip({
                   aria-hidden="true"
                   className="relative mb-8 aspect-video overflow-hidden rounded-[22px] bg-[var(--versant-soft-gray)]"
                 >
-                  {frame.still && (
+                  {playVideo && frame.playbackId && frame.still ? (
+                    <ReferenceVideoFrame
+                      playbackId={frame.playbackId}
+                      poster={frame.still}
+                      title={videoTitle}
+                    />
+                  ) : frame.still ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={frame.still}
@@ -100,8 +116,8 @@ export function VersantReferenceStrip({
                       }`}
                       loading="lazy"
                     />
-                  )}
-                  {frame.animated && (
+                  ) : null}
+                  {!playVideo && frame.animated && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={frame.animated}
