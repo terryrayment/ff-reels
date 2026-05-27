@@ -47,6 +47,8 @@ const REFERENCES = [
       duration: 94.594511,
       start: 38,
     },
+    mediaClass: "scale-[1.38]",
+    hoverMediaClass: "motion-safe:group-hover:scale-[1.44]",
   },
 ];
 
@@ -90,6 +92,12 @@ export function VersantReferenceStrip({
             const playVideo = "playVideo" in item && item.playVideo;
             const videoTitle =
               "videoTitle" in item ? item.videoTitle ?? item.title : item.title;
+            const mediaClass =
+              "mediaClass" in item ? item.mediaClass : "scale-110";
+            const hoverMediaClass =
+              "hoverMediaClass" in item
+                ? item.hoverMediaClass
+                : "motion-safe:group-hover:scale-[1.16]";
 
             return (
               <article
@@ -111,7 +119,7 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.still}
                       alt=""
-                      className={`h-full w-full scale-110 object-cover opacity-72 transition-transform duration-700 ease-out motion-reduce:transition-none motion-safe:group-hover:scale-[1.16] ${
+                      className={`h-full w-full object-cover opacity-72 transition-transform duration-700 ease-out motion-reduce:transition-none ${mediaClass} ${hoverMediaClass} ${
                         frame.animated ? "motion-safe:hidden" : ""
                       }`}
                       loading="lazy"
@@ -122,7 +130,7 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.animated}
                       alt=""
-                      className="absolute inset-0 hidden h-full w-full scale-110 object-cover opacity-72 transition-transform duration-700 ease-out motion-safe:block motion-safe:group-hover:scale-[1.16]"
+                      className={`absolute inset-0 hidden h-full w-full object-cover opacity-72 transition-transform duration-700 ease-out motion-safe:block ${mediaClass} ${hoverMediaClass}`}
                       loading="lazy"
                     />
                   )}
