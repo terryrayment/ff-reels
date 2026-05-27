@@ -83,6 +83,7 @@ const CADDIES = [
     media: {
       muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
       duration: 50.550511,
+      start: 41,
     },
   },
   {
