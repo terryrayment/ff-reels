@@ -40,7 +40,7 @@ export function VersantFit() {
         <div className="mt-10 grid gap-6 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-5">
             <h3 className="text-[clamp(30px,4vw,52px)] font-medium leading-[1] tracking-[-0.04em]">
-              Versant gives us
+              Versant gives us:
             </h3>
           </div>
           <ul className="grid gap-2 text-[15px] text-black/62 sm:grid-cols-2 lg:col-span-7">
