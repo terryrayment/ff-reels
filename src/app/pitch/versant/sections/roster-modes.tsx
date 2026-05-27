@@ -4,6 +4,7 @@ import {
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
+import { RosterCreditLightbox } from "./roster-credit-lightbox";
 
 const CADDIES = [
   {
@@ -51,6 +52,23 @@ const CADDIES = [
     name: "Boma Iluma",
     signature: "culture-forward",
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
+    creditSpots: [
+      {
+        label: "Oakley w/ Damian Lillard",
+        title: "Boma Iluma · Oakley w/ Damian Lillard",
+        embedUrl: "https://player.vimeo.com/video/638046332?h=459abba3b3",
+      },
+      {
+        label: "Air Jordan Heirs",
+        title: "Boma Iluma · Air Jordan Heirs",
+        embedUrl: "https://player.vimeo.com/video/388087934?h=e1534f4e98",
+      },
+      {
+        label: "The Chi",
+        title: "Boma Iluma · The Chi",
+        embedUrl: "https://player.vimeo.com/video/1023999854",
+      },
+    ],
     match: "Good Good / next-gen golf",
     treatment: "bg-[var(--versant-paper)] text-black",
     mediaClass: "scale-[1.55]",
@@ -195,6 +213,7 @@ function CaddieCard({
   const dark = card.treatment.includes("text-white");
   const muted = dark ? "text-white/62" : "text-black/58";
   const rule = dark ? "border-white/16" : "border-black/14";
+  const creditSpots = "creditSpots" in card ? card.creditSpots : null;
 
   return (
     <article
@@ -263,7 +282,11 @@ function CaddieCard({
             <p className={`mb-2 text-[13px] font-medium leading-none tracking-[-0.01em] ${muted}`}>
               Credits
             </p>
-            <p className="text-[14px] leading-[1.32]">{card.credits}</p>
+            {creditSpots ? (
+              <RosterCreditLightbox spots={creditSpots} dark={dark} />
+            ) : (
+              <p className="text-[14px] leading-[1.32]">{card.credits}</p>
+            )}
           </div>
           <div className={`border-t pt-3 ${rule}`}>
             <p className={`text-[15px] leading-[1.25] ${muted}`}>
