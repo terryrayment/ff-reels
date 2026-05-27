@@ -156,7 +156,7 @@ export function RosterModes({
   return (
     <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-[1500px]">
-        <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
+        <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-8">
             <p className="mb-4 text-[15px] font-medium text-black/48">
               Our talent
@@ -165,7 +165,7 @@ export function RosterModes({
               Directors matched to the work.
             </h2>
           </div>
-          <p className="max-w-[58ch] text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/72 lg:col-span-4">
+          <p className="max-w-[58ch] text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/72 lg:col-span-4 lg:mt-[38px]">
             The director choice comes from the assignment: the pressure, the
             tone, the access, and the delivery path.
           </p>
