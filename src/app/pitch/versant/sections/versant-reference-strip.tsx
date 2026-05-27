@@ -27,14 +27,23 @@ const REFERENCES = [
     },
   },
   {
-    title: "Big Break x Good Good",
-    detail: "format energy / new audience",
-    slug: "matt-dilmore",
+    title: "Callaway Forefront",
+    detail: "brand character / sports comedy",
+    slug: "jack-turits",
+    media: {
+      muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
+      duration: 32.074667,
+    },
   },
   {
     title: "Rory / GolfPass",
     detail: "talent access / quiet golf",
     slug: "terry-rayment",
+    media: {
+      muxPlaybackId: "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM",
+      duration: 94.594511,
+      start: 38,
+    },
   },
 ];
 
@@ -79,7 +88,7 @@ export function VersantReferenceStrip({
               >
                 <div
                   aria-hidden="true"
-                  className="relative mb-8 aspect-[4/3] overflow-hidden rounded-[22px] bg-[var(--versant-soft-gray)]"
+                  className="relative mb-8 aspect-video overflow-hidden rounded-[22px] bg-[var(--versant-soft-gray)]"
                 >
                   {frame.still && (
                     // eslint-disable-next-line @next/next/no-img-element

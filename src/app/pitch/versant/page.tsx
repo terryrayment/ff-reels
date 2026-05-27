@@ -4,7 +4,6 @@ import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { VersantReferenceStrip } from "./sections/versant-reference-strip";
 import { TerryIntro } from "./sections/terry-intro";
-import { CapabilityDashboard } from "./sections/capability-dashboard";
 import { RosterModes } from "./sections/roster-modes";
 import { PartnerBench } from "./sections/partner-bench";
 import { VersantFit } from "./sections/versant-fit";
@@ -101,6 +100,16 @@ type DirectorWithProjects = {
   }[];
 };
 
+const CAN_RENDER_DEV_DB_FALLBACK = process.env.NODE_ENV === "development";
+
+function handleVersantPreviewDbError(error: unknown, fallback: string) {
+  if (!CAN_RENDER_DEV_DB_FALLBACK) {
+    throw error;
+  }
+
+  console.warn(`[versant-preview] ${fallback}`, error);
+}
+
 function isCleanMotionProject(project: DirectorWithProjects["projects"][number]) {
   return (
     Boolean(project.brand) &&
@@ -140,8 +149,18 @@ function cleanProjectForDirector(
 export default async function VersantPitchPage({ searchParams }: PageProps) {
   const token = typeof searchParams?.t === "string" ? searchParams.t : null;
 
-  const link = token
-    ? await prisma.screeningLink.findUnique({
+  let link: {
+    token: string;
+    isActive: boolean;
+    recipientName: string | null;
+    customWelcomeMessage: string | null;
+    ctaUrl: string | null;
+    ctaLabel: string | null;
+  } | null = null;
+
+  if (token) {
+    try {
+      link = await prisma.screeningLink.findUnique({
         where: { token },
         select: {
           token: true,
@@ -151,37 +170,52 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
           ctaUrl: true,
           ctaLabel: true,
         },
-      })
-    : null;
+      });
+    } catch (error) {
+      handleVersantPreviewDbError(
+        error,
+        "Screening link lookup failed; rendering default local preview.",
+      );
+    }
+  }
 
   const recipientFirstName = link?.isActive
     ? firstNameOf(link.recipientName)
     : null;
 
-  const directors = await prisma.director.findMany({
-    where: { slug: { in: [...DIRECTOR_SLUGS] } },
-    select: {
-      slug: true,
-      name: true,
-      headshotUrl: true,
-      projects: {
-        where: { isPublished: true, muxPlaybackId: { not: null } },
-        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-        select: {
-          title: true,
-          brand: true,
-          duration: true,
-          muxPlaybackId: true,
-          thumbnailUrl: true,
-          frameGrabs: {
-            orderBy: { sortOrder: "asc" },
-            take: 1,
-            select: { imageUrl: true },
+  let directors: DirectorWithProjects[] = [];
+
+  try {
+    directors = await prisma.director.findMany({
+      where: { slug: { in: [...DIRECTOR_SLUGS] } },
+      select: {
+        slug: true,
+        name: true,
+        headshotUrl: true,
+        projects: {
+          where: { isPublished: true, muxPlaybackId: { not: null } },
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+          select: {
+            title: true,
+            brand: true,
+            duration: true,
+            muxPlaybackId: true,
+            thumbnailUrl: true,
+            frameGrabs: {
+              orderBy: { sortOrder: "asc" },
+              take: 1,
+              select: { imageUrl: true },
+            },
           },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    handleVersantPreviewDbError(
+      error,
+      "Director media lookup failed; rendering local preview without database media.",
+    );
+  }
 
   const orderedDirectors = DIRECTOR_SLUGS.map((slug) =>
     directors.find((director) => director.slug === slug),
@@ -251,7 +285,6 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
       <PartnerBench />
       <VersantReferenceStrip directors={orderedDirectors} />
-      <CapabilityDashboard directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />
       <VersantFit />
       <ContactCta

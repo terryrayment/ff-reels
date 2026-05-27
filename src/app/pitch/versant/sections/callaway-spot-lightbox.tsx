@@ -12,6 +12,11 @@ type Spot = {
   duration: number;
 };
 
+function spotLabel(title: string) {
+  const [, detail = title] = title.split(" · ");
+  return detail.replace(/^Callaway\s*[·-]\s*/i, "");
+}
+
 export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
   const [activeSpot, setActiveSpot] = useState<Spot | null>(null);
 
@@ -38,17 +43,17 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
     <>
       <div className="mt-5 grid gap-2">
         {spots.map((spot) => {
-          const [brand, detail] = spot.title.split(" · ");
+          const label = spotLabel(spot.title);
 
           return (
             <button
               key={spot.muxPlaybackId}
               type="button"
               onClick={() => setActiveSpot(spot)}
-              className="group/spot grid min-w-0 grid-cols-[84px_minmax(0,1fr)_auto] items-center gap-3 rounded-[18px] border border-white/22 bg-black p-2 text-left text-white transition hover:border-white/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:grid-cols-[96px_minmax(0,1fr)_auto]"
+              className="group/spot grid min-w-0 grid-cols-[minmax(8.5rem,1fr)_auto] items-center gap-3 rounded-[18px] border border-white/22 bg-black p-2 text-left text-white transition hover:border-white/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:grid-cols-[minmax(9.75rem,1fr)_auto]"
               aria-label={`Open ${spot.title}`}
             >
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[12px] bg-white/8">
+              <div className="relative aspect-video min-w-0 overflow-hidden rounded-[12px] bg-white/8">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={muxStillUrl(spot.muxPlaybackId, 360, spot.duration)}
@@ -63,13 +68,10 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
                   className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-300 group-hover/spot:opacity-100 motion-safe:block"
                   loading="lazy"
                 />
-              </div>
-              <span className="min-w-0 text-[13px] font-semibold leading-[1.05] tracking-[-0.01em]">
-                <span className="block truncate">{brand}</span>
-                <span className="mt-1 block truncate text-white/62">
-                  {detail}
+                <span className="absolute bottom-2 left-2 right-2 rounded-full bg-black/58 px-2.5 py-1 text-[12px] font-semibold leading-none tracking-[-0.01em] text-white shadow-[0_6px_20px_rgba(0,0,0,0.24)]">
+                  {label}
                 </span>
-              </span>
+              </div>
               <span className="shrink-0 text-[12px] font-semibold text-white/72">
                 Open
               </span>

@@ -41,10 +41,10 @@ const CADDIES = [
     match: "Big Break x Good Good",
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
-      muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
-      duration: 587.536967,
+      muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
+      duration: 32.074667,
     },
-    mediaClass: "scale-[1.26]",
+    mediaClass: "scale-[1.08]",
   },
   {
     slug: "boma-iluma",

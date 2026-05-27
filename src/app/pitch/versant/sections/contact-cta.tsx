@@ -25,7 +25,6 @@ const COLLAGE_SPOTS = [
   ["Callaway Kyle", "bYcHyck9AcxSPDZSx4x4gRM2fDYN02D00Y9JLSLqpa6HU", 30.196844],
   ["Callaway Marty", "CrbJfBhLn4Dj1N00RP2O22hWgT7lGDmmNCpvXkRTXJoA", 30.196844],
   ["Jack Turits", "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ", 32.074667],
-  ["Matt Dilmore", "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU", 587.536967],
   ["Kelsey Larkin", "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po", 50.550511],
   ["Caleb Slain", "ekGrtmsCnZ9yk1tw8Gez7jPwNUCY55KBCtCF7qThKIw", 85.336211],
   ["Le Ged", "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY", 45.170122],

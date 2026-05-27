@@ -1,11 +1,9 @@
-import { muxAnimatedUrl, muxStillUrl } from "./media";
-
 type PartnerVisual = {
   label: string;
-  muxPlaybackId: string;
-  duration: number;
-  sampleStart?: number;
-  featured?: boolean;
+  videoSrc?: string;
+  vimeoId?: string;
+  hash?: string;
+  startAt?: string;
 };
 
 const PARTNERS = [
@@ -15,29 +13,10 @@ const PARTNERS = [
     role: "cross-cultural production reach",
     copy:
       "Brazil-based collaborator support when the job needs local fluency, a wider footprint, or a production path that understands the room.",
-    visuals: [
-      {
-        label: "Pepsi Black",
-        muxPlaybackId: "F7568Kj8LjOQ01g015KwGkiLhjylEb2frWqrWEob73SBQ",
-        duration: 102.018589,
-        featured: true,
-      },
-      {
-        label: "Pepsi Black",
-        muxPlaybackId: "Pt5GxchkTMGP00VizOePfNnXwIIcT004oWCXwIH5EHWFQ",
-        duration: 86.0443,
-      },
-      {
-        label: "Pepsi Black",
-        muxPlaybackId: "5KAccIKwiPmhMhWv7yP6gJVuBopxVddoYsSHuvVLj01I",
-        duration: 87.128722,
-      },
-      {
-        label: "Adidas JD",
-        muxPlaybackId: "300zq41gfItMlVqCNvpUlrZcVC800xhYm9AofWIEiFtR4",
-        duration: 45.817089,
-      },
-    ],
+    visual: {
+      label: "PEPSI BLACK",
+      videoSrc: "/versant/pepsi-black-skate.mp4",
+    },
   },
   {
     name: "Colossal",
@@ -45,83 +24,66 @@ const PARTNERS = [
     role: "post, motion, finishing",
     copy:
       "A post-forward collaborator lane for animation, design, mixed media, compositing, cleanup, versioning, and finish-heavy work.",
-    visuals: [
-      {
-        label: "motion",
-        muxPlaybackId: "02HikMKRLYLsIJNrIAuKMA02UYs009C9NbiJA6SixKvt5o",
-        duration: 15.140122,
-        featured: true,
-      },
-      {
-        label: "mixed media",
-        muxPlaybackId: "feQSUP17mpG4Ay8bAHFPHuXx66CQwudaK4uKlUMj4pw",
-        duration: 60.3603,
-      },
-      {
-        label: "systems",
-        muxPlaybackId: "BlkK15NT4dra33c00NIF7xC801odyDG9qD3iB1nn6iL00w",
-        duration: 60.393678,
-      },
-      {
-        label: "texture",
-        muxPlaybackId: "vqAlDQVGkErsXS00VKhafavM02viB4crudGcbSX397bfQ",
-        duration: 68.359967,
-      },
-      {
-        label: "finish",
-        muxPlaybackId: "Hshs6aNWVWAAnfexbFS9goPEruq7IRiMAJJewUBMYfA",
-        duration: 15.057667,
-      },
-      {
-        label: "comedy",
-        muxPlaybackId: "enm5pnPkRXQZPsP600t5fMe4b5AWqTv3CErkQ5bMSySM",
-        duration: 50.417089,
-      },
-    ],
+    visual: {
+      label: "Colossal reel",
+      vimeoId: "859353559",
+      hash: "c300ebf8bb",
+    },
   },
 ] as const;
 
-function VisualGrid({ visuals }: { visuals: readonly PartnerVisual[] }) {
+function vimeoPlayerSrc(visual: PartnerVisual & { vimeoId: string }) {
+  const params = new URLSearchParams({
+    autoplay: "1",
+    autopause: "0",
+    muted: "1",
+    loop: "1",
+    controls: "0",
+    playsinline: "1",
+    byline: "0",
+    portrait: "0",
+    title: "0",
+  });
+
+  if (visual.hash) {
+    params.set("h", visual.hash);
+  }
+
+  return `https://player.vimeo.com/video/${visual.vimeoId}?${params.toString()}${
+    visual.startAt ? `#t=${visual.startAt}` : ""
+  }`;
+}
+
+function PartnerVideo({ visual }: { visual: PartnerVisual }) {
   return (
     <div
-      className="grid h-[19rem] grid-cols-4 grid-rows-2 gap-px overflow-hidden rounded-[28px] bg-black/55 sm:h-[24rem]"
+      className="relative aspect-video overflow-hidden rounded-[28px] bg-black/70"
       aria-hidden="true"
     >
-      {visuals.map((visual, index) => (
-        <div
-          key={`${visual.muxPlaybackId}-${index}`}
-          className={[
-            "relative min-w-0 overflow-hidden bg-black",
-            visual.featured ? "col-span-2 row-span-2" : "col-span-2",
-          ].join(" ")}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={muxStillUrl(
-              visual.muxPlaybackId,
-              visual.featured ? 760 : 460,
-              visual.duration,
-              visual.sampleStart,
-            )}
-            alt=""
-            className="h-full w-full scale-[1.04] object-cover opacity-80 motion-safe:hidden"
-            loading="lazy"
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={muxAnimatedUrl(
-              visual.muxPlaybackId,
-              visual.featured ? 760 : 460,
-              visual.duration,
-              visual.sampleStart,
-            )}
-            alt=""
-            className="hidden h-full w-full scale-[1.04] object-cover opacity-[0.82] motion-safe:block"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-[var(--versant-black)]/18" />
-        </div>
-      ))}
+      {visual.videoSrc ? (
+        <video
+          src={visual.videoSrc}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover opacity-[0.9]"
+        />
+      ) : visual.vimeoId ? (
+        <iframe
+          src={vimeoPlayerSrc({ ...visual, vimeoId: visual.vimeoId })}
+          title=""
+          allow="autoplay; fullscreen; picture-in-picture"
+          loading="eager"
+          className="pointer-events-none absolute inset-0 h-full w-full border-0 opacity-[0.88]"
+          tabIndex={-1}
+        />
+      ) : null}
+      <div className="absolute inset-0 bg-[var(--versant-black)]/16 transition duration-500 group-hover:bg-[var(--versant-black)]/6" />
+      <div className="absolute bottom-4 left-4 rounded-full bg-black/48 px-3 py-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-white/72">
+        {visual.label}
+      </div>
     </div>
   );
 }
@@ -142,14 +104,11 @@ export function PartnerBench() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             {PARTNERS.map((partner) => (
-              <a
+              <article
                 key={partner.name}
-                href={partner.href}
-                target="_blank"
-                rel="noreferrer"
-                className="group grid min-w-0 gap-6 rounded-[34px] bg-white/[0.055] p-5 transition duration-300 hover:-translate-y-1 hover:bg-white/[0.075] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)] sm:p-6"
+                className="group relative grid min-w-0 gap-6 rounded-[34px] bg-white/[0.055] p-5 transition duration-300 hover:-translate-y-1 hover:bg-white/[0.075] sm:p-6"
               >
-                <VisualGrid visuals={partner.visuals} />
+                <PartnerVideo visual={partner.visual} />
                 <div className="grid gap-5 border-t border-white/16 pt-5 md:grid-cols-[0.75fr_1fr]">
                   <div>
                     <p className="text-[clamp(34px,4.6vw,64px)] font-medium leading-[0.98] tracking-[-0.04em]">
@@ -163,7 +122,14 @@ export function PartnerBench() {
                     {partner.copy}
                   </p>
                 </div>
-              </a>
+                <a
+                  href={partner.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`Open ${partner.name}`}
+                  className="absolute inset-0 z-10 rounded-[34px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+                />
+              </article>
             ))}
           </div>
 

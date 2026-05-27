@@ -20,6 +20,7 @@
 wiredrive-downloads/
 *.mov
 *.mp4
+!public/versant/pepsi-black-skate.mp4
 
 # misc
 .DS_Store
