@@ -159,7 +159,7 @@ export function RosterModes({
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
             <p className="mb-4 text-[15px] font-medium text-black/48">
-              The directors
+              Our talent
             </p>
             <h2 className="versant-display text-[clamp(44px,7vw,104px)] font-medium tracking-[-0.04em]">
               Directors matched to the work.
