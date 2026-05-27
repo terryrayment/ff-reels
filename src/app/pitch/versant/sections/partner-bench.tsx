@@ -133,10 +133,6 @@ export function PartnerBench() {
             ))}
           </div>
 
-          <p className="mt-8 max-w-5xl border-t border-white/16 pt-6 text-[clamp(20px,2.6vw,36px)] leading-[1.08] tracking-[-0.035em] text-white/78">
-            Local production when the world shifts. Post, motion, animation,
-            and mixed media when the finish has to carry the idea.
-          </p>
         </div>
       </div>
     </section>
