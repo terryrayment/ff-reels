@@ -17,7 +17,7 @@ const CADDIES = [
       muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
       duration: 32.074667,
     },
-    mediaClass: "scale-[1.14]",
+    mediaClass: "scale-[1.34]",
   },
   {
     slug: "le-ged",
