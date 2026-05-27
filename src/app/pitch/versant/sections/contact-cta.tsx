@@ -129,7 +129,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
           >
             <div
               aria-hidden="true"
-              className="absolute inset-0 grid grid-cols-4 gap-px opacity-80"
+              className="absolute inset-0 grid grid-cols-4 opacity-80"
             >
               {frames.map((frame) => (
                 <div
