@@ -29,11 +29,11 @@ export function OurWork({ reelScreeningToken, directors }: Props) {
   return (
     <section className="bg-[var(--versant-black)] px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto grid min-w-0 max-w-[1500px] gap-4 lg:grid-cols-12">
-        <div className="versant-reveal min-w-0 rounded-[42px] bg-[#050505] p-5 text-white shadow-[0_28px_90px_rgba(0,0,0,0.32)] sm:p-7 lg:col-span-8 lg:rounded-[52px]">
+        <div className="versant-reveal min-w-0 rounded-[21px] bg-[#050505] p-5 text-white shadow-[0_28px_90px_rgba(0,0,0,0.32)] sm:p-7 lg:col-span-8 lg:rounded-[26px]">
           <ReelFrame href={href} frames={frames} />
         </div>
 
-        <aside className="versant-reveal relative min-w-0 overflow-hidden rounded-[42px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:p-8 lg:col-span-4 lg:rounded-[52px]">
+        <aside className="versant-reveal relative min-w-0 overflow-hidden rounded-[21px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:p-8 lg:col-span-4 lg:rounded-[26px]">
           <span
             aria-hidden="true"
             className="absolute right-5 top-5 text-[clamp(58px,8vw,116px)] font-medium leading-none tracking-[-0.08em] text-[var(--versant-orange)]"
@@ -42,7 +42,7 @@ export function OurWork({ reelScreeningToken, directors }: Props) {
           </span>
           <div className="relative z-10 mb-8 flex items-start justify-between gap-5">
             <div>
-              <p className={`mb-4 rounded-full bg-[var(--versant-black)] px-4 py-2.5 text-white ${REEL_LABEL}`}>
+              <p className={`mb-4 rounded-[10px] bg-[var(--versant-black)] px-4 py-2.5 text-white ${REEL_LABEL}`}>
                 Reel
               </p>
               <h2 className="max-w-[14rem] text-[clamp(44px,7vw,104px)] font-medium leading-[0.9] tracking-[-0.055em]">
@@ -82,7 +82,7 @@ function ReelFrame({
   frames: ReturnType<typeof motionForDirector>[];
 }) {
   const inner = (
-    <div className="group relative min-w-0 overflow-hidden rounded-[32px] border border-white/12 bg-[#050505] lg:rounded-[42px]">
+    <div className="group relative min-w-0 overflow-hidden rounded-[16px] border border-white/12 bg-[#050505] lg:rounded-[21px]">
       <div className={`flex items-center justify-between border-b border-white/10 px-5 py-4 text-white/45 ${REEL_LABEL}`}>
         <span>Reel</span>
         <span>Range</span>
@@ -123,7 +123,7 @@ function ReelFrame({
         <div aria-hidden="true" className="absolute inset-0 bg-black/38" />
         <span
           aria-hidden="true"
-          className="absolute inset-5 rounded-[24px] border border-white/10"
+          className="absolute inset-5 rounded-[12px] border border-white/10"
         />
         <span
           aria-hidden="true"
@@ -135,7 +135,7 @@ function ReelFrame({
         />
 
         <div className="relative z-10 flex flex-col items-center gap-4 text-center">
-          <span className="grid h-20 w-20 place-items-center rounded-full bg-white text-black transition group-hover:bg-[var(--versant-orange)]">
+          <span className="grid h-20 w-20 place-items-center rounded-[20px] bg-white text-black transition group-hover:bg-[var(--versant-orange)]">
             <Film className="h-7 w-7" />
           </span>
           <p className="text-[clamp(30px,4vw,64px)] font-medium leading-none tracking-[-0.055em]">

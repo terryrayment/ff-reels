@@ -95,11 +95,11 @@ export function VersantReferenceStrip({
             return (
               <article
                 key={item.title}
-                className="versant-reveal group flex min-h-[18rem] flex-col overflow-hidden rounded-[30px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.05)] transition-transform duration-500 ease-out motion-reduce:transition-none motion-safe:hover:scale-[1.015]"
+                className="versant-reveal group flex min-h-[18rem] flex-col overflow-hidden rounded-[15px] bg-[var(--versant-white)] p-5 shadow-[0_18px_60px_rgba(17,17,14,0.05)] transition-transform duration-500 ease-out motion-reduce:transition-none motion-safe:hover:scale-[1.015]"
               >
                 <div
                   aria-hidden="true"
-                  className="relative mb-8 aspect-video overflow-hidden rounded-[22px] bg-[var(--versant-soft-gray)]"
+                  className="relative mb-8 aspect-video overflow-hidden rounded-[11px] bg-[var(--versant-soft-gray)]"
                 >
                   {playVideo && frame.playbackId && frame.still ? (
                     <ReferenceVideoFrame

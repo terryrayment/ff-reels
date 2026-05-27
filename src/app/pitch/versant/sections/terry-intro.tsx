@@ -11,7 +11,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
   return (
     <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto grid max-w-[1400px] gap-4 lg:grid-cols-12">
-        <article className="relative overflow-hidden rounded-[42px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-10 lg:col-span-9 lg:p-12 xl:rounded-[52px]">
+        <article className="relative overflow-hidden rounded-[21px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-10 lg:col-span-9 lg:p-12 xl:rounded-[26px]">
           <span
             aria-hidden="true"
             className="pointer-events-none absolute -left-8 top-8 text-[clamp(120px,18vw,260px)] font-medium leading-none tracking-[-0.05em] text-black/[0.026]"
@@ -26,7 +26,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                 on
                 <span
                   aria-hidden="true"
-                  className="absolute left-[-0.08em] right-[-0.08em] top-[54%] h-[0.12em] -translate-y-1/2 -rotate-6 rounded-full bg-[var(--versant-orange)]"
+                  className="absolute left-[-0.08em] right-[-0.08em] top-[54%] h-[0.12em] -translate-y-1/2 -rotate-6 rounded-[2px] bg-[var(--versant-orange)]"
                 />
               </span>{" "}
               your shortlist.
@@ -60,12 +60,12 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
         </article>
 
         {(videoPlaybackId || fallbackImageUrl) && (
-          <aside className="overflow-hidden rounded-[36px] bg-[var(--versant-black)] p-4 text-white lg:col-span-3 xl:rounded-[48px]">
+          <aside className="overflow-hidden rounded-[18px] bg-[var(--versant-black)] p-4 text-white lg:col-span-3 xl:rounded-[24px]">
             <div className="mb-4 flex items-center justify-between px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
               <span>Founder message</span>
               <span>optional</span>
             </div>
-            <div className="aspect-[4/5] overflow-hidden rounded-[28px] bg-black">
+            <div className="aspect-[4/5] overflow-hidden rounded-[14px] bg-black">
               {videoPlaybackId ? (
                 <MuxPlayer
                   playbackId={videoPlaybackId}

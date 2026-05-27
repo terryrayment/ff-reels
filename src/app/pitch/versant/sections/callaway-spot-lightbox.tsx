@@ -50,10 +50,10 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
               key={spot.muxPlaybackId}
               type="button"
               onClick={() => setActiveSpot(spot)}
-              className="group/spot grid min-w-0 grid-cols-[minmax(8.5rem,1fr)_auto] items-center gap-3 rounded-[18px] border border-white/22 bg-black p-2 text-left text-white transition hover:border-white/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:grid-cols-[minmax(9.75rem,1fr)_auto]"
+              className="group/spot grid min-w-0 grid-cols-[minmax(8.5rem,1fr)_auto] items-center gap-3 rounded-[9px] border border-white/22 bg-black p-2 text-left text-white transition hover:border-white/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:grid-cols-[minmax(9.75rem,1fr)_auto]"
               aria-label={`Open ${spot.title}`}
             >
-              <div className="relative aspect-video min-w-0 overflow-hidden rounded-[12px] bg-white/8">
+              <div className="relative aspect-video min-w-0 overflow-hidden rounded-[6px] bg-white/8">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={muxStillUrl(spot.muxPlaybackId, 360, spot.duration)}
@@ -68,7 +68,7 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
                   className="absolute inset-0 hidden h-full w-full object-cover opacity-0 transition duration-300 group-hover/spot:opacity-100 motion-safe:block"
                   loading="lazy"
                 />
-                <span className="absolute bottom-2 left-2 right-2 rounded-full bg-black/58 px-2.5 py-1 text-[12px] font-semibold leading-none tracking-[-0.01em] text-white shadow-[0_6px_20px_rgba(0,0,0,0.24)]">
+                <span className="absolute bottom-2 left-2 right-2 rounded-[6px] bg-black/58 px-2.5 py-1 text-[12px] font-semibold leading-none tracking-[-0.01em] text-white shadow-[0_6px_20px_rgba(0,0,0,0.24)]">
                   {label}
                 </span>
               </div>
@@ -89,7 +89,7 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
           onClick={() => setActiveSpot(null)}
         >
           <div
-            className="relative w-full max-w-6xl overflow-hidden rounded-[28px] bg-[var(--versant-black)] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+            className="relative w-full max-w-6xl overflow-hidden rounded-[14px] bg-[var(--versant-black)] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-4 border-b border-white/12 px-4 py-3 text-white sm:px-5">
@@ -99,7 +99,7 @@ export function CallawaySpotLightbox({ spots }: { spots: Spot[] }) {
               <button
                 type="button"
                 onClick={() => setActiveSpot(null)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:bg-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-white text-black transition hover:bg-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 aria-label="Close video"
               >
                 <X size={18} aria-hidden="true" />

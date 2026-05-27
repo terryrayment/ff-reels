@@ -202,10 +202,10 @@ function BriefCard({
 
   return (
     <article
-      className={`versant-reveal group min-h-[34rem] overflow-hidden rounded-[34px] p-5 shadow-[0_22px_70px_rgba(17,17,14,0.07)] lg:rounded-[46px] lg:p-7 ${cardTone}`}
+      className={`versant-reveal group min-h-[34rem] overflow-hidden rounded-[17px] p-5 shadow-[0_22px_70px_rgba(17,17,14,0.07)] lg:rounded-[23px] lg:p-7 ${cardTone}`}
     >
       <div className="grid h-full gap-5">
-        <div className={`flex min-h-[22rem] min-w-0 flex-col justify-between rounded-[26px] bg-[var(--versant-paper)]/80 p-5 text-black ${brief.dark ? "bg-white/[0.08] text-white" : ""}`}>
+        <div className={`flex min-h-[22rem] min-w-0 flex-col justify-between rounded-[13px] bg-[var(--versant-paper)]/80 p-5 text-black ${brief.dark ? "bg-white/[0.08] text-white" : ""}`}>
           <div>
             <h3 className="versant-display mt-4 max-w-full text-[clamp(32px,3.8vw,52px)] font-medium tracking-[-0.015em]">
               {brief.title}
@@ -224,7 +224,7 @@ function BriefCard({
         <div className="flex min-w-0 flex-col justify-between">
           <div
             className={[
-              "relative overflow-hidden rounded-[26px] bg-black",
+              "relative overflow-hidden rounded-[13px] bg-black",
               brief.spots ? "min-h-0" : "aspect-video",
             ].join(" ")}
           >

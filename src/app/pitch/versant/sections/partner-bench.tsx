@@ -57,7 +57,7 @@ function vimeoPlayerSrc(visual: PartnerVisual & { vimeoId: string }) {
 function PartnerVideo({ visual }: { visual: PartnerVisual }) {
   return (
     <div
-      className="relative aspect-video overflow-hidden rounded-[28px] bg-black/70"
+      className="relative aspect-video overflow-hidden rounded-[14px] bg-black/70"
       aria-hidden="true"
     >
       {visual.videoSrc ? (
@@ -81,7 +81,7 @@ function PartnerVideo({ visual }: { visual: PartnerVisual }) {
         />
       ) : null}
       <div className="absolute inset-0 bg-[var(--versant-black)]/16 transition duration-500 group-hover:bg-[var(--versant-black)]/6" />
-      <div className="absolute bottom-4 left-4 rounded-full bg-black/48 px-3 py-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-white/72">
+      <div className="absolute bottom-4 left-4 rounded-[7px] bg-black/48 px-3 py-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-white/72">
         {visual.label}
       </div>
     </div>
@@ -92,7 +92,7 @@ export function PartnerBench() {
   return (
     <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
       <div className="mx-auto max-w-[1500px]">
-        <div className="rounded-[38px] bg-[var(--versant-black)] p-7 text-[var(--versant-white)] shadow-[0_22px_70px_rgba(17,17,14,0.12)] sm:p-10 lg:rounded-[52px] lg:p-12">
+        <div className="rounded-[19px] bg-[var(--versant-black)] p-7 text-[var(--versant-white)] shadow-[0_22px_70px_rgba(17,17,14,0.12)] sm:p-10 lg:rounded-[26px] lg:p-12">
           <div className="mb-10 grid gap-6 lg:grid-cols-12">
             <p className="text-[15px] font-medium text-white/48 lg:col-span-3">
               partner bench
@@ -106,7 +106,7 @@ export function PartnerBench() {
             {PARTNERS.map((partner) => (
               <article
                 key={partner.name}
-                className="group relative grid min-w-0 gap-6 rounded-[34px] bg-white/[0.055] p-5 transition duration-300 hover:-translate-y-1 hover:bg-white/[0.075] sm:p-6"
+                className="group relative grid min-w-0 gap-6 rounded-[17px] bg-white/[0.055] p-5 transition duration-300 hover:-translate-y-1 hover:bg-white/[0.075] sm:p-6"
               >
                 <PartnerVideo visual={partner.visual} />
                 <div className="grid gap-5 border-t border-white/16 pt-5 md:grid-cols-[0.75fr_1fr]">
@@ -127,7 +127,7 @@ export function PartnerBench() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={`Open ${partner.name}`}
-                  className="absolute inset-0 z-10 rounded-[34px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+                  className="absolute inset-0 z-10 rounded-[17px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
                 />
               </article>
             ))}

@@ -218,10 +218,10 @@ function CaddieCard({
 
   return (
     <article
-      className={`versant-reveal group flex min-h-[30rem] flex-col overflow-hidden rounded-[34px] p-4 shadow-[0_18px_58px_rgba(17,17,14,0.06)] sm:p-5 lg:rounded-[46px] ${card.treatment}`}
+      className={`versant-reveal group flex min-h-[30rem] flex-col overflow-hidden rounded-[17px] p-4 shadow-[0_18px_58px_rgba(17,17,14,0.06)] sm:p-5 lg:rounded-[23px] ${card.treatment}`}
     >
       <div
-        className="-m-1 mb-0 relative aspect-[16/10] overflow-hidden rounded-[28px] bg-black/10 bg-cover bg-center"
+        className="-m-1 mb-0 relative aspect-[16/10] overflow-hidden rounded-[14px] bg-black/10 bg-cover bg-center"
         style={still ? { backgroundImage: `url(${still})` } : undefined}
       >
         {overrideStill ? (

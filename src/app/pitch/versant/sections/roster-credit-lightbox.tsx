@@ -61,7 +61,7 @@ export function RosterCreditLightbox({
               data-versant-credit
               onClick={() => setActiveSpot(spot)}
               className={[
-                "rounded-sm text-left underline decoration-current/30 underline-offset-[3px] transition hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
+                "rounded-[1px] text-left underline decoration-current/30 underline-offset-[3px] transition hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
                 dark
                   ? "text-white focus-visible:outline-white"
                   : "text-black focus-visible:outline-black",
@@ -83,7 +83,7 @@ export function RosterCreditLightbox({
           onClick={() => setActiveSpot(null)}
         >
           <div
-            className="relative w-full max-w-6xl overflow-hidden rounded-[28px] bg-[var(--versant-black)] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+            className="relative w-full max-w-6xl overflow-hidden rounded-[14px] bg-[var(--versant-black)] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-4 border-b border-white/12 px-4 py-3 text-white sm:px-5">
@@ -93,7 +93,7 @@ export function RosterCreditLightbox({
               <button
                 type="button"
                 onClick={() => setActiveSpot(null)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-black transition hover:bg-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-white text-black transition hover:bg-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 aria-label="Close video"
               >
                 <X size={18} aria-hidden="true" />

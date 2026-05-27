@@ -103,7 +103,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
 
   return (
     <section className="px-4 pb-4 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-16">
-      <div className="mx-auto max-w-[1500px] rounded-[42px] bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.2)] sm:p-10 lg:rounded-[52px] lg:p-12">
+      <div className="mx-auto max-w-[1500px] rounded-[21px] bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.2)] sm:p-10 lg:rounded-[26px] lg:p-12">
         <div className="mb-10 border-b border-white/12 pb-8">
           <p className="text-[15px] font-medium text-white/46 lg:col-span-3">
             {recipientFirstName ? `${recipientFirstName}, next move` : "Friends & Family — for Versant"}
@@ -125,7 +125,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
           <a
             href={href}
             aria-label="Email Friends and Family about the Versant brief"
-            className="group relative min-h-[18rem] overflow-hidden rounded-[30px] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5"
+            className="group relative min-h-[18rem] overflow-hidden rounded-[15px] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5"
           >
             <div
               aria-hidden="true"
