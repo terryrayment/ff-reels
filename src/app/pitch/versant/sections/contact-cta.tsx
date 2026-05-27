@@ -35,7 +35,6 @@ const COLLAGE_SPOTS = [
 
 const COLLAGE_FALLBACK_SLUGS = [
   "jack-turits",
-  "matt-dilmore",
   "boma-iluma",
   "bueno",
   "james-frost",
@@ -45,6 +44,10 @@ const COLLAGE_FALLBACK_SLUGS = [
   "kelsey-larkin",
   "brother-willis",
 ];
+
+const BLOCKED_COLLAGE_PLAYBACK_IDS = new Set([
+  "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
+]);
 
 type CollageFrame = {
   key: string;
@@ -76,6 +79,7 @@ function contactCollageFrames(directors: VersantDirectorMedia[]) {
     const brand = frame.project?.brand ?? "";
     const playbackId = frame.project?.muxPlaybackId ?? frame.director?.slug ?? slug;
 
+    if (frame.project?.muxPlaybackId && BLOCKED_COLLAGE_PLAYBACK_IDS.has(frame.project.muxPlaybackId)) return;
     if (/target|thanos/i.test(`${brand} ${title}`)) return;
 
     addFrame({
