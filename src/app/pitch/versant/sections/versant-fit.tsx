@@ -32,7 +32,7 @@ export function VersantFit() {
             <p className="mt-5">
               Versant already has lanes in motion. F&amp;F can read the
               assignment, build the right crew and post path, and make the work
-              feel like it belongs there.
+              feel truly unique in a very crowded market.
             </p>
           </div>
         </div>
