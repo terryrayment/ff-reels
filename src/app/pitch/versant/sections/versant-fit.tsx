@@ -27,7 +27,8 @@ export function VersantFit() {
               Golf Channel carries the kind of work we know how to make:
               pressure, talent, promos, sponsor guardrails, social versions,
               editorial pieces, and an audience that can tell when the tone is
-              off.
+              off. Premier League, NASCAR, WWE, WNBA, LOVB: we&apos;re paying
+              attention to all of it. Golf is just where the entry is cleanest.
             </p>
             <p className="mt-5">
               Versant already has lanes in motion. F&amp;F can read the

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { VersantReferenceStrip } from "./sections/versant-reference-strip";
 import { TerryIntro } from "./sections/terry-intro";
+import { UsaSportsShelf } from "./sections/usa-sports-shelf";
 import { RosterModes } from "./sections/roster-modes";
 import { PartnerBench } from "./sections/partner-bench";
 import { VersantFit } from "./sections/versant-fit";
@@ -283,6 +284,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         directors={orderedDirectors}
       />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
+      <UsaSportsShelf />
       <PartnerBench />
       <VersantReferenceStrip directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />

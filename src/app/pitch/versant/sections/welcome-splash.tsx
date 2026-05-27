@@ -55,8 +55,8 @@ const HERO_FRAMES: HeroFrameSource[] = [
     className: "scale-[1.14]",
   },
 ];
-const GOLF_TICKER =
-  "2,000+ live hours · 200+ events · 35% of golf hours watched · USGA through 2032 · Ryder Cup through 2033 · GolfNow 40M tee times · Rory through 2038";
+const PORTFOLIO_TICKER =
+  "PGA Tour · U.S. Open · The Open Championship · U.S. Women's Open · NASCAR Cup Playoffs · Premier League · WWE SmackDown · WNBA · Pac-12 + Atlantic 10 hoops · LOVB · 10,000+ hours of live sport on USA Sports in 2026";
 const HERO_MICRO_LABEL = "text-[13px] font-medium leading-none tracking-[-0.01em]";
 
 function FFLogomark() {
@@ -144,8 +144,9 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
               Versant, meet the makers.
             </h1>
             <p className="mt-5 max-w-[34rem] text-[clamp(22px,2.6vw,36px)] leading-[1.12] tracking-[-0.035em] text-white/68">
-              A production company that happens to be quietly obsessed with
-              sports.
+              A production company quietly obsessed with sports. All of them.
+              The whole USA Sports shelf, from golf to the Premier League to
+              LOVB.
             </p>
           </div>
 
@@ -166,8 +167,8 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
 
           <div className={`relative z-10 mt-4 overflow-hidden border-t border-white/10 pt-3 text-white/36 ${HERO_MICRO_LABEL}`}>
             <div className="versant-marquee flex w-max gap-8 motion-reduce:animate-none">
-              <span>{GOLF_TICKER}</span>
-              <span aria-hidden="true">{GOLF_TICKER}</span>
+              <span>{PORTFOLIO_TICKER}</span>
+              <span aria-hidden="true">{PORTFOLIO_TICKER}</span>
             </div>
           </div>
         </article>
