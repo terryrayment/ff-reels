@@ -8,6 +8,9 @@
  *   npx tsx scripts/mux-bulk-upload.ts --concurrency 5  # parallel uploads
  *
  * Requires MUX_TOKEN_ID and MUX_TOKEN_SECRET in .env
+ *
+ * NOTE: wiredrive-downloads/ is optional local migration staging only. It is
+ * not required for deploy or runtime playback; production uses Mux playback IDs.
  */
 
 import { PrismaClient } from "@prisma/client";

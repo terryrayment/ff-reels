@@ -15,6 +15,9 @@
  *   --skip-r2     Skip R2 upload (Mux will ingest from Wiredrive directly)
  *   --output      Local download directory (default: ./wiredrive-downloads)
  *   --roster-status  Roster status for director (default: "ROSTER", e.g. "OFF_ROSTER")
+ *
+ * NOTE: wiredrive-downloads/ is optional local migration staging only. It is
+ * not required for deploy or runtime playback; production uses Mux playback IDs.
  */
 
 import { PrismaClient } from "@prisma/client";

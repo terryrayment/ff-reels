@@ -6,6 +6,9 @@
  *   npx tsx scripts/mux-upload-all-missing.ts              # upload all
  *   npx tsx scripts/mux-upload-all-missing.ts --dry-run     # preview only
  *   npx tsx scripts/mux-upload-all-missing.ts --concurrency 2
+ *
+ * NOTE: wiredrive-downloads/ is optional local migration staging only. It is
+ * not required for deploy or runtime playback; production uses Mux playback IDs.
  */
 
 import { PrismaClient } from "@prisma/client";

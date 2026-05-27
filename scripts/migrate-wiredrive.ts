@@ -37,6 +37,10 @@
  *      --skip-r2                  Skip R2 archival (Mux only)
  *      --concurrency 3            Parallel uploads (default: 2)
  *
+ *    NOTE: local folders such as wiredrive-downloads/ or migration-data/ are
+ *    optional migration staging only. They are not required for deploy or
+ *    runtime playback; production uses Mux playback IDs.
+ *
  * ─── WHAT IT DOES ───────────────────────────────────────────
  *
  * For each video file in each director folder:
