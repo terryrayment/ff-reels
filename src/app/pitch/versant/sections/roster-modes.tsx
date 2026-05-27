@@ -109,7 +109,7 @@ const CADDIES = [
   {
     slug: "brother-willis",
     name: "Brother Willis",
-    signature: "warm Americana, sports-card texture",
+    signature: "warm Americana",
     credits: "Topps Chrome Rush, Ford",
     match: "GolfNow local heroes",
     treatment: "bg-[var(--versant-white)] text-black",
