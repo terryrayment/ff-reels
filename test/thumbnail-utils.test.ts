@@ -3,7 +3,7 @@ import test from "node:test";
 import {
   buildMuxThumbnailUrl,
   getProjectThumbnailUrl,
-} from "../src/lib/thumbnails.ts";
+} from "../src/lib/thumbnails";
 
 test("Mux thumbnails preserve curated time while requesting display size", () => {
   const url = buildMuxThumbnailUrl(

@@ -9,6 +9,7 @@ import {
   BarChart3,
   BookOpen,
   Briefcase,
+  ChevronDown,
   Clapperboard,
   FileText,
   Home,
@@ -46,6 +47,11 @@ const navItems: NavItem[] = [
   { href: "/my-stats", label: "My Stats", roles: ["DIRECTOR"], icon: BarChart3 },
 ];
 
+const leadNavItems = [
+  { href: "/leads/midwest", label: "Midwest" },
+  { href: "/leads/west-coast-brand", label: "West Coast - Brand" },
+];
+
 function getRoleDisplayName(role: string): string {
   switch (role) {
     case "ADMIN":
@@ -75,6 +81,7 @@ export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
   const searchParams = useSearchParams();
   const role = user.role || "VIEWER";
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [leadsOpen, setLeadsOpen] = useState(pathname.startsWith("/leads"));
 
   // Admin preview mode: when ?preview=directorId is in the URL
   const previewDirectorId = role === "ADMIN" ? searchParams.get("preview") : null;
@@ -95,6 +102,12 @@ export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
   // Close mobile sidebar on navigation
   useEffect(() => {
     setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (pathname.startsWith("/leads")) {
+      setLeadsOpen(true);
+    }
   }, [pathname]);
 
   // Prevent body scroll when mobile sidebar open
@@ -154,6 +167,69 @@ export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
           const itemPath = item.href.split("?")[0];
           const isActive =
             pathname === itemPath || pathname.startsWith(itemPath + "/");
+          if (item.href === "/leads") {
+            return (
+              <div key={item.href}>
+                <button
+                  type="button"
+                  onClick={() => setLeadsOpen((open) => !open)}
+                  aria-expanded={leadsOpen}
+                  className={cn(
+                    "relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[14px] transition-colors duration-200",
+                    isActive
+                      ? "text-[#111] font-medium bg-[#EDEDEA]"
+                      : "text-[#7B7B76] hover:text-[#111] hover:bg-[#EDEDEA]/55"
+                  )}
+                >
+                  <Icon
+                    size={18}
+                    strokeWidth={1.9}
+                    className={cn(
+                      "shrink-0",
+                      isActive ? "text-[#111]" : "text-[#8C8C86]"
+                    )}
+                  />
+                  <span className="min-w-0 flex-1 truncate leading-none">
+                    {item.label}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={1.9}
+                    className={cn(
+                      "shrink-0 transition-transform duration-200",
+                      leadsOpen ? "rotate-180" : "rotate-0",
+                    )}
+                  />
+                </button>
+                {leadsOpen && (
+                  <div className="ml-[29px] mt-1 space-y-1 border-l border-[#DEDDD7] pl-2">
+                    {leadNavItems.map((leadItem) => {
+                      const isLeadActive =
+                        pathname === leadItem.href ||
+                        (pathname === "/leads" && leadItem.href === "/leads/midwest");
+                      return (
+                        <Link
+                          key={leadItem.href}
+                          href={leadItem.href}
+                          className={cn(
+                            "block rounded-md px-3 py-1.5 text-[12px] normal-case transition-colors duration-200",
+                            isLeadActive
+                              ? "bg-[#EDEDEA] font-medium text-[#111]"
+                              : "text-[#7B7B76] hover:bg-[#EDEDEA]/55 hover:text-[#111]",
+                          )}
+                        >
+                          <span className="block truncate normal-case leading-none">
+                            {leadItem.label}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           return (
             <Link
               key={item.href}

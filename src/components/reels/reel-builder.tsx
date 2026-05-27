@@ -787,8 +787,8 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                           : "border border-[#E8E7E3]/60 hover:border-[#aaa] hover:shadow-sm"
                       }`}
                     >
-                      <div className="relative flex min-h-[158px] items-center justify-center rounded-t-[3px] bg-[#FAFAF8] px-4 py-6 md:min-h-[178px]">
-                        <div className="relative mx-auto aspect-video w-[84%] max-w-[236px] overflow-hidden bg-[#EEEDEA] shadow-[0_1px_2px_rgba(0,0,0,0.10)]">
+                      <div className="relative flex min-h-[198px] items-center justify-center rounded-t-[3px] bg-[#FAFAF8] px-4 py-6 md:min-h-[223px]">
+                        <div className="relative mx-auto aspect-video w-[105%] max-w-[295px] overflow-hidden bg-[#EEEDEA] shadow-[0_1px_2px_rgba(0,0,0,0.10)]">
                           {thumbSrc ? (
                             <img
                               src={thumbSrc}

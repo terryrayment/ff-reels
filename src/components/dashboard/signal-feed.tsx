@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -15,6 +16,10 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
+
+const MuxPlayer = dynamic(() => import("@mux/mux-player-react"), {
+  ssr: false,
+});
 
 interface ReactionSummary {
   emoji: string;
@@ -97,6 +102,15 @@ function getMediaUrl(update: Update) {
   return null;
 }
 
+function getSpotPlaybackId(update: Update) {
+  if (update.type !== "SPOT_ADDED") return null;
+  return update.project?.muxPlaybackId || null;
+}
+
+function getSpotPosterUrl(playbackId: string) {
+  return `https://image.mux.com/${playbackId}/thumbnail.jpg?width=960&height=540&fit_mode=smartcrop`;
+}
+
 function extractFirstUrl(text: string) {
   return text.match(/https?:\/\/[^\s]+/)?.[0]?.replace(/[.,!?;:)]+$/, "") || null;
 }
@@ -158,6 +172,43 @@ function SmartLinkCard({ update }: { update: Update }) {
       <ExternalLink size={11} />
       <span className="truncate">{getLinkLabel(href)}</span>
     </a>
+  );
+}
+
+function SpotInlinePlayer({
+  update,
+  compact = false,
+}: {
+  update: Update;
+  compact?: boolean;
+}) {
+  const playbackId = getSpotPlaybackId(update);
+  if (!playbackId) return null;
+
+  const title = update.project?.title || update.title;
+  const poster = getSpotPosterUrl(playbackId);
+
+  return (
+    <div
+      className={`overflow-hidden bg-[#111] ${
+        compact ? "relative aspect-[16/7]" : "aspect-video max-h-64"
+      }`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <MuxPlayer
+        playbackId={playbackId}
+        streamType="on-demand"
+        poster={poster}
+        metadata={{
+          video_id: update.project?.id || update.id,
+          video_title: title,
+        }}
+        primaryColor="#ffffff"
+        secondaryColor="#111111"
+        accentColor="#777777"
+        style={{ width: "100%", height: "100%", aspectRatio: "16/9" }}
+      />
+    </div>
   );
 }
 
@@ -376,22 +427,25 @@ export function SignalFeed({
   };
 
   if (compact) {
-    const displayUpdates = updates.slice(0, 6);
+    const displayUpdates = updates.slice(0, 8);
 
     return (
       <div>
         {displayUpdates.length > 0 ? (
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
             {displayUpdates.map((update) => {
               const Icon = getUpdateIcon(update);
               const mediaUrl = getMediaUrl(update);
+              const spotPlaybackId = getSpotPlaybackId(update);
 
               return (
                 <div
                   key={update.id}
                   className="group/item relative overflow-hidden rounded-xl border border-transparent bg-[#F7F6F3]/70 transition-all duration-300 hover:border-[#DDDCD6] hover:bg-[#F0F0EC]/70"
                 >
-                  {mediaUrl && (
+                  {spotPlaybackId ? (
+                    <SpotInlinePlayer update={update} compact />
+                  ) : mediaUrl && (
                     <div className="relative aspect-[16/7] overflow-hidden bg-[#EAE9E3]">
                       <img
                         src={mediaUrl}
@@ -465,13 +519,16 @@ export function SignalFeed({
           {updates.map((update) => {
             const Icon = getUpdateIcon(update);
             const mediaUrl = getMediaUrl(update);
+            const spotPlaybackId = getSpotPlaybackId(update);
 
             return (
               <div
                 key={update.id}
                 className="group/item relative overflow-hidden rounded-xl border border-[#ECEBE5] bg-white"
               >
-                {mediaUrl && (
+                {spotPlaybackId ? (
+                  <SpotInlinePlayer update={update} />
+                ) : mediaUrl && (
                   <div className="aspect-video max-h-64 overflow-hidden bg-[#EAE9E3]">
                     <img
                       src={mediaUrl}
