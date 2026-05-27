@@ -12,7 +12,7 @@ const PARTNERS = [
     href: "https://theyouth.com.br/",
     role: "cross-cultural production reach",
     copy:
-      "Brazil-based collaborator support when the job needs local fluency, a wider footprint, or a production path that understands the room.",
+      "Brazil-based collaborator support when the job needs local fluency, a wider footprint, or a production path that understands a more global audience.",
     visual: {
       label: "PEPSI BLACK",
       videoSrc: "/versant/pepsi-black-skate.mp4",
