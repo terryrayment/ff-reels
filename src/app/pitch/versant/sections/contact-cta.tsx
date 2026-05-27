@@ -110,7 +110,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-12">
-          <div className="grid gap-y-5 text-[17px] leading-[1.28] text-white/76 sm:grid-cols-3 lg:col-span-7">
+          <div className="grid gap-x-8 gap-y-5 text-[17px] leading-[1.28] text-white/76 sm:grid-cols-3 lg:col-span-7 xl:gap-x-12">
             {CONTACTS.map(([name, email]) => (
               <Contact
                 key={email}
@@ -182,7 +182,11 @@ function Contact({
   const inner = (
     <>
       <p>{value}</p>
-      {sub && <p className="mt-1 text-[15px] text-white/48">{sub}</p>}
+      {sub && (
+        <p className="mt-1 min-w-0 break-words text-[15px] leading-[1.18] text-white/48">
+          {sub}
+        </p>
+      )}
     </>
   );
 
@@ -191,7 +195,7 @@ function Contact({
   return (
     <a
       href={href}
-      className="block transition hover:text-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+      className="block min-w-0 transition hover:text-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
     >
       {inner}
     </a>
