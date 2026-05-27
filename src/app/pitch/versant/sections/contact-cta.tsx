@@ -102,30 +102,47 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
   const frames = contactCollageFrames(directors);
 
   return (
-    <section className="px-4 pb-4 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-16">
-      <div className="mx-auto max-w-[1500px] rounded-[21px] bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.2)] sm:p-10 lg:rounded-[26px] lg:p-12">
-        <div className="mb-10 border-b border-white/12 pb-8">
-          <p className="text-[15px] font-medium text-white/46 lg:col-span-3">
-            {recipientFirstName ? `${recipientFirstName}, next move` : "Friends & Family — for Versant"}
+    <section className="px-4 pb-4 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-14">
+      <div className="mx-auto max-w-[1500px] rounded-[18px] bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.18)] sm:p-8 lg:rounded-[22px] lg:p-10">
+        <div className="mb-8 grid gap-6 border-b border-white/12 pb-8 lg:grid-cols-12 lg:items-end">
+          <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-white/46 lg:col-span-3">
+            {recipientFirstName ? `${recipientFirstName}, next move` : "Friends & Family for Versant"}
           </p>
+          <div className="lg:col-span-7">
+            <h2 className="versant-display text-[clamp(42px,6vw,88px)] font-medium tracking-[-0.045em]">
+              Send the assignment.
+            </h2>
+            <p className="mt-4 max-w-[42rem] text-[clamp(18px,1.8vw,24px)] leading-[1.22] tracking-[-0.025em] text-white/64">
+              Scope, rights windows, assets, deadline, known blockers. We will
+              come back with the cleanest production path.
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-12">
-          <div className="grid gap-x-8 gap-y-5 text-[17px] leading-[1.28] text-white/76 sm:grid-cols-3 lg:col-span-7 xl:gap-x-12">
-            {CONTACTS.map(([name, email]) => (
-              <Contact
-                key={email}
-                value={name}
-                sub={email}
-                href={`mailto:${email}`}
-              />
-            ))}
+          <div className="lg:col-span-7">
+            <a
+              href={href}
+              className="mb-8 inline-flex min-h-11 items-center rounded-full border border-white/24 px-5 py-3 text-[14px] font-medium text-white transition hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              Email the team
+            </a>
+            <div className="grid gap-x-8 gap-y-5 text-[17px] leading-[1.28] text-white/76 sm:grid-cols-3 xl:gap-x-12">
+              {CONTACTS.map(([name, email]) => (
+                <Contact
+                  key={email}
+                  value={name}
+                  sub={email}
+                  href={`mailto:${email}`}
+                />
+              ))}
+            </div>
           </div>
 
           <a
             href={href}
             aria-label="Email Friends and Family about the Versant brief"
-            className="group relative min-h-[18rem] overflow-hidden rounded-[15px] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5"
+            className="group relative min-h-[18rem] overflow-hidden rounded-[14px] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5"
           >
             <div
               aria-hidden="true"

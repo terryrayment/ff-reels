@@ -10,9 +10,9 @@ const CADDIES = [
   {
     slug: "jack-turits",
     name: "Jack Turits",
-    signature: "documentary charm",
+    signature: "real people, clean comedy",
     credits: "Callaway \"Forefront\"",
-    match: "GolfNow portraits",
+    match: "GolfNow course portraits",
     treatment: "bg-[var(--versant-black)] text-white",
     media: {
       muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
@@ -23,9 +23,9 @@ const CADDIES = [
   {
     slug: "le-ged",
     name: "Le Ged",
-    signature: "kinetic camera",
+    signature: "motion-forward camera",
     credits: "Hilton, McDonald's, YouTube",
-    match: "GolfNow social-first / motion",
+    match: "GolfNow social-first motion",
     treatment: "bg-[var(--versant-paper)] text-black",
     media: {
       muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
@@ -37,7 +37,7 @@ const CADDIES = [
   {
     slug: "matt-dilmore",
     name: "Matt Dilmore",
-    signature: "offbeat sports comedy",
+    signature: "sports comedy, straight face",
     credits: "ESPN 30 for 30 \"The Great Imposter\"",
     match: "Big Break x Good Good",
     treatment: "bg-[var(--versant-white)] text-black",
@@ -50,7 +50,7 @@ const CADDIES = [
   {
     slug: "boma-iluma",
     name: "Boma Iluma",
-    signature: "culture-forward",
+    signature: "youth culture and talent",
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
     creditSpots: [
       {
@@ -76,7 +76,7 @@ const CADDIES = [
   {
     slug: "kelsey-larkin",
     name: "Kelsey Larkin",
-    signature: "precision + dignity",
+    signature: "women's sports with restraint",
     credits: "Gillette \"Look Good, Game Good\"",
     match: "USA Sports identity / women's sports",
     treatment: "bg-[var(--versant-black)] text-white",
@@ -89,7 +89,7 @@ const CADDIES = [
   {
     slug: "caleb-slain",
     name: "Caleb Slain",
-    signature: "anthem craft",
+    signature: "anthem craft without gloss",
     credits: "SXSW/Telluride docs, Ford, Lexus, Toyota, Microsoft",
     match: "Golf Channel anthem",
     treatment: "bg-[var(--versant-white)] text-black",
@@ -101,7 +101,7 @@ const CADDIES = [
   {
     slug: "bueno",
     name: "Bueno",
-    signature: "mixed-media comedy",
+    signature: "mixed-media fan energy",
     credits: "Doritos, Netflix, CNN, Cannes Grand Prix",
     match: "fan campaigns / Big Break energy",
     treatment: "bg-[var(--versant-white)] text-black",
@@ -109,7 +109,7 @@ const CADDIES = [
   {
     slug: "brother-willis",
     name: "Brother Willis",
-    signature: "warm Americana",
+    signature: "warm local stories",
     credits: "Topps Chrome Rush, Ford",
     match: "GolfNow local heroes",
     treatment: "bg-[var(--versant-white)] text-black",
@@ -122,7 +122,7 @@ const CADDIES = [
   {
     slug: "cody-cloud",
     name: "Cody Cloud",
-    signature: "editorial color, portraits",
+    signature: "editorial athlete portraiture",
     credits: "Apple, Adidas, Asics, Gatorade, Nike, Target",
     match: "talent portrait package",
     treatment: "bg-[var(--versant-paper)] text-black",
@@ -135,7 +135,7 @@ const CADDIES = [
   {
     slug: "terry-rayment",
     name: "Terry Rayment",
-    signature: "emotional narrative",
+    signature: "quiet access, emotional restraint",
     credits: "Kodak \"Understanding,\" Purina, Cadillac, Jaguar",
     match: "Rory/GolfPass intimate films",
     treatment: "bg-[var(--versant-white)] text-black",
@@ -154,24 +154,24 @@ export function RosterModes({
   directors: VersantDirectorMedia[];
 }) {
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
+    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-8">
-            <p className="mb-4 text-[15px] font-medium text-black/48">
-              Our talent
+            <p className="mb-4 text-[12px] font-medium uppercase tracking-[0.14em] text-black/44">
+              CURATED TALENT
             </p>
-            <h2 className="versant-display text-[clamp(44px,7vw,104px)] font-medium tracking-[-0.04em]">
-              Directors matched to the work.
+            <h2 className="versant-display text-[clamp(42px,6.5vw,96px)] font-medium tracking-[-0.045em]">
+              Directors mapped to assignments.
             </h2>
           </div>
-          <p className="max-w-[58ch] text-[clamp(24px,3vw,40px)] leading-[1.05] tracking-[-0.045em] text-black/72 lg:col-span-4 lg:mt-[38px]">
-            The director choice comes from the assignment: the pressure, the
-            tone, the access, and the delivery path.
+          <p className="max-w-[46rem] text-[clamp(20px,2.4vw,32px)] leading-[1.12] tracking-[-0.035em] text-black/68 lg:col-span-4 lg:mt-[38px]">
+            We pick for tone, access, schedule, usage, and the amount of post
+            the idea will need. The reel is only the starting point.
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           {CADDIES.map((card) => (
             <CaddieCard key={card.slug} card={card} directors={directors} />
           ))}
@@ -218,10 +218,10 @@ function CaddieCard({
 
   return (
     <article
-      className={`versant-reveal group flex min-h-[30rem] flex-col overflow-hidden rounded-[17px] p-4 shadow-[0_18px_58px_rgba(17,17,14,0.06)] sm:p-5 lg:rounded-[23px] ${card.treatment}`}
+      className={`versant-reveal group flex min-h-[30rem] flex-col overflow-hidden rounded-[15px] border p-4 shadow-[0_18px_58px_rgba(17,17,14,0.045)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_72px_rgba(17,17,14,0.07)] sm:p-5 lg:rounded-[18px] ${dark ? "border-white/10" : "border-black/[0.08]"} ${card.treatment}`}
     >
       <div
-        className="-m-1 mb-0 relative aspect-[16/10] overflow-hidden rounded-[14px] bg-black/10 bg-cover bg-center"
+        className="relative aspect-video overflow-hidden rounded-[10px] bg-black/10 bg-cover bg-center"
         style={still ? { backgroundImage: `url(${still})` } : undefined}
       >
         {overrideStill ? (
@@ -270,17 +270,17 @@ function CaddieCard({
 
       </div>
 
-      <div className="flex flex-1 flex-col p-2 pt-5">
-        <h3 className="versant-display text-[clamp(34px,4vw,60px)] font-medium tracking-[-0.04em]">
+      <div className="flex flex-1 flex-col pt-5">
+        <h3 className="versant-display text-[clamp(32px,3.6vw,54px)] font-medium tracking-[-0.045em]">
           {card.name}
         </h3>
-        <p className={`mt-2 text-[clamp(20px,2.4vw,30px)] leading-[1.05] tracking-[-0.04em] ${muted}`}>
+        <p className={`mt-2 text-[clamp(18px,2vw,25px)] leading-[1.12] tracking-[-0.03em] ${muted}`}>
           {card.signature}
         </p>
 
         <div className="mt-5 space-y-3 pt-3">
           <div className={`border-t pt-3 ${rule}`}>
-            <p className={`mb-2 text-[13px] font-medium leading-none tracking-[-0.01em] ${muted}`}>
+            <p className={`mb-2 text-[11px] font-medium uppercase leading-none tracking-[0.14em] ${muted}`}>
               Credits
             </p>
             {creditSpots ? (
@@ -290,8 +290,11 @@ function CaddieCard({
             )}
           </div>
           <div className={`border-t pt-3 ${rule}`}>
-            <p className={`text-[15px] leading-[1.25] ${muted}`}>
-              &rarr; {card.match}
+            <p className={`mb-2 text-[11px] font-medium uppercase leading-none tracking-[0.14em] ${muted}`}>
+              Assignment fit
+            </p>
+            <p className="text-[15px] leading-[1.25]">
+              {card.match}
             </p>
           </div>
         </div>

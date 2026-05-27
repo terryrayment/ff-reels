@@ -11,11 +11,11 @@ const VERSANT_GIVES = [
 export function VersantFit() {
   return (
     <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <div className="versant-reveal mx-auto max-w-[1400px] rounded-[21px] bg-[var(--versant-white)] p-6 shadow-[0_24px_80px_rgba(17,17,14,0.07)] sm:p-8 lg:rounded-[26px] lg:p-10">
+      <div className="versant-reveal mx-auto max-w-[1400px] rounded-[18px] border border-black/[0.08] bg-[var(--versant-white)] p-6 shadow-[0_24px_80px_rgba(17,17,14,0.055)] sm:p-8 lg:rounded-[22px] lg:p-10">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-6">
-            <p className="mb-5 text-[15px] font-medium text-black/46">
-              Versant fit
+            <p className="mb-5 text-[12px] font-medium uppercase tracking-[0.14em] text-black/44">
+              VERSANT FIT
             </p>
             <h2 className="versant-display max-w-4xl text-[clamp(42px,6vw,86px)] font-medium tracking-[-0.04em]">
               Golf feels like the right first lane.
@@ -24,16 +24,16 @@ export function VersantFit() {
 
           <div className="max-w-[58ch] border-l-2 border-[var(--versant-orange)] pl-6 text-[clamp(18px,2vw,26px)] leading-[1.22] tracking-[-0.03em] text-black/68 lg:col-span-6">
             <p>
-              Golf Channel carries the kind of work we know how to make:
-              pressure, talent, promos, sponsor guardrails, social versions,
-              editorial pieces, and an audience that can tell when the tone is
-              off. Premier League, NASCAR, WWE, WNBA, LOVB: we&apos;re paying
-              attention to all of it. Golf is just where the entry is cleanest.
+              Golf Channel is the cleanest first place to prove the fit: live
+              pressure, talent access, sponsor rules, social cutdowns,
+              editorial pieces, and fans who notice when the tone is off.
+              Premier League, NASCAR, WWE, WNBA, LOVB: we&apos;re paying
+              attention to all of it.
             </p>
             <p className="mt-5">
-              Versant already has lanes in motion. F&amp;F can read the
-              assignment, build the right crew and post path, and make the work
-              feel truly unique in a very crowded market.
+              Give us a real assignment with constraints. We&apos;ll shape the
+              director, crew, edit, motion, finish, versioning, and delivery
+              around it.
             </p>
           </div>
         </div>
@@ -54,8 +54,8 @@ export function VersantFit() {
         </div>
 
         <p className="mt-8 max-w-[54rem] text-[clamp(24px,3vw,40px)] leading-[1.08] tracking-[-0.04em] text-black/72">
-          We bring director fit, production judgment, a clean post path, motion
-          support when it helps, and calm when the calendar gets ugly.
+          We bring director taste, production judgment, post and motion support,
+          and a clean path when the schedule gets tight.
         </p>
       </div>
     </section>

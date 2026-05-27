@@ -10,9 +10,9 @@ const PARTNERS = [
   {
     name: "The Youth",
     href: "https://theyouth.com.br/",
-    role: "cross-cultural production reach",
+    role: "local production reach",
     copy:
-      "Brazil-based collaborator support when the job needs local fluency, a wider footprint, or a production path that understands a more global audience.",
+      "Brazil-based support for casting, locations, crew, and audience fluency when a sports idea needs to move beyond a U.S. read.",
     visual: {
       label: "PEPSI BLACK",
       videoSrc: "/versant/pepsi-black-skate.mp4",
@@ -23,7 +23,7 @@ const PARTNERS = [
     href: "https://colossal.film/",
     role: "post, motion, finishing",
     copy:
-      "A post-forward collaborator lane for animation, design, mixed media, compositing, cleanup, versioning, and finish-heavy work.",
+      "A finish lane for animation, design, mixed media, compositing, cleanup, versioning, and the last five percent that decides whether the work feels premium.",
     visual: {
       label: "Colossal reel",
       vimeoId: "859353559",
@@ -90,15 +90,15 @@ function PartnerVideo({ visual }: { visual: PartnerVisual }) {
 
 export function PartnerBench() {
   return (
-    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-[1500px]">
-        <div className="rounded-[19px] bg-[var(--versant-black)] p-7 text-[var(--versant-white)] shadow-[0_22px_70px_rgba(17,17,14,0.12)] sm:p-10 lg:rounded-[26px] lg:p-12">
-          <div className="mb-10 grid gap-6 lg:grid-cols-12">
-            <p className="text-[15px] font-medium text-white/48 lg:col-span-3">
-              partner bench
+        <div className="rounded-[18px] bg-[var(--versant-black)] p-6 text-[var(--versant-white)] shadow-[0_22px_70px_rgba(17,17,14,0.12)] sm:p-8 lg:rounded-[22px] lg:p-10">
+          <div className="mb-8 grid gap-6 border-b border-white/12 pb-8 lg:grid-cols-12 lg:items-end">
+            <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-white/46 lg:col-span-3">
+              PRODUCTION BENCH
             </p>
-            <h2 className="versant-display max-w-5xl text-[clamp(42px,6.4vw,96px)] font-medium tracking-[-0.04em] lg:col-span-8">
-              More ways to make the work travel.
+            <h2 className="versant-display max-w-4xl text-[clamp(38px,5.8vw,82px)] font-medium tracking-[-0.045em] lg:col-span-8">
+              Specialists when the job needs reach or finish.
             </h2>
           </div>
 
@@ -106,19 +106,19 @@ export function PartnerBench() {
             {PARTNERS.map((partner) => (
               <article
                 key={partner.name}
-                className="group relative grid min-w-0 gap-6 rounded-[17px] bg-white/[0.055] p-5 transition duration-300 hover:-translate-y-1 hover:bg-white/[0.075] sm:p-6"
+                className="group relative grid min-w-0 gap-5 rounded-[15px] bg-white/[0.055] p-4 transition duration-300 hover:-translate-y-0.5 hover:bg-white/[0.075] sm:p-5"
               >
                 <PartnerVideo visual={partner.visual} />
                 <div className="grid gap-5 border-t border-white/16 pt-5 md:grid-cols-[0.75fr_1fr]">
                   <div>
-                    <p className="text-[clamp(34px,4.6vw,64px)] font-medium leading-[0.98] tracking-[-0.04em]">
+                    <p className="text-[clamp(32px,4vw,56px)] font-medium leading-[0.98] tracking-[-0.04em]">
                       {partner.name}
                     </p>
-                    <p className="mt-3 text-[15px] text-white/52">
+                    <p className="mt-3 text-[13px] font-medium uppercase tracking-[0.12em] text-white/46">
                       {partner.role}
                     </p>
                   </div>
-                  <p className="max-w-[42rem] text-[clamp(19px,2vw,28px)] leading-[1.16] tracking-[-0.025em] text-white/70">
+                  <p className="max-w-[42rem] text-[clamp(17px,1.7vw,23px)] leading-[1.24] tracking-[-0.02em] text-white/68">
                     {partner.copy}
                   </p>
                 </div>

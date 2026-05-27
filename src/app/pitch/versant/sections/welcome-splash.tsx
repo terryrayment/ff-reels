@@ -58,6 +58,14 @@ const HERO_FRAMES: HeroFrameSource[] = [
 const PORTFOLIO_TICKER =
   "PGA Tour · U.S. Open · The Open Championship · U.S. Women's Open · NASCAR Cup Playoffs · Premier League · WWE SmackDown · WNBA · Pac-12 + Atlantic 10 hoops · LOVB · 10,000+ hours of live sport on USA Sports in 2026";
 const HERO_MICRO_LABEL = "text-[13px] font-medium leading-none tracking-[-0.01em]";
+const HERO_CAPABILITIES = [
+  "Live promos",
+  "Talent films",
+  "Social cutdowns",
+  "Post + motion",
+  "Versioning",
+  "Delivery",
+];
 
 function FFLogomark() {
   return (
@@ -111,7 +119,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           {motionFrames.length > 0 && (
             <div
               aria-hidden="true"
-              className="absolute inset-x-6 top-28 grid h-[42%] grid-cols-2 gap-2 opacity-[0.5] mix-blend-screen blur-[0.2px] sm:inset-x-auto sm:right-8 sm:top-32 sm:h-[48%] sm:w-[48%]"
+              className="absolute right-5 top-28 hidden h-[50%] w-[52%] grid-cols-2 gap-2 opacity-[0.48] mix-blend-screen blur-[0.2px] sm:grid lg:right-8 lg:top-32"
             >
               {motionFrames.slice(0, 4).map((frame, index) => (
                 <div
@@ -138,28 +146,21 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
 
           <div className="relative z-10 max-w-5xl py-12 lg:py-16">
             <p className={`mb-8 text-white/62 ${HERO_MICRO_LABEL}`}>
-              Friends &amp; Family for Versant
+              Friends &amp; Family for Versant Sports
             </p>
-            <h1 className="versant-display text-[clamp(58px,10vw,140px)] font-medium tracking-[-0.03em]">
-              Versant, meet the makers.
+            <h1 className="versant-display max-w-[11ch] text-[clamp(58px,9vw,132px)] font-medium tracking-[-0.04em]">
+              Sports work, handled cleanly.
             </h1>
-            <p className="mt-5 max-w-[34rem] text-[clamp(22px,2.6vw,36px)] leading-[1.12] tracking-[-0.035em] text-white/68">
-              A production company quietly obsessed with sports. All of them.
-              The whole USA Sports shelf, from golf to the Premier League to
-              LOVB.
+            <p className="mt-6 max-w-[38rem] text-[clamp(20px,2.2vw,32px)] leading-[1.13] tracking-[-0.03em] text-white/68">
+              A creative studio and production company for live pressure,
+              talent windows, social cutdowns, post, motion, and delivery. Golf
+              is the first door into the wider USA Sports shelf.
             </p>
           </div>
 
-          <div className={`relative z-10 grid gap-2 border-t border-white/12 pt-5 text-white/54 sm:grid-cols-3 lg:grid-cols-6 ${HERO_MICRO_LABEL}`}>
-            {[
-              "Production partner",
-              "Directors",
-              "Live action",
-              "Post",
-              "Motion",
-              "Social delivery",
-            ].map((item) => (
-              <span key={item} className="text-left sm:text-right">
+          <div className={`relative z-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/12 pt-5 text-white/54 ${HERO_MICRO_LABEL}`}>
+            {HERO_CAPABILITIES.map((item) => (
+              <span key={item}>
                 {item}
               </span>
             ))}

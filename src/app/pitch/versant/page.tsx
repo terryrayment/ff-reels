@@ -12,7 +12,7 @@ import { ContactCta } from "./sections/contact-cta";
 import { VersantMotion } from "./sections/versant-motion";
 
 /**
- * Branded pitch landing — Friends & Family for Versant Media.
+ * Branded pitch landing for Friends & Family and Versant Media.
  *
  * Architecture: restrained media/product interface. Warm intro, Versant
  * reference read, golf-first production opportunities, roster, fit, and close.
@@ -29,7 +29,7 @@ import { VersantMotion } from "./sections/versant-motion";
 export const metadata: Metadata = {
   title: "Friends & Family for Versant Media",
   description:
-    "A production partner case for Friends & Family, starting with Golf Channel and the Versant golf ecosystem.",
+    "A production partner read for Versant Media, starting with Golf Channel and built for the wider USA Sports shelf.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -245,13 +245,13 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               to { transform: translate3d(-50%, 0, 0); }
             }
             .versant-marquee {
-              animation: versant-marquee 32s linear infinite;
+              animation: versant-marquee 44s linear infinite;
               padding-left: 1rem;
             }
             .versant-reveal {
               opacity: 0;
-              transform: translateY(24px);
-              transition: opacity 400ms ease, transform 400ms ease;
+              transform: translateY(16px);
+              transition: opacity 520ms ease, transform 520ms ease;
               will-change: opacity, transform;
             }
             .versant-reveal.is-visible,

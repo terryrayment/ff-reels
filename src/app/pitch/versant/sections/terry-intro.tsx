@@ -12,6 +12,8 @@ interface Props {
 }
 
 export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
+  const hasFounderMedia = Boolean(videoPlaybackId || fallbackImageUrl);
+
   return (
     <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div
@@ -47,55 +49,53 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
       />
 
       <div className="relative z-10 mx-auto grid max-w-[1400px] gap-4 lg:grid-cols-12">
-        <article className="relative overflow-hidden rounded-[21px] bg-[rgba(251,246,234,0.95)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] backdrop-blur-[2px] sm:p-10 lg:col-span-9 lg:p-12 xl:rounded-[26px]">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute -left-8 top-8 text-[clamp(120px,18vw,260px)] font-medium leading-none tracking-[-0.05em] text-black/[0.026]"
-          >
-            short list
-          </span>
+        <article className={`relative overflow-hidden rounded-[18px] border border-black/10 bg-[rgba(251,246,234,0.96)] p-6 shadow-[0_24px_80px_rgba(16,16,16,0.07)] backdrop-blur-[2px] sm:p-8 lg:p-10 xl:rounded-[22px] ${hasFounderMedia ? "lg:col-span-9" : "lg:col-span-10"}`}>
+          <div className="relative z-10 grid gap-10 lg:grid-cols-12 lg:items-start">
+            <div className="lg:col-span-7">
+              <p className="mb-5 text-[12px] font-medium uppercase tracking-[0.14em] text-black/42">
+                SHORTLIST ARGUMENT
+              </p>
+              <h2 className="versant-display max-w-3xl text-[clamp(42px,6.2vw,92px)] font-medium tracking-[-0.045em] text-black">
+                Put us on the shortlist.
+              </h2>
+            </div>
 
-          <div className="relative z-10 max-w-[760px] space-y-5 text-[clamp(17px,1.55vw,22px)] leading-[1.35] tracking-[-0.025em] text-black/76">
-            <h2 className="versant-display max-w-3xl text-[clamp(44px,7vw,104px)] font-medium tracking-[-0.04em] text-black">
-              We&apos;d love to be{" "}
-              <span className="relative inline-block">
-                on
-                <span
-                  aria-hidden="true"
-                  className="absolute left-[-0.08em] right-[-0.08em] top-[54%] h-[0.12em] -translate-y-1/2 -rotate-6 rounded-[2px] bg-[var(--versant-orange)]"
-                />
-              </span>{" "}
-              your shortlist.
-            </h2>
+            <div className="space-y-5 text-[clamp(18px,1.75vw,24px)] leading-[1.22] tracking-[-0.03em] text-black/74 lg:col-span-5">
+              <p>
+                We are a creative studio and production company built for
+                ideas that need taste, speed, and a clean path to delivery.
+              </p>
 
-            <p>
-              We are a creative studio and a production company stacked with
-              people who lose their minds over a good idea. We chase it down
-              the hallway. We knock over a chair. Somebody cries a little. Then
-              the work shows up better than the brief had any right to expect.
-            </p>
+              <p>
+                Versant&apos;s sports work has real constraints: live windows,
+                talent access, sponsor rules, platform versions, late notes,
+                and finish that has to hold up everywhere.
+              </p>
 
-            <p>
-              Throw it at us. A napkin sketch. A brutal deadline. A hard drive
-              nobody labeled. A talent window cracking shut on Thursday at 4.
-              We grab it, find the cleanest line to the finish, and keep the
-              process so light you forget it is happening.
-            </p>
+              <p>
+                We scale to the assignment. Director, crew, edit, motion,
+                finish, versioning, delivery.
+              </p>
+            </div>
 
-            <p>
-              Tiny and surgical or enormous and ridiculous, we shape to the
-              job. Director, crew, post, delivery, all of it bent around the
-              work like the work is the only thing in the building. Because to
-              us it is.
-            </p>
-
-            <p>
-              Send the assignment. We send back the sharpest way to make it.
-            </p>
+            <dl className="grid gap-3 border-t border-black/12 pt-5 text-[13px] leading-[1.25] text-black/58 sm:grid-cols-3 lg:col-span-12">
+              {[
+                ["Start", "Creative read, references, production path"],
+                ["Build", "Director fit, crew shape, post plan"],
+                ["Deliver", "Cuts, motion, cleanup, versions, final files"],
+              ].map(([label, value]) => (
+                <div key={label} className="border-t border-black/10 pt-3 sm:border-t-0 sm:pt-0">
+                  <dt className="mb-2 text-[11px] font-medium uppercase tracking-[0.14em] text-black/38">
+                    {label}
+                  </dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </article>
 
-        {(videoPlaybackId || fallbackImageUrl) && (
+        {hasFounderMedia && (
           <aside className="overflow-hidden rounded-[18px] bg-[var(--versant-black)] p-4 text-white lg:col-span-3 xl:rounded-[24px]">
             <div className="mb-4 flex items-center justify-between px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
               <span>Founder message</span>
