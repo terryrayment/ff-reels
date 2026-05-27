@@ -60,13 +60,6 @@ export function VersantReferenceStrip({
   return (
     <section className="px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
       <div className="mx-auto max-w-[1500px]">
-        <div className="mb-8 grid gap-5 lg:grid-cols-12 lg:items-end">
-          <p className="max-w-[62rem] text-[clamp(30px,4.8vw,74px)] font-medium leading-[1.02] tracking-[-0.045em] lg:col-span-9">
-            This is Versant&apos;s world, not ours. We&apos;re just showing you
-            we actually watch it. Our work is right below.
-          </p>
-        </div>
-
         <div className="grid gap-3 md:grid-cols-4">
           {REFERENCES.map((item, index) => {
             const frame = "media" in item && item.media
