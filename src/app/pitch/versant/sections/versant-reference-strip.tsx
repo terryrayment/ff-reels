@@ -27,8 +27,8 @@ const REFERENCES = [
     },
   },
   {
-    title: "Callaway Forefront",
-    detail: "brand character / sports comedy",
+    title: "Big Break x Good Good",
+    detail: "format energy / new audience",
     slug: "jack-turits",
     media: {
       muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
