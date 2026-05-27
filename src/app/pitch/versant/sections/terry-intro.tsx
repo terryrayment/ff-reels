@@ -1,6 +1,10 @@
 "use client";
 
 import MuxPlayer from "@mux/mux-player-react";
+import type { CSSProperties } from "react";
+
+const CALLAWAY_BACKGROUND_PLAYBACK_ID =
+  "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ";
 
 interface Props {
   videoPlaybackId?: string | null;
@@ -12,6 +16,37 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
     <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <div className="mx-auto grid max-w-[1400px] gap-4 lg:grid-cols-12">
         <article className="relative overflow-hidden rounded-[21px] bg-[var(--versant-white)] p-7 shadow-[0_24px_80px_rgba(16,16,16,0.08)] sm:p-10 lg:col-span-9 lg:p-12 xl:rounded-[26px]">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 [&_mux-player]:h-full [&_mux-player]:w-full"
+            style={
+              {
+                "--controls": "none",
+                "--media-object-fit": "cover",
+              } as CSSProperties
+            }
+          >
+            <MuxPlayer
+              playbackId={CALLAWAY_BACKGROUND_PLAYBACK_ID}
+              streamType="on-demand"
+              autoPlay="muted"
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster={`https://image.mux.com/${CALLAWAY_BACKGROUND_PLAYBACK_ID}/thumbnail.webp?width=1920&time=12`}
+              metadata={{ video_title: "Callaway Forefront background" }}
+              nohotkeys
+            />
+          </div>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(247,242,231,0.94)_0%,rgba(247,242,231,0.76)_18%,rgba(247,242,231,0.62)_42%,rgba(247,242,231,0.68)_64%,rgba(247,242,231,0.88)_86%,rgba(247,242,231,0.97)_100%)]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(247,242,231,0.36)_0%,rgba(247,242,231,0.2)_58%,rgba(247,242,231,0.5)_100%)]"
+          />
           <span
             aria-hidden="true"
             className="pointer-events-none absolute -left-8 top-8 text-[clamp(120px,18vw,260px)] font-medium leading-none tracking-[-0.05em] text-black/[0.026]"
