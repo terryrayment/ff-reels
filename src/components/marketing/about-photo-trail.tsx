@@ -22,6 +22,7 @@ const WIDTHS = [112, 140, 96, 166, 122, 150, 104, 134];
 const ROTATIONS = [-5, 3, -2, 6, -7, 2, 5, -3];
 const MIN_DISTANCE = 62;
 const NAV_SAFE_TOP = 88;
+const STACK_DEPTH = 48;
 
 export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
   const [trail, setTrail] = useState<TrailPhoto[]>([]);
@@ -72,7 +73,7 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
           y: safeY,
           width,
           rotate: reduceMotion ? 0 : ROTATIONS[id % ROTATIONS.length],
-          z: id + 1,
+          z: (id % STACK_DEPTH) + 1,
         },
       ]);
     },
@@ -81,7 +82,7 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
 
   return (
     <section
-      className="relative min-h-[100svh] overflow-hidden bg-white"
+      className="isolate relative min-h-[100svh] overflow-hidden bg-white"
       aria-label="Friends and Family photo field"
       onPointerMove={(event) => addPhoto(event.clientX, event.clientY)}
       onPointerDown={(event) =>
