@@ -5,13 +5,23 @@ import {
   type VersantDirectorMedia,
 } from "./media";
 import { ReferenceVideoFrame } from "./reference-video-frame";
+import {
+  CARD,
+  CONTAINER,
+  MEDIA,
+  META_LABEL,
+  META_TEXT,
+  SECTION,
+  SectionHeader,
+  TagList,
+} from "./system";
 
 const REFERENCES = [
   {
     title: "Golf Channel",
-    detail: "live promo pressure",
-    why:
-      "A pace-and-tone reference for sponsor rules, live windows, and broadcast polish.",
+    assignment: "Live promo pressure",
+    description: "Broadcast polish, sponsor rules, and fast handoff.",
+    tags: ["Creative", "Production", "Edit", "Motion", "Delivery"],
     slug: "caleb-slain",
     media: {
       muxPlaybackId: "CrbJfBhLn4Dj1N00RP2O22hWgT7lGDmmNCpvXkRTXJoA",
@@ -21,9 +31,9 @@ const REFERENCES = [
   },
   {
     title: "GolfNow",
-    detail: "local course stories",
-    why:
-      "A way to find people, habits, and character inside a national product.",
+    assignment: "Local course stories",
+    description: "Real-player casting and field production at a national scale.",
+    tags: ["Casting", "Field production", "Social", "Versioning"],
     slug: "jack-turits",
     media: {
       muxPlaybackId: "BhZH005xwxQZJTuLSYOKSqFaGCSX5SlgFIAOeSntKqs8",
@@ -33,9 +43,9 @@ const REFERENCES = [
   },
   {
     title: "Big Break x Good Good",
-    detail: "format comedy / new audience",
-    why:
-      "A bridge between legacy Golf Channel energy and creator-native golf fans.",
+    assignment: "Format and comedy",
+    description: "Legacy Golf Channel energy meets creator-led golf.",
+    tags: ["Format", "Comedy", "Talent", "Social"],
     slug: "jack-turits",
     media: {
       muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
@@ -46,9 +56,9 @@ const REFERENCES = [
   },
   {
     title: "Rory / GolfPass",
-    detail: "talent access / quiet intimacy",
-    why:
-      "Proof that access can feel observed, not overproduced.",
+    assignment: "Talent film",
+    description: "Quiet access with a lighter production touch.",
+    tags: ["Talent", "Documentary", "Edit", "Finish"],
     slug: "terry-rayment",
     media: {
       muxPlaybackId: "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM",
@@ -56,9 +66,8 @@ const REFERENCES = [
       start: 38,
     },
     mediaClass: "scale-[1.38]",
-    hoverMediaClass: "motion-safe:group-hover:scale-[1.44]",
   },
-];
+] as const;
 
 export function VersantReferenceStrip({
   directors,
@@ -66,36 +75,30 @@ export function VersantReferenceStrip({
   directors: VersantDirectorMedia[];
 }) {
   return (
-    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <div className="mx-auto max-w-[1500px]">
-        <div className="mb-8 grid gap-5 lg:grid-cols-12 lg:items-end">
-          <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-black/44 lg:col-span-3">
-            FIRST PROOF
-          </p>
-          <h2 className="versant-display max-w-4xl text-[clamp(38px,5.6vw,82px)] font-medium tracking-[-0.045em] lg:col-span-7">
-            Golf is where the fit gets specific.
-          </h2>
-          <p className="max-w-[28rem] text-[16px] leading-[1.32] text-black/56 lg:col-span-2">
-            Four entry points into work Versant already has to make.
-          </p>
-        </div>
+    <section className={SECTION}>
+      <div className={CONTAINER}>
+        <SectionHeader
+          label="Proof"
+          title="Golf references as selected work."
+          intro="Four useful reads for work Versant already makes."
+        />
 
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {REFERENCES.map((item, index) => {
-            const frame = "media" in item && item.media
+            const frame = item.media
               ? {
                   playbackId: item.media.muxPlaybackId,
                   still: muxStillUrl(
                     item.media.muxPlaybackId,
                     640,
                     item.media.duration,
-                    item.media.start,
+                    "start" in item.media ? item.media.start : undefined,
                   ),
                   animated: muxAnimatedUrl(
                     item.media.muxPlaybackId,
                     640,
                     item.media.duration,
-                    item.media.start,
+                    "start" in item.media ? item.media.start : undefined,
                   ),
                 }
               : {
@@ -106,21 +109,11 @@ export function VersantReferenceStrip({
             const videoTitle =
               "videoTitle" in item ? item.videoTitle ?? item.title : item.title;
             const mediaClass =
-              "mediaClass" in item ? item.mediaClass : "scale-110";
-            const hoverMediaClass =
-              "hoverMediaClass" in item
-                ? item.hoverMediaClass
-                : "motion-safe:group-hover:scale-[1.16]";
+              "mediaClass" in item ? item.mediaClass : "scale-[1.1]";
 
             return (
-              <article
-                key={item.title}
-                className="versant-reveal versant-mw-card group flex min-h-[24rem] flex-col overflow-hidden rounded-[14px] border border-black/[0.1] bg-[var(--versant-white)] p-3 shadow-[0_18px_60px_rgba(17,17,14,0.045)] transition duration-300 ease-out hover:border-black/22 motion-reduce:transition-none sm:p-4"
-              >
-                <div
-                  aria-hidden="true"
-                  className="versant-mw-media relative mb-6 aspect-video overflow-hidden rounded-[10px] bg-[var(--versant-soft-gray)]"
-                >
+              <article key={item.title} className={`${CARD} group flex min-h-[31rem] flex-col p-3`}>
+                <div className={`${MEDIA} relative mb-5 aspect-[4/3]`}>
                   {playVideo && frame.playbackId && frame.still ? (
                     <ReferenceVideoFrame
                       playbackId={frame.playbackId}
@@ -132,9 +125,7 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.still}
                       alt=""
-                      className={`h-full w-full object-cover opacity-72 transition-transform duration-700 ease-out motion-reduce:transition-none ${mediaClass} ${hoverMediaClass} ${
-                        frame.animated ? "motion-safe:hidden" : ""
-                      }`}
+                      className={`versant-card-image h-full w-full object-cover opacity-78 ${mediaClass}`}
                       loading="lazy"
                     />
                   ) : null}
@@ -143,29 +134,35 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.animated}
                       alt=""
-                      className={`absolute inset-0 hidden h-full w-full object-cover opacity-72 transition-transform duration-700 ease-out motion-safe:block ${mediaClass} ${hoverMediaClass}`}
+                      className={`absolute inset-0 hidden h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-78 motion-safe:block ${mediaClass}`}
                       loading="lazy"
                     />
                   )}
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,59,46,0.02),rgba(12,59,46,0.46))]" />
+                  <div className="absolute inset-0 bg-[rgba(12,59,46,0.12)]" />
                 </div>
-              <div className="mt-auto grid min-h-[13rem] gap-4 border-t border-black/10 pt-4">
-                <div className="grid grid-cols-[1fr_auto] items-start gap-4">
-                  <h3 className="text-[clamp(25px,2.4vw,34px)] font-medium leading-[1.02] tracking-[-0.035em]">
-                    {item.title}
-                  </h3>
-                  <span className="text-right text-[12px] text-black/38">
-                    ref {String(index + 1).padStart(2, "0")}
-                  </span>
+
+                <div className="grid flex-1 gap-4 border-t border-black/10 pt-4">
+                  <div className="grid grid-cols-[1fr_auto] items-start gap-4">
+                    <h3 className="text-[clamp(24px,2.4vw,34px)] font-medium leading-[1] tracking-[-0.04em]">
+                      {item.title}
+                    </h3>
+                    <span className="text-[12px] text-black/38">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <div>
+                    <p className={META_LABEL}>Assignment</p>
+                    <p className={`${META_TEXT} mt-2`}>{item.assignment}</p>
+                  </div>
+
+                  <p className="text-[15px] leading-[1.3] text-black/62">
+                    {item.description}
+                  </p>
+
+                  <TagList tags={item.tags} className="mt-auto" />
                 </div>
-                <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-black/42">
-                  {item.detail}
-                </p>
-                <p className="text-[15px] leading-[1.32] text-black/58">
-                  {item.why}
-                </p>
-              </div>
-            </article>
+              </article>
             );
           })}
         </div>

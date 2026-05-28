@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { VersantReferenceStrip } from "./sections/versant-reference-strip";
 import { TerryIntro } from "./sections/terry-intro";
-import { UsaSportsShelf } from "./sections/usa-sports-shelf";
+import { UsaSportsPortfolio } from "./sections/usa-sports-portfolio";
 import { RosterModes } from "./sections/roster-modes";
 import { PartnerBench } from "./sections/partner-bench";
 import { VersantFit } from "./sections/versant-fit";
@@ -29,7 +29,7 @@ import { VersantMotion } from "./sections/versant-motion";
 export const metadata: Metadata = {
   title: "Friends & Family for Versant Media",
   description:
-    "A production partner read for Versant Media, starting with Golf Channel and built for the wider USA Sports shelf.",
+    "A creative, production, edit, motion, and delivery read for Versant Media and USA Sports.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -71,14 +71,14 @@ const CLEAN_PROJECT_TITLES: Record<(typeof DIRECTOR_SLUGS)[number], string | nul
 const VERSANT_THEME = {
   "--versant-black": "#0C3B2E",
   "--versant-ink": "#11110e",
-  "--versant-paper": "#F5F1E8",
-  "--versant-white": "#FFFDF5",
-  "--versant-orange": "#C6A24C",
-  "--versant-lime": "#f8f3e8",
+  "--versant-paper": "#F6F2E8",
+  "--versant-white": "#FFFDF7",
+  "--versant-orange": "#B99A46",
+  "--versant-lime": "#F0E8D6",
   "--versant-blue": "#0C3B2E",
-  "--versant-mint": "#eee8d8",
+  "--versant-mint": "#ECE5D4",
   "--versant-gray": "#8f8879",
-  "--versant-soft-gray": "#e4dcc9",
+  "--versant-soft-gray": "#DED6C4",
 } as CSSProperties;
 
 function firstNameOf(full: string | null | undefined): string | null {
@@ -264,23 +264,140 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               padding-bottom: 0.08em;
               text-wrap: balance;
             }
+            .versant-section {
+              padding: clamp(3.75rem, 7vw, 7rem) 1rem;
+            }
+            .versant-section-tight {
+              padding-top: clamp(2.5rem, 5vw, 4.5rem);
+              padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+            }
+            .versant-container {
+              width: min(100% - 2rem, 1500px);
+              margin-inline: auto;
+            }
+            .versant-header {
+              display: grid;
+              grid-template-columns: minmax(0, 0.26fr) minmax(0, 0.5fr) minmax(16rem, 0.24fr);
+              gap: 1rem;
+              align-items: end;
+              margin-bottom: clamp(1.75rem, 4vw, 3rem);
+            }
+            .versant-kicker,
+            .versant-meta-label {
+              font-size: 0.68rem;
+              font-weight: 600;
+              line-height: 1;
+              text-transform: uppercase;
+              letter-spacing: 0.11em;
+            }
+            .versant-title {
+              font-size: clamp(2.35rem, 5vw, 5rem);
+              font-weight: 500;
+              letter-spacing: -0.045em;
+              line-height: 0.98;
+              text-wrap: balance;
+            }
+            .versant-intro {
+              max-width: 34rem;
+              font-size: clamp(1rem, 1.55vw, 1.35rem);
+              line-height: 1.2;
+              letter-spacing: -0.025em;
+            }
+            .versant-panel,
+            .versant-card,
+            .versant-media,
             .versant-mw-panel,
-            .versant-mw-card {
-              border-radius: 10px !important;
+            .versant-mw-card,
+            .versant-mw-media {
+              border-radius: 8px !important;
               box-shadow: none !important;
             }
-            .versant-mw-media {
-              border-radius: 7px !important;
+            .versant-panel {
+              border: 1px solid rgba(17, 17, 14, 0.1);
+              background: var(--versant-white);
             }
-            .versant-mw-card {
-              transition: border-color 240ms ease, background-color 240ms ease, transform 240ms ease;
+            .versant-card {
+              border: 1px solid rgba(17, 17, 14, 0.12);
+              background: var(--versant-white);
+              transition: border-color 220ms ease, background-color 220ms ease, transform 220ms ease;
             }
+            .versant-card:hover,
             .versant-mw-card:hover {
+              border-color: rgba(17, 17, 14, 0.28);
               transform: translateY(-2px);
             }
-            .versant-mw-pill {
+            .versant-card:hover .versant-card-image {
+              transform: scale(1.035);
+            }
+            .versant-media {
+              overflow: hidden;
+              background: var(--versant-soft-gray);
+            }
+            .versant-card-image {
+              transition: transform 700ms ease, opacity 300ms ease;
+            }
+            .versant-tag-list {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 0.4rem;
+            }
+            .versant-tag {
+              display: inline-flex;
+              align-items: center;
+              min-height: 1.75rem;
+              border: 1px solid var(--versant-soft-gray);
               border-radius: 999px;
+              background: var(--versant-mint);
+              padding: 0.4rem 0.65rem;
+              font-size: 0.75rem;
+              font-weight: 500;
+              line-height: 1;
+              color: rgba(17, 17, 14, 0.78);
               letter-spacing: 0;
+            }
+            .versant-tag-dark {
+              border-color: rgba(255, 255, 255, 0.18);
+              background: rgba(255, 255, 255, 0.08);
+              color: rgba(255, 255, 255, 0.76);
+            }
+            .versant-meta-label {
+              color: rgba(17, 17, 14, 0.42);
+            }
+            .versant-meta-text {
+              font-size: 0.92rem;
+              line-height: 1.3;
+              color: rgba(17, 17, 14, 0.64);
+            }
+            .versant-link {
+              display: inline-flex;
+              align-items: center;
+              min-height: 2.5rem;
+              border-bottom: 1px solid currentColor;
+              font-size: 0.92rem;
+              font-weight: 500;
+              line-height: 1;
+              transition: opacity 180ms ease;
+            }
+            .versant-link:hover {
+              opacity: 0.62;
+            }
+            .versant-card:focus-within,
+            .versant-link:focus-visible {
+              outline: 2px solid var(--versant-orange);
+              outline-offset: 4px;
+            }
+            @media (max-width: 900px) {
+              .versant-section {
+                padding: 4.5rem 1rem;
+              }
+              .versant-container {
+                width: min(100% - 1.5rem, 1500px);
+              }
+              .versant-header {
+                grid-template-columns: 1fr;
+                gap: 0.9rem;
+                align-items: start;
+              }
             }
             @media (prefers-reduced-motion: reduce) {
               .versant-marquee {
@@ -292,6 +409,11 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
                 transform: none;
                 transition: none;
               }
+              .versant-card,
+              .versant-card-image {
+                transition: none;
+                transform: none !important;
+              }
             }
           `,
         }}
@@ -302,7 +424,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         directors={orderedDirectors}
       />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
-      <UsaSportsShelf />
+      <UsaSportsPortfolio />
       <PartnerBench />
       <VersantReferenceStrip directors={orderedDirectors} />
       <RosterModes directors={orderedDirectors} />

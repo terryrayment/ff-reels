@@ -4,6 +4,14 @@ import {
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
+import {
+  CONTAINER,
+  LINK,
+  MEDIA,
+  SECTION,
+  SectionHeader,
+  TagList,
+} from "./system";
 
 interface Props {
   ctaUrl?: string | null;
@@ -102,78 +110,77 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
   const frames = contactCollageFrames(directors);
 
   return (
-    <section className="px-4 pb-4 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-14">
-      <div className="versant-mw-panel mx-auto max-w-[1500px] rounded-[18px] border border-white/10 bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.18)] sm:p-8 lg:rounded-[22px] lg:p-10">
-        <div className="mb-8 grid gap-6 border-b border-white/12 pb-8 lg:grid-cols-12 lg:items-end">
-          <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-white/46 lg:col-span-3">
-            {recipientFirstName ? `${recipientFirstName}, next move` : "Friends & Family for Versant"}
-          </p>
-          <div className="lg:col-span-7">
-            <h2 className="versant-display text-[clamp(42px,6vw,88px)] font-medium tracking-[-0.045em]">
-              Send the assignment.
-            </h2>
-            <p className="mt-4 max-w-[42rem] text-[clamp(18px,1.8vw,24px)] leading-[1.22] tracking-[-0.025em] text-white/64">
-              Scope, rights windows, assets, deadline, known blockers. We will
-              come back with the cleanest production path.
-            </p>
-          </div>
-        </div>
+    <section className={`${SECTION} pb-4 lg:pb-8`}>
+      <div className={CONTAINER}>
+        <div className="rounded-[8px] border border-white/10 bg-[var(--versant-black)] p-5 text-white sm:p-7 lg:p-8">
+          <SectionHeader
+            label={recipientFirstName ? `${recipientFirstName}, contact` : "Contact"}
+            title="Send the assignment."
+            intro="Brief, deadline, rights, assets, blockers. We will respond with scope, team, timeline, and delivery plan."
+            dark
+          />
 
-        <div className="grid gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+          <div className="grid gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              <a
+                href={href}
+                className={`${LINK} mb-8 text-white/84 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white`}
+              >
+                Email the team
+              </a>
+              <TagList
+                tags={["Scope", "Crew", "Edit", "Motion", "Versioning", "Delivery"]}
+                dark
+                className="mb-8"
+              />
+              <div className="grid gap-x-8 gap-y-5 text-[17px] leading-[1.28] text-white/76 sm:grid-cols-3 xl:gap-x-12">
+                {CONTACTS.map(([name, email]) => (
+                  <Contact
+                    key={email}
+                    value={name}
+                    sub={email}
+                    href={`mailto:${email}`}
+                  />
+                ))}
+              </div>
+            </div>
+
             <a
               href={href}
-              className="versant-mw-pill mb-8 inline-flex min-h-11 items-center rounded-full border border-white/24 px-5 py-3 text-[14px] font-medium text-white transition hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              aria-label="Email Friends and Family about the Versant brief"
+              className={`${MEDIA} group relative min-h-[18rem] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5`}
             >
-              Email the team
-            </a>
-            <div className="grid gap-x-8 gap-y-5 text-[17px] leading-[1.28] text-white/76 sm:grid-cols-3 xl:gap-x-12">
-              {CONTACTS.map(([name, email]) => (
-                <Contact
-                  key={email}
-                  value={name}
-                  sub={email}
-                  href={`mailto:${email}`}
-                />
-              ))}
-            </div>
-          </div>
-
-          <a
-            href={href}
-            aria-label="Email Friends and Family about the Versant brief"
-            className="versant-mw-media group relative min-h-[18rem] overflow-hidden rounded-[14px] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5"
-          >
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 grid grid-cols-4 opacity-80"
-            >
-              {frames.map((frame) => (
-                <div
-                  key={frame.key}
-                  className="relative overflow-hidden bg-black"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={frame.still ?? ""}
-                    alt=""
-                    className={`${COLLAGE_MEDIA_CLASS} motion-safe:hidden`}
-                    loading="lazy"
-                  />
-                  {frame.animated && (
-                    // eslint-disable-next-line @next/next/no-img-element
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 grid grid-cols-4 opacity-80"
+              >
+                {frames.map((frame) => (
+                  <div
+                    key={frame.key}
+                    className="relative overflow-hidden bg-black"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={frame.animated}
+                      src={frame.still ?? ""}
                       alt=""
-                      className={`hidden ${COLLAGE_MEDIA_CLASS} motion-safe:block`}
+                      className={`${COLLAGE_MEDIA_CLASS} motion-safe:hidden`}
                       loading="lazy"
                     />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,59,46,0.12),rgba(12,59,46,0.84))]" />
-          </a>
+                    {frame.animated && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={frame.animated}
+                        alt=""
+                        className={`hidden ${COLLAGE_MEDIA_CLASS} motion-safe:block`}
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,59,46,0.12),rgba(12,59,46,0.84))]" />
+            </a>
+          </div>
         </div>
       </div>
     </section>

@@ -1,62 +1,53 @@
+import {
+  CONTAINER,
+  META_LABEL,
+  META_TEXT,
+  PANEL,
+  SECTION,
+  SectionHeader,
+  TagList,
+} from "./system";
+
 const VERSANT_GIVES = [
-  "live schedules",
-  "talent windows",
-  "archive",
-  "brand rules",
-  "sponsor needs",
-  "social surfaces",
-  "audience expectations",
+  ["Inputs", "Live schedules, archive, sponsor rules"],
+  ["Production", "Talent windows, field teams, usage needs"],
+  ["Output", "Social cutdowns, motion, versions, delivery"],
+  ["Audience", "Fans who know when the tone is wrong"],
+];
+
+const FIT_TAGS = [
+  "Golf Channel",
+  "GolfNow",
+  "Live windows",
+  "Talent",
+  "Sponsor rules",
+  "Edit",
+  "Motion",
+  "Delivery",
 ];
 
 export function VersantFit() {
   return (
-    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <div className="versant-reveal versant-mw-panel mx-auto max-w-[1400px] rounded-[18px] border border-black/[0.1] bg-[var(--versant-white)] p-6 shadow-[0_24px_80px_rgba(17,17,14,0.055)] sm:p-8 lg:rounded-[22px] lg:p-10">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-6">
-            <p className="mb-5 text-[12px] font-medium uppercase tracking-[0.14em] text-black/44">
-              VERSANT FIT
-            </p>
-            <h2 className="versant-display max-w-4xl text-[clamp(42px,6vw,86px)] font-medium tracking-[-0.04em]">
-              Golf feels like the right first lane.
-            </h2>
-          </div>
+    <section className={`${SECTION} versant-section-tight`}>
+      <div className={CONTAINER}>
+        <div className={`${PANEL} p-5 sm:p-7 lg:p-8`}>
+          <SectionHeader
+            label="Scope"
+            title="Start with Golf Channel. Build for USA Sports."
+            intro="Golf gives the first assignment a clear shape. The same system can cover Premier League, NASCAR, WWE, WNBA, LOVB, and college."
+          />
 
-          <div className="max-w-[58ch] border-l-2 border-[var(--versant-orange)] pl-6 text-[clamp(18px,2vw,26px)] leading-[1.22] tracking-[-0.03em] text-black/68 lg:col-span-6">
-            <p>
-              Golf Channel is the cleanest first place to prove the fit: live
-              pressure, talent access, sponsor rules, social cutdowns,
-              editorial pieces, and fans who notice when the tone is off.
-              Premier League, NASCAR, WWE, WNBA, LOVB: we&apos;re paying
-              attention to all of it.
-            </p>
-            <p className="mt-5">
-              Give us a real assignment with constraints. We&apos;ll shape the
-              director, crew, edit, motion, finish, versioning, and delivery
-              around it.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-10 grid gap-6 lg:grid-cols-12 lg:items-start">
-          <div className="lg:col-span-5">
-            <h3 className="text-[clamp(30px,4vw,52px)] font-medium leading-[1] tracking-[-0.04em]">
-              Versant gives us:
-            </h3>
-          </div>
-          <ul className="grid gap-2 text-[15px] text-black/62 sm:grid-cols-2 lg:col-span-7">
-            {VERSANT_GIVES.map((item) => (
-              <li key={item} className="border-t border-black/12 py-2 sm:text-right">
-                {item}
-              </li>
+          <div className="grid gap-3 border-t border-black/12 pt-5 md:grid-cols-4">
+            {VERSANT_GIVES.map(([label, value]) => (
+              <div key={label} className="border-t border-black/10 pt-3 md:border-t-0 md:pt-0">
+                <p className={`${META_LABEL} mb-2`}>{label}</p>
+                <p className={META_TEXT}>{value}</p>
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
 
-        <p className="mt-8 max-w-[54rem] text-[clamp(24px,3vw,40px)] leading-[1.08] tracking-[-0.04em] text-black/72">
-          We bring director taste, production judgment, post and motion support,
-          and a clean path when the schedule gets tight.
-        </p>
+          <TagList tags={FIT_TAGS} className="mt-8" />
+        </div>
       </div>
     </section>
   );

@@ -1,3 +1,13 @@
+import {
+  CARD,
+  CONTAINER,
+  LINK,
+  MEDIA,
+  SECTION,
+  SectionHeader,
+  TagList,
+} from "./system";
+
 type PartnerVisual = {
   label: string;
   videoSrc?: string;
@@ -10,22 +20,26 @@ const PARTNERS = [
   {
     name: "The Youth",
     href: "https://theyouth.com.br/",
-    role: "local production reach",
+    linkLabel: "View The Youth work",
+    role: "Brazil production",
     copy:
-      "Brazil-based support for casting, locations, crew, and audience fluency when a sports idea needs to move beyond a U.S. read.",
+      "Casting, locations, crew, and cultural read for work that needs more than a U.S. lens.",
+    tags: ["Casting", "Locations", "Crew", "Local read"],
     visual: {
-      label: "PEPSI BLACK",
+      label: "Brazil production",
       videoSrc: "/versant/pepsi-black-skate.mp4",
     },
   },
   {
     name: "Colossal",
     href: "https://colossal.film/",
-    role: "post, motion, finishing",
+    linkLabel: "View Colossal reel",
+    role: "Post and motion",
     copy:
-      "A finish lane for animation, design, mixed media, compositing, cleanup, versioning, and the last five percent that decides whether the work feels premium.",
+      "Animation, design, mixed media, cleanup, finish, versioning, and delivery support.",
+    tags: ["Post", "Motion", "Animation", "Versioning", "Delivery"],
     visual: {
-      label: "Colossal reel",
+      label: "Finish reel",
       vimeoId: "859353559",
       hash: "c300ebf8bb",
     },
@@ -56,10 +70,7 @@ function vimeoPlayerSrc(visual: PartnerVisual & { vimeoId: string }) {
 
 function PartnerVideo({ visual }: { visual: PartnerVisual }) {
   return (
-    <div
-      className="versant-mw-media relative aspect-video overflow-hidden rounded-[14px] bg-black/70"
-      aria-hidden="true"
-    >
+    <div className={`${MEDIA} relative aspect-video bg-black/70`} aria-hidden="true">
       {visual.videoSrc ? (
         <video
           src={visual.videoSrc}
@@ -68,7 +79,7 @@ function PartnerVideo({ visual }: { visual: PartnerVisual }) {
           loop
           playsInline
           preload="auto"
-          className="absolute inset-0 h-full w-full object-cover opacity-[0.9]"
+          className="versant-card-image absolute inset-0 h-full w-full object-cover opacity-[0.9]"
         />
       ) : visual.vimeoId ? (
         <iframe
@@ -80,8 +91,8 @@ function PartnerVideo({ visual }: { visual: PartnerVisual }) {
           tabIndex={-1}
         />
       ) : null}
-      <div className="absolute inset-0 bg-[var(--versant-black)]/16 transition duration-500 group-hover:bg-[var(--versant-black)]/6" />
-      <div className="versant-mw-pill absolute bottom-4 left-4 rounded-[7px] bg-black/48 px-3 py-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-white/72">
+      <div className="absolute inset-0 bg-[var(--versant-black)]/14 transition duration-500 group-hover:bg-[var(--versant-black)]/4" />
+      <div className="absolute bottom-4 left-4 rounded-full bg-black/48 px-3 py-1.5 text-[12px] font-medium text-white/76">
         {visual.label}
       </div>
     </div>
@@ -90,49 +101,48 @@ function PartnerVideo({ visual }: { visual: PartnerVisual }) {
 
 export function PartnerBench() {
   return (
-    <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <div className="mx-auto max-w-[1500px]">
-        <div className="versant-mw-panel rounded-[18px] border border-white/10 bg-[var(--versant-black)] p-6 text-[var(--versant-white)] shadow-[0_22px_70px_rgba(17,17,14,0.12)] sm:p-8 lg:rounded-[22px] lg:p-10">
-          <div className="mb-8 grid gap-6 border-b border-white/12 pb-8 lg:grid-cols-12 lg:items-end">
-            <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-white/46 lg:col-span-3">
-              PRODUCTION BENCH
-            </p>
-            <h2 className="versant-display max-w-4xl text-[clamp(38px,5.8vw,82px)] font-medium tracking-[-0.045em] lg:col-span-8">
-              Specialists when the job needs reach or finish.
-            </h2>
-          </div>
+    <section className={`${SECTION} bg-[var(--versant-black)] text-[var(--versant-white)]`}>
+      <div className={CONTAINER}>
+        <SectionHeader
+          label="Partners"
+          title="Additional production lanes."
+          intro="Two teams extend reach and finish without adding noise to the process."
+          dark
+        />
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            {PARTNERS.map((partner) => (
-              <article
-                key={partner.name}
-                className="versant-mw-card group relative grid min-w-0 gap-5 rounded-[15px] border border-white/12 bg-white/[0.045] p-4 transition duration-300 hover:bg-white/[0.075] sm:p-5"
-              >
-                <PartnerVideo visual={partner.visual} />
-                <div className="grid gap-5 border-t border-white/16 pt-5 md:grid-cols-[0.75fr_1fr]">
-                  <div>
-                    <p className="text-[clamp(32px,4vw,56px)] font-medium leading-[0.98] tracking-[-0.04em]">
-                      {partner.name}
-                    </p>
-                    <p className="mt-3 text-[13px] font-medium uppercase tracking-[0.12em] text-white/46">
-                      {partner.role}
-                    </p>
-                  </div>
-                  <p className="max-w-[42rem] text-[clamp(17px,1.7vw,23px)] leading-[1.24] tracking-[-0.02em] text-white/68">
-                    {partner.copy}
+        <div className="grid gap-3 lg:grid-cols-2">
+          {PARTNERS.map((partner) => (
+            <article
+              key={partner.name}
+              className={`${CARD} group border-white/14 bg-white/[0.045] p-4 text-white hover:border-white/30 hover:bg-white/[0.07] sm:p-5`}
+            >
+              <PartnerVideo visual={partner.visual} />
+              <div className="grid gap-5 border-t border-white/14 pt-5 md:grid-cols-[0.8fr_1fr]">
+                <div>
+                  <p className="text-[clamp(30px,4vw,54px)] font-medium leading-[0.98] tracking-[-0.045em]">
+                    {partner.name}
+                  </p>
+                  <p className="versant-meta-label mt-3 text-white/45">
+                    {partner.role}
                   </p>
                 </div>
-                <a
-                  href={partner.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`Open ${partner.name}`}
-                  className="absolute inset-0 z-10 rounded-[10px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
-                />
-              </article>
-            ))}
-          </div>
-
+                <div className="space-y-5">
+                  <p className="max-w-[34rem] text-[clamp(17px,1.5vw,21px)] leading-[1.22] tracking-[-0.02em] text-white/66">
+                    {partner.copy}
+                  </p>
+                  <TagList tags={partner.tags} dark />
+                  <a
+                    href={partner.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`${LINK} text-white/78 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white`}
+                  >
+                    {partner.linkLabel}
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

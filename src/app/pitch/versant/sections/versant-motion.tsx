@@ -1,15 +1,20 @@
-"use client";
+const VERSANT_MOTION_SCRIPT = `
+(() => {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-import { useEffect } from "react";
+  if (reduceMotion) {
+    document.documentElement.classList.add("versant-reduce-motion");
+    return;
+  }
 
-export function VersantMotion() {
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document.documentElement.classList.add("versant-reduce-motion");
+  const init = () => {
+    const cards = Array.from(document.querySelectorAll(".versant-reveal"));
+
+    if (!("IntersectionObserver" in window)) {
+      cards.forEach((card) => card.classList.add("is-visible"));
       return;
     }
 
-    const cards = Array.from(document.querySelectorAll<HTMLElement>(".versant-reveal"));
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -23,15 +28,19 @@ export function VersantMotion() {
     );
 
     cards.forEach((card) => observer.observe(card));
-    const revealFallback = window.setTimeout(() => {
+    window.setTimeout(() => {
       cards.forEach((card) => card.classList.add("is-visible"));
     }, 1800);
+  };
 
-    return () => {
-      window.clearTimeout(revealFallback);
-      observer.disconnect();
-    };
-  }, []);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
+})();
+`;
 
-  return null;
+export function VersantMotion() {
+  return <script dangerouslySetInnerHTML={{ __html: VERSANT_MOTION_SCRIPT }} />;
 }

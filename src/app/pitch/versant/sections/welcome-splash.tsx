@@ -4,6 +4,7 @@ import {
   muxStillUrl,
   type VersantDirectorMedia,
 } from "./media";
+import { TagList } from "./system";
 
 interface Props {
   recipientFirstName?: string | null;
@@ -61,8 +62,11 @@ const HERO_MICRO_LABEL = "text-[13px] font-medium leading-none tracking-[-0.01em
 const HERO_CAPABILITIES = [
   "Live promos",
   "Talent films",
+  "Golf Channel",
+  "GolfNow",
   "Social cutdowns",
-  "Post + motion",
+  "Post",
+  "Motion",
   "Versioning",
   "Delivery",
 ];
@@ -115,55 +119,49 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
   return (
     <section className="px-4 py-4 text-[var(--versant-ink)] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[1600px] gap-3 lg:grid-cols-12">
-        <article className="versant-mw-panel relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[21px] border border-white/10 bg-black p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[26px]">
-          {motionFrames.length > 0 && (
-            <div
-              aria-hidden="true"
-              className="absolute right-5 top-28 hidden h-[50%] w-[52%] grid-cols-2 gap-2 opacity-[0.48] mix-blend-screen blur-[0.2px] sm:grid lg:right-8 lg:top-32"
-            >
-              {motionFrames.slice(0, 4).map((frame, index) => (
-                <div
-                  key={frame.still ?? index}
-                  className={`versant-mw-media overflow-hidden rounded-[12px] bg-white/5 ${
-                    index === 0 ? "col-span-2 sm:col-span-1" : ""
-                  }`}
-                >
-                  <MotionFrame
-                    animated={frame.animated}
-                    still={frame.still}
-                    alt=""
-                    className={`h-full w-full object-cover ${frame.className ?? ""}`}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className={`relative z-10 flex items-center justify-between gap-4 text-white/48 ${HERO_MICRO_LABEL}`}>
+        <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[8px] border border-white/10 bg-black p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-10">
+          <div className={`relative z-10 flex items-center justify-between gap-4 text-white/50 ${HERO_MICRO_LABEL}`}>
             <FFLogomark />
             {recipientFirstName && <span>For {recipientFirstName}</span>}
           </div>
 
-          <div className="relative z-10 max-w-5xl py-12 lg:py-16">
-            <p className={`mb-8 text-white/62 ${HERO_MICRO_LABEL}`}>
-              Friends &amp; Family for Versant Sports
-            </p>
-            <h1 className="versant-display max-w-[11ch] text-[clamp(58px,9vw,132px)] font-medium tracking-[-0.04em]">
-              Sports work, handled cleanly.
-            </h1>
-            <p className="mt-6 max-w-[38rem] text-[clamp(20px,2.2vw,32px)] leading-[1.13] tracking-[-0.03em] text-white/68">
-              A creative studio and production company for live pressure,
-              talent windows, social cutdowns, post, motion, and delivery. Golf
-              is the first door into the wider USA Sports shelf.
-            </p>
-          </div>
+          <div className="relative z-10 grid gap-8 py-12 lg:grid-cols-12 lg:items-end lg:py-16">
+            <div className="lg:col-span-7">
+              <p className={`mb-7 text-white/62 ${HERO_MICRO_LABEL}`}>
+                Overview
+              </p>
+              <h1 className="versant-display max-w-[13ch] text-[clamp(54px,8.4vw,128px)] font-medium tracking-[-0.045em]">
+                Friends &amp; Family for Versant Sports
+              </h1>
+              <p className="mt-6 max-w-[40rem] text-[clamp(19px,2vw,30px)] leading-[1.12] tracking-[-0.03em] text-white/68">
+                Creative, production, edit, motion, and delivery for Versant&apos;s
+                sports portfolio.
+              </p>
+              <TagList tags={HERO_CAPABILITIES} dark className="mt-7 max-w-2xl" />
+            </div>
 
-          <div className={`relative z-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/12 pt-5 text-white/54 ${HERO_MICRO_LABEL}`}>
-            {HERO_CAPABILITIES.map((item) => (
-              <span key={item}>
-                {item}
-              </span>
-            ))}
+            {motionFrames.length > 0 && (
+              <div
+                aria-hidden="true"
+                className="grid aspect-[4/3] grid-cols-2 gap-2 opacity-70 lg:col-span-5 lg:aspect-[5/4]"
+              >
+                {motionFrames.slice(0, 4).map((frame, index) => (
+                  <div
+                    key={frame.still ?? index}
+                    className={`versant-media bg-white/5 ${
+                      index === 0 ? "row-span-2" : ""
+                    }`}
+                  >
+                    <MotionFrame
+                      animated={frame.animated}
+                      still={frame.still}
+                      alt=""
+                      className={`versant-card-image h-full w-full object-cover ${frame.className ?? ""}`}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className={`relative z-10 mt-4 overflow-hidden border-t border-white/10 pt-3 text-white/36 ${HERO_MICRO_LABEL}`}>

@@ -5,14 +5,25 @@ import {
   type VersantDirectorMedia,
 } from "./media";
 import { RosterCreditLightbox } from "./roster-credit-lightbox";
+import {
+  CARD,
+  CONTAINER,
+  MEDIA,
+  META_LABEL,
+  META_TEXT,
+  SECTION,
+  SectionHeader,
+  TagList,
+} from "./system";
 
 const CADDIES = [
   {
     slug: "jack-turits",
     name: "Jack Turits",
-    signature: "real people, clean comedy",
+    signature: "Comedy performance and real-player casting",
     credits: "Callaway \"Forefront\"",
-    match: "GolfNow course portraits",
+    match: "Creator-led golf and course portraits",
+    tags: ["Comedy", "Casting", "Creator-led golf"],
     treatment: "bg-[var(--versant-black)] text-white",
     media: {
       muxPlaybackId: "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ",
@@ -23,9 +34,10 @@ const CADDIES = [
   {
     slug: "le-ged",
     name: "Le Ged",
-    signature: "motion-forward camera",
+    signature: "Motion-heavy social and camera-led spots",
     credits: "Hilton, McDonald's, YouTube",
-    match: "GolfNow social-first motion",
+    match: "GolfNow social motion",
+    tags: ["Motion", "Camera", "Social"],
     treatment: "bg-[var(--versant-paper)] text-black",
     media: {
       muxPlaybackId: "qLKRhYTxoAN7Wrri3jm1yVTbuziYByniTQz4E8TA01MY",
@@ -37,9 +49,10 @@ const CADDIES = [
   {
     slug: "matt-dilmore",
     name: "Matt Dilmore",
-    signature: "sports comedy, straight face",
+    signature: "Sports comedy and format performance",
     credits: "ESPN 30 for 30 \"The Great Imposter\"",
     match: "Big Break x Good Good",
+    tags: ["Comedy", "Format", "Talent"],
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
       muxPlaybackId: "IKkNBwRmEdO1tTH00GDioHB2BMRB2EQoVrCCETwf8tCU",
@@ -50,7 +63,7 @@ const CADDIES = [
   {
     slug: "boma-iluma",
     name: "Boma Iluma",
-    signature: "youth culture and talent",
+    signature: "Youth culture and talent films",
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
     creditSpots: [
       {
@@ -70,15 +83,17 @@ const CADDIES = [
       },
     ],
     match: "Good Good / next-gen golf",
+    tags: ["Talent", "Culture", "Next-gen golf"],
     treatment: "bg-[var(--versant-paper)] text-black",
     mediaClass: "scale-[1.55]",
   },
   {
     slug: "kelsey-larkin",
     name: "Kelsey Larkin",
-    signature: "women's sports with restraint",
+    signature: "Women's sports and athlete portrait",
     credits: "Gillette \"Look Good, Game Good\"",
-    match: "USA Sports identity / women's sports",
+    match: "USA Sports identity and athlete stories",
+    tags: ["Women's sports", "Athlete portrait", "Brand film"],
     treatment: "bg-[var(--versant-black)] text-white",
     media: {
       muxPlaybackId: "qLBZMCS2HlYQdlPoC01901zKzeLDoIfXZsgY5i8zyx2Po",
@@ -89,9 +104,10 @@ const CADDIES = [
   {
     slug: "caleb-slain",
     name: "Caleb Slain",
-    signature: "anthem craft without gloss",
+    signature: "Broadcast-adjacent promos and anthem films",
     credits: "SXSW/Telluride docs, Ford, Lexus, Toyota, Microsoft",
     match: "Golf Channel anthem",
+    tags: ["Promo", "Anthem", "Delivery"],
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
       muxPlaybackId: "ekGrtmsCnZ9yk1tw8Gez7jPwNUCY55KBCtCF7qThKIw",
@@ -101,17 +117,19 @@ const CADDIES = [
   {
     slug: "bueno",
     name: "Bueno",
-    signature: "mixed-media fan energy",
+    signature: "Mixed-media fan campaigns",
     credits: "Doritos, Netflix, CNN, Cannes Grand Prix",
     match: "fan campaigns / Big Break energy",
+    tags: ["Mixed media", "Fans", "Social"],
     treatment: "bg-[var(--versant-white)] text-black",
   },
   {
     slug: "brother-willis",
     name: "Brother Willis",
-    signature: "warm local stories",
+    signature: "Local sports stories",
     credits: "Topps Chrome Rush, Ford",
     match: "GolfNow local heroes",
+    tags: ["Local stories", "Casting", "Field production"],
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
       muxPlaybackId: "vqAlDQVGkErsXS00VKhafavM02viB4crudGcbSX397bfQ",
@@ -122,9 +140,10 @@ const CADDIES = [
   {
     slug: "cody-cloud",
     name: "Cody Cloud",
-    signature: "editorial athlete portraiture",
+    signature: "Athlete portrait and brand films",
     credits: "Apple, Adidas, Asics, Gatorade, Nike, Target",
     match: "talent portrait package",
+    tags: ["Athlete portrait", "Brand film", "Photography"],
     treatment: "bg-[var(--versant-paper)] text-black",
     media: {
       muxPlaybackId: "feQSUP17mpG4Ay8bAHFPHuXx66CQwudaK4uKlUMj4pw",
@@ -135,9 +154,10 @@ const CADDIES = [
   {
     slug: "terry-rayment",
     name: "Terry Rayment",
-    signature: "quiet access, emotional restraint",
+    signature: "Documentary access and talent films",
     credits: "Kodak \"Understanding,\" Purina, Cadillac, Jaguar",
     match: "Rory/GolfPass intimate films",
+    tags: ["Documentary", "Talent", "GolfPass"],
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
       muxPlaybackId: "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM",
@@ -154,22 +174,13 @@ export function RosterModes({
   directors: VersantDirectorMedia[];
 }) {
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-      <div className="mx-auto max-w-[1500px]">
-        <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-start">
-          <div className="lg:col-span-8">
-            <p className="mb-4 text-[12px] font-medium uppercase tracking-[0.14em] text-black/44">
-              CURATED TALENT
-            </p>
-            <h2 className="versant-display text-[clamp(42px,6.5vw,96px)] font-medium tracking-[-0.045em]">
-              Directors mapped to assignments.
-            </h2>
-          </div>
-          <p className="max-w-[46rem] text-[clamp(20px,2.4vw,32px)] leading-[1.12] tracking-[-0.035em] text-black/68 lg:col-span-4 lg:mt-[38px]">
-            We pick for tone, access, schedule, usage, and the amount of post
-            the idea will need. The reel is only the starting point.
-          </p>
-        </div>
+    <section className={SECTION}>
+      <div className={CONTAINER}>
+        <SectionHeader
+          label="Directors"
+          title="Selected talent for the assignment."
+          intro="A short index by use case, not a full roster dump."
+        />
 
         <div className="grid gap-4 sm:grid-cols-2">
           {CADDIES.map((card) => (
@@ -211,17 +222,12 @@ function CaddieCard({
   const mediaClass = "mediaClass" in card ? card.mediaClass : "";
   const usesFigurePlaceholder =
     !headshot && card.slug === "cody-cloud";
-  const dark = card.treatment.includes("text-white");
-  const muted = dark ? "text-white/62" : "text-black/58";
-  const rule = dark ? "border-white/16" : "border-black/14";
   const creditSpots = "creditSpots" in card ? card.creditSpots : null;
 
   return (
-    <article
-      className={`versant-reveal versant-mw-card group flex min-h-[30rem] flex-col overflow-hidden rounded-[15px] border p-4 shadow-[0_18px_58px_rgba(17,17,14,0.045)] transition duration-300 sm:p-5 lg:rounded-[18px] ${dark ? "border-white/12 hover:border-white/24" : "border-black/[0.1] hover:border-black/22"} ${card.treatment}`}
-    >
+    <article className={`${CARD} group flex min-h-[31rem] flex-col p-3 sm:p-4`}>
       <div
-        className="versant-mw-media relative aspect-video overflow-hidden rounded-[10px] bg-black/10 bg-cover bg-center"
+        className={`${MEDIA} relative aspect-[4/3] bg-black/10 bg-cover bg-center`}
         style={still ? { backgroundImage: `url(${still})` } : undefined}
       >
         {overrideStill ? (
@@ -229,7 +235,7 @@ function CaddieCard({
           <img
             src={overrideStill}
             alt={card.name}
-            className={`h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
+            className={`versant-card-image h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
             loading="lazy"
           />
         ) : headshot ? (
@@ -237,7 +243,7 @@ function CaddieCard({
           <img
             src={headshot}
             alt={card.name}
-            className={`h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
+            className={`versant-card-image h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
             loading="lazy"
           />
         ) : usesFigurePlaceholder ? (
@@ -251,7 +257,7 @@ function CaddieCard({
           <img
             src={still}
             alt={card.name}
-            className={`h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
+            className={`versant-card-image h-full w-full object-cover transition duration-500 group-hover:opacity-0 motion-reduce:group-hover:opacity-100 ${mediaClass}`}
             loading="lazy"
           />
         ) : (
@@ -271,32 +277,33 @@ function CaddieCard({
       </div>
 
       <div className="flex flex-1 flex-col pt-5">
-        <h3 className="versant-display text-[clamp(32px,3.6vw,54px)] font-medium tracking-[-0.045em]">
+        <h3 className="text-[clamp(30px,3.4vw,50px)] font-medium leading-[1] tracking-[-0.045em]">
           {card.name}
         </h3>
-        <p className={`mt-2 text-[clamp(18px,2vw,25px)] leading-[1.12] tracking-[-0.03em] ${muted}`}>
+        <p className="mt-2 text-[clamp(17px,1.8vw,23px)] leading-[1.12] tracking-[-0.03em] text-black/62">
           {card.signature}
         </p>
 
-        <div className="mt-5 space-y-3 pt-3">
-          <div className={`border-t pt-3 ${rule}`}>
-            <p className={`mb-2 text-[11px] font-medium uppercase leading-none tracking-[0.14em] ${muted}`}>
+        <div className="mt-5 space-y-4 border-t border-black/12 pt-4">
+          <div>
+            <p className={`${META_LABEL} mb-2`}>
               Credits
             </p>
             {creditSpots ? (
-              <RosterCreditLightbox spots={creditSpots} dark={dark} />
+              <RosterCreditLightbox spots={creditSpots} />
             ) : (
-              <p className="text-[14px] leading-[1.32]">{card.credits}</p>
+              <p className={META_TEXT}>{card.credits}</p>
             )}
           </div>
-          <div className={`border-t pt-3 ${rule}`}>
-            <p className={`mb-2 text-[11px] font-medium uppercase leading-none tracking-[0.14em] ${muted}`}>
-              Assignment fit
+          <div>
+            <p className={`${META_LABEL} mb-2`}>
+              Use case
             </p>
-            <p className="text-[15px] leading-[1.25]">
+            <p className={META_TEXT}>
               {card.match}
             </p>
           </div>
+          <TagList tags={card.tags} className="mt-auto" />
         </div>
       </div>
     </article>
