@@ -23,6 +23,7 @@ const ROTATIONS = [-5, 3, -2, 6, -7, 2, 5, -3];
 const MIN_DISTANCE = 62;
 const NAV_SAFE_TOP = 88;
 const STACK_DEPTH = 48;
+const MAX_TRAIL_PHOTOS = 180;
 
 export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
   const [trail, setTrail] = useState<TrailPhoto[]>([]);
@@ -30,7 +31,10 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
   const lastPoint = useRef<{ x: number; y: number } | null>(null);
   const nextId = useRef(0);
 
-  const usablePhotos = useMemo(() => photos.filter((photo) => photo.src), [photos]);
+  const usablePhotos = useMemo(
+    () => photos.filter((photo) => photo.src),
+    [photos],
+  );
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -64,7 +68,7 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
       const safeY = Math.max(y, NAV_SAFE_TOP + width * 0.6);
 
       setTrail((items) => [
-        ...items,
+        ...items.slice(-(MAX_TRAIL_PHOTOS - 1)),
         {
           id,
           src: photo.src,
@@ -93,18 +97,22 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
         {trail.map((photo) => (
           <img
             key={photo.id}
+            data-about-trail-photo
             src={photo.src}
             alt=""
             decoding="async"
             draggable={false}
-            className="pointer-events-none absolute select-none object-cover shadow-[0_18px_50px_rgba(17,17,17,0.12)]"
-            style={{
-              left: photo.x,
-              top: photo.y,
-              width: photo.width,
-              zIndex: photo.z,
-              transform: `translate(-50%, -50%) rotate(${photo.rotate}deg)`,
-            }}
+            className="ff-about-trail-photo pointer-events-none absolute select-none object-cover shadow-[0_18px_50px_rgba(17,17,17,0.12)]"
+            style={
+              {
+                left: photo.x,
+                top: photo.y,
+                width: photo.width,
+                zIndex: photo.z,
+                "--ff-about-photo-rotate": `${photo.rotate}deg`,
+                transform: `translate(-50%, -50%) rotate(${photo.rotate}deg)`,
+              } as React.CSSProperties
+            }
           />
         ))}
       </div>

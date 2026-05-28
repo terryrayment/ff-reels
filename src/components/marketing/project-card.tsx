@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 import { useRevealOnce } from "@/components/marketing/use-reveal-once";
 
@@ -14,6 +14,7 @@ export interface ProjectCardData {
   agency?: string | null;
   thumbnailUrl?: string | null;
   muxPlaybackId?: string | null;
+  sourceVideoUrl?: string | null;
   director: { slug: string; name: string };
 }
 
@@ -49,19 +50,38 @@ export function ProjectCard({
   tags,
 }: ProjectCardProps) {
   const router = useRouter();
-  const href = `/site/directors/${project.director.slug}?play=${project.id}`;
+  const directorSlug = project.director.slug.trim();
+  const canPlay = Boolean(project.muxPlaybackId || project.sourceVideoUrl);
+  const href = directorSlug
+    ? canPlay
+      ? `/site/directors/${directorSlug}?play=${project.id}`
+      : `/site/directors/${directorSlug}`
+    : null;
   const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
+  const imageRef = useRef<HTMLImageElement>(null);
 
   const muxStill = project.muxPlaybackId
     ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=${thumbnailWidth}`
     : null;
   const preferredStill = muxStill ?? project.thumbnailUrl ?? null;
   const [failedStill, setFailedStill] = useState<string | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const still = useMemo(() => {
     if (!preferredStill) return null;
     if (failedStill !== preferredStill) return preferredStill;
     return muxStill && muxStill !== preferredStill ? muxStill : null;
   }, [failedStill, muxStill, preferredStill]);
+
+  useEffect(() => {
+    setImageLoaded(false);
+  }, [still]);
+
+  useEffect(() => {
+    const image = imageRef.current;
+    if (image?.complete && image.naturalWidth > 0) {
+      setImageLoaded(true);
+    }
+  }, [still]);
 
   const metaParts: string[] = [];
   if (showDirector) metaParts.push(`Dir. ${project.director.name}`);
@@ -70,15 +90,18 @@ export function ProjectCard({
   if (showYear && project.year) metaParts.push(String(project.year));
   const metaLine = metaParts.join(" · ");
   const displayIndexMeta =
-    indexMeta && indexMeta.trim().toLowerCase() !== project.brand?.trim().toLowerCase()
+    indexMeta &&
+    indexMeta.trim().toLowerCase() !== project.brand?.trim().toLowerCase()
       ? indexMeta
       : null;
   const fallbackLabel = project.brand || project.title;
-  const thumbnailHeight = Math.round(thumbnailWidth * 9 / 16);
+  const thumbnailHeight = Math.round((thumbnailWidth * 9) / 16);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Let modified clicks (cmd/ctrl/shift) and middle-click follow default browser behaviour.
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (!href) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
+      return;
     e.preventDefault();
     const sourceElement = e.currentTarget.querySelector<HTMLElement>(
       "[data-marketing-media-frame]",
@@ -89,14 +112,8 @@ export function ProjectCard({
     });
   };
 
-  return (
-    <Link
-      href={href}
-      onClick={handleClick}
-      className="ff-focusable ff-fluid-card group block"
-      prefetch
-      data-cursor="play"
-    >
+  const cardContent = (
+    <>
       {(indexLabel || displayIndexMeta) && (
         <div className="ff-card-index-row">
           <span>{indexLabel}</span>
@@ -111,13 +128,15 @@ export function ProjectCard({
         {still ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
+            ref={imageRef}
             src={still}
             alt={project.title}
             loading="lazy"
             decoding="async"
             width={thumbnailWidth}
             height={thumbnailHeight}
-            className="ff-media-image"
+            className={`ff-media-image${imageLoaded ? " is-loaded" : ""}`}
+            onLoad={() => setImageLoaded(true)}
             onError={() => setFailedStill(still)}
           />
         ) : (
@@ -127,19 +146,9 @@ export function ProjectCard({
         )}
       </div>
       <div className="mt-4">
-        {project.brand && (
-          <p className="ff-card-brand">
-            {project.brand}
-          </p>
-        )}
-        <p className="ff-display-card mt-1.5 leading-[1.05]">
-          {project.title}
-        </p>
-        {metaLine && (
-          <p className="ff-meta mt-2">
-            {metaLine}
-          </p>
-        )}
+        {project.brand && <p className="ff-card-brand">{project.brand}</p>}
+        <p className="ff-display-card mt-1.5 leading-[1.05]">{project.title}</p>
+        {metaLine && <p className="ff-meta mt-2">{metaLine}</p>}
         {tags && tags.length > 0 && (
           <div className="ff-card-tag-row">
             {tags.map((tag) => (
@@ -148,6 +157,24 @@ export function ProjectCard({
           </div>
         )}
       </div>
+    </>
+  );
+
+  if (!href) {
+    return (
+      <article className="ff-fluid-card group block">{cardContent}</article>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      onClick={handleClick}
+      className="ff-focusable ff-fluid-card group block"
+      prefetch
+      data-cursor={canPlay ? "play" : "link"}
+    >
+      {cardContent}
     </Link>
   );
 }

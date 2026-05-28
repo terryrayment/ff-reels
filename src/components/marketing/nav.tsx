@@ -141,11 +141,14 @@ export function MarketingNav() {
         </button>
       </nav>
 
-      {open && (
-        <div
-          id={MOBILE_MENU_ID}
-          className="min-[1180px]:hidden border-t border-ff-line-soft bg-ff-paper"
-        >
+      <div
+        id={MOBILE_MENU_ID}
+        aria-hidden={!open}
+        className={cn(
+          "ff-mobile-menu min-[1180px]:hidden border-t border-ff-line-soft bg-ff-paper",
+          open && "is-open",
+        )}
+      >
           <div className="px-6 py-5">
             <ul className="space-y-3">
               {NAV_ITEMS.map((item) => {
@@ -159,6 +162,7 @@ export function MarketingNav() {
                           setOpen(false);
                           setActivePartner(item.partnerId);
                         }}
+                        tabIndex={open ? 0 : -1}
                         className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
                       >
                         {partner.label}
@@ -171,6 +175,7 @@ export function MarketingNav() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      tabIndex={open ? 0 : -1}
                       className="ff-font-display block text-ff-nav-drawer font-medium text-ff-ink"
                     >
                       {item.label}
@@ -181,7 +186,6 @@ export function MarketingNav() {
             </ul>
           </div>
         </div>
-      )}
 
       {activePartner && (
         <PartnerPortal

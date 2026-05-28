@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 import { useRevealOnce } from "@/components/marketing/use-reveal-once";
@@ -16,6 +16,8 @@ interface DirectorCardProps {
   stillUrl: string | null;
   /** Mux playback ID for hover-to-play loop. */
   muxPlaybackId?: string | null;
+  /** Source-site video URL for hover-to-play loop when the card is driven by canonical Webflow data. */
+  sourceVideoUrl?: string | null;
   /** Optional project to open and autoplay when the director has no intro reel. */
   playProjectId?: string | null;
   /** Optional archive index label, e.g. "01". */
@@ -32,12 +34,15 @@ export function DirectorCard({
   positioning,
   stillUrl,
   muxPlaybackId,
+  sourceVideoUrl,
   playProjectId,
   indexLabel,
   indexMeta,
   tags,
 }: DirectorCardProps) {
   const [hovering, setHovering] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
   const href = playProjectId
@@ -47,8 +52,20 @@ export function DirectorCard({
   const onEnter = () => setHovering(true);
   const onLeave = () => setHovering(false);
 
+  useEffect(() => {
+    setImageLoaded(false);
+  }, [stillUrl]);
+
+  useEffect(() => {
+    const image = imageRef.current;
+    if (image?.complete && image.naturalWidth > 0) {
+      setImageLoaded(true);
+    }
+  }, [stillUrl]);
+
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
+      return;
     e.preventDefault();
     const sourceElement = e.currentTarget.querySelector<HTMLElement>(
       "[data-marketing-media-frame]",
@@ -88,13 +105,15 @@ export function DirectorCard({
         {stillUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
+            ref={imageRef}
             src={stillUrl}
             alt={name}
-            className="ff-media-image ff-media-fill"
+            className={`ff-media-image ff-media-fill${imageLoaded ? " is-loaded" : ""}`}
             loading="lazy"
             decoding="async"
             width={1280}
             height={720}
+            onLoad={() => setImageLoaded(true)}
           />
         ) : (
           <div className="ff-media-fallback">
@@ -122,18 +141,24 @@ export function DirectorCard({
             />
           </div>
         )}
+        {!muxPlaybackId && sourceVideoUrl && (
+          <video
+            className="ff-media-fill object-cover opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-visible:opacity-100"
+            src={sourceVideoUrl}
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="none"
+          />
+        )}
       </div>
       <div className="mt-3.5 flex items-baseline justify-between gap-4">
-        <h3
-          className="ff-display-card"
-          data-marketing-director-name-source
-        >
+        <h3 className="ff-display-card" data-marketing-director-name-source>
           {name}
         </h3>
         {positioning && (
-          <span className="ff-card-positioning">
-            {positioning}
-          </span>
+          <span className="ff-card-positioning">{positioning}</span>
         )}
       </div>
       {tags && tags.length > 0 && (

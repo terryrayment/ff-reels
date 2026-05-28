@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { prisma } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { RevealText } from "@/components/marketing/reveal-text";
-import { shouldUseMarketingProductionFallback } from "@/lib/marketing/prisma-fallback";
-import { getFriendsAndFamilyProductionWork } from "@/lib/marketing/production-fallback";
+import {
+  type CanonicalContentType,
+  getCanonicalWork,
+} from "@/lib/marketing/canonical-source";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -13,8 +14,6 @@ export const metadata: Metadata = {
     "Explore Friends & Family director work across commercials, case studies, films, production, post, animation, and VFX.",
   alternates: { canonical: "/site/work" },
 };
-export const revalidate = 300;
-
 const DISCIPLINES = [
   { slug: "all", label: "All", contentType: null },
   { slug: "commercials", label: "Commercials", contentType: "SPOT" },
@@ -30,38 +29,9 @@ function resolveDiscipline(raw: string | undefined): DisciplineSlug {
   return match?.slug ?? "all";
 }
 
-async function getWork(contentType: string | null) {
-  const where = {
-    muxStatus: "ready",
-    director: { isActive: true, rosterStatus: "ROSTER" as const },
-    ...(contentType ? { contentType } : {}),
-  };
-
-  try {
-    const [items, totalCount] = await Promise.all([
-      prisma.project.findMany({
-        where,
-        orderBy: [{ year: "desc" }, { createdAt: "desc" }],
-        take: 80,
-        select: {
-          id: true,
-          title: true,
-          brand: true,
-          year: true,
-          contentType: true,
-          thumbnailUrl: true,
-          muxPlaybackId: true,
-          director: { select: { slug: true, name: true } },
-        },
-      }),
-      prisma.project.count({ where }),
-    ]);
-
-    return { items, totalCount };
-  } catch (error) {
-    if (!shouldUseMarketingProductionFallback(error)) throw error;
-    return getFriendsAndFamilyProductionWork(contentType);
-  }
+function getWork(contentType: CanonicalContentType | null) {
+  const items = getCanonicalWork(contentType);
+  return { items, totalCount: items.length };
 }
 
 export default async function WorkPage({
@@ -71,7 +41,7 @@ export default async function WorkPage({
 }) {
   const active = resolveDiscipline(searchParams.type);
   const activeDiscipline = DISCIPLINES.find((d) => d.slug === active)!;
-  const { items, totalCount } = await getWork(activeDiscipline.contentType);
+  const { items, totalCount } = getWork(activeDiscipline.contentType);
 
   return (
     <div className="ff-shell ff-page">
@@ -84,13 +54,11 @@ export default async function WorkPage({
         </p>
       </header>
 
-      <nav
-        aria-label="Filter by discipline"
-        className="ff-filter-nav"
-      >
+      <nav aria-label="Filter by discipline" className="ff-filter-nav">
         {DISCIPLINES.map((d, i) => {
           const isActive = d.slug === active;
-          const href = d.slug === "all" ? "/site/work" : `/site/work?type=${d.slug}`;
+          const href =
+            d.slug === "all" ? "/site/work" : `/site/work?type=${d.slug}`;
           return (
             <span key={d.slug} className="flex items-center">
               {i > 0 && (
@@ -102,9 +70,7 @@ export default async function WorkPage({
                 href={href}
                 className={cn(
                   "ff-filter-link",
-                  isActive
-                    ? "ff-filter-link-active"
-                    : "text-ff-muted",
+                  isActive ? "ff-filter-link-active" : "text-ff-muted",
                 )}
               >
                 {d.label}

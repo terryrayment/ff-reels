@@ -12,22 +12,19 @@ const CONTACTS = [
     name: "Scott Kaplan",
     role: "Managing Director / EP",
     email: "scott@friendsandfamily.tv",
-    bio:
-      "A 25-year advertising production veteran and the creative engine behind Friends & Family. Scott has produced landmark campaigns for Tom Kuntz, Mark Romanek, Gus Van Sant, Noam Murro, and Malcolm Venville. His credits include Old Spice's The Man Your Man Could Smell Like, Apple's iPod series, and work for Nike, Google, and Coca-Cola.",
+    bio: "A 25-year advertising production veteran and the creative engine behind Friends & Family. Scott has produced landmark campaigns for Tom Kuntz, Mark Romanek, Gus Van Sant, Noam Murro, and Malcolm Venville. His credits include Old Spice's The Man Your Man Could Smell Like, Apple's iPod series, and work for Nike, Google, and Coca-Cola.",
   },
   {
     name: "Jed Herold",
     role: "Executive Producer",
     email: "jed@friendsandfamily.tv",
-    bio:
-      "An integrated executive producer and project management leader with 20+ years across video, digital, social, and print production. Jed has held senior roles at BBDO, McCann, Grey, and Johannes Leonardo, bringing deep agency-side insight to every production and one of the widest collaborator networks in the business.",
+    bio: "An integrated executive producer and project management leader with 20+ years across video, digital, social, and print production. Jed has held senior roles at BBDO, McCann, Grey, and Johannes Leonardo, bringing deep agency-side insight to every production and one of the widest collaborator networks in the business.",
   },
   {
     name: "Alana Hearn",
     role: "Executive Producer",
     email: "alana@friendsandfamily.tv",
-    bio:
-      "Alana began her production career at Lighthouse alongside legendary photographer Peter Lindbergh before rising to EP at Identity and Triptent, where she led content production for major brand campaigns. Her client roster spans Nike, Pepsi, Samsung, L'Oreal, and Maybelline, with expertise across commercial, fashion, and branded entertainment.",
+    bio: "Alana began her production career at Lighthouse alongside legendary photographer Peter Lindbergh before rising to EP at Identity and Triptent, where she led content production for major brand campaigns. Her client roster spans Nike, Pepsi, Samsung, L'Oreal, and Maybelline, with expertise across commercial, fashion, and branded entertainment.",
   },
 ];
 
@@ -35,21 +32,33 @@ const OFFICES = [
   {
     city: "Los Angeles",
     lines: ["Production, directors, sales, and West Coast agency work."],
+    href: "https://goo.gl/maps/BNAoVp5KUmcKbveMA",
   },
   {
     city: "New York",
     lines: ["Agency partnerships, editorial work, and East Coast production."],
+    href: "https://goo.gl/maps/FG86ZiBWzyAwyCvb7",
   },
   {
     city: "Sao Paulo / Curitiba",
     lines: ["THE YOUTH and COLOSSAL for production, post, animation, and VFX."],
+    href: null,
   },
 ];
 
 const REPS = [
-  { region: "West Coast", name: "Uncle Lefty" },
-  { region: "Midwest", name: "CCCo" },
-  { region: "East Coast", name: "Talk Shop" },
+  { region: "West Coast", name: "Uncle Lefty", email: "james@unclelefty.com" },
+  {
+    region: "West Coast",
+    name: "Uncle Lefty",
+    email: "laurel-ann@unclelefty.com",
+  },
+  { region: "East Coast", name: "Talk Shop", email: "katie.northy@talk-shop.tv" },
+  {
+    region: "East Coast",
+    name: "Talk Shop",
+    email: "kenard.jackson@talk-shop.tv",
+  },
 ];
 
 export default function ContactPage() {
@@ -111,6 +120,16 @@ export default function ContactPage() {
                   {line}
                 </p>
               ))}
+              {office.href && (
+                <a
+                  href={office.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ff-text-link mt-4 inline-block"
+                >
+                  Open map
+                </a>
+              )}
             </div>
           ))}
         </div>
@@ -123,9 +142,17 @@ export default function ContactPage() {
         <div className="ff-wide-column">
           <ul className="ff-list-rows">
             {REPS.map((rep) => (
-              <li key={rep.region} className="ff-list-row-compact">
-                <p className="ff-display-feature">{rep.name}</p>
-                <p className="ff-kicker-muted">{rep.region}</p>
+              <li
+                key={`${rep.name}-${rep.email}`}
+                className="ff-list-row-compact"
+              >
+                <div>
+                  <p className="ff-display-feature">{rep.name}</p>
+                  <p className="ff-kicker-muted">{rep.region}</p>
+                </div>
+                <a href={`mailto:${rep.email}`} className="ff-text-link">
+                  {rep.email}
+                </a>
               </li>
             ))}
           </ul>

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { getCanonicalDirectors } from "@/lib/marketing/canonical-source";
 import { absoluteAppUrl } from "@/lib/seo/site";
 
 const INDEXABLE_ROUTES = [
@@ -37,10 +38,18 @@ const INDEXABLE_ROUTES = [
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
-  return INDEXABLE_ROUTES.map((route) => ({
-    url: absoluteAppUrl(route.path),
-    lastModified,
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
-  }));
+  return [
+    ...INDEXABLE_ROUTES.map((route) => ({
+      url: absoluteAppUrl(route.path),
+      lastModified,
+      changeFrequency: route.changeFrequency,
+      priority: route.priority,
+    })),
+    ...getCanonicalDirectors().map((director) => ({
+      url: absoluteAppUrl(`/site/directors/${director.slug}`),
+      lastModified,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+  ];
 }
