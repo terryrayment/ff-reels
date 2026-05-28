@@ -55,7 +55,7 @@ export function ProjectCard({
   const muxStill = project.muxPlaybackId
     ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=${thumbnailWidth}`
     : null;
-  const preferredStill = project.thumbnailUrl ?? muxStill;
+  const preferredStill = muxStill ?? project.thumbnailUrl ?? null;
   const [failedStill, setFailedStill] = useState<string | null>(null);
   const still = useMemo(() => {
     if (!preferredStill) return null;

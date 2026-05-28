@@ -117,10 +117,9 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
     ? director.projects.filter((p) => p.id !== featuredProject.id)
     : director.projects;
   const featuredPosterUrl =
-    featuredProject?.thumbnailUrl ??
-    (featuredProject?.muxPlaybackId
+    featuredProject?.muxPlaybackId
       ? `https://image.mux.com/${featuredProject.muxPlaybackId}/thumbnail.jpg?width=1280`
-      : null);
+      : featuredProject?.thumbnailUrl ?? null;
 
   const grouped = groupProjects(visibleProjects);
   const awards = Array.isArray(director.awards) ? director.awards : [];
