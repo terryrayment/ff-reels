@@ -49,7 +49,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
       </head>
       <body className={`${inter.variable} ${archivo.variable} ${ibmPlexMono.variable} font-sans antialiased bg-[#F7F6F3] text-[#1A1A1A]`}>
         {children}

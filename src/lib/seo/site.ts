@@ -15,10 +15,7 @@ function normalizeUrl(url: string | undefined, fallback: string): string {
 }
 
 export function getAppUrl(): string {
-  return normalizeUrl(
-    process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL,
-    APP_URL_FALLBACK
-  );
+  return normalizeUrl(process.env.NEXT_PUBLIC_APP_URL, APP_URL_FALLBACK);
 }
 
 export function getMarketingUrl(): string {

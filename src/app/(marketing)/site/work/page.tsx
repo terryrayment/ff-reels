@@ -4,8 +4,15 @@ import { prisma } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { RevealText } from "@/components/marketing/reveal-text";
+import { shouldUseMarketingProductionFallback } from "@/lib/marketing/prisma-fallback";
+import { getFriendsAndFamilyProductionWork } from "@/lib/marketing/production-fallback";
 
-export const metadata: Metadata = { title: "Work" };
+export const metadata: Metadata = {
+  title: "Work",
+  description:
+    "Explore Friends & Family director work across commercials, case studies, films, production, post, animation, and VFX.",
+  alternates: { canonical: "/site/work" },
+};
 export const revalidate = 300;
 
 const DISCIPLINES = [
@@ -30,26 +37,31 @@ async function getWork(contentType: string | null) {
     ...(contentType ? { contentType } : {}),
   };
 
-  const [items, totalCount] = await Promise.all([
-    prisma.project.findMany({
-      where,
-      orderBy: [{ year: "desc" }, { createdAt: "desc" }],
-      take: 80,
-      select: {
-        id: true,
-        title: true,
-        brand: true,
-        year: true,
-        contentType: true,
-        thumbnailUrl: true,
-        muxPlaybackId: true,
-        director: { select: { slug: true, name: true } },
-      },
-    }),
-    prisma.project.count({ where }),
-  ]);
+  try {
+    const [items, totalCount] = await Promise.all([
+      prisma.project.findMany({
+        where,
+        orderBy: [{ year: "desc" }, { createdAt: "desc" }],
+        take: 80,
+        select: {
+          id: true,
+          title: true,
+          brand: true,
+          year: true,
+          contentType: true,
+          thumbnailUrl: true,
+          muxPlaybackId: true,
+          director: { select: { slug: true, name: true } },
+        },
+      }),
+      prisma.project.count({ where }),
+    ]);
 
-  return { items, totalCount };
+    return { items, totalCount };
+  } catch (error) {
+    if (!shouldUseMarketingProductionFallback(error)) throw error;
+    return getFriendsAndFamilyProductionWork(contentType);
+  }
 }
 
 export default async function WorkPage({

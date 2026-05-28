@@ -8,7 +8,11 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/commercial-production-company-los-angeles"],
+        allow: [
+          "/commercial-production-company-los-angeles",
+          "/site",
+          "/site/",
+        ],
         disallow: [
           "/",
           "/login",

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { MarketingNav } from "@/components/marketing/nav";
 import { MarketingFooter } from "@/components/marketing/footer";
-import { Cursor } from "@/components/marketing/cursor";
 import { LenisProvider } from "@/components/marketing/lenis-provider";
+import { getAppUrl } from "@/lib/seo/site";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getAppUrl()),
   title: {
     default: "Friends & Family",
     template: "%s — Friends & Family",
@@ -12,9 +13,8 @@ export const metadata: Metadata = {
   description:
     "Friends & Family is a creative studio for directors, production, post, animation, and VFX across Los Angeles, New York, São Paulo, and Curitiba.",
   robots: {
-    index: false,
-    follow: false,
-    nocache: true,
+    index: true,
+    follow: true,
   },
   openGraph: {
     title: "Friends & Family",
@@ -39,7 +39,6 @@ export default function MarketingLayout({
   return (
     <LenisProvider>
       <div className="min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
-        <Cursor />
         <MarketingNav />
         <main className="flex-1">{children}</main>
         <MarketingFooter />

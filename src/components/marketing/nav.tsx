@@ -21,6 +21,8 @@ const NAV_ITEMS = [
   { type: "link", href: "/site/contact", label: "Contact" },
 ] as const;
 
+const MOBILE_MENU_ID = "marketing-mobile-menu";
+
 export function MarketingNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -35,6 +37,15 @@ export function MarketingNav() {
   }, []);
 
   useEffect(() => setOpen(false), [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   useEffect(() => {
     if (!activePartner) return;
@@ -80,8 +91,8 @@ export function MarketingNav() {
           </Magnetic>
         </div>
 
-        <div className="hidden md:flex items-center">
-          <ul className="flex items-center gap-6 lg:gap-9">
+        <div className="hidden min-[1180px]:flex items-center">
+          <ul className="flex items-center gap-3 min-[1100px]:gap-5">
             {NAV_ITEMS.map((item) => {
               if (item.type === "partner") {
                 const partner = MARKETING_PARTNERS[item.partnerId];
@@ -120,17 +131,21 @@ export function MarketingNav() {
 
         <button
           type="button"
-          aria-label="Menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-controls={MOBILE_MENU_ID}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro text-ff-ink md:hidden"
+          className="font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro text-ff-ink min-[1180px]:hidden"
         >
           {open ? "Close" : "Menu"}
         </button>
       </nav>
 
       {open && (
-        <div className="md:hidden border-t border-ff-line-soft bg-ff-paper">
+        <div
+          id={MOBILE_MENU_ID}
+          className="min-[1180px]:hidden border-t border-ff-line-soft bg-ff-paper"
+        >
           <div className="px-6 py-5">
             <ul className="space-y-3">
               {NAV_ITEMS.map((item) => {

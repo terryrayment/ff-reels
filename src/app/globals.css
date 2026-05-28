@@ -662,7 +662,7 @@ mux-player {
     font-size: var(--ff-type-micro);
     font-weight: 500;
     line-height: 1;
-    letter-spacing: var(--ff-track-label);
+    letter-spacing: 0;
     text-transform: uppercase;
     font-stretch: normal;
     font-variation-settings: normal;
@@ -880,9 +880,9 @@ mux-player {
   }
 
   .ff-nav-label {
-    font-family: var(--ff-font-mono);
-    font-size: var(--ff-type-label);
-    font-weight: 560;
+    font-family: var(--ff-font-display);
+    font-size: calc(var(--ff-type-label) * 1.5);
+    font-weight: 700;
     line-height: 1;
     letter-spacing: var(--ff-track-label);
     text-transform: uppercase;

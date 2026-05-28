@@ -45,6 +45,41 @@ export function ScreeningPlayer({
   const lastTimeBeforeSeek = useRef(0);
   const videoQualityRef = useRef<string | null>(null);
 
+  const buildSpotPayload = useCallback(
+    (overrides: {
+      percentWatched?: number;
+      skipped?: boolean;
+      rewatched?: boolean;
+    } = {}) => {
+      const totalDur = spotDuration || 0;
+      const pct =
+        overrides.percentWatched ??
+        (totalDur > 0
+          ? Math.min(100, Math.round((watchedSeconds.current / totalDur) * 100))
+          : 0);
+
+      return {
+        viewId,
+        projectId,
+        watchDuration: Math.round(watchedSeconds.current),
+        totalDuration: totalDur,
+        percentWatched: pct,
+        rewatched: overrides.rewatched ?? hasRewatched.current,
+        skipped: overrides.skipped ?? false,
+        pauseCount: pauseCount.current,
+        seekForwardCount: seekForwardCount.current,
+        seekBackwardCount: seekBackwardCount.current,
+        fullscreenToggleCount: fullscreenToggleCount.current,
+        playbackRateChanges:
+          playbackRates.current.length > 0
+            ? JSON.stringify(playbackRates.current)
+            : null,
+        videoQuality: videoQualityRef.current,
+      };
+    },
+    [projectId, spotDuration, viewId],
+  );
+
   // IntersectionObserver — lazy load player when scrolled into view
   useEffect(() => {
     const el = containerRef.current;
@@ -85,32 +120,7 @@ export function ScreeningPlayer({
 
       lastReportedAt.current = now;
 
-      const totalDur = spotDuration || 0;
-      const pct =
-        overrides.percentWatched ??
-        (totalDur > 0
-          ? Math.min(100, Math.round((watchedSeconds.current / totalDur) * 100))
-          : 0);
-
-      const payload = {
-        viewId,
-        projectId,
-        watchDuration: Math.round(watchedSeconds.current),
-        totalDuration: totalDur,
-        percentWatched: pct,
-        rewatched: overrides.rewatched ?? hasRewatched.current,
-        skipped: overrides.skipped ?? false,
-        // Richer video signals
-        pauseCount: pauseCount.current,
-        seekForwardCount: seekForwardCount.current,
-        seekBackwardCount: seekBackwardCount.current,
-        fullscreenToggleCount: fullscreenToggleCount.current,
-        playbackRateChanges:
-          playbackRates.current.length > 0
-            ? JSON.stringify(playbackRates.current)
-            : null,
-        videoQuality: videoQualityRef.current,
-      };
+      const payload = buildSpotPayload(overrides);
 
       try {
         await fetch("/api/tracking/spot-view", {
@@ -122,7 +132,7 @@ export function ScreeningPlayer({
         // Fire-and-forget
       }
     },
-    [viewId, projectId, spotDuration]
+    [buildSpotPayload, viewId]
   );
 
   // Periodic reporting while playing
@@ -148,24 +158,12 @@ export function ScreeningPlayer({
       if (pct < 25) {
         // User skipped this spot — fire beacon
         if (viewId) {
-          const beaconPayload = JSON.stringify({
-            viewId,
-            projectId,
-            watchDuration: Math.round(watchedSeconds.current),
-            totalDuration: totalDur,
-            percentWatched: Math.round(pct),
-            rewatched: hasRewatched.current,
-            skipped: true,
-            pauseCount: pauseCount.current,
-            seekForwardCount: seekForwardCount.current,
-            seekBackwardCount: seekBackwardCount.current,
-            fullscreenToggleCount: fullscreenToggleCount.current,
-            playbackRateChanges:
-              playbackRates.current.length > 0
-                ? JSON.stringify(playbackRates.current)
-                : null,
-            videoQuality: videoQualityRef.current,
-          });
+          const beaconPayload = JSON.stringify(
+            buildSpotPayload({
+              percentWatched: Math.round(pct),
+              skipped: true,
+            }),
+          );
           navigator.sendBeacon("/api/tracking/spot-view", beaconPayload);
         }
       } else {
@@ -173,8 +171,7 @@ export function ScreeningPlayer({
         sendSpotData();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasStartedPlaying, viewId, projectId, spotDuration]);
+  }, [buildSpotPayload, hasStartedPlaying, sendSpotData, spotDuration, viewId]);
 
   // Player event handlers
   const handlePlay = () => {

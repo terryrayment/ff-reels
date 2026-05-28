@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { FeaturedReel } from "@/components/marketing/featured-reel";
 import { RevealText } from "@/components/marketing/reveal-text";
+import { shouldUseMarketingProductionFallback } from "@/lib/marketing/prisma-fallback";
+import { getFriendsAndFamilyProductionDirector } from "@/lib/marketing/production-fallback";
 
 interface Props {
   params: { slug: string };
@@ -14,50 +16,66 @@ interface Props {
 export const revalidate = 300;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const d = await prisma.director.findUnique({
-    where: { slug: params.slug },
-    select: { name: true, bio: true, statement: true },
-  });
-  if (!d) return { title: "Director not found" };
-  return {
-    title: d.name,
-    description: d.statement ?? d.bio ?? `${d.name} — Friends & Family`,
-  };
+  try {
+    const d = await prisma.director.findUnique({
+      where: { slug: params.slug },
+      select: { name: true, bio: true, statement: true },
+    });
+    if (!d) return { title: "Director not found" };
+    return {
+      title: d.name,
+      description: d.statement ?? d.bio ?? `${d.name} — Friends & Family`,
+      alternates: { canonical: `/site/directors/${params.slug}` },
+    };
+  } catch (error) {
+    if (!shouldUseMarketingProductionFallback(error)) throw error;
+    const fallback = await getFriendsAndFamilyProductionDirector(params.slug);
+    return {
+      title: fallback.name,
+      description:
+        fallback.statement ?? fallback.bio ?? `${fallback.name} — Friends & Family`,
+      alternates: { canonical: `/site/directors/${params.slug}` },
+    };
+  }
 }
 
 async function getDirector(slug: string) {
-  return prisma.director.findUnique({
-    where: { slug },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      bio: true,
-      statement: true,
-      videoIntroUrl: true,
-      categories: true,
-      awards: true,
-      pressLinks: true,
-      clientLogos: true,
-      isActive: true,
-      rosterStatus: true,
-      projects: {
-        where: { muxStatus: "ready" },
-        orderBy: [{ year: "desc" }, { createdAt: "desc" }],
-        select: {
-          id: true,
-          title: true,
-          brand: true,
-          agency: true,
-          year: true,
-          thumbnailUrl: true,
-          muxPlaybackId: true,
-          category: true,
-          contentType: true,
+  try {
+    return await prisma.director.findUnique({
+      where: { slug },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        bio: true,
+        statement: true,
+        videoIntroUrl: true,
+        awards: true,
+        pressLinks: true,
+        clientLogos: true,
+        isActive: true,
+        rosterStatus: true,
+        projects: {
+          where: { muxStatus: "ready" },
+          orderBy: [{ year: "desc" }, { createdAt: "desc" }],
+          select: {
+            id: true,
+            title: true,
+            brand: true,
+            agency: true,
+            year: true,
+            thumbnailUrl: true,
+            muxPlaybackId: true,
+            category: true,
+            contentType: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    if (!shouldUseMarketingProductionFallback(error)) throw error;
+    return getFriendsAndFamilyProductionDirector(slug);
+  }
 }
 
 type DirectorRecord = NonNullable<Awaited<ReturnType<typeof getDirector>>>;
@@ -105,7 +123,6 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
       : null);
 
   const grouped = groupProjects(visibleProjects);
-  const positioning = director.categories?.[0] ?? null;
   const awards = Array.isArray(director.awards) ? director.awards : [];
   const press = Array.isArray(director.pressLinks) ? director.pressLinks : [];
 
@@ -113,11 +130,6 @@ export default async function DirectorDetailPage({ params, searchParams }: Props
     <article className="pt-[88px] lg:pt-[104px] pb-24">
       <div className="marketing-transition-reveal" data-marketing-transition-reveal>
         <header className="ff-shell mb-8 lg:mb-10">
-          {positioning && (
-            <p className="ff-kicker-muted mb-3">
-              {positioning}
-            </p>
-          )}
           <h1
             className="ff-display-director"
             data-marketing-director-name-target={director.slug}

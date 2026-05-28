@@ -1,13 +1,19 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-if (
-  !process.env.R2_ACCOUNT_ID ||
-  !process.env.R2_ACCESS_KEY_ID ||
-  !process.env.R2_SECRET_ACCESS_KEY ||
-  !process.env.R2_BUCKET_NAME
-) {
-  console.warn("R2 env vars not configured — file uploads will be disabled");
+export const R2_CONFIGURED = Boolean(
+  process.env.R2_ACCOUNT_ID &&
+    process.env.R2_ACCESS_KEY_ID &&
+    process.env.R2_SECRET_ACCESS_KEY &&
+    process.env.R2_BUCKET_NAME,
+);
+
+if (!R2_CONFIGURED && process.env.VERCEL_ENV === "production") {
+  throw new Error("R2 env vars are required in production.");
+}
+
+if (!R2_CONFIGURED && process.env.NODE_ENV !== "production") {
+  console.warn("R2 env vars not configured — file uploads are disabled locally.");
 }
 
 export const r2 = new S3Client({

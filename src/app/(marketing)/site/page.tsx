@@ -4,10 +4,14 @@ import { prisma } from "@/lib/db";
 import { DirectorCard } from "@/components/marketing/director-card";
 import { Magnetic } from "@/components/marketing/magnetic";
 import { ProjectCard } from "@/components/marketing/project-card";
-import { RevealText } from "@/components/marketing/reveal-text";
+import { shouldUseMarketingProductionFallback } from "@/lib/marketing/prisma-fallback";
+import { getFriendsAndFamilyProductionHomepage } from "@/lib/marketing/production-fallback";
 
 export const metadata: Metadata = {
   title: { absolute: "Friends & Family — Creative Studio" },
+  description:
+    "Friends & Family is a creative studio for directors, production, post, animation, and VFX across Los Angeles, New York, Sao Paulo, and Curitiba.",
+  alternates: { canonical: "/site" },
 };
 
 export const revalidate = 300;
@@ -24,7 +28,8 @@ function formatIndex(index: number) {
 }
 
 async function getHomepageData() {
-  const [directors, recentProjects] = await Promise.all([
+  try {
+    const [directors, recentProjects] = await Promise.all([
     prisma.director.findMany({
       where: { isActive: true, rosterStatus: "ROSTER" },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -32,7 +37,6 @@ async function getHomepageData() {
         id: true,
         slug: true,
         name: true,
-        categories: true,
         videoIntroUrl: true,
         headshotUrl: true,
         heroThumbnailUrl: true,
@@ -62,50 +66,54 @@ async function getHomepageData() {
         director: { select: { slug: true, name: true } },
       },
     }),
-  ]);
+    ]);
 
-  const heroProjectIds = directors
-    .map((d) => d.heroProjectId)
-    .filter((id): id is string => Boolean(id));
+    const heroProjectIds = directors
+      .map((d) => d.heroProjectId)
+      .filter((id): id is string => Boolean(id));
 
-  const heroProjects =
-    heroProjectIds.length > 0
-      ? await prisma.project.findMany({
-          where: { id: { in: heroProjectIds } },
-          select: { id: true, thumbnailUrl: true, muxPlaybackId: true },
-        })
-      : [];
+    const heroProjects =
+      heroProjectIds.length > 0
+        ? await prisma.project.findMany({
+            where: { id: { in: heroProjectIds } },
+            select: { id: true, thumbnailUrl: true, muxPlaybackId: true },
+          })
+        : [];
 
-  const heroProjectMap = new Map(heroProjects.map((p) => [p.id, p]));
+    const heroProjectMap = new Map(heroProjects.map((p) => [p.id, p]));
 
-  const featuredDirectors = directors.map((d) => {
-    const heroProject = d.heroProjectId
-      ? heroProjectMap.get(d.heroProjectId) ?? null
-      : null;
-    const fallbackProject =
-      heroProject?.muxPlaybackId ? heroProject : d.projects[0] ?? null;
-    const stillUrl =
-      d.heroThumbnailUrl ??
-      heroProject?.thumbnailUrl ??
-      (heroProject?.muxPlaybackId
-        ? `https://image.mux.com/${heroProject.muxPlaybackId}/thumbnail.jpg?width=1280`
-        : null) ??
-      fallbackProject?.thumbnailUrl ??
-      (fallbackProject?.muxPlaybackId
-        ? `https://image.mux.com/${fallbackProject.muxPlaybackId}/thumbnail.jpg?width=1280`
-        : null) ??
-      d.headshotUrl ??
-      null;
+    const featuredDirectors = directors.map((d) => {
+      const heroProject = d.heroProjectId
+        ? heroProjectMap.get(d.heroProjectId) ?? null
+        : null;
+      const fallbackProject =
+        heroProject?.muxPlaybackId ? heroProject : d.projects[0] ?? null;
+      const stillUrl =
+        d.heroThumbnailUrl ??
+        heroProject?.thumbnailUrl ??
+        (heroProject?.muxPlaybackId
+          ? `https://image.mux.com/${heroProject.muxPlaybackId}/thumbnail.jpg?width=1280`
+          : null) ??
+        fallbackProject?.thumbnailUrl ??
+        (fallbackProject?.muxPlaybackId
+          ? `https://image.mux.com/${fallbackProject.muxPlaybackId}/thumbnail.jpg?width=1280`
+          : null) ??
+        d.headshotUrl ??
+        null;
 
-    return {
-      ...d,
-      stillUrl,
-      cardPlaybackId: d.videoIntroUrl ?? fallbackProject?.muxPlaybackId ?? null,
-      playProjectId: d.videoIntroUrl ? null : fallbackProject?.id ?? null,
-    };
-  });
+      return {
+        ...d,
+        stillUrl,
+        cardPlaybackId: d.videoIntroUrl ?? fallbackProject?.muxPlaybackId ?? null,
+        playProjectId: d.videoIntroUrl ? null : fallbackProject?.id ?? null,
+      };
+    });
 
-  return { featuredDirectors, recentProjects };
+    return { featuredDirectors, recentProjects };
+  } catch (error) {
+    if (!shouldUseMarketingProductionFallback(error)) throw error;
+    return getFriendsAndFamilyProductionHomepage();
+  }
 }
 
 export default async function MarketingHomePage() {
@@ -114,19 +122,7 @@ export default async function MarketingHomePage() {
   return (
     <>
       <section className="ff-shell ff-page">
-        <div className="ff-home-statement-row">
-          <div>
-            <h1 className="ff-display-hero ff-home-statement">
-              <RevealText text="Friends & Family" />
-            </h1>
-          </div>
-          <p className="ff-body ff-home-statement-side">
-            A creative studio built around directors, production, post,
-            animation, and VFX across Los Angeles, New York, São Paulo, and
-            Curitiba.
-          </p>
-        </div>
-
+        <h1 className="sr-only">Friends &amp; Family</h1>
         {featuredDirectors.length === 0 ? (
           <EmptyMessage message="No directors published yet." />
         ) : (
@@ -136,13 +132,13 @@ export default async function MarketingHomePage() {
                 key={d.id}
                 slug={d.slug}
                 name={d.name}
-                positioning={d.categories?.[0] ?? null}
+                positioning={null}
                 stillUrl={d.stillUrl}
                 muxPlaybackId={d.cardPlaybackId}
                 playProjectId={d.playProjectId}
                 indexLabel={formatIndex(i)}
-                indexMeta={d.categories?.[0] ?? "Director"}
-                tags={d.categories?.slice(0, 3) ?? ["Director"]}
+                indexMeta="Director"
+                tags={["Director"]}
               />
             ))}
           </div>

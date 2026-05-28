@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const CONTACTS = [
   { name: "Scott", email: "scott@friendsandfamily.tv" },
@@ -12,6 +15,10 @@ const SOCIALS = [
 ];
 
 export function MarketingFooter() {
+  const pathname = usePathname();
+
+  if (pathname === "/site/about") return null;
+
   return (
     <footer className="border-t ff-rule mt-32">
       <div className="ff-shell py-16">

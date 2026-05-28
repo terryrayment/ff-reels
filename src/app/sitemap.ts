@@ -3,6 +3,31 @@ import { absoluteAppUrl } from "@/lib/seo/site";
 
 const INDEXABLE_ROUTES = [
   {
+    path: "/site",
+    changeFrequency: "weekly" as const,
+    priority: 1,
+  },
+  {
+    path: "/site/work",
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  },
+  {
+    path: "/site/directors",
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  },
+  {
+    path: "/site/about",
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  },
+  {
+    path: "/site/contact",
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  },
+  {
     path: "/commercial-production-company-los-angeles",
     changeFrequency: "weekly" as const,
     priority: 0.7,
