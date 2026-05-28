@@ -5,6 +5,9 @@ const TRANSITION_POSTER_KEY = "ff:marketing-transition-poster";
 const TRANSITION_DURATION_MS = 1320;
 const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
 const MEDIA_TRANSITION_ACTIVE_CLASS = "marketing-media-transition-active";
+const MEDIA_TRANSITION_OVERLAY_SELECTOR = ".marketing-media-transition";
+
+let mediaTransitionInFlight = false;
 
 export const MARKETING_TRANSITION_FINISHED =
   "ff:marketing-route-transition-finished";
@@ -97,6 +100,10 @@ function waitForFeaturedReelTarget(timeoutMs = 900) {
 
 function finishMarketingMediaTransition() {
   document.documentElement.classList.remove(MEDIA_TRANSITION_ACTIVE_CLASS);
+  document
+    .querySelectorAll(MEDIA_TRANSITION_OVERLAY_SELECTOR)
+    .forEach((overlay) => overlay.remove());
+  mediaTransitionInFlight = false;
   window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
 }
 
@@ -170,8 +177,13 @@ function animateMediaFrame({
         fill: "forwards",
       }).finished;
     })
-    .finally(() => overlay.remove())
-    .catch(() => overlay.remove());
+    .catch(() => {
+      finishMarketingMediaTransition();
+    })
+    .finally(() => {
+      overlay.remove();
+      mediaTransitionInFlight = false;
+    });
 
   return true;
 }
@@ -263,41 +275,44 @@ function animateDirectorName({
         620,
       );
 
-      return overlay.animate(
-        [
+      return overlay
+        .animate(
+          [
+            {
+              left: `${from.left}px`,
+              top: `${from.top}px`,
+              width: `${from.width}px`,
+              height: `${from.height}px`,
+              fontSize: sourceStyle.fontSize,
+              lineHeight: sourceStyle.lineHeight,
+              letterSpacing: sourceStyle.letterSpacing,
+              opacity: 1,
+            },
+            {
+              left: `${to.left}px`,
+              top: `${to.top}px`,
+              width: `${to.width}px`,
+              height: `${to.height}px`,
+              fontSize: targetStyle.fontSize,
+              lineHeight: targetStyle.lineHeight,
+              letterSpacing: targetStyle.letterSpacing,
+              opacity: 1,
+            },
+          ],
           {
-            left: `${from.left}px`,
-            top: `${from.top}px`,
-            width: `${from.width}px`,
-            height: `${from.height}px`,
-            fontSize: sourceStyle.fontSize,
-            lineHeight: sourceStyle.lineHeight,
-            letterSpacing: sourceStyle.letterSpacing,
-            opacity: 1,
+            duration: remaining,
+            easing: TRANSITION_EASING,
+            fill: "forwards",
           },
-          {
-            left: `${to.left}px`,
-            top: `${to.top}px`,
-            width: `${to.width}px`,
-            height: `${to.height}px`,
-            fontSize: targetStyle.fontSize,
-            lineHeight: targetStyle.lineHeight,
-            letterSpacing: targetStyle.letterSpacing,
-            opacity: 1,
-          },
-        ],
-        {
-          duration: remaining,
-          easing: TRANSITION_EASING,
-          fill: "forwards",
-        },
-      ).finished.then(() =>
-        overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
-          duration: 120,
-          easing: "ease-out",
-          fill: "forwards",
-        }).finished,
-      );
+        )
+        .finished.then(
+          () =>
+            overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+              duration: 120,
+              easing: "ease-out",
+              fill: "forwards",
+            }).finished,
+        );
     })
     .finally(() => overlay.remove())
     .catch(() => overlay.remove());
@@ -311,6 +326,24 @@ export function startMarketingViewTransition(
   options: MarketingTransitionOptions = {},
 ) {
   if (typeof window !== "undefined") {
+    if (
+      mediaTransitionInFlight ||
+      document.documentElement.classList.contains(
+        MEDIA_TRANSITION_ACTIVE_CLASS,
+      ) ||
+      document.querySelector(MEDIA_TRANSITION_OVERLAY_SELECTOR)
+    ) {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      clearMarketingTransitionDelay();
+      clearMarketingTransitionPoster();
+      document.documentElement.classList.remove(MEDIA_TRANSITION_ACTIVE_CLASS);
+      router.push(href);
+      return;
+    }
+
     getStorage()?.setItem(
       TRANSITION_UNTIL_KEY,
       String(Date.now() + TRANSITION_DURATION_MS),
@@ -323,6 +356,7 @@ export function startMarketingViewTransition(
     document.documentElement.classList.add(MEDIA_TRANSITION_ACTIVE_CLASS);
     const hasMediaOverlay = animateMediaFrame(options);
     const hasNameOverlay = animateDirectorName(options);
+    mediaTransitionInFlight = hasMediaOverlay || hasNameOverlay;
     if (!hasMediaOverlay) {
       window.setTimeout(finishMarketingMediaTransition, TRANSITION_DURATION_MS);
     }

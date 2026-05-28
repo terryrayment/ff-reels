@@ -1490,6 +1490,10 @@ mux-player {
     transform: translate3d(0.18rem, 0, 0);
   }
 
+  .marketing-media-transition-active [data-marketing-featured-media-target] {
+    opacity: 0;
+  }
+
   @media (hover: none) {
     .ff-fluid-card:hover,
     .ff-fluid-card:hover .ff-display-card,

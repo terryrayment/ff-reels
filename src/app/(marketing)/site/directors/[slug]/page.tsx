@@ -169,9 +169,13 @@ export default async function DirectorDetailPage({
 function SourceVideoReel({ project }: { project: CanonicalProject }) {
   return (
     <section className="ff-shell mb-12">
-      <div className="overflow-hidden bg-black">
+      <div
+        className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black transition-opacity duration-150"
+        data-featured-project-id={project.id}
+        data-marketing-featured-media-target
+      >
         <video
-          className="aspect-video w-full object-cover"
+          className="h-full w-full object-cover"
           src={project.sourceVideoUrl ?? undefined}
           poster={project.thumbnailUrl ?? undefined}
           controls
