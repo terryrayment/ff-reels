@@ -115,11 +115,11 @@ export function VersantReferenceStrip({
             return (
               <article
                 key={item.title}
-                className="versant-reveal group flex min-h-[24rem] flex-col overflow-hidden rounded-[14px] border border-black/[0.08] bg-[var(--versant-white)] p-4 shadow-[0_18px_60px_rgba(17,17,14,0.045)] transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_24px_70px_rgba(17,17,14,0.07)] motion-reduce:transition-none"
+                className="versant-reveal versant-mw-card group flex min-h-[24rem] flex-col overflow-hidden rounded-[14px] border border-black/[0.1] bg-[var(--versant-white)] p-3 shadow-[0_18px_60px_rgba(17,17,14,0.045)] transition duration-300 ease-out hover:border-black/22 motion-reduce:transition-none sm:p-4"
               >
                 <div
                   aria-hidden="true"
-                  className="relative mb-6 aspect-video overflow-hidden rounded-[10px] bg-[var(--versant-soft-gray)]"
+                  className="versant-mw-media relative mb-6 aspect-video overflow-hidden rounded-[10px] bg-[var(--versant-soft-gray)]"
                 >
                   {playVideo && frame.playbackId && frame.still ? (
                     <ReferenceVideoFrame

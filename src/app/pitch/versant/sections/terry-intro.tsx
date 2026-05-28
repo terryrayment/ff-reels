@@ -48,8 +48,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,var(--versant-paper)_0%,rgba(247,242,231,0.18)_20%,rgba(247,242,231,0.12)_72%,var(--versant-paper)_100%)]"
       />
 
-      <div className="relative z-10 mx-auto grid max-w-[1400px] gap-4 lg:grid-cols-12">
-        <article className={`relative overflow-hidden rounded-[18px] border border-black/10 bg-[rgba(251,246,234,0.96)] p-6 shadow-[0_24px_80px_rgba(16,16,16,0.07)] backdrop-blur-[2px] sm:p-8 lg:p-10 xl:rounded-[22px] ${hasFounderMedia ? "lg:col-span-9" : "lg:col-span-10"}`}>
+      <div className="relative z-10 mx-auto grid max-w-[1400px] gap-3 lg:grid-cols-12">
+        <article className={`versant-mw-panel relative overflow-hidden rounded-[18px] border border-black/12 bg-[rgba(251,246,234,0.94)] p-6 shadow-[0_24px_80px_rgba(16,16,16,0.07)] backdrop-blur-[2px] sm:p-8 lg:p-10 xl:rounded-[22px] ${hasFounderMedia ? "lg:col-span-9" : "lg:col-span-10"}`}>
           <div className="relative z-10 grid gap-10 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-7">
               <p className="mb-5 text-[12px] font-medium uppercase tracking-[0.14em] text-black/42">
@@ -63,13 +63,10 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             <div className="space-y-5 text-[clamp(18px,1.75vw,24px)] leading-[1.22] tracking-[-0.03em] text-black/74 lg:col-span-5">
               <p>
                 We are a creative studio and production company built for
-                ideas that need taste, speed, and a clean path to delivery.
-              </p>
-
-              <p>
-                Versant&apos;s sports work has real constraints: live windows,
-                talent access, sponsor rules, platform versions, late notes,
-                and finish that has to hold up everywhere.
+                ideas that need taste, speed, and a clean path to delivery,
+                especially when the assignment comes with live windows, talent
+                access, sponsor rules, platform versions, late notes, and
+                finish that has to hold up everywhere.
               </p>
 
               <p>
@@ -96,12 +93,12 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
         </article>
 
         {hasFounderMedia && (
-          <aside className="overflow-hidden rounded-[18px] bg-[var(--versant-black)] p-4 text-white lg:col-span-3 xl:rounded-[24px]">
+          <aside className="versant-mw-panel overflow-hidden rounded-[18px] bg-[var(--versant-black)] p-4 text-white lg:col-span-3 xl:rounded-[24px]">
             <div className="mb-4 flex items-center justify-between px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
               <span>Founder message</span>
               <span>optional</span>
             </div>
-            <div className="aspect-[4/5] overflow-hidden rounded-[14px] bg-black">
+            <div className="versant-mw-media aspect-[4/5] overflow-hidden rounded-[14px] bg-black">
               {videoPlaybackId ? (
                 <MuxPlayer
                   playbackId={videoPlaybackId}

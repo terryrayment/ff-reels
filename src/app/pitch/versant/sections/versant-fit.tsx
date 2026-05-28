@@ -11,7 +11,7 @@ const VERSANT_GIVES = [
 export function VersantFit() {
   return (
     <section className="px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <div className="versant-reveal mx-auto max-w-[1400px] rounded-[18px] border border-black/[0.08] bg-[var(--versant-white)] p-6 shadow-[0_24px_80px_rgba(17,17,14,0.055)] sm:p-8 lg:rounded-[22px] lg:p-10">
+      <div className="versant-reveal versant-mw-panel mx-auto max-w-[1400px] rounded-[18px] border border-black/[0.1] bg-[var(--versant-white)] p-6 shadow-[0_24px_80px_rgba(17,17,14,0.055)] sm:p-8 lg:rounded-[22px] lg:p-10">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-6">
             <p className="mb-5 text-[12px] font-medium uppercase tracking-[0.14em] text-black/44">

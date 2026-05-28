@@ -14,8 +14,8 @@ const USA_SPORTS_PROPERTIES = [
 export function UsaSportsShelf() {
   return (
     <section className="px-4 py-3 sm:px-6 lg:px-8">
-      <div className="versant-reveal mx-auto max-w-[1400px] rounded-[14px] border border-[var(--versant-soft-gray)] bg-[var(--versant-white)] px-5 py-5 text-[var(--versant-ink)] shadow-[0_18px_54px_rgba(17,17,14,0.045)] sm:px-6 lg:px-7">
-        <div className="grid gap-5 lg:grid-cols-[180px_1fr] lg:items-start">
+      <div className="versant-reveal versant-mw-panel mx-auto max-w-[1400px] rounded-[14px] border border-[var(--versant-soft-gray)] bg-[var(--versant-white)] px-5 py-5 text-[var(--versant-ink)] shadow-[0_18px_54px_rgba(17,17,14,0.045)] sm:px-6 lg:px-7">
+        <div className="grid gap-5 lg:grid-cols-[220px_1fr] lg:items-start">
           <p className="text-[11px] font-medium uppercase leading-none tracking-[0.16em] text-black/46">
             WHAT YOU CARRY
           </p>
@@ -28,7 +28,7 @@ export function UsaSportsShelf() {
               {USA_SPORTS_PROPERTIES.map((property) => (
                 <li
                   key={property}
-                  className="rounded-full border border-[var(--versant-soft-gray)] bg-[var(--versant-mint)] px-3 py-1.5 text-[13px] font-medium leading-none text-[var(--versant-ink)]"
+                  className="versant-mw-pill rounded-full border border-[var(--versant-soft-gray)] bg-[var(--versant-mint)] px-3 py-1.5 text-[13px] font-medium leading-none text-[var(--versant-ink)]"
                 >
                   {property}
                 </li>

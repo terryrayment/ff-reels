@@ -114,8 +114,8 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
 
   return (
     <section className="px-4 py-4 text-[var(--versant-ink)] sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[1600px] gap-4 lg:grid-cols-12">
-        <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[21px] bg-black p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[26px]">
+      <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[1600px] gap-3 lg:grid-cols-12">
+        <article className="versant-mw-panel relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[21px] border border-white/10 bg-black p-7 text-[var(--versant-white)] sm:p-10 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-12 xl:rounded-[26px]">
           {motionFrames.length > 0 && (
             <div
               aria-hidden="true"
@@ -124,7 +124,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
               {motionFrames.slice(0, 4).map((frame, index) => (
                 <div
                   key={frame.still ?? index}
-                  className={`overflow-hidden rounded-[12px] bg-white/5 ${
+                  className={`versant-mw-media overflow-hidden rounded-[12px] bg-white/5 ${
                     index === 0 ? "col-span-2 sm:col-span-1" : ""
                   }`}
                 >

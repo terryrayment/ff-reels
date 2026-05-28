@@ -71,14 +71,14 @@ const CLEAN_PROJECT_TITLES: Record<(typeof DIRECTOR_SLUGS)[number], string | nul
 const VERSANT_THEME = {
   "--versant-black": "#0C3B2E",
   "--versant-ink": "#11110e",
-  "--versant-paper": "#F2ECDD",
-  "--versant-white": "#FBF6EA",
+  "--versant-paper": "#F5F1E8",
+  "--versant-white": "#FFFDF5",
   "--versant-orange": "#C6A24C",
-  "--versant-lime": "#f7f0df",
+  "--versant-lime": "#f8f3e8",
   "--versant-blue": "#0C3B2E",
-  "--versant-mint": "#ebe3cf",
+  "--versant-mint": "#eee8d8",
   "--versant-gray": "#8f8879",
-  "--versant-soft-gray": "#e6decc",
+  "--versant-soft-gray": "#e4dcc9",
 } as CSSProperties;
 
 function firstNameOf(full: string | null | undefined): string | null {
@@ -263,6 +263,24 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               line-height: 0.98;
               padding-bottom: 0.08em;
               text-wrap: balance;
+            }
+            .versant-mw-panel,
+            .versant-mw-card {
+              border-radius: 10px !important;
+              box-shadow: none !important;
+            }
+            .versant-mw-media {
+              border-radius: 7px !important;
+            }
+            .versant-mw-card {
+              transition: border-color 240ms ease, background-color 240ms ease, transform 240ms ease;
+            }
+            .versant-mw-card:hover {
+              transform: translateY(-2px);
+            }
+            .versant-mw-pill {
+              border-radius: 999px;
+              letter-spacing: 0;
             }
             @media (prefers-reduced-motion: reduce) {
               .versant-marquee {

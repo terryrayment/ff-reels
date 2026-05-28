@@ -103,7 +103,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
 
   return (
     <section className="px-4 pb-4 pt-10 sm:px-6 lg:px-8 lg:pb-8 lg:pt-14">
-      <div className="mx-auto max-w-[1500px] rounded-[18px] bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.18)] sm:p-8 lg:rounded-[22px] lg:p-10">
+      <div className="versant-mw-panel mx-auto max-w-[1500px] rounded-[18px] border border-white/10 bg-[var(--versant-black)] p-6 text-white shadow-[0_28px_90px_rgba(17,17,14,0.18)] sm:p-8 lg:rounded-[22px] lg:p-10">
         <div className="mb-8 grid gap-6 border-b border-white/12 pb-8 lg:grid-cols-12 lg:items-end">
           <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-white/46 lg:col-span-3">
             {recipientFirstName ? `${recipientFirstName}, next move` : "Friends & Family for Versant"}
@@ -123,7 +123,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
           <div className="lg:col-span-7">
             <a
               href={href}
-              className="mb-8 inline-flex min-h-11 items-center rounded-full border border-white/24 px-5 py-3 text-[14px] font-medium text-white transition hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="versant-mw-pill mb-8 inline-flex min-h-11 items-center rounded-full border border-white/24 px-5 py-3 text-[14px] font-medium text-white transition hover:border-white hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               Email the team
             </a>
@@ -142,7 +142,7 @@ export function ContactCta({ ctaUrl, recipientFirstName, directors }: Props) {
           <a
             href={href}
             aria-label="Email Friends and Family about the Versant brief"
-            className="group relative min-h-[18rem] overflow-hidden rounded-[14px] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5"
+            className="versant-mw-media group relative min-h-[18rem] overflow-hidden rounded-[14px] bg-black text-left transition hover:translate-y-[-2px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white lg:col-span-5"
           >
             <div
               aria-hidden="true"
