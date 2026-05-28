@@ -59,7 +59,7 @@ export function canAccessLeads(user?: {
   if (userEmail && blockedEmails.has(userEmail)) return false;
 
   const allowedRoles = new Set(
-    ["ADMIN", ...parseCsv(process.env.LEADS_ALLOWED_ROLES)].map((role) =>
+    ["ADMIN", "PRODUCER", "REP", ...parseCsv(process.env.LEADS_ALLOWED_ROLES)].map((role) =>
       role.toUpperCase(),
     ),
   );
