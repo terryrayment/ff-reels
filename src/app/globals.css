@@ -728,6 +728,7 @@ mux-player {
   .ff-display-card {
     font-size: var(--ff-type-card);
     line-height: 1;
+    overflow-wrap: anywhere;
   }
 
   .ff-reveal-text {

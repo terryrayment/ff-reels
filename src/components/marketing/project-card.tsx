@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 import { useRevealOnce } from "@/components/marketing/use-reveal-once";
 
@@ -51,11 +52,16 @@ export function ProjectCard({
   const href = `/site/directors/${project.director.slug}?play=${project.id}`;
   const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
 
-  const still =
-    project.thumbnailUrl ??
-    (project.muxPlaybackId
-      ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=${thumbnailWidth}`
-      : null);
+  const muxStill = project.muxPlaybackId
+    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=${thumbnailWidth}`
+    : null;
+  const preferredStill = project.thumbnailUrl ?? muxStill;
+  const [failedStill, setFailedStill] = useState<string | null>(null);
+  const still = useMemo(() => {
+    if (!preferredStill) return null;
+    if (failedStill !== preferredStill) return preferredStill;
+    return muxStill && muxStill !== preferredStill ? muxStill : null;
+  }, [failedStill, muxStill, preferredStill]);
 
   const metaParts: string[] = [];
   if (showDirector) metaParts.push(`Dir. ${project.director.name}`);
@@ -112,6 +118,7 @@ export function ProjectCard({
             width={thumbnailWidth}
             height={thumbnailHeight}
             className="ff-media-image"
+            onError={() => setFailedStill(still)}
           />
         ) : (
           <div className="ff-media-fallback">
