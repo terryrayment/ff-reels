@@ -131,7 +131,8 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                 Overview
               </p>
               <h1 className="versant-display max-w-[13ch] text-[clamp(54px,8.4vw,128px)] font-medium tracking-[-0.045em]">
-                Friends &amp; Family for Versant Sports
+                Friends &amp; Family for Versant{" "}
+                <span className="font-light">Sports</span>
               </h1>
               <p className="mt-6 max-w-[40rem] text-[clamp(19px,2vw,30px)] leading-[1.12] tracking-[-0.03em] text-white/68">
                 Creative, production, edit, motion, and delivery for Versant&apos;s
