@@ -211,7 +211,7 @@ const SPORTS_GROUPS = [
   },
   {
     group: "Women and college",
-    note: "League growth, athlete access, and local fan context.",
+    note: "Athlete access, school and market context, emerging fan bases, and social-first storytelling.",
     propertyIds: ["wnba", "lovb", "lpgaTour", "usWomensOpen", "atlantic10", "pac12"],
   },
 ] as const;
