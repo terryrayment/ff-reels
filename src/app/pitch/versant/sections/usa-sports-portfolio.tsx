@@ -206,7 +206,7 @@ const SPORTS_GROUPS = [
   },
   {
     group: "Entertainment sport",
-    note: "Character, format, performance, and audience tone.",
+    note: "Performance, humor, format, creator behavior, and audience timing.",
     propertyIds: ["wwe", "bigBreak", "goodGood"],
   },
   {
