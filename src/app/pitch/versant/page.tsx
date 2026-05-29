@@ -10,6 +10,7 @@ import { PartnerBench } from "./sections/partner-bench";
 import { VersantFit } from "./sections/versant-fit";
 import { ContactCta } from "./sections/contact-cta";
 import { VersantMotion } from "./sections/versant-motion";
+import { VersantPitchChrome } from "./sections/versant-pitch-chrome";
 
 /**
  * Branded pitch landing for Friends & Family and Versant Media.
@@ -245,6 +246,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
       />
       <div aria-hidden="true" className="versant-grain" />
       <VersantMotion />
+      <VersantPitchChrome />
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -276,19 +278,26 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               animation: versant-marquee 48s linear infinite;
               padding-left: 0.5rem;
             }
-            html:has(.versant-pitch) {
+            html.versant-pitch-page {
+              overflow-y: scroll;
+              scrollbar-gutter: stable;
               scrollbar-color: #2447ff var(--versant-bg);
+              scrollbar-width: auto;
             }
-            html:has(.versant-pitch)::-webkit-scrollbar {
-              width: 22px;
+            html.versant-pitch-page::-webkit-scrollbar {
+              width: 22px !important;
             }
-            html:has(.versant-pitch)::-webkit-scrollbar-track {
-              background: var(--versant-bg);
+            html.versant-pitch-page::-webkit-scrollbar-track {
+              background: var(--versant-bg) !important;
+              box-shadow: inset 1px 0 0 rgba(20, 19, 15, 0.08);
             }
-            html:has(.versant-pitch)::-webkit-scrollbar-thumb {
-              background-color: #2447ff;
-              border: 3px solid var(--versant-bg);
+            html.versant-pitch-page::-webkit-scrollbar-thumb {
+              background-color: #2447ff !important;
               border-radius: 999px;
+              min-height: 64px;
+            }
+            html.versant-pitch-page::-webkit-scrollbar-thumb:hover {
+              background-color: #1a38d9 !important;
             }
             @keyframes versant-rise-in {
               from {
