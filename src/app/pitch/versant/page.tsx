@@ -351,6 +351,9 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               padding-top: 0;
               padding-bottom: 0;
             }
+            .versant-section.versant-section-flush.versant-section-scope {
+              padding-top: 50px;
+            }
             .versant-section-studio {
               padding-top: 40px;
               padding-bottom: 40px;
@@ -852,6 +855,9 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               .versant-section.versant-section-flush {
                 padding-top: 0;
                 padding-bottom: 0;
+              }
+              .versant-section.versant-section-flush.versant-section-scope {
+                padding-top: 50px;
               }
               .versant-section-studio {
                 padding-top: 40px;

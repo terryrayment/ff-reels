@@ -37,7 +37,7 @@ const FIT_TAGS = [
 
 export function VersantFit() {
   return (
-    <section className={`${SECTION} versant-section-flush`}>
+    <section className={`${SECTION} versant-section-flush versant-section-scope`}>
       <div className={CONTAINER}>
         <div className={`${REVEAL} relative overflow-hidden rounded-[4px]`}>
           <VersantBackgroundMux
