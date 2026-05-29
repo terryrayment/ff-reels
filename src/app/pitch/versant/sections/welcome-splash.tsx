@@ -146,12 +146,15 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                   for Versant Sports
                 </span>
               </h1>
-              <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.18] tracking-[-0.024em] text-white/68">
-                We are a creative studio and production company representing
-                directors for work with taste, pressure, talent, and delivery
-                needs. For Versant, that means sports work shaped around live
-                windows, sponsor rules, social cutdowns, edit, motion,
-                versioning, and finish.
+              <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.22] tracking-[-0.024em] text-white/68">
+                At Friends &amp; Family we produce spots and represent directors.
+                We scale for big assignments, stay nimble when the window is
+                tight, and work as creative partners on the work.
+              </p>
+              <p className="mt-4 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.22] tracking-[-0.024em] text-white/68">
+                Our clients include Callaway, ESPN, Nike, Apple, Ford, Netflix,
+                and Gillette. We want to partner with Versant because sports
+                is where we do our best work.
               </p>
               <TagList
                 tags={HERO_CAPABILITIES}
