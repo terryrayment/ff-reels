@@ -71,13 +71,14 @@ const HERO_CAPABILITIES = [
   "Delivery",
 ];
 
-function VersantWordmark() {
+function FFLogomark() {
   return (
-    <span
-      className={`${HERO_MICRO_LABEL} font-semibold tracking-[0.14em] text-white/78`}
-    >
-      VERSANT
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/brand/ff-logomark.png"
+      alt="Friends & Family"
+      className="h-8 w-8 object-contain brightness-0 invert opacity-70"
+    />
   );
 }
 
@@ -121,7 +122,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
         <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[#2447FF] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
           <div aria-hidden="true" className={SURFACE_GRAIN} />
           <div className={`relative z-10 flex items-center justify-between gap-4 text-white/50 ${HERO_MICRO_LABEL}`}>
-            <VersantWordmark />
+            <FFLogomark />
             {recipientFirstName && <span>For {recipientFirstName}</span>}
           </div>
 
