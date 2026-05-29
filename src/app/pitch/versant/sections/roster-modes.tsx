@@ -20,7 +20,7 @@ const CADDIES = [
   {
     slug: "jack-turits",
     name: "Jack Turits",
-    signature: "Comedy performance and real-player casting",
+    signature: "Creator-led golf, real-player casting, comedy performance.",
     credits: "Callaway \"Forefront\"",
     match: "Creator-led golf and course portraits",
     tags: ["Comedy", "Casting", "Creator-led golf"],
