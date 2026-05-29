@@ -1,12 +1,18 @@
 import type { ReactNode } from "react";
 
 export const SECTION = "versant-section";
+export const SURFACE_GRAIN = "versant-surface-grain";
 export const CONTAINER = "versant-container";
 export const HEADER = "versant-header";
 export const KICKER = "versant-kicker";
 export const TITLE = "versant-title";
 export const INTRO = "versant-intro";
-export const CARD = "versant-card";
+export const REVEAL = "versant-reveal";
+export const CARD = "versant-card versant-reveal";
+
+export function revealStagger(index: number, stepMs = 50) {
+  return { animationDelay: `${index * stepMs}ms` };
+}
 export const PANEL = "versant-panel";
 export const MEDIA = "versant-media";
 export const META_LABEL = "versant-meta-label";

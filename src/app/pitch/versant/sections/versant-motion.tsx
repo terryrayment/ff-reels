@@ -24,13 +24,10 @@ const VERSANT_MOTION_SCRIPT = `
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.08, rootMargin: "0px 0px -6% 0px" },
     );
 
     cards.forEach((card) => observer.observe(card));
-    window.setTimeout(() => {
-      cards.forEach((card) => card.classList.add("is-visible"));
-    }, 1800);
   };
 
   if (document.readyState === "loading") {

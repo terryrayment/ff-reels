@@ -13,6 +13,7 @@ import {
   SECTION,
   SectionHeader,
   TagList,
+  revealStagger,
 } from "./system";
 
 const CADDIES = [
@@ -171,12 +172,21 @@ export function RosterModes({
       <div className={CONTAINER}>
         <SectionHeader
           label="Directors"
-          title="Selected talent for the assignment."
+          title={
+            <span className="text-[#2447FF]">
+              Selected talent for the assignment.
+            </span>
+          }
         />
 
         <div className="grid gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-          {CADDIES.map((card) => (
-            <CaddieCard key={card.slug} card={card} directors={directors} />
+          {CADDIES.map((card, index) => (
+            <CaddieCard
+              key={card.slug}
+              card={card}
+              directors={directors}
+              revealIndex={index}
+            />
           ))}
         </div>
       </div>
@@ -187,9 +197,11 @@ export function RosterModes({
 function CaddieCard({
   card,
   directors,
+  revealIndex,
 }: {
   card: (typeof CADDIES)[number];
   directors: VersantDirectorMedia[];
+  revealIndex: number;
 }) {
   const media = motionForDirector(directors, card.slug, 640);
   const directVideo = "video" in card ? card.video : null;
@@ -217,7 +229,10 @@ function CaddieCard({
     !headshot && card.slug === "cody-cloud";
 
   return (
-    <article className={`${CARD} group flex flex-col p-3 sm:p-4`}>
+    <article
+      className={`${CARD} group flex flex-col p-3 sm:p-4`}
+      style={revealStagger(revealIndex)}
+    >
       <div
         className={`${MEDIA} relative aspect-video bg-black/10 bg-cover bg-center`}
         style={still ? { backgroundImage: `url(${still})` } : undefined}
@@ -290,7 +305,7 @@ function CaddieCard({
       </div>
 
       <div className="flex flex-1 flex-col pt-5">
-        <h3 className="text-[clamp(30px,3.4vw,50px)] font-medium leading-[1] tracking-[-0.045em]">
+        <h3 className="text-[clamp(30px,3.4vw,50px)] font-medium leading-[1] tracking-[-0.045em] text-[#2447FF]">
           {card.name}
         </h3>
         <p className="mt-2 text-[clamp(17px,1.8vw,23px)] leading-[1.12] tracking-[-0.03em] text-black/62">

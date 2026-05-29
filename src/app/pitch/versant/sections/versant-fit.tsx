@@ -5,6 +5,7 @@ import {
   META_LABEL,
   META_TEXT,
   PANEL,
+  REVEAL,
   SECTION,
   SectionHeader,
   TagList,
@@ -38,7 +39,7 @@ export function VersantFit() {
   return (
     <section className={`${SECTION} versant-section-flush`}>
       <div className={CONTAINER}>
-        <div className="relative overflow-hidden rounded-[4px]">
+        <div className={`${REVEAL} relative overflow-hidden rounded-[4px]`}>
           <VersantBackgroundMux
             playbackId={CALLAWAY_SCOPE_PLAYBACK_ID}
             poster={CALLAWAY_SCOPE_POSTER}
@@ -60,8 +61,8 @@ export function VersantFit() {
               label="Scope"
               title={
                 <>
-                  <span className="font-light">Start with Golf Channel.</span> Build
-                  for USA Sports.
+                  <span className="font-light">Start with Golf Channel.</span>{" "}
+                  <span className="text-[#2447FF]">Build for USA Sports.</span>
                 </>
               }
               intro="Golf gives the first assignment a clear shape. The same system can cover Premier League, NASCAR, WWE, WNBA, LOVB, and college."

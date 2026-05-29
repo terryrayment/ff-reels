@@ -4,7 +4,7 @@ import {
   muxStillUrl,
   type VersantDirectorMedia,
 } from "./media";
-import { TagList } from "./system";
+import { SURFACE_GRAIN, TagList } from "./system";
 
 interface Props {
   recipientFirstName?: string | null;
@@ -117,9 +117,10 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
   }).filter((frame) => frame.still);
 
   return (
-    <section className="px-3 py-3 text-[var(--versant-ink)] sm:px-5 lg:px-7">
+    <section className="px-6 pt-6 pb-3 text-[var(--versant-ink)] sm:px-10 sm:pt-10 lg:px-14 lg:pt-14">
       <div className="mx-auto grid max-w-[1600px] gap-3 lg:grid-cols-12">
-        <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[var(--versant-black)] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
+        <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[#2447FF] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
+          <div aria-hidden="true" className={SURFACE_GRAIN} />
           <div className={`relative z-10 flex items-center justify-between gap-4 text-white/50 ${HERO_MICRO_LABEL}`}>
             <FFLogomark />
             {recipientFirstName && <span>For {recipientFirstName}</span>}

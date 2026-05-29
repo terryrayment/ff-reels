@@ -1,6 +1,7 @@
 import {
   CARD,
   CONTAINER,
+  revealStagger,
   META_LABEL,
   SECTION,
   SectionHeader,
@@ -222,10 +223,10 @@ export function UsaSportsPortfolio() {
         <SectionHeader
           label="Sport"
           title={
-            <>
+            <span className="text-[#2447FF]">
               Selected <span className="font-bold">Versant</span> sports
               properties.
-            </>
+            </span>
           }
           intro="Each property has its own rhythm. The production system should stay clear."
         />
@@ -236,12 +237,13 @@ export function UsaSportsPortfolio() {
             <p className={META_LABEL}>Read</p>
             <p className={META_LABEL}>Properties</p>
           </div>
-          {SPORTS_GROUPS.map((item) => (
+          {SPORTS_GROUPS.map((item, index) => (
             <article
               key={item.group}
               className={`${CARD} versant-sport-row grid gap-4 border-t-0 border-b border-[var(--versant-rule)] py-6 md:grid-cols-[11rem_minmax(0,0.85fr)_minmax(0,1.15fr)] md:gap-6 md:py-7`}
+              style={revealStagger(index)}
             >
-              <p className={`${META_LABEL} versant-sport-lane pt-1`}>
+              <p className={`${META_LABEL} versant-sport-lane pt-1 text-[#2447FF]`}>
                 {item.group}
               </p>
               <p className="versant-sport-read max-w-[34rem] text-[clamp(1.08rem,1.6vw,1.45rem)] leading-[1.16] tracking-[-0.035em] text-black/64">

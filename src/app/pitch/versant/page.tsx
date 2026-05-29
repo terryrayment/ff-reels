@@ -236,7 +236,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
 
   return (
     <main
-      className="min-h-screen bg-[var(--versant-bg)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[var(--versant-orange)]/30"
+      className="versant-pitch min-h-screen bg-[var(--versant-bg)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[var(--versant-orange)]/30"
       style={VERSANT_THEME}
     >
       <div
@@ -258,6 +258,16 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               background-repeat: repeat;
               background-size: 220px 220px;
             }
+            .versant-surface-grain {
+              position: absolute;
+              inset: 0;
+              z-index: 1;
+              pointer-events: none;
+              opacity: 0.06;
+              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+              background-repeat: repeat;
+              background-size: 220px 220px;
+            }
             @keyframes versant-marquee {
               from { transform: translate3d(0, 0, 0); }
               to { transform: translate3d(-50%, 0, 0); }
@@ -266,16 +276,42 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               animation: versant-marquee 48s linear infinite;
               padding-left: 0.5rem;
             }
+            html:has(.versant-pitch) {
+              scrollbar-color: #2447ff var(--versant-bg);
+            }
+            html:has(.versant-pitch)::-webkit-scrollbar {
+              width: 11px;
+            }
+            html:has(.versant-pitch)::-webkit-scrollbar-track {
+              background: var(--versant-bg);
+            }
+            html:has(.versant-pitch)::-webkit-scrollbar-thumb {
+              background-color: #2447ff;
+              border: 2px solid var(--versant-bg);
+              border-radius: 999px;
+            }
+            @keyframes versant-rise-in {
+              from {
+                opacity: 0;
+                transform: translate3d(0, 32px, 0);
+              }
+              to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+              }
+            }
             .versant-reveal {
               opacity: 0;
-              transform: translateY(12px);
-              transition: opacity 460ms ease, transform 460ms ease;
-              will-change: opacity, transform;
+              transform: translate3d(0, 32px, 0);
             }
-            .versant-reveal.is-visible,
-            .versant-reduce-motion .versant-reveal {
+            .versant-reveal.is-visible {
+              animation: versant-rise-in 680ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            .versant-reduce-motion .versant-reveal,
+            .versant-reduce-motion .versant-reveal.is-visible {
               opacity: 1;
-              transform: translateY(0);
+              transform: none;
+              animation: none;
             }
             .versant-display {
               line-height: 0.98;
@@ -283,7 +319,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               text-wrap: balance;
             }
             .versant-section {
-              padding: 50px 1rem;
+              padding: 50px 2rem;
             }
             .versant-section-tight {
               padding-top: 20px;
@@ -303,7 +339,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               }
             }
             .versant-container {
-              width: min(100% - clamp(1.5rem, 5vw, 6rem), 1500px);
+              width: min(100% - clamp(3rem, 10vw, 12rem), 1500px);
               margin-inline: auto;
             }
             .versant-header {
@@ -393,7 +429,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
                 border-color: var(--versant-rule-strong);
               }
               .versant-sport-row:hover .versant-sport-lane {
-                color: rgba(20, 19, 15, 0.72);
+                color: #2447ff;
               }
               .versant-sport-row:hover .versant-sport-read {
                 transform: translateX(4px);
@@ -786,7 +822,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             }
             @media (max-width: 900px) {
               .versant-section {
-                padding: 50px 1rem;
+                padding: 50px 2rem;
               }
               .versant-section.versant-section-flush {
                 padding-top: 0;
@@ -797,7 +833,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
                 padding-bottom: 40px;
               }
               .versant-container {
-                width: min(100% - 1.25rem, 1500px);
+                width: min(100% - 2.5rem, 1500px);
               }
               .versant-header {
                 grid-template-columns: 1fr;
@@ -833,10 +869,11 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
                 animation: none;
                 transform: none;
               }
-              .versant-reveal {
+              .versant-reveal,
+              .versant-reveal.is-visible {
                 opacity: 1;
                 transform: none;
-                transition: none;
+                animation: none;
               }
               .versant-card,
               .versant-card-image,

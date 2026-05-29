@@ -1,6 +1,8 @@
 import {
   CONTAINER,
   SECTION,
+  REVEAL,
+  SURFACE_GRAIN,
   SectionHeader,
   TagList,
 } from "./system";
@@ -19,7 +21,9 @@ export function ContactCta({ recipientFirstName }: Props) {
   return (
     <section className={`${SECTION} pb-4 lg:pb-8`}>
       <div className={CONTAINER}>
-        <div className="rounded-[4px] bg-[var(--versant-black)] p-5 text-white sm:p-7 lg:p-8">
+        <div className={`${REVEAL} relative overflow-hidden rounded-[4px] bg-[#2447FF] p-5 text-white sm:p-7 lg:p-8`}>
+          <div aria-hidden="true" className={SURFACE_GRAIN} />
+          <div className="relative z-10">
           <SectionHeader
             label={recipientFirstName ? `${recipientFirstName}, contact` : "Contact"}
             title="Send the assignment."
@@ -45,6 +49,7 @@ export function ContactCta({ recipientFirstName }: Props) {
                 href={`mailto:${email}`}
               />
             ))}
+          </div>
           </div>
         </div>
       </div>

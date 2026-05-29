@@ -8,12 +8,14 @@ import { ReferenceVideoFrame } from "./reference-video-frame";
 import {
   CARD,
   CONTAINER,
+  HEADER,
   MEDIA,
   META_LABEL,
   META_TEXT,
   SECTION,
-  SectionHeader,
+  TITLE,
   TagList,
+  revealStagger,
 } from "./system";
 
 const REFERENCES = [
@@ -77,7 +79,11 @@ export function VersantReferenceStrip({
   return (
     <section className={SECTION}>
       <div className={CONTAINER}>
-        <SectionHeader title="Golf references as selected work." />
+        <div className={HEADER}>
+          <h2 className={`${TITLE} text-[#2447FF]`}>
+            Golf references as selected work.
+          </h2>
+        </div>
 
         <div className="grid gap-x-4 gap-y-8 md:grid-cols-2">
           {REFERENCES.map((item, index) => {
@@ -108,7 +114,11 @@ export function VersantReferenceStrip({
               "mediaClass" in item ? item.mediaClass : "scale-[1.1]";
 
             return (
-              <article key={item.title} className={`${CARD} group flex min-h-[31rem] flex-col p-3`}>
+              <article
+                key={item.title}
+                className={`${CARD} group flex min-h-[31rem] flex-col p-3`}
+                style={revealStagger(index)}
+              >
                 <div className={`${MEDIA} relative mb-5 aspect-video`}>
                   {playVideo && frame.playbackId && frame.still ? (
                     <ReferenceVideoFrame
@@ -140,7 +150,7 @@ export function VersantReferenceStrip({
 
                 <div className="grid flex-1 gap-4 border-t border-black/10 pt-4">
                   <div className="grid grid-cols-[1fr_auto] items-start gap-4">
-                    <h3 className="text-[clamp(24px,2.4vw,34px)] font-medium leading-[1] tracking-[-0.04em]">
+                    <h3 className="text-[clamp(24px,2.4vw,34px)] font-medium leading-[1] tracking-[-0.04em] text-[#2447FF]">
                       {item.title}
                     </h3>
                     <span className="text-[12px] text-black/38">

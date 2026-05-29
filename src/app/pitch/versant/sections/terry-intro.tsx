@@ -1,7 +1,7 @@
 "use client";
 
 import MuxPlayer from "@mux/mux-player-react";
-import { KICKER, PANEL, TITLE, TagList } from "./system";
+import { KICKER, PANEL, REVEAL, TITLE, TagList } from "./system";
 import { VersantBackgroundMux } from "./versant-background-mux";
 
 const CALLAWAY_BACKGROUND_PLAYBACK_ID =
@@ -17,10 +17,10 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
   const hasFounderMedia = Boolean(videoPlaybackId || fallbackImageUrl);
 
   return (
-    <section className="relative overflow-hidden px-3 py-10 text-[var(--versant-ink)] sm:px-5 lg:px-7">
+    <section className="relative overflow-hidden px-6 py-10 text-[var(--versant-ink)] sm:px-10 lg:px-14">
       <div className="relative z-10 mx-auto grid w-full max-w-[1600px] gap-3 lg:grid-cols-12">
         <div
-          className={`relative overflow-hidden rounded-[4px] ${hasFounderMedia ? "lg:col-span-9" : "lg:col-span-12"}`}
+          className={`${REVEAL} relative overflow-hidden rounded-[4px] ${hasFounderMedia ? "lg:col-span-9" : "lg:col-span-12"}`}
         >
           <VersantBackgroundMux
             playbackId={CALLAWAY_BACKGROUND_PLAYBACK_ID}
@@ -43,7 +43,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                 <p className={`${KICKER} mb-5 text-black/45`}>
                   Studio
                 </p>
-                <h2 className={`${TITLE} max-w-3xl text-black`}>
+                <h2 className={`${TITLE} max-w-3xl text-[#2447FF]`}>
                   Built for live sports work.
                 </h2>
               </div>

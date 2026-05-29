@@ -3,8 +3,10 @@ import {
   CONTAINER,
   MEDIA,
   SECTION,
+  SURFACE_GRAIN,
   SectionHeader,
   TagList,
+  revealStagger,
 } from "./system";
 
 type PartnerVisual = {
@@ -96,8 +98,9 @@ function PartnerVideo({ visual }: { visual: PartnerVisual }) {
 
 export function PartnerBench() {
   return (
-    <section className={`${SECTION} bg-[var(--versant-black)] text-[var(--versant-white)]`}>
-      <div className={CONTAINER}>
+    <section className={`${SECTION} relative overflow-hidden bg-[#2447FF] text-[var(--versant-white)]`}>
+      <div aria-hidden="true" className={SURFACE_GRAIN} />
+      <div className={`${CONTAINER} relative z-10`}>
         <SectionHeader
           label="Partners"
           title="Additional production lanes."
@@ -106,10 +109,11 @@ export function PartnerBench() {
         />
 
         <div className="grid gap-3 lg:grid-cols-2">
-          {PARTNERS.map((partner) => (
+          {PARTNERS.map((partner, index) => (
             <article
               key={partner.name}
               className={`${CARD} group border-white/14 bg-white/[0.045] p-4 text-white hover:border-white/30 hover:bg-white/[0.07] sm:p-5`}
+              style={revealStagger(index)}
             >
               <PartnerVideo visual={partner.visual} />
               <div className="grid gap-5 border-t border-white/14 pt-5 md:grid-cols-[0.8fr_1fr]">
