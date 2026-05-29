@@ -243,10 +243,21 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         aria-hidden="true"
         className="fixed inset-x-0 top-0 z-50 h-px bg-[#101010]/20"
       />
+      <div aria-hidden="true" className="versant-grain" />
       <VersantMotion />
       <style
         dangerouslySetInnerHTML={{
           __html: `
+            .versant-grain {
+              position: fixed;
+              inset: 0;
+              z-index: 40;
+              pointer-events: none;
+              opacity: 0.02;
+              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+              background-repeat: repeat;
+              background-size: 220px 220px;
+            }
             @keyframes versant-marquee {
               from { transform: translate3d(0, 0, 0); }
               to { transform: translate3d(-50%, 0, 0); }
@@ -272,11 +283,24 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               text-wrap: balance;
             }
             .versant-section {
-              padding: clamp(4.5rem, 8vw, 8.5rem) 1rem;
+              padding: 50px 1rem;
             }
             .versant-section-tight {
-              padding-top: clamp(3rem, 5vw, 5.5rem);
-              padding-bottom: clamp(3rem, 5vw, 5.5rem);
+              padding-top: 20px;
+              padding-bottom: 20px;
+            }
+            .versant-section.versant-section-flush {
+              padding-top: 0;
+              padding-bottom: 0;
+            }
+            .versant-section-studio {
+              padding-top: 40px;
+              padding-bottom: 40px;
+            }
+            @media (min-width: 1024px) {
+              .versant-section-studio .versant-studio-grid {
+                grid-template-columns: repeat(11, 1fr);
+              }
             }
             .versant-container {
               width: min(100% - clamp(1.5rem, 5vw, 6rem), 1500px);
@@ -299,7 +323,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             }
             .versant-meta-label {
               font-size: 0.66rem;
-              font-weight: 600;
+              font-weight: 800;
               line-height: 1;
               text-transform: uppercase;
               letter-spacing: 0.08em;
@@ -762,7 +786,15 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             }
             @media (max-width: 900px) {
               .versant-section {
-                padding: 4.25rem 1rem;
+                padding: 50px 1rem;
+              }
+              .versant-section.versant-section-flush {
+                padding-top: 0;
+                padding-bottom: 0;
+              }
+              .versant-section-studio {
+                padding-top: 40px;
+                padding-bottom: 40px;
               }
               .versant-container {
                 width: min(100% - 1.25rem, 1500px);

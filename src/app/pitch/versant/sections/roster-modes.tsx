@@ -172,7 +172,6 @@ export function RosterModes({
         <SectionHeader
           label="Directors"
           title="Selected talent for the assignment."
-          intro="A short index by use case, not a full roster dump."
         />
 
         <div className="grid gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">

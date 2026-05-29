@@ -77,11 +77,7 @@ export function VersantReferenceStrip({
   return (
     <section className={SECTION}>
       <div className={CONTAINER}>
-        <SectionHeader
-          label="Proof"
-          title="Golf references as selected work."
-          intro="Four useful reads for work Versant already makes."
-        />
+        <SectionHeader title="Golf references as selected work." />
 
         <div className="grid gap-x-4 gap-y-8 md:grid-cols-2">
           {REFERENCES.map((item, index) => {

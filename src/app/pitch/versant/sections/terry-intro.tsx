@@ -2,7 +2,7 @@
 
 import MuxPlayer from "@mux/mux-player-react";
 import type { CSSProperties } from "react";
-import { CONTAINER, KICKER, PANEL, TITLE, TagList } from "./system";
+import { KICKER, PANEL, TITLE, TagList } from "./system";
 
 const CALLAWAY_BACKGROUND_PLAYBACK_ID =
   "fqMV3teH8SsrkMb4qAQsb701TwBVFhF3GQujxTbsolfQ";
@@ -17,10 +17,10 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
   const hasFounderMedia = Boolean(videoPlaybackId || fallbackImageUrl);
 
   return (
-    <section className="versant-section relative overflow-hidden">
-      <div className={`${CONTAINER} relative z-10 grid gap-3 lg:grid-cols-12`}>
+    <section className="relative overflow-hidden px-3 py-10 text-[var(--versant-ink)] sm:px-5 lg:px-7">
+      <div className="relative z-10 mx-auto grid w-full max-w-[1600px] gap-3 lg:grid-cols-12">
         <div
-          className={`relative overflow-hidden rounded-[4px] ${hasFounderMedia ? "lg:col-span-9" : "lg:col-span-10"}`}
+          className={`relative overflow-hidden rounded-[4px] ${hasFounderMedia ? "lg:col-span-9" : "lg:col-span-12"}`}
         >
           <div
             aria-hidden="true"
@@ -62,7 +62,9 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(221,224,216,0.9)_0%,rgba(221,224,216,0.42)_32%,rgba(221,224,216,0.24)_64%,rgba(221,224,216,0.9)_100%)]"
           />
-          <article className={`${PANEL} relative z-10 overflow-hidden bg-[rgba(251,247,237,0.72)] p-5 backdrop-blur-[2px] sm:p-7 lg:p-8`}>
+          <article
+            className={`${PANEL} versant-studio-panel relative z-10 flex flex-wrap overflow-hidden bg-[rgba(251,247,237,0.72)] p-5 backdrop-blur-[2px] sm:p-7 lg:p-8`}
+          >
             <div className="relative z-10 grid gap-8 lg:grid-cols-12 lg:items-start">
               <div className="lg:col-span-7">
                 <p className={`${KICKER} mb-5 text-black/45`}>
@@ -94,9 +96,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                   ["Deliver", "Versions and final files"],
                 ].map(([label, value]) => (
                   <div key={label} className="border-t border-black/10 pt-3 sm:border-t-0 sm:pt-0">
-                    <dt className="versant-meta-label mb-2">
-                      {label}
-                    </dt>
+                    <dt className="versant-meta-label mb-2">{label}</dt>
                     <dd className="versant-meta-text">{value}</dd>
                   </div>
                 ))}

@@ -48,16 +48,18 @@ export function SectionHeader({
   intro,
   dark = false,
 }: {
-  label: string;
+  label?: string;
   title: ReactNode;
   intro?: ReactNode;
   dark?: boolean;
 }) {
   return (
     <div className={HEADER}>
-      <p className={cx(KICKER, dark ? "text-white/45" : "text-black/45")}>
-        {label}
-      </p>
+      {label ? (
+        <p className={cx(KICKER, dark ? "text-white/45" : "text-black/45")}>
+          {label}
+        </p>
+      ) : null}
       <h2 className={cx(TITLE, dark ? "text-white" : "text-black")}>
         {title}
       </h2>
