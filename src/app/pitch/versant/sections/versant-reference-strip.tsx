@@ -8,12 +8,11 @@ import { ReferenceVideoFrame } from "./reference-video-frame";
 import {
   CARD,
   CONTAINER,
-  HEADER,
   MEDIA,
   META_LABEL,
   META_TEXT,
   SECTION,
-  TITLE,
+  SectionHeader,
   TagList,
   revealStagger,
 } from "./system";
@@ -79,11 +78,11 @@ export function VersantReferenceStrip({
   return (
     <section className={SECTION}>
       <div className={CONTAINER}>
-        <div className={HEADER}>
-          <h2 className={`${TITLE} text-black`}>
-            Golf proof for the first assignment.
-          </h2>
-        </div>
+        <SectionHeader
+          label="Sports proof"
+          title="Reference points from our side."
+          intro="Four examples that map to work Versant already makes: Golf Channel polish, GolfNow stories, creator-led formats, and GolfPass access."
+        />
 
         <div className="grid gap-x-4 gap-y-8 md:grid-cols-2">
           {REFERENCES.map((item, index) => {
@@ -159,7 +158,7 @@ export function VersantReferenceStrip({
                   </div>
 
                   <div>
-                    <p className={META_LABEL}>Assignment</p>
+                    <p className={META_LABEL}>Our read</p>
                     <p className={`${META_TEXT} mt-2`}>{item.assignment}</p>
                   </div>
 

@@ -60,12 +60,11 @@ const PORTFOLIO_TICKER =
   "PGA Tour · U.S. Open · The Open Championship · U.S. Women's Open · NASCAR Cup Playoffs · Premier League · WWE SmackDown · WNBA · Pac-12 + Atlantic 10 hoops · LOVB · 10,000+ hours of live sport on USA Sports in 2026";
 const HERO_MICRO_LABEL = "text-[13px] font-medium leading-none tracking-[-0.01em]";
 const HERO_CAPABILITIES = [
+  "Directors",
   "Live promos",
   "Talent films",
-  "Golf Channel",
-  "GolfNow",
   "Social cutdowns",
-  "Post",
+  "Edit",
   "Motion",
   "Versioning",
   "Delivery",
@@ -76,8 +75,8 @@ function FFLogomark() {
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src="/brand/ff-logomark.png"
-      alt="Friends & Family"
-      className="h-8 w-8 object-contain brightness-0 invert opacity-70"
+      alt=""
+      className="h-9 w-9 object-contain"
     />
   );
 }
@@ -117,31 +116,55 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
   }).filter((frame) => frame.still);
 
   return (
-    <section className="px-6 pt-6 pb-0.5 text-[var(--versant-ink)] sm:px-10 sm:pt-10 lg:px-14 lg:pt-14">
+    <section className="overflow-x-clip px-6 pt-6 pb-0.5 text-[var(--versant-ink)] sm:px-10 sm:pt-10 lg:px-14 lg:pt-14">
       <div className="mx-auto grid max-w-[1600px] gap-3 lg:grid-cols-12">
-        <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[#2447FF] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
+        <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] border border-[var(--versant-rule)] bg-[var(--versant-paper)] p-6 sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[3px] bg-[#2447FF]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-0 top-0 z-20 h-14 w-[3px] bg-[#2447FF]"
+          />
           <div aria-hidden="true" className={SURFACE_GRAIN} />
-          <div className={`relative z-10 flex items-center justify-between gap-4 text-white/50 ${HERO_MICRO_LABEL}`}>
-            <FFLogomark />
-            {recipientFirstName && <span>For {recipientFirstName}</span>}
+          <div
+            className={`relative z-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-black/48 ${HERO_MICRO_LABEL}`}
+          >
+            <div className="flex min-w-0 items-center gap-3">
+              <FFLogomark />
+              <span className="text-[15px] font-medium tracking-[-0.02em] text-black">
+                Friends &amp; Family
+              </span>
+            </div>
+            <p className="max-w-[20rem] text-right text-black/42 sm:max-w-none">
+              A Friends &amp; Family pitch for Versant Sports
+              {recipientFirstName ? ` · For ${recipientFirstName}` : ""}
+            </p>
           </div>
 
           <div className="relative z-10 mt-[clamp(2rem,5.5vh,4rem)] grid gap-8 lg:grid-cols-[minmax(0,0.58fr)_minmax(22rem,0.42fr)] lg:items-center">
             <div>
-              <p className={`mb-5 text-white/62 ${HERO_MICRO_LABEL}`}>
+              <p
+                className={`mb-5 font-medium text-[#2447FF] ${HERO_MICRO_LABEL}`}
+              >
                 Overview
               </p>
-              <h1 className="versant-display max-w-[12.8ch] text-[clamp(52px,7.6vw,116px)] font-medium tracking-[-0.044em]">
-                VERSANT{" "}
-                <span className="font-light tracking-[-0.018em]">Sports</span>
+              <h1 className="versant-display max-w-none text-[clamp(2rem,8.5vw,6rem)] font-medium leading-[0.98] tracking-[-0.044em] text-black sm:max-w-[18ch] lg:max-w-[14ch]">
+                Friends &amp; Family{" "}
+                <span className="font-light tracking-[-0.018em] text-black/72">
+                  for Versant Sports
+                </span>
               </h1>
-              <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.18] tracking-[-0.024em] text-white/68">
-                Creative, production, edit, motion, and delivery for
-                Versant&apos;s USA Sports portfolio.
+              <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.18] tracking-[-0.024em] text-black/58">
+                We are a creative studio and production company representing
+                directors for work with taste, pressure, talent, and delivery
+                needs. For Versant, that means sports work shaped around live
+                windows, sponsor rules, social cutdowns, edit, motion,
+                versioning, and finish.
               </p>
               <TagList
                 tags={HERO_CAPABILITIES}
-                dark
                 className="mt-6 max-w-2xl"
                 label="Hero capabilities"
               />
@@ -150,10 +173,10 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             {motionFrames.length > 0 && (
               <div
                 aria-hidden="true"
-                className="grid gap-1.5 opacity-72 lg:self-center"
+                className="grid gap-1.5 lg:self-center"
               >
                 {motionFrames[0] && (
-                  <div className="versant-media aspect-video bg-white/5">
+                  <div className="versant-media aspect-video bg-black/5">
                     <MotionFrame
                       animated={motionFrames[0].animated}
                       still={motionFrames[0].still}
@@ -166,7 +189,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                   {motionFrames.slice(1, 4).map((frame, index) => (
                     <div
                       key={frame.still ?? index}
-                      className="versant-media aspect-video bg-white/5"
+                      className="versant-media aspect-video bg-black/5"
                     >
                       <MotionFrame
                         animated={frame.animated}
@@ -181,14 +204,15 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
             )}
           </div>
 
-          <div className={`relative z-10 mt-8 overflow-hidden border-t border-white/[0.14] pt-3 text-white/36 lg:mt-10 ${HERO_MICRO_LABEL}`}>
+          <div
+            className={`relative z-10 mt-8 overflow-hidden border-t border-black/10 pt-3 text-black/36 lg:mt-10 ${HERO_MICRO_LABEL}`}
+          >
             <div className="versant-marquee flex w-max gap-8 motion-reduce:animate-none">
               <span>{PORTFOLIO_TICKER}</span>
               <span aria-hidden="true">{PORTFOLIO_TICKER}</span>
             </div>
           </div>
         </article>
-
       </div>
     </section>
   );

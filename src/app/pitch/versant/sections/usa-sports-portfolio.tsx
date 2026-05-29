@@ -221,16 +221,16 @@ export function UsaSportsPortfolio() {
     <section className={`${SECTION} versant-section-tight`}>
       <div className={CONTAINER}>
         <SectionHeader
-          label="Sport"
-          title="Selected properties. Different production needs."
-          intro="Golf, NASCAR, WWE, Premier League, WNBA, LOVB, and college each need a different tone. The production path stays simple."
+          label="Versant sports context"
+          title="Where the F&amp;F model fits."
+          intro="Golf, NASCAR, WWE, Premier League, WNBA, LOVB, and college each need a different tone. Our job is to keep the creative and production path clear."
         />
 
         <div className="versant-sport-index border-t border-[var(--versant-rule)]">
           <div className="hidden grid-cols-[11rem_minmax(0,0.85fr)_minmax(0,1.15fr)] gap-6 border-b border-[var(--versant-rule)] py-3 md:grid">
             <p className={META_LABEL}>Lane</p>
-            <p className={META_LABEL}>Read</p>
-            <p className={META_LABEL}>Properties</p>
+            <p className={META_LABEL}>Our read</p>
+            <p className={META_LABEL}>Client context</p>
           </div>
           {SPORTS_GROUPS.map((item, index) => (
             <article

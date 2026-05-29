@@ -171,8 +171,9 @@ export function RosterModes({
     <section className={SECTION}>
       <div className={CONTAINER}>
         <SectionHeader
-          label="Directors"
-          title="Selected talent for the assignment."
+          label="Who we represent"
+          title="Directors first. Crew and finish around the job."
+          intro="We start with the right director, then shape production, post, motion, and delivery around the assignment."
         />
 
         <div className="grid gap-x-4 gap-y-7 md:grid-cols-2 lg:grid-cols-3">
@@ -317,7 +318,7 @@ function CaddieCard({
           </div>
           <div>
             <p className={`${META_LABEL} mb-1.5`}>
-              Use case
+              Assignment fit
             </p>
             <p className={META_TEXT}>
               {card.match}

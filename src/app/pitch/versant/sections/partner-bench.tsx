@@ -102,9 +102,9 @@ export function PartnerBench() {
       <div aria-hidden="true" className={SURFACE_GRAIN} />
       <div className={`${CONTAINER} relative z-10`}>
         <SectionHeader
-          label="Network"
-          title="Specialists when the job needs them."
-          intro="Production, post, motion, and finish support for jobs that need more reach."
+          label="Added support"
+          title="When the job needs more reach."
+          intro="F&amp;F leads with directors and production. When a job needs more reach, we can add trusted support for Latin America production, post, motion, animation, finish, versioning, and delivery."
           dark
         />
 

@@ -41,17 +41,18 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
             <div className="relative z-10 grid gap-8 lg:grid-cols-12 lg:items-start">
               <div className="lg:col-span-7">
                 <p className={`${KICKER} mb-5 text-black/45`}>
-                  Studio
+                  What F&amp;F does
                 </p>
                 <h2 className={`${TITLE} max-w-3xl text-black`}>
-                  Built for sports work with moving parts.
+                  A studio built for sports work with moving parts.
                 </h2>
               </div>
 
               <div className="space-y-5 text-[clamp(17px,1.45vw,21px)] leading-[1.24] tracking-[-0.02em] text-black/58 lg:col-span-5">
                 <p>
-                  We keep the path simple: creative read, director, crew, edit,
-                  motion, finish, versions, final files.
+                  We are a creative studio and production company. We represent
+                  directors, build the right crew around the job, and carry the
+                  work through edit, motion, finish, versioning, and delivery.
                 </p>
 
                 <TagList

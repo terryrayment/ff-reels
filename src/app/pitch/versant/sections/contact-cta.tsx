@@ -27,7 +27,7 @@ export function ContactCta({ recipientFirstName }: Props) {
           <SectionHeader
             label={recipientFirstName ? `${recipientFirstName}, contact` : "Contact"}
             title="Send the assignment."
-            intro="Send the brief, deadline, rights, assets, and blockers. We will return a production path, director recommendation, crew shape, timeline, estimate, and delivery plan."
+            intro="Send the brief, deadline, rights, assets, and blockers. We will return a director recommendation, production path, crew shape, timeline, estimate, and delivery plan."
             dark
           />
 

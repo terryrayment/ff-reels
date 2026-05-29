@@ -58,14 +58,14 @@ export function VersantFit() {
             className={`${PANEL} relative z-10 overflow-hidden bg-[rgba(251,247,237,0.72)] p-5 backdrop-blur-[2px] sm:p-7 lg:p-8`}
           >
             <SectionHeader
-              label="Scope"
+              label="How we would start"
               title={
                 <>
                   <span className="font-light">Start with Golf Channel.</span>{" "}
                   <span className="text-[#2447FF]">Build for USA Sports.</span>
                 </>
               }
-              intro="Golf gives the first assignment a clear shape. The same system can cover Premier League, NASCAR, WWE, WNBA, LOVB, and college."
+              intro="We would start where Versant already has momentum. Golf gives the first assignment a clear shape. The same F&amp;F path can cover Premier League, NASCAR, WWE, WNBA, LOVB, and college."
             />
 
             <div className="grid gap-3 border-t border-black/12 pt-5 md:grid-cols-4">

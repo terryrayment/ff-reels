@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { prisma } from "@/lib/db";
-import { VERSANT_PITCH_THEME } from "../_shared/editorial-pitch-tokens";
 import { WelcomeSplash } from "./sections/welcome-splash";
 import { VersantReferenceStrip } from "./sections/versant-reference-strip";
 import { TerryIntro } from "./sections/terry-intro";
@@ -15,8 +15,8 @@ import { VersantPitchChrome } from "./sections/versant-pitch-chrome";
 /**
  * Branded pitch landing for Versant Media / USA Sports (Friends & Family).
  *
- * Architecture: restrained media/product interface. Warm intro, Versant
- * reference read, golf-first production opportunities, roster, fit, and close.
+ * Architecture: restrained media/product interface. F&F-led intro, studio,
+ * directors, sports proof, Versant context, added support, scope, and close.
  *
  * Served from:
  *   - https://versant.reels.friendsandfamily.tv/ (subdomain → /pitch/versant)
@@ -28,9 +28,9 @@ import { VersantPitchChrome } from "./sections/versant-pitch-chrome";
  */
 
 export const metadata: Metadata = {
-  title: "VERSANT Sports",
+  title: "Friends & Family for Versant Sports",
   description:
-    "Creative, production, edit, motion, and delivery for Versant USA Sports from Friends & Family.",
+    "Friends & Family directors, production, edit, motion, and delivery for Versant USA Sports.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -68,6 +68,26 @@ const CLEAN_PROJECT_TITLES: Record<(typeof DIRECTOR_SLUGS)[number], string | nul
   "leigh-marling": "Supermarket",
   "brother-willis": "Oktoberfest Part Zwei",
 };
+
+const VERSANT_THEME = {
+  "--versant-bg": "#DDE0D8",
+  "--versant-black": "#09271F",
+  "--versant-ink": "#14130F",
+  "--versant-paper": "#F3EEE2",
+  "--versant-white": "#FFFCF4",
+  "--versant-orange": "#B19343",
+  "--versant-lime": "#E8DFCD",
+  "--versant-blue": "#09271F",
+  "--versant-mint": "#E9E0CF",
+  "--versant-gray": "#766F62",
+  "--versant-soft-gray": "#D8CEBB",
+  "--versant-surface": "#FBF7ED",
+  "--versant-surface-soft": "#EEE6D7",
+  "--versant-muted": "rgba(20, 19, 15, 0.58)",
+  "--versant-rule": "rgba(20, 19, 15, 0.13)",
+  "--versant-rule-strong": "rgba(20, 19, 15, 0.28)",
+  "--versant-light-rule": "rgba(255, 252, 244, 0.16)",
+} as CSSProperties;
 
 function firstNameOf(full: string | null | undefined): string | null {
   if (!full) return null;
@@ -218,7 +238,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
   return (
     <main
       className="versant-pitch min-h-screen bg-[var(--versant-bg)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[var(--versant-orange)]/30"
-      style={VERSANT_PITCH_THEME}
+      style={VERSANT_THEME}
     >
       <div
         aria-hidden="true"
@@ -909,10 +929,10 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
         directors={orderedDirectors}
       />
       <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
+      <RosterModes directors={orderedDirectors} />
+      <VersantReferenceStrip directors={orderedDirectors} />
       <UsaSportsPortfolio />
       <PartnerBench />
-      <VersantReferenceStrip directors={orderedDirectors} />
-      <RosterModes directors={orderedDirectors} />
       <VersantFit />
       <ContactCta
         recipientFirstName={recipientFirstName}
