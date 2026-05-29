@@ -1,7 +1,5 @@
 "use client";
 
-import MuxPlayer from "@mux/mux-player-react";
-import type { CSSProperties } from "react";
 import {
   CONTAINER,
   META_LABEL,
@@ -11,6 +9,7 @@ import {
   SectionHeader,
   TagList,
 } from "./system";
+import { VersantBackgroundMux } from "./versant-background-mux";
 
 /** Callaway · Kyle :30 — distinct from Forefront used in TerryIntro. */
 const CALLAWAY_SCOPE_PLAYBACK_ID =
@@ -40,38 +39,11 @@ export function VersantFit() {
     <section className={`${SECTION} versant-section-flush`}>
       <div className={CONTAINER}>
         <div className="relative overflow-hidden rounded-[4px]">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-72 [&_mux-player]:h-full [&_mux-player]:w-full"
-            style={
-              {
-                "--controls": "none",
-                "--media-object-fit": "cover",
-              } as CSSProperties
-            }
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={CALLAWAY_SCOPE_POSTER}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
-            <MuxPlayer
-              className="absolute inset-0"
-              playbackId={CALLAWAY_SCOPE_PLAYBACK_ID}
-              streamType="on-demand"
-              autoPlay="muted"
-              muted
-              loop
-              playsInline
-              preload="auto"
-              poster={CALLAWAY_SCOPE_POSTER}
-              metadata={{ video_title: "Callaway Kyle scope background" }}
-              nohotkeys
-            />
-          </div>
+          <VersantBackgroundMux
+            playbackId={CALLAWAY_SCOPE_PLAYBACK_ID}
+            poster={CALLAWAY_SCOPE_POSTER}
+            title="Callaway Kyle scope background"
+          />
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(221,224,216,0.94)_0%,rgba(221,224,216,0.32)_24%,rgba(221,224,216,0.2)_54%,rgba(221,224,216,0.45)_78%,rgba(221,224,216,0.96)_100%)]"

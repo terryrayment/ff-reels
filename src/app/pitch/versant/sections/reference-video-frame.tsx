@@ -1,7 +1,7 @@
 "use client";
 
-import MuxPlayer from "@mux/mux-player-react";
 import type { CSSProperties } from "react";
+import { VersantBackgroundMux } from "./versant-background-mux";
 
 type Props = {
   playbackId: string;
@@ -18,36 +18,19 @@ export function ReferenceVideoFrame({
 }: Props) {
   return (
     <div
-      className="absolute inset-0 [&_mux-player]:h-full [&_mux-player]:w-full"
+      className="absolute inset-0 overflow-hidden"
       style={
         {
-          "--controls": "none",
-          "--media-object-fit": "cover",
           transform: `scale(${scale})`,
           transformOrigin: "center center",
         } as CSSProperties
       }
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={poster}
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
-      <MuxPlayer
-        className="absolute inset-0"
+      <VersantBackgroundMux
         playbackId={playbackId}
-        streamType="on-demand"
-        autoPlay="muted"
-        muted
-        loop
-        playsInline
-        preload="auto"
         poster={poster}
-        metadata={{ video_title: title }}
-        nohotkeys
+        title={title}
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-100 [&_mux-player]:h-full [&_mux-player]:w-full"
       />
     </div>
   );
