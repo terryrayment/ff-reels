@@ -17,6 +17,37 @@ const CONTACTS = [
   ["Jed Herold, EP", "jed@friendsandfamily.tv"],
 ];
 
+const INSTAGRAM_URL = "https://instagram.com/friendsandfamily.tv";
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+    >
+      <rect
+        x="3.25"
+        y="3.25"
+        width="17.5"
+        height="17.5"
+        rx="5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="4.1"
+        stroke="currentColor"
+        strokeWidth="1.75"
+      />
+      <circle cx="17.35" cy="6.65" r="1.1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function ContactCta({ recipientFirstName }: Props) {
   return (
     <section className={`${SECTION} pb-4 lg:pb-8`}>
@@ -49,6 +80,21 @@ export function ContactCta({ recipientFirstName }: Props) {
                 href={`mailto:${email}`}
               />
             ))}
+          </div>
+
+          <div className="mt-5">
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Friends & Family on Instagram (@friendsandfamily.tv)"
+              className="inline-flex items-center gap-2 text-white/52 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+            >
+              <InstagramIcon className="h-[18px] w-[18px]" />
+              <span className="text-[13px] font-medium tracking-[-0.01em]">
+                @friendsandfamily.tv
+              </span>
+            </a>
           </div>
           </div>
         </div>
