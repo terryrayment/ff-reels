@@ -280,14 +280,14 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               scrollbar-color: #2447ff var(--versant-bg);
             }
             html:has(.versant-pitch)::-webkit-scrollbar {
-              width: 11px;
+              width: 22px;
             }
             html:has(.versant-pitch)::-webkit-scrollbar-track {
               background: var(--versant-bg);
             }
             html:has(.versant-pitch)::-webkit-scrollbar-thumb {
               background-color: #2447ff;
-              border: 2px solid var(--versant-bg);
+              border: 3px solid var(--versant-bg);
               border-radius: 999px;
             }
             @keyframes versant-rise-in {
