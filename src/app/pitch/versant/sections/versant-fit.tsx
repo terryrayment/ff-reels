@@ -46,7 +46,7 @@ export function VersantFit() {
             ))}
           </div>
 
-          <TagList tags={FIT_TAGS} className="mt-8" />
+          <TagList tags={FIT_TAGS} className="mt-8" label="Scope metadata" />
         </div>
       </div>
     </section>

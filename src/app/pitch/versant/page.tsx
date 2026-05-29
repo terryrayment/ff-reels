@@ -69,16 +69,23 @@ const CLEAN_PROJECT_TITLES: Record<(typeof DIRECTOR_SLUGS)[number], string | nul
 };
 
 const VERSANT_THEME = {
-  "--versant-black": "#0C3B2E",
-  "--versant-ink": "#11110e",
-  "--versant-paper": "#F6F2E8",
-  "--versant-white": "#FFFDF7",
-  "--versant-orange": "#B99A46",
-  "--versant-lime": "#F0E8D6",
-  "--versant-blue": "#0C3B2E",
-  "--versant-mint": "#ECE5D4",
-  "--versant-gray": "#8f8879",
-  "--versant-soft-gray": "#DED6C4",
+  "--versant-bg": "#DDE0D8",
+  "--versant-black": "#09271F",
+  "--versant-ink": "#14130F",
+  "--versant-paper": "#F3EEE2",
+  "--versant-white": "#FFFCF4",
+  "--versant-orange": "#B19343",
+  "--versant-lime": "#E8DFCD",
+  "--versant-blue": "#09271F",
+  "--versant-mint": "#E9E0CF",
+  "--versant-gray": "#766F62",
+  "--versant-soft-gray": "#D8CEBB",
+  "--versant-surface": "#FBF7ED",
+  "--versant-surface-soft": "#EEE6D7",
+  "--versant-muted": "rgba(20, 19, 15, 0.58)",
+  "--versant-rule": "rgba(20, 19, 15, 0.13)",
+  "--versant-rule-strong": "rgba(20, 19, 15, 0.28)",
+  "--versant-light-rule": "rgba(255, 252, 244, 0.16)",
 } as CSSProperties;
 
 function firstNameOf(full: string | null | undefined): string | null {
@@ -229,7 +236,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
 
   return (
     <main
-      className="min-h-screen bg-[var(--versant-paper)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[var(--versant-orange)]/30"
+      className="min-h-screen bg-[var(--versant-bg)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[var(--versant-orange)]/30"
       style={VERSANT_THEME}
     >
       <div
@@ -245,13 +252,13 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               to { transform: translate3d(-50%, 0, 0); }
             }
             .versant-marquee {
-              animation: versant-marquee 44s linear infinite;
-              padding-left: 1rem;
+              animation: versant-marquee 48s linear infinite;
+              padding-left: 0.5rem;
             }
             .versant-reveal {
               opacity: 0;
-              transform: translateY(16px);
-              transition: opacity 520ms ease, transform 520ms ease;
+              transform: translateY(12px);
+              transition: opacity 460ms ease, transform 460ms ease;
               will-change: opacity, transform;
             }
             .versant-reveal.is-visible,
@@ -265,43 +272,50 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               text-wrap: balance;
             }
             .versant-section {
-              padding: clamp(3.75rem, 7vw, 7rem) 1rem;
+              padding: clamp(4.5rem, 8vw, 8.5rem) 1rem;
             }
             .versant-section-tight {
-              padding-top: clamp(2.5rem, 5vw, 4.5rem);
-              padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+              padding-top: clamp(3rem, 5vw, 5.5rem);
+              padding-bottom: clamp(3rem, 5vw, 5.5rem);
             }
             .versant-container {
-              width: min(100% - 2rem, 1500px);
+              width: min(100% - clamp(1.5rem, 5vw, 6rem), 1500px);
               margin-inline: auto;
             }
             .versant-header {
               display: grid;
-              grid-template-columns: minmax(0, 0.26fr) minmax(0, 0.5fr) minmax(16rem, 0.24fr);
-              gap: 1rem;
-              align-items: end;
-              margin-bottom: clamp(1.75rem, 4vw, 3rem);
+              grid-template-columns: minmax(0, 0.7fr) minmax(18rem, 0.3fr);
+              column-gap: clamp(2rem, 6vw, 7rem);
+              row-gap: 0.8rem;
+              align-items: start;
+              margin-bottom: clamp(2.25rem, 5vw, 4.25rem);
             }
-            .versant-kicker,
+            .versant-kicker {
+              grid-column: 1 / -1;
+              font-size: 0.82rem;
+              font-weight: 500;
+              line-height: 1.1;
+              letter-spacing: -0.01em;
+            }
             .versant-meta-label {
-              font-size: 0.68rem;
+              font-size: 0.66rem;
               font-weight: 600;
               line-height: 1;
               text-transform: uppercase;
-              letter-spacing: 0.11em;
+              letter-spacing: 0.08em;
             }
             .versant-title {
-              font-size: clamp(2.35rem, 5vw, 5rem);
+              font-size: clamp(2.45rem, 5.2vw, 5.8rem);
               font-weight: 500;
-              letter-spacing: -0.045em;
-              line-height: 0.98;
+              letter-spacing: -0.04em;
+              line-height: 0.96;
               text-wrap: balance;
             }
             .versant-intro {
-              max-width: 34rem;
-              font-size: clamp(1rem, 1.55vw, 1.35rem);
-              line-height: 1.2;
-              letter-spacing: -0.025em;
+              max-width: 31rem;
+              font-size: clamp(1rem, 1.4vw, 1.22rem);
+              line-height: 1.28;
+              letter-spacing: -0.02em;
             }
             .versant-panel,
             .versant-card,
@@ -309,77 +323,437 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             .versant-mw-panel,
             .versant-mw-card,
             .versant-mw-media {
-              border-radius: 8px !important;
+              border-radius: 4px !important;
               box-shadow: none !important;
             }
             .versant-panel {
-              border: 1px solid rgba(17, 17, 14, 0.1);
-              background: var(--versant-white);
+              border: 1px solid var(--versant-rule);
+              background: rgba(255, 252, 244, 0.72);
             }
             .versant-card {
-              border: 1px solid rgba(17, 17, 14, 0.12);
-              background: var(--versant-white);
-              transition: border-color 220ms ease, background-color 220ms ease, transform 220ms ease;
+              border: 0;
+              border-top: 1px solid var(--versant-rule);
+              background: transparent;
+              transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease;
             }
             .versant-card:hover,
             .versant-mw-card:hover {
-              border-color: rgba(17, 17, 14, 0.28);
-              transform: translateY(-2px);
+              border-color: var(--versant-rule-strong);
             }
             .versant-card:hover .versant-card-image {
-              transform: scale(1.035);
+              transform: scale(1.012);
             }
             .versant-media {
               overflow: hidden;
-              background: var(--versant-soft-gray);
+              background: var(--versant-surface-soft);
             }
             .versant-card-image {
-              transition: transform 700ms ease, opacity 300ms ease;
+              transition: transform 520ms ease, opacity 240ms ease;
+            }
+            .versant-sport-row {
+              position: relative;
+              overflow: hidden;
+              transition: border-color 180ms ease, background-color 180ms ease;
+            }
+            .versant-sport-lane,
+            .versant-sport-read,
+            .versant-sport-row .versant-tag {
+              transition:
+                color 180ms ease,
+                opacity 180ms ease,
+                transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+            @media (hover: hover) {
+              .versant-sport-row:hover {
+                background: rgba(255, 252, 244, 0.34);
+                border-color: var(--versant-rule-strong);
+              }
+              .versant-sport-row:hover .versant-sport-lane {
+                color: rgba(20, 19, 15, 0.72);
+              }
+              .versant-sport-row:hover .versant-sport-read {
+                transform: translateX(4px);
+                color: rgba(20, 19, 15, 0.76);
+              }
+              .versant-sport-row:hover .versant-tag {
+                color: rgba(20, 19, 15, 0.72);
+              }
+              .versant-sport-row:hover .versant-property-chip {
+                border-color: rgba(20, 19, 15, 0.18);
+                color: rgba(20, 19, 15, 0.72);
+              }
+              .versant-property-chip:hover {
+                background: rgba(255, 252, 244, 0.58);
+                border-color: rgba(20, 19, 15, 0.24);
+                color: rgba(20, 19, 15, 0.84);
+              }
+            }
+            .versant-property-list {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              gap: 0.34rem 0.38rem;
+              list-style: none;
+              margin: 0;
+              padding: 0;
+            }
+            .versant-property-list li {
+              display: flex;
+              min-width: 0;
+            }
+            .versant-property-chip {
+              display: inline-flex;
+              position: relative;
+              min-height: 1.74rem;
+              align-items: center;
+              justify-content: center;
+              gap: 0.36rem;
+              border: 1px solid rgba(20, 19, 15, 0.105);
+              border-radius: 3px;
+              background: rgba(255, 252, 244, 0.26);
+              padding: 0.3rem 0.54rem;
+              color: rgba(20, 19, 15, 0.66);
+              font-size: 0.72rem;
+              font-weight: 650;
+              line-height: 1;
+              letter-spacing: -0.008em;
+              text-decoration: none;
+              white-space: nowrap;
+              overflow: visible;
+              transition:
+                background-color 180ms ease,
+                border-color 180ms ease,
+                color 180ms ease,
+                opacity 180ms ease;
+            }
+            .versant-property-chip[data-logo-state="asset"] {
+              padding-inline: 0.46rem 0.56rem;
+            }
+            .versant-property-chip[data-logo-state="mark"] {
+              gap: 0.42rem;
+              padding-left: 0.42rem;
+            }
+            .versant-property-visual {
+              display: inline-grid;
+              position: relative;
+              min-width: 1.18rem;
+              height: 1rem;
+              flex: 0 0 auto;
+              place-items: center;
+              padding-right: 0.42rem;
+              border-right: 1px solid rgba(20, 19, 15, 0.14);
+              color: rgba(20, 19, 15, 0.5);
+            }
+            .versant-property-default {
+              display: inline-grid;
+              grid-area: 1 / 1;
+              place-items: center;
+              transition:
+                opacity 160ms ease,
+                transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+            .versant-property-logo {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              max-height: 0.82rem;
+              max-width: 4.2rem;
+              opacity: 0.68;
+              transition: opacity 180ms ease;
+            }
+            .versant-property-logo-image {
+              display: block;
+              width: auto;
+              max-width: 4.2rem;
+              height: auto;
+              max-height: 0.82rem;
+              object-fit: contain;
+              filter: grayscale(1) contrast(1.15) brightness(0.44);
+            }
+            .versant-property-mark {
+              display: inline-flex;
+              min-width: 1.1rem;
+              align-items: center;
+              justify-content: center;
+              color: rgba(20, 19, 15, 0.48);
+              font-size: 0.55rem;
+              font-weight: 800;
+              line-height: 1;
+              letter-spacing: 0.03em;
+              text-transform: uppercase;
+            }
+            .versant-property-motion-icon {
+              grid-area: 1 / 1;
+              width: 1.28rem;
+              height: 1.28rem;
+              color: currentColor;
+              opacity: 0;
+              overflow: visible;
+              stroke: currentColor;
+              stroke-width: 1.75;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+              transform: translateY(2px) scale(0.96);
+              transition:
+                opacity 160ms ease,
+                transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+            .versant-property-motion-icon * {
+              vector-effect: non-scaling-stroke;
+              transform-box: fill-box;
+            }
+            .versant-property-chip:hover .versant-property-logo {
+              opacity: 0.86;
+            }
+            .versant-property-chip:hover .versant-property-visual,
+            .versant-property-chip:focus-visible .versant-property-visual,
+            .versant-property-chip:active .versant-property-visual {
+              border-right-color: rgba(20, 19, 15, 0.2);
+              color: rgba(20, 19, 15, 0.66);
+            }
+            .versant-property-chip:hover .versant-property-default,
+            .versant-property-chip:focus-visible .versant-property-default,
+            .versant-property-chip:active .versant-property-default {
+              opacity: 0;
+              transform: translateY(-2px) scale(0.96);
+            }
+            .versant-property-chip:hover .versant-property-motion-icon,
+            .versant-property-chip:focus-visible .versant-property-motion-icon,
+            .versant-property-chip:active .versant-property-motion-icon {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+            .versant-property-chip:hover .motion-hand-minute,
+            .versant-property-chip:focus-visible .motion-hand-minute,
+            .versant-property-chip:active .motion-hand-minute,
+            .versant-property-chip:hover .motion-hand-hour,
+            .versant-property-chip:focus-visible .motion-hand-hour,
+            .versant-property-chip:active .motion-hand-hour {
+              animation: versant-clock-snap 950ms ease both;
+              transform-origin: 0 100%;
+            }
+            .versant-property-chip:hover .motion-flag,
+            .versant-property-chip:focus-visible .motion-flag,
+            .versant-property-chip:active .motion-flag,
+            .versant-property-chip:hover .motion-pennant,
+            .versant-property-chip:focus-visible .motion-pennant,
+            .versant-property-chip:active .motion-pennant {
+              animation: versant-flag-flick 920ms ease both;
+              transform-origin: 0 50%;
+            }
+            .versant-property-chip:hover .motion-glint,
+            .versant-property-chip:focus-visible .motion-glint,
+            .versant-property-chip:active .motion-glint {
+              animation: versant-glint 1150ms ease both;
+            }
+            .versant-property-chip:hover .motion-tire,
+            .versant-property-chip:focus-visible .motion-tire,
+            .versant-property-chip:active .motion-tire,
+            .versant-property-chip:hover .motion-spokes,
+            .versant-property-chip:focus-visible .motion-spokes,
+            .versant-property-chip:active .motion-spokes {
+              animation: versant-tire-spin 1050ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+              transform-origin: center;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="golf-putt"] .motion-ball,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="golf-putt"] .motion-ball,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="golf-putt"] .motion-ball {
+              animation: versant-ball-roll 1050ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="soccer-pass"] .motion-ball,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="soccer-pass"] .motion-ball,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="soccer-pass"] .motion-ball {
+              animation: versant-soccer-pass 1100ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="wrestling-ropes"] .motion-rope-mid,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="wrestling-ropes"] .motion-rope-mid,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="wrestling-ropes"] .motion-rope-mid {
+              animation: versant-rope-bounce 900ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="golf-target-break"] .motion-target-ring,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="golf-target-break"] .motion-target-ring,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="golf-target-break"] .motion-target-ring {
+              animation: versant-target-pulse 1000ms ease both;
+              transform-origin: center;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="golf-target-break"] .motion-break-line,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="golf-target-break"] .motion-break-line,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="golf-target-break"] .motion-break-line {
+              animation: versant-line-strike 900ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="trick-shot"] .motion-ball,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="trick-shot"] .motion-ball,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="trick-shot"] .motion-ball {
+              animation: versant-trick-shot 1150ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="vertical-crop"] .motion-crop-top,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="vertical-crop"] .motion-crop-top,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="vertical-crop"] .motion-crop-top {
+              animation: versant-crop-top 900ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="vertical-crop"] .motion-crop-bottom,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="vertical-crop"] .motion-crop-bottom,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="vertical-crop"] .motion-crop-bottom {
+              animation: versant-crop-bottom 900ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="basketball-bounce"] .motion-ball,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="basketball-bounce"] .motion-ball,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="basketball-bounce"] .motion-ball {
+              animation: versant-basketball-bounce 1050ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="volleyball-set"] .motion-ball,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="volleyball-set"] .motion-ball,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="volleyball-set"] .motion-ball {
+              animation: versant-volleyball-set 1050ms ease both;
+            }
+            .versant-property-chip:hover .versant-property-motion-icon[data-motion-type="scoreboard-flip"] .motion-flip,
+            .versant-property-chip:focus-visible .versant-property-motion-icon[data-motion-type="scoreboard-flip"] .motion-flip,
+            .versant-property-chip:active .versant-property-motion-icon[data-motion-type="scoreboard-flip"] .motion-flip {
+              animation: versant-score-flip 1000ms ease both;
+              transform-origin: center;
+            }
+            .versant-property-chip:focus-visible {
+              outline: 2px solid var(--versant-orange);
+              outline-offset: 3px;
+            }
+            @keyframes versant-clock-snap {
+              0% { transform: rotate(-32deg); }
+              58% { transform: rotate(18deg); }
+              100% { transform: rotate(0deg); }
+            }
+            @keyframes versant-flag-flick {
+              0% { transform: skewX(0deg) translateX(0); }
+              36% { transform: skewX(-10deg) translateX(0.8px); }
+              72% { transform: skewX(6deg) translateX(-0.4px); }
+              100% { transform: skewX(0deg) translateX(0); }
+            }
+            @keyframes versant-glint {
+              0%, 100% { opacity: 0.2; transform: translateX(-1px); }
+              45% { opacity: 1; transform: translateX(1.5px); }
+            }
+            @keyframes versant-tire-spin {
+              0% { transform: rotate(-24deg); }
+              100% { transform: rotate(336deg); }
+            }
+            @keyframes versant-ball-roll {
+              0% { transform: translateX(-4px) rotate(0deg); }
+              100% { transform: translateX(7px) rotate(180deg); }
+            }
+            @keyframes versant-soccer-pass {
+              0% { transform: translate(0, 0); opacity: 0.55; }
+              100% { transform: translate(10px, -5px); opacity: 1; }
+            }
+            @keyframes versant-rope-bounce {
+              0%, 100% { transform: translateX(0); }
+              38% { transform: translateX(2px); }
+              70% { transform: translateX(-1px); }
+            }
+            @keyframes versant-target-pulse {
+              0% { transform: scale(0.92); opacity: 0.45; }
+              100% { transform: scale(1); opacity: 1; }
+            }
+            @keyframes versant-line-strike {
+              0% { stroke-dasharray: 0 22; }
+              100% { stroke-dasharray: 22 22; }
+            }
+            @keyframes versant-trick-shot {
+              0% { transform: translate(0, 0); }
+              55% { transform: translate(6px, -8px); }
+              100% { transform: translate(12px, 0); }
+            }
+            @keyframes versant-crop-top {
+              0%, 100% { transform: translateY(0); }
+              50% { transform: translateY(1.8px); }
+            }
+            @keyframes versant-crop-bottom {
+              0%, 100% { transform: translateY(0); }
+              50% { transform: translateY(-1.8px); }
+            }
+            @keyframes versant-basketball-bounce {
+              0%, 100% { transform: translateY(0); }
+              42% { transform: translateY(5px); }
+              72% { transform: translateY(-2px); }
+            }
+            @keyframes versant-volleyball-set {
+              0% { transform: translateY(5px); }
+              62% { transform: translateY(-3px); }
+              100% { transform: translateY(0); }
+            }
+            @keyframes versant-score-flip {
+              0% { transform: scaleY(1); }
+              48% { transform: scaleY(0.16); }
+              100% { transform: scaleY(1); }
             }
             .versant-tag-list {
               display: flex;
               flex-wrap: wrap;
-              gap: 0.4rem;
+              align-items: baseline;
+              column-gap: 0;
+              row-gap: 0.35rem;
             }
             .versant-tag {
               display: inline-flex;
               align-items: center;
-              min-height: 1.75rem;
-              border: 1px solid var(--versant-soft-gray);
-              border-radius: 999px;
-              background: var(--versant-mint);
-              padding: 0.4rem 0.65rem;
-              font-size: 0.75rem;
+              min-height: 0;
+              border: 0;
+              border-radius: 0;
+              background: transparent;
+              padding: 0;
+              font-size: 0.78rem;
               font-weight: 500;
-              line-height: 1;
-              color: rgba(17, 17, 14, 0.78);
-              letter-spacing: 0;
+              line-height: 1.25;
+              color: var(--versant-muted);
+              letter-spacing: -0.01em;
+            }
+            .versant-tag-list .versant-tag:not(:last-child)::after {
+              content: "/";
+              margin-inline: 0.48rem;
+              color: rgba(20, 19, 15, 0.34);
             }
             .versant-tag-dark {
-              border-color: rgba(255, 255, 255, 0.18);
-              background: rgba(255, 255, 255, 0.08);
-              color: rgba(255, 255, 255, 0.76);
+              color: rgba(255, 252, 244, 0.62);
+            }
+            .versant-tag-list .versant-tag-dark:not(:last-child)::after {
+              color: rgba(255, 252, 244, 0.32);
             }
             .versant-meta-label {
-              color: rgba(17, 17, 14, 0.42);
+              color: rgba(20, 19, 15, 0.46);
             }
             .versant-meta-text {
-              font-size: 0.92rem;
-              line-height: 1.3;
-              color: rgba(17, 17, 14, 0.64);
+              font-size: 0.9rem;
+              line-height: 1.35;
+              color: rgba(20, 19, 15, 0.64);
+              letter-spacing: -0.01em;
+            }
+            [class*="text-white"] .versant-meta-label,
+            [class*="text-[var(--versant-white)]"] .versant-meta-label {
+              color: rgba(255, 252, 244, 0.46);
+            }
+            [class*="text-white"] .versant-meta-text,
+            [class*="text-[var(--versant-white)]"] .versant-meta-text {
+              color: rgba(255, 252, 244, 0.62);
             }
             .versant-link {
               display: inline-flex;
               align-items: center;
-              min-height: 2.5rem;
+              min-height: 2.75rem;
               border-bottom: 1px solid currentColor;
-              font-size: 0.92rem;
+              font-size: 0.9rem;
               font-weight: 500;
               line-height: 1;
-              transition: opacity 180ms ease;
+              letter-spacing: -0.01em;
+              transition: opacity 160ms ease, border-color 160ms ease;
             }
             .versant-link:hover {
-              opacity: 0.62;
+              opacity: 0.68;
+            }
+            [data-versant-credit] {
+              min-height: 2.75rem !important;
+              border: 0 !important;
+              border-bottom: 1px solid currentColor !important;
+              border-radius: 0 !important;
+              background: transparent !important;
+              padding: 0.42rem 0 !important;
             }
             .versant-card:focus-within,
             .versant-link:focus-visible {
@@ -388,15 +762,38 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             }
             @media (max-width: 900px) {
               .versant-section {
-                padding: 4.5rem 1rem;
+                padding: 4.25rem 1rem;
               }
               .versant-container {
-                width: min(100% - 1.5rem, 1500px);
+                width: min(100% - 1.25rem, 1500px);
               }
               .versant-header {
                 grid-template-columns: 1fr;
-                gap: 0.9rem;
+                gap: 0.8rem;
                 align-items: start;
+              }
+              .versant-property-list {
+                gap: 0.32rem;
+              }
+              .versant-property-chip {
+                min-height: 1.7rem;
+                padding-inline: 0.48rem;
+                font-size: 0.7rem;
+              }
+              .versant-property-chip[data-logo-state="mark"] {
+                padding-left: 0.4rem;
+              }
+              .versant-property-visual {
+                min-width: 1.08rem;
+                padding-right: 0.34rem;
+              }
+              .versant-property-mark {
+                min-width: 1rem;
+                font-size: 0.52rem;
+              }
+              .versant-property-motion-icon {
+                width: 1.18rem;
+                height: 1.18rem;
               }
             }
             @media (prefers-reduced-motion: reduce) {
@@ -410,7 +807,21 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
                 transition: none;
               }
               .versant-card,
-              .versant-card-image {
+              .versant-card-image,
+              .versant-sport-row,
+              .versant-sport-lane,
+              .versant-sport-read,
+              .versant-sport-tags,
+              .versant-sport-row .versant-tag,
+              .versant-property-chip,
+              .versant-property-logo,
+              .versant-property-logo-image,
+              .versant-property-visual,
+              .versant-property-default,
+              .versant-property-motion-icon,
+              .versant-property-motion-icon *,
+              .versant-property-mark {
+                animation: none !important;
                 transition: none;
                 transform: none !important;
               }
@@ -430,10 +841,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
       <RosterModes directors={orderedDirectors} />
       <VersantFit />
       <ContactCta
-        ctaUrl={link?.ctaUrl}
-        ctaLabel={link?.ctaLabel}
         recipientFirstName={recipientFirstName}
-        directors={orderedDirectors}
       />
     </main>
   );

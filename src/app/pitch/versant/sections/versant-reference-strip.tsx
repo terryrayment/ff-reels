@@ -63,9 +63,9 @@ const REFERENCES = [
     media: {
       muxPlaybackId: "fLOtMlwZIGeeQM00rMBdqOoMRVdLv900Z9yyaAvZmLjbM",
       duration: 94.594511,
-      start: 38,
+      start: 52,
     },
-    mediaClass: "scale-[1.38]",
+    mediaClass: "scale-[1.62]",
   },
 ] as const;
 
@@ -83,7 +83,7 @@ export function VersantReferenceStrip({
           intro="Four useful reads for work Versant already makes."
         />
 
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-x-4 gap-y-8 md:grid-cols-2">
           {REFERENCES.map((item, index) => {
             const frame = item.media
               ? {
@@ -113,12 +113,13 @@ export function VersantReferenceStrip({
 
             return (
               <article key={item.title} className={`${CARD} group flex min-h-[31rem] flex-col p-3`}>
-                <div className={`${MEDIA} relative mb-5 aspect-[4/3]`}>
+                <div className={`${MEDIA} relative mb-5 aspect-video`}>
                   {playVideo && frame.playbackId && frame.still ? (
                     <ReferenceVideoFrame
                       playbackId={frame.playbackId}
                       poster={frame.still}
                       title={videoTitle}
+                      scale={1.34}
                     />
                   ) : frame.still ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -160,7 +161,11 @@ export function VersantReferenceStrip({
                     {item.description}
                   </p>
 
-                  <TagList tags={item.tags} className="mt-auto" />
+                  <TagList
+                    tags={item.tags}
+                    className="mt-auto"
+                    label={`${item.title} capabilities`}
+                  />
                 </div>
               </article>
             );

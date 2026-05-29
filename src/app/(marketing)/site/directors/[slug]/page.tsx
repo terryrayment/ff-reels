@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { FeaturedReel } from "@/components/marketing/featured-reel";
 import { RevealText } from "@/components/marketing/reveal-text";
+import { SourceVideoReel } from "@/components/marketing/source-video-reel";
 import {
   type CanonicalProject,
   getCanonicalDirector,
@@ -82,7 +83,13 @@ export default async function DirectorDetailPage({
       )}
 
       {featuredProject?.sourceVideoUrl && !featuredProject.muxPlaybackId && (
-        <SourceVideoReel project={featuredProject} />
+        <SourceVideoReel
+          projectId={featuredProject.id}
+          sourceVideoUrl={featuredProject.sourceVideoUrl}
+          posterUrl={featuredPosterUrl}
+          brand={featuredProject.brand}
+          title={featuredProject.title}
+        />
       )}
 
       <div
@@ -163,29 +170,5 @@ export default async function DirectorDetailPage({
         </div>
       </div>
     </article>
-  );
-}
-
-function SourceVideoReel({ project }: { project: CanonicalProject }) {
-  return (
-    <section className="ff-shell mb-12">
-      <div
-        className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black transition-opacity duration-150"
-        data-featured-project-id={project.id}
-        data-marketing-featured-media-target
-      >
-        <video
-          className="h-full w-full object-cover"
-          src={project.sourceVideoUrl ?? undefined}
-          poster={project.thumbnailUrl ?? undefined}
-          controls
-          playsInline
-          preload="metadata"
-        />
-      </div>
-      <p className="ff-kicker-muted mt-4">
-        {project.brand} — {project.title}
-      </p>
-    </section>
   );
 }

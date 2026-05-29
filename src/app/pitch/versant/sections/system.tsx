@@ -21,13 +21,15 @@ export function TagList({
   tags,
   dark = false,
   className,
+  label = "Metadata",
 }: {
   tags: readonly string[];
   dark?: boolean;
   className?: string;
+  label?: string;
 }) {
   return (
-    <ul className={cx("versant-tag-list", className)} aria-label="Capabilities">
+    <ul className={cx("versant-tag-list", className)} aria-label={label}>
       {tags.map((tag) => (
         <li
           key={tag}

@@ -75,9 +75,9 @@ function FFLogomark() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/logo.svg"
+      src="/brand/ff-logomark.png"
       alt="Friends & Family"
-      className="h-8 w-auto brightness-0 invert opacity-70"
+      className="h-8 w-8 object-contain brightness-0 invert opacity-70"
     />
   );
 }
@@ -117,55 +117,70 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
   }).filter((frame) => frame.still);
 
   return (
-    <section className="px-4 py-4 text-[var(--versant-ink)] sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[1600px] gap-3 lg:grid-cols-12">
-        <article className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[8px] border border-white/10 bg-black p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[calc(100svh-2rem)] lg:p-10">
+    <section className="px-3 py-3 text-[var(--versant-ink)] sm:px-5 lg:px-7">
+      <div className="mx-auto grid max-w-[1600px] gap-3 lg:grid-cols-12">
+        <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[var(--versant-black)] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
           <div className={`relative z-10 flex items-center justify-between gap-4 text-white/50 ${HERO_MICRO_LABEL}`}>
             <FFLogomark />
             {recipientFirstName && <span>For {recipientFirstName}</span>}
           </div>
 
-          <div className="relative z-10 grid gap-8 py-12 lg:grid-cols-12 lg:items-end lg:py-16">
-            <div className="lg:col-span-7">
-              <p className={`mb-7 text-white/62 ${HERO_MICRO_LABEL}`}>
+          <div className="relative z-10 mt-[clamp(2rem,5.5vh,4rem)] grid gap-8 lg:grid-cols-[minmax(0,0.58fr)_minmax(22rem,0.42fr)] lg:items-center">
+            <div>
+              <p className={`mb-5 text-white/62 ${HERO_MICRO_LABEL}`}>
                 Overview
               </p>
-              <h1 className="versant-display max-w-[13ch] text-[clamp(54px,8.4vw,128px)] font-medium tracking-[-0.045em]">
+              <h1 className="versant-display max-w-[12.8ch] text-[clamp(52px,7.6vw,116px)] font-medium tracking-[-0.044em]">
                 Friends &amp; Family for Versant{" "}
                 <span className="font-light">Sports</span>
               </h1>
-              <p className="mt-6 max-w-[40rem] text-[clamp(19px,2vw,30px)] leading-[1.12] tracking-[-0.03em] text-white/68">
+              <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.15] tracking-[-0.028em] text-white/68">
                 Creative, production, edit, motion, and delivery for Versant&apos;s
                 sports portfolio.
               </p>
-              <TagList tags={HERO_CAPABILITIES} dark className="mt-7 max-w-2xl" />
+              <TagList
+                tags={HERO_CAPABILITIES}
+                dark
+                className="mt-6 max-w-2xl"
+                label="Hero capabilities"
+              />
             </div>
 
             {motionFrames.length > 0 && (
               <div
                 aria-hidden="true"
-                className="grid aspect-[4/3] grid-cols-2 gap-2 opacity-70 lg:col-span-5 lg:aspect-[5/4]"
+                className="grid gap-1.5 opacity-72 lg:self-center"
               >
-                {motionFrames.slice(0, 4).map((frame, index) => (
-                  <div
-                    key={frame.still ?? index}
-                    className={`versant-media bg-white/5 ${
-                      index === 0 ? "row-span-2" : ""
-                    }`}
-                  >
+                {motionFrames[0] && (
+                  <div className="versant-media aspect-video bg-white/5">
                     <MotionFrame
-                      animated={frame.animated}
-                      still={frame.still}
+                      animated={motionFrames[0].animated}
+                      still={motionFrames[0].still}
                       alt=""
-                      className={`versant-card-image h-full w-full object-cover ${frame.className ?? ""}`}
+                      className={`versant-card-image h-full w-full object-cover ${motionFrames[0].className ?? ""}`}
                     />
                   </div>
-                ))}
+                )}
+                <div className="grid grid-cols-3 gap-1.5">
+                  {motionFrames.slice(1, 4).map((frame, index) => (
+                    <div
+                      key={frame.still ?? index}
+                      className="versant-media aspect-video bg-white/5"
+                    >
+                      <MotionFrame
+                        animated={frame.animated}
+                        still={frame.still}
+                        alt=""
+                        className={`versant-card-image h-full w-full object-cover ${frame.className ?? ""}`}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
-          <div className={`relative z-10 mt-4 overflow-hidden border-t border-white/10 pt-3 text-white/36 ${HERO_MICRO_LABEL}`}>
+          <div className={`relative z-10 mt-8 overflow-hidden border-t border-white/[0.14] pt-3 text-white/36 lg:mt-10 ${HERO_MICRO_LABEL}`}>
             <div className="versant-marquee flex w-max gap-8 motion-reduce:animate-none">
               <span>{PORTFOLIO_TICKER}</span>
               <span aria-hidden="true">{PORTFOLIO_TICKER}</span>

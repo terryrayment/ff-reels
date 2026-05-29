@@ -1,7 +1,6 @@
 import {
   CARD,
   CONTAINER,
-  LINK,
   MEDIA,
   SECTION,
   SectionHeader,
@@ -19,29 +18,25 @@ type PartnerVisual = {
 const PARTNERS = [
   {
     name: "The Youth",
-    href: "https://theyouth.com.br/",
-    linkLabel: "View The Youth work",
-    role: "Brazil production",
+    role: "Latin America Production",
     copy:
       "Casting, locations, crew, and cultural read for work that needs more than a U.S. lens.",
     tags: ["Casting", "Locations", "Crew", "Local read"],
     visual: {
-      label: "Brazil production",
-      videoSrc: "/versant/pepsi-black-skate.mp4",
+      label: "ASHE VERSUS",
+      vimeoId: "909300493",
+      hash: "9fec138dfe",
     },
   },
   {
     name: "Colossal",
-    href: "https://colossal.film/",
-    linkLabel: "View Colossal reel",
     role: "Post and motion",
     copy:
       "Animation, design, mixed media, cleanup, finish, versioning, and delivery support.",
     tags: ["Post", "Motion", "Animation", "Versioning", "Delivery"],
     visual: {
       label: "Finish reel",
-      vimeoId: "859353559",
-      hash: "c300ebf8bb",
+      videoSrc: "/versant/colossal-reel.mp4",
     },
   },
 ] as const;
@@ -91,8 +86,8 @@ function PartnerVideo({ visual }: { visual: PartnerVisual }) {
           tabIndex={-1}
         />
       ) : null}
-      <div className="absolute inset-0 bg-[var(--versant-black)]/14 transition duration-500 group-hover:bg-[var(--versant-black)]/4" />
-      <div className="absolute bottom-4 left-4 rounded-full bg-black/48 px-3 py-1.5 text-[12px] font-medium text-white/76">
+      <div className="absolute inset-0 bg-[var(--versant-black)]/12 transition duration-500 group-hover:bg-[var(--versant-black)]/5" />
+      <div className="absolute bottom-3 left-3 text-[12px] font-medium leading-none tracking-[-0.01em] text-white/76">
         {visual.label}
       </div>
     </div>
@@ -106,7 +101,7 @@ export function PartnerBench() {
         <SectionHeader
           label="Partners"
           title="Additional production lanes."
-          intro="Two teams extend reach and finish without adding noise to the process."
+          intro="Multiple teams to add global reach."
           dark
         />
 
@@ -130,15 +125,11 @@ export function PartnerBench() {
                   <p className="max-w-[34rem] text-[clamp(17px,1.5vw,21px)] leading-[1.22] tracking-[-0.02em] text-white/66">
                     {partner.copy}
                   </p>
-                  <TagList tags={partner.tags} dark />
-                  <a
-                    href={partner.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`${LINK} text-white/78 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white`}
-                  >
-                    {partner.linkLabel}
-                  </a>
+                  <TagList
+                    tags={partner.tags}
+                    dark
+                    label={`${partner.name} capabilities`}
+                  />
                 </div>
               </div>
             </article>

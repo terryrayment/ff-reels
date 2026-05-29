@@ -4,7 +4,6 @@ import {
   motionForDirector,
   type VersantDirectorMedia,
 } from "./media";
-import { RosterCreditLightbox } from "./roster-credit-lightbox";
 import {
   CARD,
   CONTAINER,
@@ -65,27 +64,15 @@ const CADDIES = [
     name: "Boma Iluma",
     signature: "Youth culture and talent films",
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
-    creditSpots: [
-      {
-        label: "Oakley w/ Damian Lillard",
-        title: "Boma Iluma · Oakley w/ Damian Lillard",
-        embedUrl: "https://player.vimeo.com/video/638046332?h=459abba3b3",
-      },
-      {
-        label: "Air Jordan Heirs",
-        title: "Boma Iluma · Air Jordan Heirs",
-        embedUrl: "https://player.vimeo.com/video/388087934?h=e1534f4e98",
-      },
-      {
-        label: "The Chi",
-        title: "Boma Iluma · The Chi",
-        embedUrl: "https://player.vimeo.com/video/1023999854",
-      },
-    ],
     match: "Good Good / next-gen golf",
     tags: ["Talent", "Culture", "Next-gen golf"],
     treatment: "bg-[var(--versant-paper)] text-black",
-    mediaClass: "scale-[1.55]",
+    video: {
+      poster:
+        "https://cdn.prod.website-files.com/65976573e20f53252df01c48/687fdaa931aa6c24354991e4_Oakley_Thumbnail.jpg",
+      src: "https://player.vimeo.com/progressive_redirect/playback/1103240262/rendition/720p/file.mp4?loc=external&log_user=0&signature=c856df2b0c7ecab29daf0ee6d959ddc6545cc89527e2f42f19065e9ffd2b519c",
+    },
+    mediaClass: "scale-[1.1]",
   },
   {
     slug: "kelsey-larkin",
@@ -122,6 +109,12 @@ const CADDIES = [
     match: "fan campaigns / Big Break energy",
     tags: ["Mixed media", "Fans", "Social"],
     treatment: "bg-[var(--versant-white)] text-black",
+    video: {
+      poster:
+        "https://cdn.prod.website-files.com/65976573e20f53252df01c48/6602a1134f1dec2f2d46ba59_Doritos_Wasabi.jpg",
+      src: "https://player.vimeo.com/progressive_redirect/playback/927476346/rendition/1080p/file.mp4?loc=external&log_user=0&signature=6bd4f8c1650b63881d158195b73232735f1e6720bdb043f7663b67d5055f772f",
+    },
+    mediaClass: "scale-[1.1]",
   },
   {
     slug: "brother-willis",
@@ -182,7 +175,7 @@ export function RosterModes({
           intro="A short index by use case, not a full roster dump."
         />
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
           {CADDIES.map((card) => (
             <CaddieCard key={card.slug} card={card} directors={directors} />
           ))}
@@ -200,6 +193,7 @@ function CaddieCard({
   directors: VersantDirectorMedia[];
 }) {
   const media = motionForDirector(directors, card.slug, 640);
+  const directVideo = "video" in card ? card.video : null;
   const overrideStill = card.media
     ? muxStillUrl(
         card.media.muxPlaybackId,
@@ -217,20 +211,40 @@ function CaddieCard({
       )
     : null;
   const headshot = media.director?.headshotUrl;
-  const still = overrideStill ?? media.still;
-  const animated = overrideAnimated ?? media.animated;
+  const still = directVideo?.poster ?? overrideStill ?? media.still;
+  const animated = directVideo ? null : overrideAnimated ?? media.animated;
   const mediaClass = "mediaClass" in card ? card.mediaClass : "";
   const usesFigurePlaceholder =
     !headshot && card.slug === "cody-cloud";
-  const creditSpots = "creditSpots" in card ? card.creditSpots : null;
 
   return (
-    <article className={`${CARD} group flex min-h-[31rem] flex-col p-3 sm:p-4`}>
+    <article className={`${CARD} group flex flex-col p-3 sm:p-4`}>
       <div
-        className={`${MEDIA} relative aspect-[4/3] bg-black/10 bg-cover bg-center`}
+        className={`${MEDIA} relative aspect-video bg-black/10 bg-cover bg-center`}
         style={still ? { backgroundImage: `url(${still})` } : undefined}
       >
-        {overrideStill ? (
+        {directVideo ? (
+          <>
+            <video
+              aria-hidden="true"
+              src={directVideo.src}
+              poster={directVideo.poster}
+              className={`versant-card-image h-full w-full object-cover motion-reduce:hidden ${mediaClass}`}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={directVideo.poster}
+              alt={card.name}
+              className={`hidden h-full w-full object-cover motion-reduce:block ${mediaClass}`}
+              loading="lazy"
+            />
+          </>
+        ) : overrideStill ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={overrideStill}
@@ -289,11 +303,7 @@ function CaddieCard({
             <p className={`${META_LABEL} mb-2`}>
               Credits
             </p>
-            {creditSpots ? (
-              <RosterCreditLightbox spots={creditSpots} />
-            ) : (
-              <p className={META_TEXT}>{card.credits}</p>
-            )}
+            <p className={META_TEXT}>{card.credits}</p>
           </div>
           <div>
             <p className={`${META_LABEL} mb-2`}>
@@ -303,7 +313,11 @@ function CaddieCard({
               {card.match}
             </p>
           </div>
-          <TagList tags={card.tags} className="mt-auto" />
+          <TagList
+            tags={card.tags}
+            className="mt-auto"
+            label={`${card.name} assignment tags`}
+          />
         </div>
       </div>
     </article>

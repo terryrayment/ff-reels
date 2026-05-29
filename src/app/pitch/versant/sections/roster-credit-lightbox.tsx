@@ -60,10 +60,10 @@ export function RosterCreditLightbox({
               data-versant-credit
               onClick={() => setActiveSpot(spot)}
               className={[
-                "versant-tag inline-flex min-h-8 items-center rounded-full border px-2.5 py-1 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
+                "versant-tag inline-flex items-center text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
                 dark
-                  ? "border-white/18 text-white/86 hover:border-white/42 hover:text-white focus-visible:outline-white"
-                  : "border-black/14 text-black/78 hover:border-black/34 hover:text-black focus-visible:outline-black",
+                  ? "text-white/86 hover:text-white focus-visible:outline-white"
+                  : "text-black/78 hover:text-black focus-visible:outline-black",
               ].join(" ")}
               aria-label={`Open ${spot.title}`}
             >
@@ -82,7 +82,7 @@ export function RosterCreditLightbox({
           onClick={() => setActiveSpot(null)}
         >
           <div
-            className="relative w-full max-w-6xl overflow-hidden rounded-[14px] bg-[var(--versant-black)] shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+            className="relative w-full max-w-6xl overflow-hidden rounded-[4px] bg-[var(--versant-black)]"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-4 border-b border-white/12 px-4 py-3 text-white sm:px-5">
@@ -92,7 +92,7 @@ export function RosterCreditLightbox({
               <button
                 type="button"
                 onClick={() => setActiveSpot(null)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-white text-black transition hover:bg-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] bg-white text-black transition hover:bg-[var(--versant-orange)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 aria-label="Close video"
               >
                 <X size={18} aria-hidden="true" />

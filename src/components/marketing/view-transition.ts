@@ -24,6 +24,19 @@ interface MarketingTransitionOptions {
   directorSlug?: string | null;
 }
 
+function isSamePathQueryNavigation(href: string) {
+  try {
+    const target = new URL(href, window.location.href);
+    return (
+      target.origin === window.location.origin &&
+      target.pathname === window.location.pathname &&
+      target.search !== window.location.search
+    );
+  } catch {
+    return false;
+  }
+}
+
 function getStorage() {
   try {
     return typeof window !== "undefined" ? window.sessionStorage : null;
@@ -326,6 +339,14 @@ export function startMarketingViewTransition(
   options: MarketingTransitionOptions = {},
 ) {
   if (typeof window !== "undefined") {
+    if (isSamePathQueryNavigation(href)) {
+      finishMarketingMediaTransition();
+      clearMarketingTransitionDelay();
+      clearMarketingTransitionPoster();
+      router.push(href);
+      return;
+    }
+
     if (
       mediaTransitionInFlight ||
       document.documentElement.classList.contains(
