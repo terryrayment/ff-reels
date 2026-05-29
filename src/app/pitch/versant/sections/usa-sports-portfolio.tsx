@@ -201,7 +201,7 @@ const SPORTS_GROUPS = [
   },
   {
     group: "Live sport",
-    note: "Fast-turn creative around rights windows and weekly viewing habits.",
+    note: "Weekly windows, late footage, fast approvals, and fans who know when the tone is wrong.",
     propertyIds: ["nascar", "premierLeague", "pgaTour", "usOpen"],
   },
   {
