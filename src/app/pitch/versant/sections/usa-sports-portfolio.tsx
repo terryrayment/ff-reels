@@ -224,8 +224,7 @@ export function UsaSportsPortfolio() {
           label="Sport"
           title={
             <span className="text-[#2447FF]">
-              Selected <span className="font-bold">Versant</span> sports
-              properties.
+              Selected properties. Different production problems.
             </span>
           }
           intro="Each property has its own production system."
