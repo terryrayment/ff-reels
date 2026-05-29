@@ -44,7 +44,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                   Studio
                 </p>
                 <h2 className={`${TITLE} max-w-3xl text-[#2447FF]`}>
-                  Built for live sports work.
+                  Built for sports jobs with moving parts.
                 </h2>
               </div>
 
