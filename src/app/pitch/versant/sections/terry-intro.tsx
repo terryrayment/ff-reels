@@ -1,7 +1,7 @@
 "use client";
 
 import MuxPlayer from "@mux/mux-player-react";
-import { KICKER, PANEL, REVEAL, TITLE, TagList } from "./system";
+import { KICKER, PANEL, REVEAL, TITLE } from "./system";
 import { VersantBackgroundMux } from "./versant-background-mux";
 
 const CALLAWAY_BACKGROUND_PLAYBACK_ID =
@@ -38,8 +38,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
           <article
             className={`${PANEL} versant-studio-panel relative z-10 flex flex-wrap overflow-hidden bg-[rgba(251,247,237,0.72)] p-5 backdrop-blur-[2px] sm:p-7 lg:p-8`}
           >
-            <div className="relative z-10 grid gap-8 lg:grid-cols-12 lg:items-start">
-              <div className="lg:col-span-7">
+            <div className="relative z-10 grid gap-8">
+              <div>
                 <p className={`${KICKER} mb-5 text-black/45`}>
                   What F&amp;F does
                 </p>
@@ -48,20 +48,7 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                 </h2>
               </div>
 
-              <div className="space-y-5 text-[clamp(17px,1.45vw,21px)] leading-[1.24] tracking-[-0.02em] text-black/58 lg:col-span-5">
-                <p>
-                  We are a creative studio and production company. We represent
-                  directors, build the right crew around the job, and carry the
-                  work through edit, motion, finish, versioning, and delivery.
-                </p>
-
-                <TagList
-                  tags={["Creative", "Production", "Edit", "Motion", "Versioning", "Delivery"]}
-                  label="Studio capabilities"
-                />
-              </div>
-
-              <dl className="grid gap-3 border-t border-black/12 pt-5 text-[13px] leading-[1.25] text-black/58 sm:grid-cols-4 lg:col-span-12">
+              <dl className="grid gap-3 border-t border-black/12 pt-5 text-[13px] leading-[1.25] text-black/58 sm:grid-cols-4">
                 {[
                   ["Read", "References and creative direction"],
                   ["Build", "Director, crew, schedule"],
