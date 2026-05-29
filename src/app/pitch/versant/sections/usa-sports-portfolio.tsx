@@ -187,7 +187,7 @@ const PROPERTIES = {
 const SPORTS_GROUPS = [
   {
     group: "Golf",
-    note: "Golf Channel, GolfNow, GolfPass, tours, majors, and social cutdowns.",
+    note: "Tournaments, majors, local course stories, talent access, instruction, and versioned social.",
     propertyIds: [
       "golfChannel",
       "golfNow",
