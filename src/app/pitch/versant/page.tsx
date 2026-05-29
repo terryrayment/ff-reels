@@ -292,7 +292,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               top: 0;
               right: 0;
               z-index: 60;
-              width: 22px;
+              width: 15px;
               height: 100vh;
               height: 100dvh;
               pointer-events: none;
@@ -306,8 +306,8 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             .versant-custom-scrollbar-thumb {
               position: absolute;
               top: 0;
-              left: 2px;
-              right: 2px;
+              left: 1px;
+              right: 1px;
               border-radius: 999px;
               background: #2447ff;
             }
