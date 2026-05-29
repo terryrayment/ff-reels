@@ -227,7 +227,7 @@ export function UsaSportsPortfolio() {
               Selected properties. Different production problems.
             </span>
           }
-          intro="Each property has its own production system."
+          intro="Golf, NASCAR, WWE, Premier League, WNBA, LOVB, and college each need a different tone. The production path should stay simple."
         />
 
         <div className="versant-sport-index border-t border-[var(--versant-rule)]">
