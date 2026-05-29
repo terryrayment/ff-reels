@@ -50,9 +50,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
 
               <div className="space-y-5 text-[clamp(18px,1.55vw,22px)] leading-[1.2] tracking-[-0.025em] text-black/70 lg:col-span-5">
                 <p>
-                  We handle the parts that make sports work hard: live windows,
-                  talent access, sponsor rules, late notes, platform versions,
-                  and finish.
+                  We keep the path simple: creative read, director, crew, edit,
+                  motion, finish, versions, final files.
                 </p>
 
                 <TagList
