@@ -1,29 +1,79 @@
-import {
-  createEditorialPitchClasses,
-  createEditorialPitchComponents,
-  cx,
-  revealStagger,
-} from "../../_shared/editorial-pitch-system";
+import type { ReactNode } from "react";
 
-const VERSANT_CLASSES = createEditorialPitchClasses("versant");
+export const SECTION = "versant-section";
+export const SURFACE_GRAIN = "versant-surface-grain";
+export const CONTAINER = "versant-container";
+export const HEADER = "versant-header";
+export const KICKER = "versant-kicker";
+export const TITLE = "versant-title";
+export const INTRO = "versant-intro";
+export const REVEAL = "versant-reveal";
+export const CARD = "versant-card versant-reveal";
 
-export const SECTION = VERSANT_CLASSES.section;
-export const SURFACE_GRAIN = VERSANT_CLASSES.surfaceGrain;
-export const CONTAINER = VERSANT_CLASSES.container;
-export const HEADER = VERSANT_CLASSES.header;
-export const KICKER = VERSANT_CLASSES.kicker;
-export const TITLE = VERSANT_CLASSES.title;
-export const INTRO = VERSANT_CLASSES.intro;
-export const REVEAL = VERSANT_CLASSES.reveal;
-export const CARD = VERSANT_CLASSES.card;
-export const PANEL = VERSANT_CLASSES.panel;
-export const MEDIA = VERSANT_CLASSES.media;
-export const META_LABEL = VERSANT_CLASSES.metaLabel;
-export const META_TEXT = VERSANT_CLASSES.metaText;
-export const LINK = VERSANT_CLASSES.link;
+export function revealStagger(index: number, stepMs = 50) {
+  return { animationDelay: `${index * stepMs}ms` };
+}
+export const PANEL = "versant-panel";
+export const MEDIA = "versant-media";
+export const META_LABEL = "versant-meta-label";
+export const META_TEXT = "versant-meta-text";
+export const LINK = "versant-link";
 
-const components = createEditorialPitchComponents(VERSANT_CLASSES);
+export function cx(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
 
-export const SectionHeader = components.SectionHeader;
-export const TagList = components.TagList;
-export { cx, revealStagger };
+export function TagList({
+  tags,
+  dark = false,
+  className,
+  label = "Metadata",
+}: {
+  tags: readonly string[];
+  dark?: boolean;
+  className?: string;
+  label?: string;
+}) {
+  return (
+    <ul className={cx("versant-tag-list", className)} aria-label={label}>
+      {tags.map((tag) => (
+        <li
+          key={tag}
+          className={cx("versant-tag", dark && "versant-tag-dark")}
+        >
+          {tag}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export function SectionHeader({
+  label,
+  title,
+  intro,
+  dark = false,
+}: {
+  label?: string;
+  title: ReactNode;
+  intro?: ReactNode;
+  dark?: boolean;
+}) {
+  return (
+    <div className={HEADER}>
+      {label ? (
+        <p className={cx(KICKER, dark ? "text-white/45" : "text-black/42")}>
+          {label}
+        </p>
+      ) : null}
+      <h2 className={cx(TITLE, dark ? "text-white" : "text-black")}>
+        {title}
+      </h2>
+      {intro && (
+        <p className={cx(INTRO, dark && "versant-intro-dark")}>
+          {intro}
+        </p>
+      )}
+    </div>
+  );
+}

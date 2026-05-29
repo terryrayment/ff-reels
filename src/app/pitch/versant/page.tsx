@@ -403,6 +403,9 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               letter-spacing: -0.018em;
               color: var(--versant-muted);
             }
+            .versant-intro.versant-intro-dark {
+              color: rgba(255, 252, 244, 0.9);
+            }
             .versant-panel,
             .versant-card,
             .versant-media,
