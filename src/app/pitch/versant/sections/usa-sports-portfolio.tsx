@@ -228,7 +228,7 @@ export function UsaSportsPortfolio() {
               properties.
             </span>
           }
-          intro="Each property has its own rhythm. The production system should stay clear."
+          intro="Each property has its own production system."
         />
 
         <div className="versant-sport-index border-t border-[var(--versant-rule)]">
