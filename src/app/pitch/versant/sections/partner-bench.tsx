@@ -102,7 +102,7 @@ export function PartnerBench() {
       <div aria-hidden="true" className={SURFACE_GRAIN} />
       <div className={`${CONTAINER} relative z-10`}>
         <SectionHeader
-          label="Partners"
+          label="Network"
           title="Additional production lanes."
           intro="Multiple teams to add global reach."
           dark
