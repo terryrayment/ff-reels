@@ -13,7 +13,7 @@ import { VersantMotion } from "./sections/versant-motion";
 import { VersantPitchChrome } from "./sections/versant-pitch-chrome";
 
 /**
- * Branded pitch landing for Friends & Family and Versant Media.
+ * Branded pitch landing for Versant Media / USA Sports (Friends & Family).
  *
  * Architecture: restrained media/product interface. Warm intro, Versant
  * reference read, golf-first production opportunities, roster, fit, and close.
@@ -28,9 +28,9 @@ import { VersantPitchChrome } from "./sections/versant-pitch-chrome";
  */
 
 export const metadata: Metadata = {
-  title: "Friends & Family for Versant Media",
+  title: "VERSANT Sports",
   description:
-    "A creative, production, edit, motion, and delivery read for Versant Media and USA Sports.",
+    "VERSANT USA Sports — creative, production, edit, motion, and delivery from Friends & Family.",
   robots: { index: false, follow: false, nocache: true },
 };
 

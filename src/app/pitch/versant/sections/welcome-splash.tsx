@@ -71,14 +71,13 @@ const HERO_CAPABILITIES = [
   "Delivery",
 ];
 
-function FFLogomark() {
+function VersantWordmark() {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/brand/ff-logomark.png"
-      alt="Friends & Family"
-      className="h-8 w-8 object-contain brightness-0 invert opacity-70"
-    />
+    <span
+      className={`${HERO_MICRO_LABEL} font-semibold tracking-[0.14em] text-white/78`}
+    >
+      VERSANT
+    </span>
   );
 }
 
@@ -122,7 +121,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
         <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[#2447FF] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
           <div aria-hidden="true" className={SURFACE_GRAIN} />
           <div className={`relative z-10 flex items-center justify-between gap-4 text-white/50 ${HERO_MICRO_LABEL}`}>
-            <FFLogomark />
+            <VersantWordmark />
             {recipientFirstName && <span>For {recipientFirstName}</span>}
           </div>
 
@@ -132,12 +131,12 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                 Overview
               </p>
               <h1 className="versant-display max-w-[12.8ch] text-[clamp(52px,7.6vw,116px)] font-medium tracking-[-0.044em]">
-                Friends &amp; Family for Versant{" "}
+                VERSANT{" "}
                 <span className="font-light">Sports</span>
               </h1>
               <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.15] tracking-[-0.028em] text-white/68">
-                Creative, production, edit, motion, and delivery for Versant&apos;s
-                sports portfolio.
+                Creative, production, edit, motion, and delivery for the USA
+                Sports portfolio — from Friends &amp; Family.
               </p>
               <TagList
                 tags={HERO_CAPABILITIES}
