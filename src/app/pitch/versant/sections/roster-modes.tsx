@@ -49,7 +49,7 @@ const CADDIES = [
   {
     slug: "matt-dilmore",
     name: "Matt Dilmore",
-    signature: "Sports comedy and format performance",
+    signature: "Sports comedy, format, archive-driven storytelling.",
     credits: "ESPN 30 for 30 \"The Great Imposter\"",
     match: "Big Break x Good Good",
     tags: ["Comedy", "Format", "Talent"],
