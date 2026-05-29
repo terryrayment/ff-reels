@@ -279,25 +279,37 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               padding-left: 0.5rem;
             }
             html.versant-pitch-page {
-              overflow-y: scroll;
-              scrollbar-gutter: stable;
-              scrollbar-color: #2447ff var(--versant-bg);
-              scrollbar-width: auto;
+              scrollbar-width: none;
+              -ms-overflow-style: none;
             }
             html.versant-pitch-page::-webkit-scrollbar {
-              width: 22px !important;
+              display: none;
+              width: 0;
+              height: 0;
             }
-            html.versant-pitch-page::-webkit-scrollbar-track {
-              background: var(--versant-bg) !important;
-              box-shadow: inset 1px 0 0 rgba(20, 19, 15, 0.08);
+            .versant-custom-scrollbar {
+              position: fixed;
+              top: 0;
+              right: 0;
+              z-index: 60;
+              width: 22px;
+              height: 100vh;
+              height: 100dvh;
+              pointer-events: none;
             }
-            html.versant-pitch-page::-webkit-scrollbar-thumb {
-              background-color: #2447ff !important;
+            .versant-custom-scrollbar-track {
+              position: absolute;
+              inset: 0;
+              background: var(--versant-bg);
+              box-shadow: inset 1px 0 0 rgba(20, 19, 15, 0.1);
+            }
+            .versant-custom-scrollbar-thumb {
+              position: absolute;
+              top: 0;
+              left: 2px;
+              right: 2px;
               border-radius: 999px;
-              min-height: 64px;
-            }
-            html.versant-pitch-page::-webkit-scrollbar-thumb:hover {
-              background-color: #1a38d9 !important;
+              background: #2447ff;
             }
             @keyframes versant-rise-in {
               from {
