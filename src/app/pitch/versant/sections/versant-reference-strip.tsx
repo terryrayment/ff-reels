@@ -81,7 +81,7 @@ export function VersantReferenceStrip({
       <div className={CONTAINER}>
         <div className={HEADER}>
           <h2 className={`${TITLE} text-[#2447FF]`}>
-            Golf references as selected work.
+            Golf proof for the first assignment.
           </h2>
         </div>
 
