@@ -135,9 +135,9 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                 VERSANT{" "}
                 <span className="font-light tracking-[-0.018em]">Sports</span>
               </h1>
-              <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.15] tracking-[-0.028em] text-white/68">
-                Creative, production, edit, motion, and delivery for the USA
-                Sports portfolio — from Friends &amp; Family.
+              <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.18] tracking-[-0.024em] text-white/68">
+                Creative, production, edit, motion, and delivery for
+                Versant&apos;s USA Sports portfolio.
               </p>
               <TagList
                 tags={HERO_CAPABILITIES}

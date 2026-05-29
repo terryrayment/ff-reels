@@ -20,7 +20,7 @@ type PartnerVisual = {
 const PARTNERS = [
   {
     name: "The Youth",
-    role: "Latin America Production",
+    role: "Latin America production support",
     copy:
       "Casting, locations, crew, and cultural read for work that needs more than a U.S. lens.",
     tags: ["Casting", "Locations", "Crew", "Local read"],
@@ -37,7 +37,7 @@ const PARTNERS = [
       "Animation, design, mixed media, cleanup, finish, versioning, and delivery support.",
     tags: ["Post", "Motion", "Animation", "Versioning", "Delivery"],
     visual: {
-      label: "Finish reel",
+      label: "View Colossal reel",
       videoSrc: "/versant/colossal-reel.mp4",
     },
   },
@@ -103,8 +103,8 @@ export function PartnerBench() {
       <div className={`${CONTAINER} relative z-10`}>
         <SectionHeader
           label="Network"
-          title="Additional production lanes."
-          intro="Multiple teams to add global reach."
+          title="Specialists when the job needs them."
+          intro="Production, post, motion, and finish support for jobs that need more reach."
           dark
         />
 
@@ -118,7 +118,7 @@ export function PartnerBench() {
               <PartnerVideo visual={partner.visual} />
               <div className="grid gap-5 border-t border-white/14 pt-5 md:grid-cols-[0.8fr_1fr]">
                 <div>
-                  <p className="text-[clamp(30px,4vw,54px)] font-medium leading-[0.98] tracking-[-0.045em]">
+                  <p className="text-[clamp(26px,3.2vw,46px)] font-medium leading-[0.98] tracking-[-0.04em]">
                     {partner.name}
                   </p>
                   <p className="versant-meta-label mt-3 text-white/45">
@@ -126,7 +126,7 @@ export function PartnerBench() {
                   </p>
                 </div>
                 <div className="space-y-5">
-                  <p className="max-w-[34rem] text-[clamp(17px,1.5vw,21px)] leading-[1.22] tracking-[-0.02em] text-white/66">
+                  <p className="max-w-[34rem] text-[clamp(16px,1.4vw,20px)] leading-[1.26] tracking-[-0.018em] text-white/62">
                     {partner.copy}
                   </p>
                   <TagList

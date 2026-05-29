@@ -80,7 +80,7 @@ export function VersantReferenceStrip({
     <section className={SECTION}>
       <div className={CONTAINER}>
         <div className={HEADER}>
-          <h2 className={`${TITLE} text-[#2447FF]`}>
+          <h2 className={`${TITLE} text-black`}>
             Golf proof for the first assignment.
           </h2>
         </div>
@@ -116,7 +116,7 @@ export function VersantReferenceStrip({
             return (
               <article
                 key={item.title}
-                className={`${CARD} group flex min-h-[31rem] flex-col p-3`}
+                className={`${CARD} group flex min-h-[29rem] flex-col p-3 sm:p-4`}
                 style={revealStagger(index)}
               >
                 <div className={`${MEDIA} relative mb-5 aspect-video`}>
@@ -132,7 +132,7 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.still}
                       alt=""
-                      className={`versant-card-image h-full w-full object-cover opacity-78 ${mediaClass}`}
+                      className={`versant-card-image h-full w-full object-cover opacity-[0.86] ${mediaClass}`}
                       loading="lazy"
                     />
                   ) : null}
@@ -141,19 +141,19 @@ export function VersantReferenceStrip({
                     <img
                       src={frame.animated}
                       alt=""
-                      className={`absolute inset-0 hidden h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-78 motion-safe:block ${mediaClass}`}
+                      className={`absolute inset-0 hidden h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-[0.86] motion-safe:block ${mediaClass}`}
                       loading="lazy"
                     />
                   )}
-                  <div className="absolute inset-0 bg-[rgba(12,59,46,0.12)]" />
+                  <div className="absolute inset-0 bg-[rgba(12,59,46,0.06)]" />
                 </div>
 
                 <div className="grid flex-1 gap-4 border-t border-black/10 pt-4">
                   <div className="grid grid-cols-[1fr_auto] items-start gap-4">
-                    <h3 className="text-[clamp(24px,2.4vw,34px)] font-medium leading-[1] tracking-[-0.04em] text-[#2447FF]">
+                    <h3 className="text-[clamp(22px,2.2vw,30px)] font-medium leading-[1.02] tracking-[-0.036em] text-[#2447FF]">
                       {item.title}
                     </h3>
-                    <span className="text-[12px] text-black/38">
+                    <span className="versant-card-index text-[11px] font-medium tracking-[0.06em] text-[#2447FF]/42">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
@@ -163,7 +163,7 @@ export function VersantReferenceStrip({
                     <p className={`${META_TEXT} mt-2`}>{item.assignment}</p>
                   </div>
 
-                  <p className="text-[15px] leading-[1.3] text-black/62">
+                  <p className="text-[15px] leading-[1.32] text-black/58">
                     {item.description}
                   </p>
 

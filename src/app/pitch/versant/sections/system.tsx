@@ -62,7 +62,7 @@ export function SectionHeader({
   return (
     <div className={HEADER}>
       {label ? (
-        <p className={cx(KICKER, dark ? "text-white/45" : "text-black/45")}>
+        <p className={cx(KICKER, dark ? "text-white/45" : "text-black/42")}>
           {label}
         </p>
       ) : null}
@@ -70,7 +70,7 @@ export function SectionHeader({
         {title}
       </h2>
       {intro && (
-        <p className={cx(INTRO, dark ? "text-white/62" : "text-black/62")}>
+        <p className={cx(INTRO, dark && "text-white/62")}>
           {intro}
         </p>
       )}

@@ -222,12 +222,8 @@ export function UsaSportsPortfolio() {
       <div className={CONTAINER}>
         <SectionHeader
           label="Sport"
-          title={
-            <span className="text-[#2447FF]">
-              Selected properties. Different production problems.
-            </span>
-          }
-          intro="Golf, NASCAR, WWE, Premier League, WNBA, LOVB, and college each need a different tone. The production path should stay simple."
+          title="Selected properties. Different production needs."
+          intro="Golf, NASCAR, WWE, Premier League, WNBA, LOVB, and college each need a different tone. The production path stays simple."
         />
 
         <div className="versant-sport-index border-t border-[var(--versant-rule)]">
@@ -239,17 +235,21 @@ export function UsaSportsPortfolio() {
           {SPORTS_GROUPS.map((item, index) => (
             <article
               key={item.group}
-              className={`${CARD} versant-sport-row grid gap-4 border-t-0 border-b border-[var(--versant-rule)] py-6 md:grid-cols-[11rem_minmax(0,0.85fr)_minmax(0,1.15fr)] md:gap-6 md:py-7`}
+              className={`${CARD} versant-sport-row grid gap-4 border-t-0 border-b border-[var(--versant-rule)] py-5 md:grid-cols-[11rem_minmax(0,0.85fr)_minmax(0,1.15fr)] md:gap-6 md:py-6`}
               style={revealStagger(index)}
             >
-              <p className={`${META_LABEL} versant-sport-lane pt-1 text-[#2447FF]`}>
+              <p className={`${META_LABEL} versant-sport-lane pt-0.5`}>
                 {item.group}
               </p>
-              <p className="versant-sport-read max-w-[34rem] text-[clamp(1.08rem,1.6vw,1.45rem)] leading-[1.16] tracking-[-0.035em] text-black/64">
+              <p className="versant-sport-read max-w-[34rem] text-[clamp(1.02rem,1.45vw,1.28rem)] leading-[1.22] tracking-[-0.022em] text-black/58">
                 {item.note}
               </p>
               <PropertyChipGroup
-                properties={item.propertyIds.map((id) => PROPERTIES[id])}
+                properties={item.propertyIds.map((id) => ({
+                  id: PROPERTIES[id].id,
+                  label: PROPERTIES[id].label,
+                  logoKey: PROPERTIES[id].logoKey,
+                }))}
                 className="versant-sport-tags max-w-[42rem] pt-1"
                 label={`${item.group} properties`}
               />

@@ -50,7 +50,7 @@ const CADDIES = [
     name: "Matt Dilmore",
     signature: "Sports comedy, format, archive-driven storytelling.",
     credits: "ESPN 30 for 30 \"The Great Imposter\"",
-    match: "Big Break x Good Good",
+    match: "Big Break and Good Good",
     tags: ["Comedy", "Format", "Talent"],
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
@@ -62,9 +62,9 @@ const CADDIES = [
   {
     slug: "boma-iluma",
     name: "Boma Iluma",
-    signature: "Youth culture and talent films",
+    signature: "Youth culture and talent-led films.",
     credits: "Oakley w/ Damian Lillard, Air Jordan Heirs, The Chi",
-    match: "Good Good / next-gen golf",
+    match: "Good Good and next-gen golf",
     tags: ["Talent", "Culture", "Next-gen golf"],
     treatment: "bg-[var(--versant-paper)] text-black",
     video: {
@@ -77,7 +77,7 @@ const CADDIES = [
   {
     slug: "le-ged",
     name: "Le Ged",
-    signature: "Motion-heavy social and camera-led spots",
+    signature: "Motion-led social and camera-first spots.",
     credits: "Hilton, McDonald's, YouTube",
     match: "GolfNow social motion",
     tags: ["Motion", "Camera", "Social"],
@@ -92,7 +92,7 @@ const CADDIES = [
   {
     slug: "caleb-slain",
     name: "Caleb Slain",
-    signature: "Broadcast-adjacent promos and anthem films",
+    signature: "Broadcast promos and anthem films.",
     credits: "SXSW/Telluride docs, Ford, Lexus, Toyota, Microsoft",
     match: "Golf Channel anthem",
     tags: ["Promo", "Anthem", "Delivery"],
@@ -105,9 +105,9 @@ const CADDIES = [
   {
     slug: "bueno",
     name: "Bueno",
-    signature: "Mixed-media fan campaigns",
+    signature: "Mixed-media fan campaigns.",
     credits: "Doritos, Netflix, CNN, Cannes Grand Prix",
-    match: "fan campaigns / Big Break energy",
+    match: "Fan campaigns and Big Break energy",
     tags: ["Mixed media", "Fans", "Social"],
     treatment: "bg-[var(--versant-white)] text-black",
     video: {
@@ -120,7 +120,7 @@ const CADDIES = [
   {
     slug: "brother-willis",
     name: "Brother Willis",
-    signature: "Local sports stories",
+    signature: "Local sports stories.",
     credits: "Topps Chrome Rush, Ford",
     match: "GolfNow local heroes",
     tags: ["Local stories", "Casting", "Field production"],
@@ -134,9 +134,9 @@ const CADDIES = [
   {
     slug: "cody-cloud",
     name: "Cody Cloud",
-    signature: "Athlete portrait and brand films",
+    signature: "Athlete portrait and brand films.",
     credits: "Apple, Adidas, Asics, Gatorade, Nike, Target",
-    match: "talent portrait package",
+    match: "Talent portrait package",
     tags: ["Athlete portrait", "Brand film", "Photography"],
     treatment: "bg-[var(--versant-paper)] text-black",
     media: {
@@ -148,9 +148,9 @@ const CADDIES = [
   {
     slug: "terry-rayment",
     name: "Terry Rayment",
-    signature: "Documentary access and talent films",
+    signature: "Documentary access and talent films.",
     credits: "Kodak \"Understanding,\" Purina, Cadillac, Jaguar",
-    match: "Rory/GolfPass intimate films",
+    match: "Rory and GolfPass intimate films",
     tags: ["Documentary", "Talent", "GolfPass"],
     treatment: "bg-[var(--versant-white)] text-black",
     media: {
@@ -172,14 +172,10 @@ export function RosterModes({
       <div className={CONTAINER}>
         <SectionHeader
           label="Directors"
-          title={
-            <span className="text-[#2447FF]">
-              Selected talent for the assignment.
-            </span>
-          }
+          title="Selected talent for the assignment."
         />
 
-        <div className="grid gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-4 gap-y-7 md:grid-cols-2 lg:grid-cols-3">
           {CADDIES.map((card, index) => (
             <CaddieCard
               key={card.slug}
@@ -304,23 +300,23 @@ function CaddieCard({
 
       </div>
 
-      <div className="flex flex-1 flex-col pt-5">
-        <h3 className="text-[clamp(30px,3.4vw,50px)] font-medium leading-[1] tracking-[-0.045em] text-[#2447FF]">
+      <div className="flex flex-1 flex-col pt-4">
+        <h3 className="text-[clamp(26px,2.6vw,40px)] font-medium leading-[1.02] tracking-[-0.038em] text-[#2447FF]">
           {card.name}
         </h3>
-        <p className="mt-2 text-[clamp(17px,1.8vw,23px)] leading-[1.12] tracking-[-0.03em] text-black/62">
+        <p className="mt-2 text-[clamp(16px,1.55vw,20px)] leading-[1.2] tracking-[-0.022em] text-black/58">
           {card.signature}
         </p>
 
-        <div className="mt-5 space-y-4 border-t border-black/12 pt-4">
+        <div className="mt-4 space-y-3.5 border-t border-black/10 pt-4">
           <div>
-            <p className={`${META_LABEL} mb-2`}>
+            <p className={`${META_LABEL} mb-1.5`}>
               Credits
             </p>
             <p className={META_TEXT}>{card.credits}</p>
           </div>
           <div>
-            <p className={`${META_LABEL} mb-2`}>
+            <p className={`${META_LABEL} mb-1.5`}>
               Use case
             </p>
             <p className={META_TEXT}>

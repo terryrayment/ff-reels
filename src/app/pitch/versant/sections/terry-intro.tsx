@@ -43,12 +43,12 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                 <p className={`${KICKER} mb-5 text-black/45`}>
                   Studio
                 </p>
-                <h2 className={`${TITLE} max-w-3xl text-[#2447FF]`}>
-                  Built for sports jobs with moving parts.
+                <h2 className={`${TITLE} max-w-3xl text-black`}>
+                  Built for sports work with moving parts.
                 </h2>
               </div>
 
-              <div className="space-y-5 text-[clamp(18px,1.55vw,22px)] leading-[1.2] tracking-[-0.025em] text-black/70 lg:col-span-5">
+              <div className="space-y-5 text-[clamp(17px,1.45vw,21px)] leading-[1.24] tracking-[-0.02em] text-black/58 lg:col-span-5">
                 <p>
                   We keep the path simple: creative read, director, crew, edit,
                   motion, finish, versions, final files.
@@ -79,9 +79,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
 
         {hasFounderMedia && (
           <aside className="versant-panel overflow-hidden bg-[var(--versant-black)] p-4 text-white lg:col-span-3">
-            <div className="mb-4 flex items-center justify-between px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
+            <div className="mb-4 px-2 text-[10px] uppercase tracking-[0.18em] text-white/45">
               <span>Founder message</span>
-              <span>optional</span>
             </div>
             <div className="versant-media aspect-[4/5] bg-black">
               {videoPlaybackId ? (

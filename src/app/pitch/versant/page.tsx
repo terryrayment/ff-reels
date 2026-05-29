@@ -30,7 +30,7 @@ import { VersantPitchChrome } from "./sections/versant-pitch-chrome";
 export const metadata: Metadata = {
   title: "VERSANT Sports",
   description:
-    "VERSANT USA Sports — creative, production, edit, motion, and delivery from Friends & Family.",
+    "Creative, production, edit, motion, and delivery for Versant USA Sports from Friends & Family.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -344,8 +344,8 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               padding: 50px 2rem;
             }
             .versant-section-tight {
-              padding-top: 20px;
-              padding-bottom: 20px;
+              padding-top: 18px;
+              padding-bottom: 18px;
             }
             .versant-section.versant-section-flush {
               padding-top: 0;
@@ -368,36 +368,37 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               display: grid;
               grid-template-columns: minmax(0, 0.7fr) minmax(18rem, 0.3fr);
               column-gap: clamp(2rem, 6vw, 7rem);
-              row-gap: 0.8rem;
+              row-gap: 0.75rem;
               align-items: start;
-              margin-bottom: clamp(2.25rem, 5vw, 4.25rem);
+              margin-bottom: clamp(1.85rem, 4vw, 3.5rem);
             }
             .versant-kicker {
               grid-column: 1 / -1;
-              font-size: 0.82rem;
+              font-size: 0.78rem;
               font-weight: 500;
               line-height: 1.1;
-              letter-spacing: -0.01em;
+              letter-spacing: 0.01em;
             }
             .versant-meta-label {
-              font-size: 0.66rem;
-              font-weight: 800;
+              font-size: 0.64rem;
+              font-weight: 700;
               line-height: 1;
               text-transform: uppercase;
-              letter-spacing: 0.08em;
+              letter-spacing: 0.06em;
             }
             .versant-title {
-              font-size: clamp(2.45rem, 5.2vw, 5.8rem);
+              font-size: clamp(2.35rem, 4.8vw, 5.4rem);
               font-weight: 500;
-              letter-spacing: -0.04em;
-              line-height: 0.96;
+              letter-spacing: -0.038em;
+              line-height: 0.97;
               text-wrap: balance;
             }
             .versant-intro {
               max-width: 31rem;
-              font-size: clamp(1rem, 1.4vw, 1.22rem);
-              line-height: 1.28;
-              letter-spacing: -0.02em;
+              font-size: clamp(1rem, 1.35vw, 1.18rem);
+              line-height: 1.3;
+              letter-spacing: -0.018em;
+              color: var(--versant-muted);
             }
             .versant-panel,
             .versant-card,
@@ -423,7 +424,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               border-color: var(--versant-rule-strong);
             }
             .versant-card:hover .versant-card-image {
-              transform: scale(1.012);
+              transform: scale(1.008);
             }
             .versant-media {
               overflow: hidden;
@@ -447,34 +448,33 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             }
             @media (hover: hover) {
               .versant-sport-row:hover {
-                background: rgba(255, 252, 244, 0.34);
-                border-color: var(--versant-rule-strong);
+                background: rgba(255, 252, 244, 0.22);
+                border-color: var(--versant-rule);
               }
               .versant-sport-row:hover .versant-sport-lane {
                 color: #2447ff;
               }
               .versant-sport-row:hover .versant-sport-read {
-                transform: translateX(4px);
-                color: rgba(20, 19, 15, 0.76);
+                color: rgba(20, 19, 15, 0.68);
               }
               .versant-sport-row:hover .versant-tag {
-                color: rgba(20, 19, 15, 0.72);
+                color: rgba(20, 19, 15, 0.66);
               }
               .versant-sport-row:hover .versant-property-chip {
-                border-color: rgba(20, 19, 15, 0.18);
-                color: rgba(20, 19, 15, 0.72);
+                border-color: rgba(20, 19, 15, 0.14);
+                color: rgba(20, 19, 15, 0.68);
               }
               .versant-property-chip:hover {
-                background: rgba(255, 252, 244, 0.58);
-                border-color: rgba(20, 19, 15, 0.24);
-                color: rgba(20, 19, 15, 0.84);
+                background: rgba(255, 252, 244, 0.42);
+                border-color: rgba(20, 19, 15, 0.16);
+                color: rgba(20, 19, 15, 0.76);
               }
             }
             .versant-property-list {
               display: flex;
               flex-wrap: wrap;
               align-items: center;
-              gap: 0.34rem 0.38rem;
+              gap: 0.28rem 0.32rem;
               list-style: none;
               margin: 0;
               padding: 0;
@@ -486,19 +486,19 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
             .versant-property-chip {
               display: inline-flex;
               position: relative;
-              min-height: 1.74rem;
+              min-height: 1.56rem;
               align-items: center;
               justify-content: center;
-              gap: 0.36rem;
-              border: 1px solid rgba(20, 19, 15, 0.105);
-              border-radius: 3px;
-              background: rgba(255, 252, 244, 0.26);
-              padding: 0.3rem 0.54rem;
-              color: rgba(20, 19, 15, 0.66);
-              font-size: 0.72rem;
-              font-weight: 650;
-              line-height: 1;
-              letter-spacing: -0.008em;
+              gap: 0;
+              border: 1px solid rgba(20, 19, 15, 0.07);
+              border-radius: 2px;
+              background: rgba(255, 252, 244, 0.14);
+              padding: 0.22rem 0.46rem;
+              color: rgba(20, 19, 15, 0.58);
+              font-size: 0.69rem;
+              font-weight: 500;
+              line-height: 1.15;
+              letter-spacing: -0.004em;
               text-decoration: none;
               white-space: nowrap;
               overflow: visible;
@@ -507,6 +507,9 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
                 border-color 180ms ease,
                 color 180ms ease,
                 opacity 180ms ease;
+            }
+            .versant-property-chip[data-logo-state="text"] {
+              padding-inline: 0.42rem;
             }
             .versant-property-chip[data-logo-state="asset"] {
               padding-inline: 0.46rem 0.56rem;
@@ -781,16 +784,16 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               border-radius: 0;
               background: transparent;
               padding: 0;
-              font-size: 0.78rem;
+              font-size: 0.74rem;
               font-weight: 500;
-              line-height: 1.25;
+              line-height: 1.3;
               color: var(--versant-muted);
-              letter-spacing: -0.01em;
+              letter-spacing: -0.008em;
             }
             .versant-tag-list .versant-tag:not(:last-child)::after {
               content: "/";
-              margin-inline: 0.48rem;
-              color: rgba(20, 19, 15, 0.34);
+              margin-inline: 0.42rem;
+              color: rgba(20, 19, 15, 0.28);
             }
             .versant-tag-dark {
               color: rgba(255, 252, 244, 0.62);
@@ -799,13 +802,13 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               color: rgba(255, 252, 244, 0.32);
             }
             .versant-meta-label {
-              color: rgba(20, 19, 15, 0.46);
+              color: rgba(20, 19, 15, 0.42);
             }
             .versant-meta-text {
-              font-size: 0.9rem;
-              line-height: 1.35;
-              color: rgba(20, 19, 15, 0.64);
-              letter-spacing: -0.01em;
+              font-size: 0.88rem;
+              line-height: 1.38;
+              color: rgba(20, 19, 15, 0.58);
+              letter-spacing: -0.008em;
             }
             [class*="text-white"] .versant-meta-label,
             [class*="text-[var(--versant-white)]"] .versant-meta-label {
@@ -866,9 +869,9 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
                 gap: 0.32rem;
               }
               .versant-property-chip {
-                min-height: 1.7rem;
-                padding-inline: 0.48rem;
-                font-size: 0.7rem;
+                min-height: 1.48rem;
+                padding-inline: 0.4rem;
+                font-size: 0.67rem;
               }
               .versant-property-chip[data-logo-state="mark"] {
                 padding-left: 0.4rem;

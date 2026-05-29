@@ -27,7 +27,7 @@ export function ContactCta({ recipientFirstName }: Props) {
           <SectionHeader
             label={recipientFirstName ? `${recipientFirstName}, contact` : "Contact"}
             title="Send the assignment."
-            intro="Brief, deadline, rights, assets, blockers. We will send back a production path, director recommendation, crew shape, timeline, estimate, and delivery plan."
+            intro="Send the brief, deadline, rights, assets, and blockers. We will return a production path, director recommendation, crew shape, timeline, estimate, and delivery plan."
             dark
           />
 
@@ -68,11 +68,11 @@ function Contact({
 }) {
   const inner = (
     <>
-      <p className="whitespace-nowrap text-[clamp(1.05rem,1.7vw,1.45rem)] leading-[1.05] tracking-[-0.035em]">
+      <p className="whitespace-normal text-[clamp(1.05rem,1.7vw,1.45rem)] leading-[1.08] tracking-[-0.032em] sm:whitespace-nowrap">
         {value}
       </p>
       {sub && (
-        <p className="mt-2 min-w-0 whitespace-nowrap text-[clamp(0.82rem,1.05vw,0.98rem)] leading-[1.15] tracking-[-0.01em] text-white/52">
+        <p className="mt-2 min-w-0 text-[clamp(0.82rem,1.05vw,0.98rem)] leading-[1.2] tracking-[-0.01em] text-white/52 sm:whitespace-nowrap">
           {sub}
         </p>
       )}

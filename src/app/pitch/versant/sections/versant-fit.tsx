@@ -18,9 +18,9 @@ const CALLAWAY_SCOPE_PLAYBACK_ID =
 const CALLAWAY_SCOPE_POSTER = `https://image.mux.com/${CALLAWAY_SCOPE_PLAYBACK_ID}/thumbnail.webp?width=1920&time=8`;
 
 const VERSANT_GIVES = [
-  ["Inputs", "Live schedules, archive, sponsor rules"],
+  ["Brief", "Live schedules, archive, sponsor rules"],
   ["Production", "Talent windows, field teams, usage needs"],
-  ["Output", "Social cutdowns, motion, versions, delivery"],
+  ["Deliverables", "Social cutdowns, motion, versions, delivery"],
   ["Audience", "Fans who know when the tone is wrong"],
 ];
 
@@ -80,7 +80,7 @@ export function VersantFit() {
               ))}
             </div>
 
-            <TagList tags={FIT_TAGS} className="mt-8" label="Scope metadata" />
+            <TagList tags={FIT_TAGS} className="mt-7" label="Scope tags" />
           </div>
         </div>
       </div>
