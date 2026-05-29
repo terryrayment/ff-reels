@@ -133,7 +133,7 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
               </p>
               <h1 className="versant-display max-w-[12.8ch] text-[clamp(52px,7.6vw,116px)] font-medium tracking-[-0.044em]">
                 VERSANT{" "}
-                <span className="font-light">Sports</span>
+                <span className="font-light tracking-[-0.018em]">Sports</span>
               </h1>
               <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.15] tracking-[-0.028em] text-white/68">
                 Creative, production, edit, motion, and delivery for the USA

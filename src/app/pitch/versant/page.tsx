@@ -338,6 +338,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
               line-height: 0.98;
               padding-bottom: 0.08em;
               text-wrap: balance;
+              font-kerning: normal;
             }
             .versant-section {
               padding: 50px 2rem;
