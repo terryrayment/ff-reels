@@ -44,7 +44,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                   What F&amp;F does
                 </p>
                 <h2 className={`${TITLE} max-w-3xl text-black`}>
-                  A studio built for sports work with moving parts.
+                  A production company built for sports work: talent windows,
+                  schedule changes, geographic versioning, the list goes on.
                 </h2>
               </div>
 
