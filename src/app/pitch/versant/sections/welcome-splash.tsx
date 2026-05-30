@@ -147,14 +147,16 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
                 </span>
               </h1>
               <p className="mt-5 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.22] tracking-[-0.024em] text-white/68">
-                At Friends &amp; Family we produce spots and represent directors.
-                We scale for big assignments, stay nimble when the window is
-                tight, and work as creative partners on the work.
+                At Friends &amp; Family we first and foremost produce spots. We
+                can scale up and we can be nimble when we need to. We&apos;re
+                also creative partners who will collaborate to realize your
+                vision.
               </p>
               <p className="mt-4 max-w-[38rem] text-[clamp(18px,1.75vw,26px)] leading-[1.22] tracking-[-0.024em] text-white/68">
-                Our clients include Callaway, ESPN, Nike, Apple, Ford, Netflix,
-                and Gillette. We want to partner with Versant because sports
-                is where we do our best work.
+                Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and
+                Gillette, and have experience in all aspects of advertising.
+                We&apos;d love to partner with Versant for many reasons, but
+                mostly because we LOVE sports.
               </p>
               <TagList
                 tags={HERO_CAPABILITIES}
