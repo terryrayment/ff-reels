@@ -43,9 +43,16 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                 <p className={`${KICKER} mb-5 text-black/45`}>
                   What F&amp;F does
                 </p>
-                <h2 className={`${TITLE} max-w-3xl text-black`}>
-                  A production company built for sports work: talent windows,
-                  schedule changes, geographic versioning, the list goes on.
+                <h2
+                  className={`${TITLE} flex max-w-3xl flex-col gap-[0.15em] leading-[1.115] text-black`}
+                >
+                  <span className="font-semibold">
+                    A production company built for live sports work
+                  </span>
+                  <span className="font-light text-black/76">
+                    Talent windows, schedule changes, geographic versioning, the
+                    list goes on.
+                  </span>
                 </h2>
               </div>
 
