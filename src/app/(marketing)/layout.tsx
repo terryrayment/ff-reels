@@ -38,7 +38,7 @@ export default function MarketingLayout({
 }) {
   return (
     <LenisProvider>
-      <div className="min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
+      <div className="ff-site-theme min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
         <MarketingNav />
         <main className="flex-1">{children}</main>
         <MarketingFooter />

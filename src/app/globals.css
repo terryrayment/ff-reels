@@ -114,6 +114,50 @@
   --dur-glacial: 1200ms;
 }
 
+.ff-site-theme {
+  --ff-site-bg: #dde0d8;
+  --ff-site-ink: #14130f;
+  --ff-site-muted: #686155;
+  --ff-site-surface: #fbf7ed;
+  --ff-site-surface-soft: #eee6d7;
+  --ff-site-border: rgb(20 19 15 / 0.13);
+  --ff-site-accent: #2447ff;
+  --ff-site-accent-ink: #fffcf4;
+  --ff-site-media-bg: #eee6d7;
+  --ff-site-focus: #2447ff;
+
+  --background: var(--ff-site-bg);
+  --foreground: var(--ff-site-ink);
+  --border: var(--ff-site-border);
+  --border-subtle: rgb(20 19 15 / 0.09);
+  --muted: var(--ff-site-muted);
+  --accent: var(--ff-site-accent);
+  --surface: var(--ff-site-surface);
+  --surface-hover: var(--ff-site-surface-soft);
+  --surface-active: #e8dfcd;
+  --surface-nav: rgb(251 247 237 / 0.88);
+  --surface-user: var(--ff-site-surface);
+  --text-primary: var(--ff-site-ink);
+  --text-secondary: var(--ff-site-muted);
+  --text-tertiary: #686155;
+  --text-quaternary: #766f62;
+  --ff-color-paper: var(--ff-site-bg);
+  --ff-color-paper-soft: var(--ff-site-surface);
+  --ff-color-ink: var(--ff-site-ink);
+  --ff-color-body: rgb(20 19 15 / 0.72);
+  --ff-color-muted: var(--ff-site-muted);
+  --ff-color-faint: #686155;
+  --ff-color-line: var(--ff-site-border);
+  --ff-color-line-soft: rgb(20 19 15 / 0.09);
+  --ff-color-media: #09271f;
+  --ff-color-media-soft: var(--ff-site-media-bg);
+  --ff-color-signal: var(--ff-site-accent);
+  --ff-rgb-paper: 221 224 216;
+  --ff-rgb-ink: 20 19 15;
+  --ff-rgb-accent: 36 71 255;
+  --ff-focus-ring: 0 0 0 2px rgb(var(--ff-rgb-accent) / 0.42);
+}
+
 @media (min-width: 768px) {
   :root {
     --ff-space-page-top: 8rem;
@@ -1684,6 +1728,68 @@ mux-player {
       0 10px 24px rgba(249, 115, 22, 0.14);
     opacity: 1;
   }
+}
+
+.ff-site-theme ::selection {
+  background: rgb(var(--ff-rgb-accent) / 0.16);
+  color: var(--ff-site-ink);
+}
+
+.ff-site-theme *:focus-visible {
+  outline-color: rgb(var(--ff-rgb-accent) / 0.72);
+}
+
+.ff-site-theme ::-webkit-scrollbar-thumb {
+  background: rgb(20 19 15 / 0.13);
+}
+
+.ff-site-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--ff-rgb-accent) / 0.45);
+}
+
+.ff-site-theme .ff-link-small:hover,
+.ff-site-theme .ff-link-small:focus-visible,
+.ff-site-theme .ff-text-link:hover,
+.ff-site-theme .ff-text-link:focus-visible,
+.ff-site-theme .ff-filter-link:hover,
+.ff-site-theme .ff-filter-link:focus-visible {
+  color: var(--ff-site-accent);
+}
+
+.ff-site-theme .ff-filter-link-active {
+  color: var(--ff-site-accent);
+  text-decoration-color: var(--ff-site-accent);
+}
+
+.ff-site-theme .ff-button-primary {
+  background: var(--ff-site-accent);
+  color: var(--ff-site-accent-ink);
+}
+
+.ff-site-theme .ff-button-primary:hover,
+.ff-site-theme .ff-button-primary:focus-visible {
+  background: #09271f;
+}
+
+.ff-site-theme .ff-custom-cursor {
+  background: var(--ff-site-accent);
+  color: var(--ff-site-accent-ink);
+}
+
+.ff-site-theme .ff-media-frame {
+  background: var(--ff-site-media-bg);
+}
+
+.ff-site-theme .ff-media-frame-dark {
+  background: #09271f;
+}
+
+.ff-site-theme .ff-media-fallback {
+  background: var(--ff-site-surface-soft);
+}
+
+.ff-site-theme .ff-media-fallback span {
+  color: rgb(20 19 15 / 0.38);
 }
 
 /* View Transitions — fluid morph between project thumbnail positions across routes */

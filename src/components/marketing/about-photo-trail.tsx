@@ -86,7 +86,7 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
 
   return (
     <section
-      className="isolate relative min-h-[100svh] overflow-hidden bg-white"
+      className="isolate relative min-h-[100svh] overflow-hidden bg-ff-paper"
       aria-label="Friends and Family photo field"
       onPointerMove={(event) => addPhoto(event.clientX, event.clientY)}
       onPointerDown={(event) =>
