@@ -136,7 +136,7 @@ export function SourceVideoReel({
 
   return (
     <section ref={sectionRef} className="ff-shell mb-12">
-      <div className="w-full md:w-[60%]">
+      <div className="mx-auto w-full md:w-[60%]">
         <div
           className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black transition-opacity duration-150"
           data-featured-project-id={projectId}
