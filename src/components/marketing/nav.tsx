@@ -191,6 +191,7 @@ export function MarketingNav() {
         <PartnerPortal
           partnerId={activePartner}
           onClose={() => setActivePartner(null)}
+          onPartnerChange={setActivePartner}
         />
       )}
     </header>

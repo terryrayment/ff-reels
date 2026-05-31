@@ -92,31 +92,43 @@ type PartnerConfig = (typeof MARKETING_PARTNERS)[PartnerId];
 interface PartnerPortalProps {
   partnerId: PartnerId;
   onClose: () => void;
+  onPartnerChange: (partnerId: PartnerId) => void;
 }
 
-export function PartnerPortal({ partnerId, onClose }: PartnerPortalProps) {
+export function PartnerPortal({
+  partnerId,
+  onClose,
+  onPartnerChange,
+}: PartnerPortalProps) {
   const partner = MARKETING_PARTNERS[partnerId];
   const titleId = `partner-portal-${partnerId}`;
 
   return (
     <PartnerSitePortal
+      key={partnerId}
+      partnerId={partnerId}
       partner={partner}
       titleId={titleId}
       onClose={onClose}
+      onPartnerChange={onPartnerChange}
     />
   );
 }
 
 interface PartnerSitePortalProps {
+  partnerId: PartnerId;
   partner: PartnerConfig;
   titleId: string;
   onClose: () => void;
+  onPartnerChange: (partnerId: PartnerId) => void;
 }
 
 function PartnerSitePortal({
+  partnerId,
   partner,
   titleId,
   onClose,
+  onPartnerChange,
 }: PartnerSitePortalProps) {
   const isColossal = partner.label === "COLOSSAL";
   const host = partner.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
@@ -142,9 +154,28 @@ function PartnerSitePortal({
         <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/48">
           Studio / Live
         </p>
-        <p className="hidden font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white md:block">
-          {partner.label}
-        </p>
+        <div className="hidden items-center justify-self-center gap-4 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide md:flex">
+          {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => {
+            const option = MARKETING_PARTNERS[id];
+            const active = id === partnerId;
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={active}
+                onClick={() => onPartnerChange(id)}
+                className={cn(
+                  "transition-colors",
+                  active
+                    ? "text-white"
+                    : "text-white/42 hover:text-white focus-visible:text-white",
+                )}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
         <button
           type="button"
           onClick={onClose}
