@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const MARKETING_PARTNERS = {
@@ -119,15 +118,8 @@ function PartnerSitePortal({
   titleId,
   onClose,
 }: PartnerSitePortalProps) {
-  const [loaded, setLoaded] = useState(false);
   const isColossal = partner.label === "COLOSSAL";
   const host = partner.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
-
-  useEffect(() => {
-    setLoaded(false);
-    const loadFallback = window.setTimeout(() => setLoaded(true), 2200);
-    return () => window.clearTimeout(loadFallback);
-  }, [partner.href]);
 
   return (
     <div
@@ -164,23 +156,23 @@ function PartnerSitePortal({
 
       <main
         className={cn(
-          "partner-site-portal__main relative z-10 grid h-[calc(100svh-var(--ff-nav-height))] grid-cols-1 gap-4 px-ff-x py-4 md:gap-6 md:py-6",
+          "partner-site-portal__main relative z-10 grid h-[calc(100svh-var(--ff-nav-height))] grid-cols-1 gap-4 overflow-hidden px-ff-x py-4 md:gap-6 md:py-6",
           isColossal
             ? "md:grid-cols-[minmax(15rem,0.18fr)_1fr]"
-            : "md:grid-cols-[minmax(7rem,0.14fr)_1fr]",
+            : "md:grid-cols-[minmax(12rem,0.18fr)_1fr]",
         )}
       >
-        <aside className="partner-site-portal__rail hidden border-r border-white/15 pr-5 md:flex md:flex-col md:justify-between">
+        <aside className="partner-site-portal__rail hidden min-w-0 overflow-hidden border-r border-white/15 pr-5 md:flex md:flex-col md:justify-between">
           <div>
             <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/42">
               {partner.location}
             </p>
             <p
               className={cn(
-                "ff-font-display mt-4 font-semibold uppercase leading-[0.86] tracking-normal",
+                "partner-site-portal__rail-title ff-font-display mt-4 max-w-full font-semibold uppercase leading-[0.86] tracking-normal",
                 isColossal
                   ? "text-[clamp(2.25rem,3.25vw,3.25rem)]"
-                  : "text-[clamp(2.75rem,6vw,5.5rem)]",
+                  : "text-[clamp(2.25rem,3.5vw,3.6rem)]",
               )}
             >
               {partner.heroLines.map((line) => (
@@ -230,24 +222,72 @@ function PartnerSitePortal({
             </a>
           </div>
 
-          <div className="relative h-[calc(100%-2.75rem)] bg-black">
-            {!loaded && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
-                <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/50">
-                  Loading {partner.label}
-                </p>
+          <div className="partner-site-portal__preview h-[calc(100%-2.75rem)] overflow-y-auto bg-black">
+            <div className="partner-site-portal__preview-hero min-h-full px-5 py-6 md:px-9 md:py-10">
+              <div className="flex items-center justify-between border-b border-white/14 pb-4 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/48">
+                <span>{partner.kicker}</span>
+                <span>{partner.cityCode}</span>
               </div>
-            )}
-            <iframe
-              key={partner.href}
-              title={`${partner.label} live site`}
-              src={partner.href}
-              loading="eager"
-              referrerPolicy="no-referrer-when-downgrade"
-              sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
-              onLoad={() => setLoaded(true)}
-              className="h-full w-full border-0 bg-black"
-            />
+
+              <div className="grid min-h-[calc(100svh-13rem)] content-between gap-10 py-8">
+                <div>
+                  <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/52">
+                    {partner.location}
+                  </p>
+                  <h2
+                    className={cn(
+                      "ff-font-display mt-5 max-w-[9ch] font-semibold uppercase leading-[0.78] tracking-normal text-white",
+                      isColossal
+                        ? "text-[clamp(4.5rem,13vw,12rem)]"
+                        : "text-[clamp(5rem,16vw,15rem)]",
+                    )}
+                  >
+                    {partner.heroLines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </h2>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-[0.9fr_1.1fr] md:items-end">
+                  <p className="ff-font-display text-[clamp(2.15rem,5.4vw,5.75rem)] font-semibold uppercase leading-[0.9] text-white">
+                    {partner.headline}
+                  </p>
+                  <p className="max-w-xl font-helveticaText text-[clamp(1.1rem,1.9vw,1.65rem)] leading-[1.18] text-white/70">
+                    {partner.body}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid border-y border-white/14 md:grid-cols-4">
+                {partner.modules.map((module) => (
+                  <article
+                    key={`${module.label}-${module.title}`}
+                    className="min-w-0 overflow-hidden border-b border-white/14 py-5 md:border-b-0 md:border-r md:px-5 md:last:border-r-0"
+                  >
+                    <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/42">
+                      {module.label}
+                    </p>
+                    <h3 className="ff-font-display mt-5 text-[clamp(1.75rem,3vw,2.75rem)] font-semibold uppercase leading-[0.9] text-white">
+                      {module.title}
+                    </h3>
+                    <p className="mt-5 font-helveticaText text-ff-small leading-[1.35] text-white/62">
+                      {module.text}
+                    </p>
+                    <p className="mt-4 font-helveticaText text-ff-small leading-[1.35] text-white/42">
+                      {module.detail}
+                    </p>
+                  </article>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-x-5 gap-y-2 py-6 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/45">
+                {partner.ticker.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -316,6 +356,32 @@ function PartnerSitePortal({
 
         .partner-site-portal__main {
           background: #000;
+        }
+
+        .partner-site-portal,
+        .partner-site-portal * {
+          min-width: 0;
+        }
+
+        .partner-site-portal__preview,
+        .partner-site-portal__preview-hero {
+          overflow-x: hidden;
+        }
+
+        .partner-site-portal__rail-title,
+        .partner-site-portal__rail-title span,
+        .partner-site-portal__preview-hero h2,
+        .partner-site-portal__preview-hero h2 span,
+        .partner-site-portal__preview-hero h3,
+        .partner-site-portal__preview-hero p,
+        .partner-site-portal__preview-hero a {
+          max-width: 100%;
+          overflow-wrap: anywhere;
+          word-break: normal;
+        }
+
+        .partner-site-portal__rail-title {
+          contain: inline-size;
         }
 
         .partner-site-portal__rail,

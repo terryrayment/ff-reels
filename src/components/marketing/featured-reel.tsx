@@ -6,6 +6,7 @@ import {
   MARKETING_TRANSITION_FINISHED,
   clearMarketingTransitionDelay,
   clearMarketingTransitionPoster,
+  consumeMarketingViewerScroll,
   getMarketingTransitionDelay,
   getMarketingTransitionPoster,
 } from "@/components/marketing/view-transition";
@@ -27,6 +28,7 @@ export function FeaturedReel({
   brand,
   title,
 }: FeaturedReelProps) {
+  const sectionRef = useRef<HTMLElement>(null);
   const playerRef = useRef<HTMLElement | null>(null);
   const [landingPoster] = useState(() =>
     getMarketingTransitionPoster(posterUrl),
@@ -41,6 +43,22 @@ export function FeaturedReel({
   useEffect(() => {
     clearMarketingTransitionPoster();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !consumeMarketingViewerScroll()) {
+      return;
+    }
+
+    const section = sectionRef.current;
+    if (!section) return;
+
+    window.requestAnimationFrame(() => {
+      const navHeight = window.innerWidth >= 1024 ? 104 : 88;
+      const top =
+        section.getBoundingClientRect().top + window.scrollY - navHeight - 16;
+      window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+    });
+  }, [projectId]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -102,7 +120,10 @@ export function FeaturedReel({
   }, [shouldPlay, muxPlaybackId]);
 
   return (
-    <section className="mx-auto w-[calc(100vw-48px)] md:w-[64vw] max-w-[920px] mb-14 lg:mb-20">
+    <section
+      ref={sectionRef}
+      className="mx-auto w-[calc(100vw-48px)] md:w-[64vw] max-w-[920px] mb-14 lg:mb-20"
+    >
       <div
         className={`ff-media-frame ff-media-frame-dark aspect-video transition-opacity duration-150 [&_mux-player]:h-full [&_mux-player]:w-full ${
           canPlay ? "opacity-100" : "opacity-0"

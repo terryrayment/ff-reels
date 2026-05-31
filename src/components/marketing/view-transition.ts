@@ -2,6 +2,7 @@
 
 const TRANSITION_UNTIL_KEY = "ff:marketing-transition-until";
 const TRANSITION_POSTER_KEY = "ff:marketing-transition-poster";
+const VIEWER_SCROLL_KEY = "ff:marketing-scroll-viewer";
 const TRANSITION_DURATION_MS = 1320;
 const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
 const MEDIA_TRANSITION_ACTIVE_CLASS = "marketing-media-transition-active";
@@ -61,6 +62,17 @@ export function getMarketingTransitionPoster(fallback?: string | null) {
 
 export function clearMarketingTransitionPoster() {
   getStorage()?.removeItem(TRANSITION_POSTER_KEY);
+}
+
+export function requestMarketingViewerScroll() {
+  getStorage()?.setItem(VIEWER_SCROLL_KEY, "1");
+}
+
+export function consumeMarketingViewerScroll() {
+  const storage = getStorage();
+  const shouldScroll = storage?.getItem(VIEWER_SCROLL_KEY) === "1";
+  storage?.removeItem(VIEWER_SCROLL_KEY);
+  return shouldScroll;
 }
 
 function getFeaturedReelTargetRect() {
@@ -343,6 +355,7 @@ export function startMarketingViewTransition(
       finishMarketingMediaTransition();
       clearMarketingTransitionDelay();
       clearMarketingTransitionPoster();
+      requestMarketingViewerScroll();
       router.push(href);
       return;
     }
