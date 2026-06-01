@@ -15,6 +15,7 @@ export interface ProjectCardData {
   thumbnailUrl?: string | null;
   muxPlaybackId?: string | null;
   sourceVideoUrl?: string | null;
+  playProjectId?: string | null;
   director: { slug: string; name: string };
 }
 
@@ -51,10 +52,14 @@ export function ProjectCard({
 }: ProjectCardProps) {
   const router = useRouter();
   const directorSlug = project.director.slug.trim();
-  const canPlay = Boolean(project.muxPlaybackId || project.sourceVideoUrl);
+  const playProjectId =
+    project.playProjectId === undefined ? project.id : project.playProjectId;
+  const canPlay = Boolean(
+    playProjectId && (project.muxPlaybackId || project.sourceVideoUrl),
+  );
   const href = directorSlug
     ? canPlay
-      ? `/site/directors/${directorSlug}?play=${project.id}`
+      ? `/site/directors/${directorSlug}?play=${playProjectId}`
       : `/site/directors/${directorSlug}`
     : null;
   const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
