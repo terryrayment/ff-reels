@@ -20,6 +20,7 @@ type PartnerVisual = {
 const PARTNERS = [
   {
     name: "The Youth",
+    href: "https://theyouth.com.br/",
     role: "Latin America production support",
     copy:
       "Casting, locations, crew, and cultural read for work that needs more than a U.S. lens.",
@@ -32,6 +33,7 @@ const PARTNERS = [
   },
   {
     name: "Colossal",
+    href: "https://colossal.film/",
     role: "Post and motion",
     copy:
       "Animation, design, mixed media, cleanup, finish, versioning, and delivery support.",
@@ -119,7 +121,14 @@ export function PartnerBench() {
               <div className="grid gap-5 border-t border-white/14 pt-5 md:grid-cols-[0.8fr_1fr]">
                 <div>
                   <p className="text-[clamp(26px,3.2vw,46px)] font-medium leading-[0.98] tracking-[-0.04em]">
-                    {partner.name}
+                    <a
+                      href={partner.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white transition-colors duration-180 hover:text-[#B8C8FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+                    >
+                      {partner.name}
+                    </a>
                   </p>
                   <p className="versant-meta-label mt-3 text-white/45">
                     {partner.role}
