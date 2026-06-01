@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 import {
   MARKETING_TRANSITION_FINISHED,
   clearMarketingTransitionDelay,
@@ -18,6 +18,89 @@ interface SourceVideoReelProps {
   posterUrl?: string | null;
   brand: string;
   title: string;
+}
+
+interface PosterOnlyReelProps {
+  projectId: string;
+  posterUrl?: string | null;
+  brand: string;
+  title: string;
+}
+
+function useViewerScroll(projectId: string, sectionRef: RefObject<HTMLElement>) {
+  useEffect(() => {
+    if (typeof window === "undefined" || !consumeMarketingViewerScroll()) {
+      return;
+    }
+
+    const section = sectionRef.current;
+    if (!section) return;
+
+    window.requestAnimationFrame(() => {
+      const navHeight = window.innerWidth >= 1024 ? 104 : 88;
+      const top =
+        section.getBoundingClientRect().top + window.scrollY - navHeight - 16;
+      window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+    });
+  }, [projectId, sectionRef]);
+}
+
+export function PosterOnlyReel({
+  projectId,
+  posterUrl,
+  brand,
+  title,
+}: PosterOnlyReelProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [landingPoster] = useState(() =>
+    getMarketingTransitionPoster(posterUrl),
+  );
+  const displayPosterUrl = landingPoster ?? posterUrl;
+
+  useViewerScroll(projectId, sectionRef);
+
+  useEffect(() => {
+    clearMarketingTransitionPoster();
+    clearMarketingTransitionDelay();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="ff-shell mb-12">
+      <div className="mx-auto w-full md:w-[60%]">
+        <div
+          className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black"
+          data-featured-project-id={projectId}
+          data-marketing-featured-media-target
+          data-marketing-media-ready="poster"
+          data-marketing-autoplay-state="unavailable"
+        >
+          {displayPosterUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={displayPosterUrl}
+              alt=""
+              aria-hidden="true"
+              data-marketing-poster-layer
+              className="ff-media-fill pointer-events-none object-cover"
+              decoding="async"
+            />
+          ) : (
+            <div className="ff-media-fallback">
+              <span>{brand || title}</span>
+            </div>
+          )}
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+            <p className="text-ff-micro uppercase tracking-ff-micro text-white/80">
+              Video unavailable
+            </p>
+          </div>
+        </div>
+        <p className="ff-kicker-muted mt-4">
+          {brand} — {title}
+        </p>
+      </div>
+    </section>
+  );
 }
 
 export function SourceVideoReel({
@@ -46,21 +129,7 @@ export function SourceVideoReel({
     clearMarketingTransitionPoster();
   }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !consumeMarketingViewerScroll()) {
-      return;
-    }
-
-    const section = sectionRef.current;
-    if (!section) return;
-
-    window.requestAnimationFrame(() => {
-      const navHeight = window.innerWidth >= 1024 ? 104 : 88;
-      const top =
-        section.getBoundingClientRect().top + window.scrollY - navHeight - 16;
-      window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
-    });
-  }, [projectId]);
+  useViewerScroll(projectId, sectionRef);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

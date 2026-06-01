@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { FeaturedReel } from "@/components/marketing/featured-reel";
 import { RevealText } from "@/components/marketing/reveal-text";
-import { SourceVideoReel } from "@/components/marketing/source-video-reel";
+import {
+  PosterOnlyReel,
+  SourceVideoReel,
+} from "@/components/marketing/source-video-reel";
 import {
   type CanonicalProject,
   getCanonicalDirector,
@@ -44,7 +47,9 @@ export default async function DirectorDetailPage({
     typeof searchParams.play === "string" ? searchParams.play : null;
   const featuredProject =
     director.portfolio.find(
-      (p) => p.id === playId && (p.muxPlaybackId || p.sourceVideoUrl),
+      (p) =>
+        p.id === playId &&
+        (p.muxPlaybackId || p.sourceVideoUrl || p.thumbnailUrl),
     ) ?? null;
 
   const visibleProjects = featuredProject
@@ -91,6 +96,17 @@ export default async function DirectorDetailPage({
           title={featuredProject.title}
         />
       )}
+
+      {featuredProject &&
+        !featuredProject.muxPlaybackId &&
+        !featuredProject.sourceVideoUrl && (
+          <PosterOnlyReel
+            projectId={featuredProject.id}
+            posterUrl={featuredPosterUrl}
+            brand={featuredProject.brand}
+            title={featuredProject.title}
+          />
+        )}
 
       <div
         className="marketing-transition-reveal"

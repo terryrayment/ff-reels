@@ -54,11 +54,13 @@ export function ProjectCard({
   const directorSlug = project.director.slug.trim();
   const playProjectId =
     project.playProjectId === undefined ? project.id : project.playProjectId;
-  const canPlay = Boolean(
-    playProjectId && (project.muxPlaybackId || project.sourceVideoUrl),
+  const canOpenViewer = Boolean(
+    playProjectId &&
+      (project.muxPlaybackId || project.sourceVideoUrl || project.thumbnailUrl),
   );
+  const canPlay = Boolean(playProjectId && (project.muxPlaybackId || project.sourceVideoUrl));
   const href = directorSlug
-    ? canPlay
+    ? canOpenViewer
       ? `/site/directors/${directorSlug}?play=${playProjectId}`
       : `/site/directors/${directorSlug}`
     : null;

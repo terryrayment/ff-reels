@@ -187,8 +187,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
         contentType: "SPOT",
         thumbnailUrl:
           "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0c_Absolut%20-%20Lizzo.mp4.00_00_02_09.Still001.jpg",
-        sourceVideoUrl:
-          "https://player.vimeo.com/progressive_redirect/playback/808775311/rendition/1080p/file.mp4?loc=external&signature=62eb2e1f928db75bbb78187ba124e9f0722353c0d26ca869ae1038985c300f3f",
+        sourceVideoUrl: null,
         muxPlaybackId: null,
         director: {
           slug: "cody-cloud",
@@ -205,8 +204,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
         contentType: "SHORT_FILM",
         thumbnailUrl:
           "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0b_Coats.mp4.00_01_01_22.Still001.jpg",
-        sourceVideoUrl:
-          "https://player.vimeo.com/progressive_redirect/playback/808838957/rendition/1080p/file.mp4?loc=external&signature=4dfe174405715a33fa31f419465b9984ebcd546ff68d03f5f28752448a5e9fd4",
+        sourceVideoUrl: null,
         muxPlaybackId: null,
         director: {
           slug: "cody-cloud",
@@ -223,8 +221,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
         contentType: "SPOT",
         thumbnailUrl:
           "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0e_Adidas%20-%20Adicolors.mp4.00_00_50_08.Still001.jpg",
-        sourceVideoUrl:
-          "https://player.vimeo.com/progressive_redirect/playback/808838798/rendition/1080p/file.mp4?loc=external&signature=8391ffad212717f35e32fc32af317d771a5fa2702b1de8240a6153da4fa3a873",
+        sourceVideoUrl: null,
         muxPlaybackId: null,
         director: {
           slug: "cody-cloud",
@@ -241,8 +238,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
         contentType: "SPOT",
         thumbnailUrl:
           "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0f_Target%20-%20All%20In%20Motion.mp4.00_00_06_10.Still001.jpg",
-        sourceVideoUrl:
-          "https://player.vimeo.com/progressive_redirect/playback/808839155/rendition/1080p/file.mp4?loc=external&signature=c7e62b03c26758a87969211a77b8341e5e4b52e80eb25f48c2d82ba345336e38",
+        sourceVideoUrl: null,
         muxPlaybackId: null,
         director: {
           slug: "cody-cloud",
@@ -2106,8 +2102,7 @@ export const CANONICAL_WORK: CanonicalProject[] = [
     contentType: "SPOT",
     thumbnailUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0c_Absolut%20-%20Lizzo.mp4.00_00_02_09.Still001.jpg",
-    sourceVideoUrl:
-      "https://player.vimeo.com/progressive_redirect/playback/808775311/rendition/1080p/file.mp4?loc=external&signature=62eb2e1f928db75bbb78187ba124e9f0722353c0d26ca869ae1038985c300f3f",
+    sourceVideoUrl: null,
     muxPlaybackId: null,
     director: {
       slug: "cody-cloud",
@@ -2502,8 +2497,7 @@ export const CANONICAL_WORK: CanonicalProject[] = [
     contentType: "SHORT_FILM",
     thumbnailUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0b_Coats.mp4.00_01_01_22.Still001.jpg",
-    sourceVideoUrl:
-      "https://player.vimeo.com/progressive_redirect/playback/808838957/rendition/1080p/file.mp4?loc=external&signature=4dfe174405715a33fa31f419465b9984ebcd546ff68d03f5f28752448a5e9fd4",
+    sourceVideoUrl: null,
     muxPlaybackId: null,
     director: {
       slug: "cody-cloud",
@@ -2556,8 +2550,7 @@ export const CANONICAL_WORK: CanonicalProject[] = [
     contentType: "SPOT",
     thumbnailUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0e_Adidas%20-%20Adicolors.mp4.00_00_50_08.Still001.jpg",
-    sourceVideoUrl:
-      "https://player.vimeo.com/progressive_redirect/playback/808838798/rendition/1080p/file.mp4?loc=external&signature=8391ffad212717f35e32fc32af317d771a5fa2702b1de8240a6153da4fa3a873",
+    sourceVideoUrl: null,
     muxPlaybackId: null,
     director: {
       slug: "cody-cloud",
@@ -2574,8 +2567,7 @@ export const CANONICAL_WORK: CanonicalProject[] = [
     contentType: "SPOT",
     thumbnailUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d0f_Target%20-%20All%20In%20Motion.mp4.00_00_06_10.Still001.jpg",
-    sourceVideoUrl:
-      "https://player.vimeo.com/progressive_redirect/playback/808839155/rendition/1080p/file.mp4?loc=external&signature=c7e62b03c26758a87969211a77b8341e5e4b52e80eb25f48c2d82ba345336e38",
+    sourceVideoUrl: null,
     muxPlaybackId: null,
     director: {
       slug: "cody-cloud",
