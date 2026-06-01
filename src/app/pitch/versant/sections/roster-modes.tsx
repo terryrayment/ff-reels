@@ -16,6 +16,8 @@ import {
   revealStagger,
 } from "./system";
 
+const FF_DIRECTOR_URL = "https://www.friendsandfamily.tv/directors";
+
 const CADDIES = [
   {
     slug: "jack-turits",
@@ -302,8 +304,15 @@ function CaddieCard({
       </div>
 
       <div className="flex flex-1 flex-col pt-4">
-        <h3 className="text-[clamp(26px,2.6vw,40px)] font-medium leading-[1.02] tracking-[-0.038em] text-[#2447FF]">
-          {card.name}
+        <h3 className="text-[clamp(26px,2.6vw,40px)] font-medium leading-[1.02] tracking-[-0.038em]">
+          <a
+            href={`${FF_DIRECTOR_URL}/${card.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#2447FF] transition-colors duration-180 hover:text-[#6B8CFF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+          >
+            {card.name}
+          </a>
         </h3>
         <p className="mt-2 text-[clamp(16px,1.55vw,20px)] leading-[1.2] tracking-[-0.022em] text-black/58">
           {card.signature}
