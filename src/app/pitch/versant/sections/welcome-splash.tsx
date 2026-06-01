@@ -70,6 +70,8 @@ const HERO_CAPABILITIES = [
   "Delivery",
 ];
 
+const FF_HOME_URL = "https://www.friendsandfamily.tv";
+
 function FFLogomark() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -123,12 +125,18 @@ export function WelcomeSplash({ recipientFirstName, directors }: Props) {
           <div
             className={`relative z-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-white/50 ${HERO_MICRO_LABEL}`}
           >
-            <div className="flex min-w-0 items-center gap-3">
+            <a
+              href={FF_HOME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Friends & Family"
+              className="flex min-w-0 items-center gap-3 text-white transition-opacity duration-180 hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+            >
               <FFLogomark />
-              <span className="text-[15px] font-medium tracking-[-0.02em] text-white">
+              <span className="text-[15px] font-medium tracking-[-0.02em]">
                 Friends &amp; Family
               </span>
-            </div>
+            </a>
             <p className="max-w-[20rem] text-right text-white/62 sm:max-w-none">
               A Friends &amp; Family pitch for Versant Sports
               {recipientFirstName ? ` · For ${recipientFirstName}` : ""}
