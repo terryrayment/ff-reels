@@ -11,7 +11,6 @@ const CONTACTS = [
 
 const SOCIALS = [
   { label: "Instagram", href: "https://instagram.com/friendsandfamily.tv" },
-  { label: "Vimeo", href: "https://vimeo.com/friendsandfamily" },
 ];
 
 export function MarketingFooter() {
