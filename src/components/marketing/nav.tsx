@@ -9,7 +9,6 @@ import {
   PartnerPortal,
   type PartnerId,
 } from "@/components/marketing/partner-portal";
-import { Magnetic } from "@/components/marketing/magnetic";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -71,24 +70,22 @@ export function MarketingNav() {
     >
       <nav className="mx-auto max-w-ff px-ff-x h-ff-nav flex items-center justify-between">
         <div className="relative flex min-w-0 items-center">
-          <Magnetic className="block shrink-0">
-            <Link
-              href="/site"
-              aria-label="Friends & Family"
-              className="block opacity-100 transition-opacity duration-150 ease-out hover:opacity-75 focus-visible:opacity-75"
-              data-cursor="link"
-            >
-              <Image
-                src="/brand/ff-logomark.png"
-                alt=""
-                width={778}
-                height={933}
-                sizes="36px"
-                priority
-                className="h-9 w-auto"
-              />
-            </Link>
-          </Magnetic>
+          <Link
+            href="/site"
+            aria-label="Friends & Family"
+            className="block shrink-0 opacity-100 transition-opacity duration-150 ease-out hover:opacity-75 focus-visible:opacity-75"
+            data-cursor="link"
+          >
+            <Image
+              src="/brand/ff-logomark.png"
+              alt=""
+              width={778}
+              height={933}
+              sizes="36px"
+              priority
+              className="h-9 w-auto"
+            />
+          </Link>
         </div>
 
         <div className="hidden min-[1180px]:flex items-center">
