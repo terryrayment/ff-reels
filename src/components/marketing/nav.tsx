@@ -58,6 +58,7 @@ export function MarketingNav() {
         <div className="relative flex min-w-0 items-center">
           <Link
             href="/site"
+            prefetch={false}
             aria-label="Friends & Family"
             className="block shrink-0 opacity-100 transition-opacity duration-150 ease-out hover:opacity-75 focus-visible:opacity-75"
             data-cursor="link"
@@ -84,6 +85,7 @@ export function MarketingNav() {
                   <li key={item.partnerId} className="flex items-center">
                     <Link
                       href={item.href}
+                      prefetch={false}
                       className={cn(
                         "ff-nav-label inline-flex h-ff-nav items-center transition-colors duration-150 ease-out",
                         partnerRoute
@@ -106,6 +108,7 @@ export function MarketingNav() {
                 <li key={item.href} className="flex items-center">
                   <Link
                     href={item.href}
+                    prefetch={false}
                     className={cn(
                       "ff-nav-label inline-flex h-ff-nav items-center transition-colors",
                       partnerRoute
@@ -157,6 +160,7 @@ export function MarketingNav() {
                     <li key={item.partnerId}>
                       <Link
                         href={item.href}
+                        prefetch={false}
                         tabIndex={open ? 0 : -1}
                         onClick={() => setOpen(false)}
                         className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
@@ -171,6 +175,7 @@ export function MarketingNav() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      prefetch={false}
                       tabIndex={open ? 0 : -1}
                       className="ff-font-display block text-ff-nav-drawer font-medium text-ff-ink"
                     >
