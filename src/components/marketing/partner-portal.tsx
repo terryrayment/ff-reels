@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export const MARKETING_PARTNERS = {
@@ -168,54 +167,33 @@ function PartnerSitePortal({
         <span>{partner.label}</span>
       </div>
 
-      <header className="relative z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-white/15 bg-black px-ff-x md:grid-cols-[1fr_auto_1fr]">
-        <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/48">
-          Studio / Live
-        </p>
-        <div className="hidden items-center justify-self-center gap-4 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide md:flex">
-          {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => {
-            const option = MARKETING_PARTNERS[id];
-            const active = id === partnerId;
-            return isPage ? (
-              <Link
-                key={id}
-                href={id === "youth" ? "/site/youth" : "/site/colossal"}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "transition-colors",
-                  active
-                    ? "text-white"
-                    : "text-white/42 hover:text-white focus-visible:text-white",
-                )}
-              >
-                {option.label}
-              </Link>
-            ) : (
-              <button
-                key={id}
-                type="button"
-                aria-pressed={active}
-                onClick={() => onPartnerChange?.(id)}
-                className={cn(
-                  "transition-colors",
-                  active
-                    ? "text-white"
-                    : "text-white/42 hover:text-white focus-visible:text-white",
-                )}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
-        {isPage ? (
-          <Link
-            href="/site"
-            className="justify-self-end font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/60 transition-colors hover:text-white"
-          >
-            Home
-          </Link>
-        ) : (
+      {!isPage && (
+        <header className="relative z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-white/15 bg-black px-ff-x md:grid-cols-[1fr_auto_1fr]">
+          <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/48">
+            Studio / Live
+          </p>
+          <div className="hidden items-center justify-self-center gap-4 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide md:flex">
+            {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => {
+              const option = MARKETING_PARTNERS[id];
+              const active = id === partnerId;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => onPartnerChange?.(id)}
+                  className={cn(
+                    "transition-colors",
+                    active
+                      ? "text-white"
+                      : "text-white/42 hover:text-white focus-visible:text-white",
+                  )}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
           <button
             type="button"
             onClick={onClose}
@@ -223,14 +201,14 @@ function PartnerSitePortal({
           >
             Close
           </button>
-        )}
-      </header>
+        </header>
+      )}
 
       <main
         className={cn(
           "partner-site-portal__main relative z-10 grid grid-cols-1 gap-4 overflow-hidden px-ff-x py-4 md:gap-6 md:py-6",
           isPage
-            ? "min-h-[calc(100svh-(var(--ff-nav-height)*2))]"
+            ? "min-h-[calc(100svh-var(--ff-nav-height))]"
             : "h-[calc(100svh-var(--ff-nav-height))]",
           isPage
             ? "md:grid-cols-1"
@@ -285,7 +263,7 @@ function PartnerSitePortal({
           className={cn(
             "partner-site-portal__browser overflow-hidden border border-white/18 bg-[#050505]",
             isPage
-              ? "h-[calc(100svh-(var(--ff-nav-height)*2)-2rem)] min-h-[42rem]"
+              ? "h-[calc(100svh-var(--ff-nav-height)-2rem)] min-h-[42rem]"
               : "min-h-0",
           )}
         >
