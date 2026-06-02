@@ -291,10 +291,13 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .marketing-transition-reveal,
   .marketing-media-transition-active .marketing-transition-reveal,
-  .marketing-director-name-transition {
+  .marketing-director-name-transition,
+  .ff-bio-accordion-panel,
+  .ff-bio-accordion-content {
     opacity: 1;
     transform: none;
     transition: none;
+    will-change: auto;
   }
 }
 
@@ -1633,6 +1636,28 @@ mux-player {
     font-size: 18px;
     line-height: 1;
     color: var(--ff-color-ink);
+  }
+
+  .ff-bio-accordion-panel {
+    height: 0;
+    overflow: hidden;
+    transition:
+      height 560ms cubic-bezier(0.76, 0, 0.24, 1),
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: height;
+  }
+
+  .ff-bio-accordion-content {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition:
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 560ms cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .ff-bio-accordion-panel[aria-hidden="true"] .ff-bio-accordion-content {
+    opacity: 0;
+    transform: translate3d(0, -0.5rem, 0);
   }
 
   .ff-quote {

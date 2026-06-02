@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { FeaturedReel } from "@/components/marketing/featured-reel";
 import { RevealText } from "@/components/marketing/reveal-text";
+import { DirectorBioAccordion } from "@/components/marketing/director-bio-accordion";
 import {
   PosterOnlyReel,
   SourceVideoReel,
@@ -112,33 +113,7 @@ export default async function DirectorDetailPage({
         className="marketing-transition-reveal"
         data-marketing-transition-reveal
       >
-        <section className="ff-shell mb-14">
-          <details className="group border-y ff-rule" open>
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-ff-micro uppercase tracking-ff-micro text-ff-muted transition-colors hover:text-ff-ink [&::-webkit-details-marker]:hidden">
-              <span>Bio</span>
-              <span className="ff-accordion-mark group-open:hidden">+</span>
-              <span className="ff-accordion-mark hidden group-open:block">
-                -
-              </span>
-            </summary>
-            <div className="ff-section-grid pb-10">
-              <div className="ff-label-column">
-                <p className="ff-kicker">About {director.name}</p>
-              </div>
-              <div className="ff-copy-column space-y-6">
-                {director.bio ? (
-                  <p className="ff-body whitespace-pre-line text-ff-ink">
-                    {director.bio}
-                  </p>
-                ) : (
-                  <p className="ff-body">
-                    More background is being added to this profile.
-                  </p>
-                )}
-              </div>
-            </div>
-          </details>
-        </section>
+        <DirectorBioAccordion directorName={director.name} bio={director.bio} />
 
         {grouped.length > 0 && (
           <section className="ff-shell">

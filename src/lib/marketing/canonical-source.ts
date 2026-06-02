@@ -35,7 +35,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Bueno",
     slug: "bueno",
     sourceUrl: "https://www.friendsandfamily.tv/directors/bueno",
-    bio: "Bueno is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Henrique Bueno is an accomplished film director from Brazil, his passion lies in creating inventive movies that blend various media and styles. Renowned for his acute sense of humor in film, Bueno has collaborated with leading brands like Amazon, Doritos, Cheetos, Pepsi, Nissan, Netflix, CNN, Smirnoff, and New Balance.\n\nBueno's storytelling prowess has garnered a vast collection of prestigious accolades and awards, such as D&AD, One Show, Ciclope Latino, Clio, and in 2023 he was awarded the highly coveted Grand Prix at Cannes Lions.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/66029dca25e7ecd0ecbde6ed_FF_WEB_BUENO.jpg",
     portfolio: [
@@ -155,7 +155,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Cody Cloud",
     slug: "cody-cloud",
     sourceUrl: "https://www.friendsandfamily.tv/directors/cody-cloud",
-    bio: "Cody Cloud is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Native to Arizona, Cody Cloud is a photographer & director based in Los Angeles. Known for his rich and thoughtful execution of color and vibrant, character driven aesthetic, Cody is the rare combination of creative artist and technical perfectionist. For more than a decade, he has created and executed campaigns for brands such as Apple, Absolut, Adidas, Asics, Adobe, Audi, Belvedere, DSW, Fruit of the Loom, Gatorade, H&M, Hewlett Packard, Mailchimp, Mastercard, MGM, Nike, Puma, Sorel, Target, Tide, Uniqlo and Virgin Airlines. Editorial clients include Entertainment Weekly, TIME, S Magazine, Vogue, Marie Claire, Glamour, New York Magazine, Billboard, The Hollywood Reporter, Paper and Billboard.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d09_FF_WEB_CODYjpg.jpg",
     portfolio: [
@@ -271,7 +271,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Matt Dilmore",
     slug: "matt-dilmore",
     sourceUrl: "https://www.friendsandfamily.tv/directors/matt-dilmore",
-    bio: "Matt Dilmore is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Matt Dilmore has helmed offbeat, award-winning campaigns for PlayStation, Little Caesars, Gatorade, Pepsi, KFC, Cheerios, Downy, and more. Memorably, his parody ad for The Shining's 'Overlook Hotel' was featured on the 90th Oscars broadcast. His documentary 'The Great Imposter' was part of ESPN's Emmy-winning '30-for-30' series. The short tells the story of Detroit salesman Barry Bremen who gained notoriety in the 1980s for successfully posing as an athlete at over twenty major professional sporting events. Additionally, Dilmore has directed music videos for bands such as Black Lips, CSS, Wise Blood, Black Moth Super Rainbow and co-founded the cult internet-radio program Pussyfoot. In recent years he has enjoyed a unique creative partnership with legendary soul musician Swamp Dogg, directing not only his music video for 'Stardust' but also serving as the creative director of his album 'I Need a Job...So I Can Buy More Auto-Tune.' Dilmore's book publishing imprint, All Stones, is about the intersection of film, sports, outsider art, and photography. All Stones' debut offering 'Last Night at the Alamo' showcased the photo work of acclaimed cinematographer Eric Alan Edwards (My Own Private Idaho, Kids, To Die For). He lives and works in Hollywood.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/692e759e93d54ebe70a5ebb7_FF_WEB_DILMORE_5.jpg",
     portfolio: [
@@ -427,7 +427,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "James Frost",
     slug: "james-frost",
     sourceUrl: "https://www.friendsandfamily.tv/directors/james-frost",
-    bio: "James Frost is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "James is a London-born filmmaker. He has directed iconic, award-winning videos for Alabama Shakes, Coldplay, Norah Jones, OK Go & Radiohead, amongst many others. Radiohead's \"House of Cards\" video was screened in contemporary art museums worldwide as part of the 'Decode: Digital Design Sensations' Exhibition and nominated for 'Best Music Video' and the 51st Annual Grammy Awards. In 2019 James was commissioned by Rüfüs Du Sol to create a 360º film for the song \"Underwater,\" which screened at HP's Antarctic Dome at the Coachella Music and Arts Festival, Indio, CA, where it played over two consecutive weekends to an estimated 100,000 people. In 2020, James collaborated with Rüfüs Du Sol again to direct the video for their lead track, \"Alive.\" He used only Unreal engine to create realistic landscapes for viewers to explore in one continuous movement. James has directed commercials for the world's most recognizable brands, including American Express, AT&T, Bank of America, BMW, Ford, IBM, Mercedes Benz, Nike & Verizon. James is currently developing a narrative feature entitled \"It's Just Harder Lately.\" As well as developing a documentary film entitled \"The Tenth Man\" with Academy Award-nominated Producers Daniel Dubiecki and Lara Alameddine.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df020a7_FF_WEB_JAMESFROST.jpg",
     portfolio: [
@@ -547,7 +547,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Le Ged",
     slug: "le-ged",
     sourceUrl: "https://www.friendsandfamily.tv/directors/le-ged",
-    bio: "Le Ged is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Le GED is a creative powerhouse whose kinetic camera work and inventive vision set him apart in the visual arts space. Renowned for his precise framing, fluid camera movements, and an instinctive grasp of visual rhythm, he captures the essence of joy with both technical finesse and artistic flair. His ability to choreograph the camera — gliding through scenes with purpose and energy — creates a visual language that's unmistakably his own. He has built an impressive client list including Etihad Airways, YouTube, Metro, McDonalds, and many more on the international stage.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/6668900dfdb5154b13bda62d_FF_WEB_LeGED.jpg",
     portfolio: [
@@ -667,7 +667,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Boma Iluma",
     slug: "boma-iluma",
     sourceUrl: "https://www.friendsandfamily.tv/directors/boma-iluma",
-    bio: "Boma Iluma is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Boma Iluma grew up between Abuja, Nigeria, and Atlanta, Georgia, forging deep emotional and familial ties to both cultures. He began his artistic journey through acting in commercials (Cartoon Network, the NBA) and Atlanta theater before turning to directing. His debut visual piece, Negus, explored the erasure and misinterpretation of Blackness in America and premiered in Los Angeles in 2019. He went on to direct Heirs for Nike's Air Jordan, a Gen Z-focused reimagining of the brand that debuted at New York Fashion Week 2020. His narrative short Comfort — part of Hillman Grad's Rising Voices — premiered at Tribeca Film Festival 2021 and was later acquired by Amazon Prime Video. Roman Coppola then tapped him to write and direct a segment in the innovative feature The Seven Faces of Jane. Since then, Boma has directed branded content for Oakley, Jeep, The New Yorker, Ford, Nissan, and others. In 2022, Boma made his TV debut on Paramount+/Showtime's The Chi, directing four episodes and becoming one of the network's youngest directors. Comfort was later exhibited at the Smithsonian National Museum of African Art's +234 Connect Exhibition. Recognized as a rising force in entertainment, Boma was named to the 2023 Creative Class of Black Culture Shifters by the Creative Collective NYC, featured on Dazed Magazine's 2024 Dazed100 list, and included in Forbes' 2025 30 Under 30 in Hollywood & Entertainment. He has also directed music videos for artists such as Camila Cabello, Chloe Bailey, JoJo, Oxlade, and Mahalia. Boma is currently developing his feature film debut and additional television projects.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/687fd68ef30b936b35f41b67_FF_WEB_BOMA.jpg",
     portfolio: [
@@ -751,7 +751,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Tarik Karam",
     slug: "tarik",
     sourceUrl: "https://www.friendsandfamily.tv/directors/tarik",
-    bio: "Tarik Karam is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Tarik Karam is an Arab-American filmmaker based in New York. After graduating from the American Film Institute, he worked with director Stephen Daldry, co-producing and second unit directing the Oscar nominated films Extremely Loud & Incredibly Close and The Reader. His directorial expertise extends to commercials for prominent brands like The New York Times, Johnson & Johnson, P&G, CVS, and McDonald's. His creative efforts have been honored with prestigious awards including Clio, D&AD, and One Show accolades.\n\nTarik directed a 30-minute award winning gun violence documentary for Netflix as well as several episodes of a racing documentary, Fastest Car, in partnership with Condé Nast. Most recently he has finished directing second unit on the Russo Brothers' upcoming film, \"The Electric State\" with Millie Bobby Brown and Stanley Tucci.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df020ac_FF_WEB_TARIKKARAM.jpg",
     portfolio: [
@@ -835,7 +835,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Kelsey Larkin",
     slug: "kelsey-larkin",
     sourceUrl: "https://www.friendsandfamily.tv/directors/kelsey-larkin",
-    bio: "Kelsey Larkin is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Award-winning director Kelsey Larkin crafts visually striking broadcast commercials, digital campaigns, music videos, and abstract short films with a signature blend of precision and emotional depth. Her work dissects raw human emotion, distilling it into powerful, lasting moments — always portraying her subjects with dignity, strength, and quiet grace. Recognized on the international stage, Kelsey's storytelling has earned acclaim from the Young Director Awards, Adweek, Shots, Glossy, Ads of the World, Muse, Strategy, and more.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/69f38e86274a3ab866dcf297_FF_WEB_KELSEY_3.png",
     portfolio: [
@@ -973,7 +973,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Leigh Marling",
     slug: "leigh-marling",
     sourceUrl: "https://www.friendsandfamily.tv/directors/leigh-marling",
-    bio: "Leigh Marling is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Leigh Marling is a filmmaker and photographer based in Venice, California, known for his cinematic eye, sharp visual design, and offbeat wit. He began his creative journey in London as co-founder of Blue Source, a design studio that evolved into an award-winning directing duo with longtime collaborator Rob Leggatt. Together, they crafted iconic music videos for artists like Fatboy Slim, New Order, The Avalanches, and Dirty Vegas — earning accolades including an MTV Europe Award and a Grammy nomination. Transitioning into commercials, Leigh helped shape campaigns for global brands such as Smirnoff, Snickers, and T-Mobile, building a reel defined by smart storytelling and striking visuals. After moving to Los Angeles in 2011, he began directing solo, taking on work for clients like LEGO, Hyundai, and Applebee's — including multiple Super Bowl spots. Now working under his own name, Leigh continues to bring a thoughtful, design-forward sensibility to both his commercial and photographic work.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/66ec55e9728446d85b57fae3_FF_WEB_LEIGH.jpg",
     portfolio: [
@@ -1093,7 +1093,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Terry Rayment",
     slug: "terry-rayment",
     sourceUrl: "https://www.friendsandfamily.tv/directors/terry-rayment",
-    bio: "Terry Rayment is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "One of the most in-demand emotional narrative storytellers in commercials today. His sharp eye for the human experience and masterful sequencing have led to highly emotive and successful campaigns for brands like Purina and Amazon. He's also crafted stylish, performance-driven automotive work with heart for Cadillac, Jaguar, and Dodge. In addition, he's worked with DoorDash, Boars Head, Porsche, and other major brands, bringing his signature depth and authenticity to each project. Narratively, in 2017, Terry wrote and directed Understanding for Kodak, a short film that won at the AICP Festival and was named \"Advertisement of the Year\" in multiple competitions. Terry is the co-founder of Friends & Family. Previously, he was a founding partner and director at Eskimo and spent time in the Chicago agency world as an art director. Originally from Detroit, he's now based in Los Angeles.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d08_FF_WEB_TERRY.jpg",
     portfolio: [
@@ -1213,7 +1213,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Caleb Slain",
     slug: "caleb-slain",
     sourceUrl: "https://www.friendsandfamily.tv/directors/caleb-slain",
-    bio: "Caleb Slain is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Caleb Slain was recognized at age 19 for his debut film \"The Lost & Found Shop,\" a dreamy tearjerker that earned a small cult following online. His first short documentary, \"It Ain't Over,\" premiered at SXSW, Telluride Film Festival and won Audience Awards at the Santa Cruz and Heartland film festivals. In total, his film projects have received over 20m internet views and 6 Vimeo Staff Picks, while his short films \"Free Pie\", and \"Juggle & Cut\" have been used as teaching materials at USC, New York Film Academy, and University of San Francisco. In advertising, Slain received personal profiles in Business Insider and Huffington Post by age 22, and has won multiple international ad competitions. Recently, Slain released his experimental writing app \"Flowstate,\" garnering praise in Wired, The Verge, GQ, Mashable, and dozens more publications.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01cea_FF_WEB_CALEB.jpg",
     portfolio: [
@@ -1387,7 +1387,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Jack Turits",
     slug: "jack-turits",
     sourceUrl: "https://www.friendsandfamily.tv/directors/jack-turits",
-    bio: "Jack Turits is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Very few directors are able to tackle the world of \"real people\" quite like him. He brings a charm to his films. He has the ability to truly make his unique mark on creative that may seem bland on paper. Based in New York, he's made numerous short films, music videos, and commercials with top brands such as Airbnb, Evian, Delta Airlines, Bank of America, and Geico. Jack made multiple films for MailChimp's Cannes Lion-winning campaign, \"Did You Mean MailChimp?\"\n\nKnown for his distinctive visual approach, Jack is often involved from the very early stages of a project, helping to craft and shape what will go on screen. He applies his unique aesthetic to both narrative and documentary subjects with equal skill.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01d05_FF_WEB_JACK.jpg",
     portfolio: [
@@ -1507,7 +1507,7 @@ export const CANONICAL_DIRECTORS: CanonicalDirector[] = [
     name: "Brother Willis",
     slug: "brother-willis",
     sourceUrl: "https://www.friendsandfamily.tv/directors/brother-willis",
-    bio: "Brother Willis is a high-end commercial director represented by Friends & Family, creating award-winning campaign work for global brands and agencies.",
+    bio: "Brother Adam Willis was drawn from the arroyos of West Texas, amid the cool pews of a small town and the ghost of Buddy Holly. After a journey through the desert — red cap and all — he is now based in Los Angeles. But the secret to Adam's success is that he brought it all with him - the friendly West Texas smile, the dusty dry humor, and the love of a story well-told. Adam started on sets, found his way to the office as a director's assistant and visual researcher, and finally started his own directing collective, The General Assembly. That group racked up the music video awards and was featured in the Saatchi & Saatchi New Director's Showcase at Cannes.\n\nAdam moved on to pursue solo directing, returning to his music video roots and expanding his commercial experience for clients like Ford, Toyota, Casio & See's Candy while continuing his pursuit of the unusual and the warmly off-kilter side of comedy throughout all his work. Adam thrives on the exploration and collaboration of filmmaking finding comfort in the congregation. When he's not making films you might finding him digging through records to make internet radio with friends across the pond or searching for esoteric spiritualist books to stack on a shelf and consider reading someday.",
     imageUrl:
       "https://cdn.prod.website-files.com/65976573e20f53252df01c48/65976573e20f53252df01dea_FF_WEB_BROTHERWILLIS.jpg",
     portfolio: [
