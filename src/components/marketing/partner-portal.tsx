@@ -372,7 +372,9 @@ function PartnerSitePortal({
         </section>
       </main>
 
-      <style>{`
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         @keyframes partnerSiteCurtain {
           0% {
             opacity: 1;
@@ -502,7 +504,9 @@ function PartnerSitePortal({
             opacity: 1;
           }
         }
-      `}</style>
+      `,
+        }}
+      />
     </div>
   );
 }
