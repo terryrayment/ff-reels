@@ -88,6 +88,8 @@ export function DirectorCard({
       onClick={handleClick}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
+      onFocus={onEnter}
+      onBlur={onLeave}
       className="ff-focusable ff-fluid-card group block"
       prefetch={!playProjectId}
     >
@@ -141,7 +143,7 @@ export function DirectorCard({
             />
           </div>
         )}
-        {!muxPlaybackId && sourceVideoUrl && (
+        {!muxPlaybackId && sourceVideoUrl && hovering && (
           <video
             className="ff-media-fill object-cover opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-visible:opacity-100"
             src={sourceVideoUrl}
