@@ -146,7 +146,6 @@ function PartnerSitePortal({
   onPartnerChange,
 }: PartnerSitePortalProps) {
   const isColossal = partner.label === "COLOSSAL";
-  const host = partner.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
   const isPage = mode === "page";
 
   return (
@@ -290,26 +289,7 @@ function PartnerSitePortal({
               : "min-h-0",
           )}
         >
-          <div className="flex h-11 items-center justify-between border-b border-white/14 bg-black px-3 md:px-4">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-white/80" />
-              <span className="h-2 w-2 rounded-full bg-white/42" />
-              <span className="h-2 w-2 rounded-full bg-white/22" />
-            </div>
-            <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/52">
-              {host}
-            </p>
-            <a
-              href={partner.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/62 transition-colors hover:text-white"
-            >
-              Open →
-            </a>
-          </div>
-
-          <div className="partner-site-portal__preview h-[calc(100%-2.75rem)] overflow-hidden bg-black">
+          <div className="partner-site-portal__preview h-full overflow-hidden bg-black">
             <iframe
               src={partner.href}
               title={`${partner.label} website preview`}
