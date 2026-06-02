@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export const MARKETING_PARTNERS = {
@@ -119,28 +120,46 @@ interface PartnerSitePortalProps {
   partnerId: PartnerId;
   partner: PartnerConfig;
   titleId: string;
-  onClose: () => void;
-  onPartnerChange: (partnerId: PartnerId) => void;
+  mode?: "modal" | "page";
+  onClose?: () => void;
+  onPartnerChange?: (partnerId: PartnerId) => void;
+}
+
+export function PartnerPage({ partnerId }: { partnerId: PartnerId }) {
+  const partner = MARKETING_PARTNERS[partnerId];
+  return (
+    <PartnerSitePortal
+      partnerId={partnerId}
+      partner={partner}
+      titleId={`partner-page-${partnerId}`}
+      mode="page"
+    />
+  );
 }
 
 function PartnerSitePortal({
   partnerId,
   partner,
   titleId,
+  mode = "modal",
   onClose,
   onPartnerChange,
 }: PartnerSitePortalProps) {
   const isColossal = partner.label === "COLOSSAL";
   const host = partner.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  const isPage = mode === "page";
 
   return (
     <div
       className={cn(
-        "partner-site-portal fixed inset-0 z-[70] overflow-hidden bg-black text-white",
+        "partner-site-portal bg-black text-white",
+        isPage
+          ? "partner-site-page relative min-h-screen overflow-x-hidden pt-ff-nav"
+          : "fixed inset-0 z-[70] overflow-hidden",
         isColossal ? "partner-site-portal--colossal" : "partner-site-portal--youth",
       )}
-      aria-modal="true"
-      role="dialog"
+      aria-modal={isPage ? undefined : "true"}
+      role={isPage ? undefined : "dialog"}
       aria-labelledby={titleId}
     >
       <span id={titleId} className="sr-only">
@@ -158,12 +177,26 @@ function PartnerSitePortal({
           {(Object.keys(MARKETING_PARTNERS) as PartnerId[]).map((id) => {
             const option = MARKETING_PARTNERS[id];
             const active = id === partnerId;
-            return (
+            return isPage ? (
+              <Link
+                key={id}
+                href={id === "youth" ? "/site/youth" : "/site/colossal"}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "transition-colors",
+                  active
+                    ? "text-white"
+                    : "text-white/42 hover:text-white focus-visible:text-white",
+                )}
+              >
+                {option.label}
+              </Link>
+            ) : (
               <button
                 key={id}
                 type="button"
                 aria-pressed={active}
-                onClick={() => onPartnerChange(id)}
+                onClick={() => onPartnerChange?.(id)}
                 className={cn(
                   "transition-colors",
                   active
@@ -176,18 +209,30 @@ function PartnerSitePortal({
             );
           })}
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="justify-self-end font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/60 transition-colors hover:text-white"
-        >
-          Close
-        </button>
+        {isPage ? (
+          <Link
+            href="/site"
+            className="justify-self-end font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/60 transition-colors hover:text-white"
+          >
+            Home
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={onClose}
+            className="justify-self-end font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/60 transition-colors hover:text-white"
+          >
+            Close
+          </button>
+        )}
       </header>
 
       <main
         className={cn(
-          "partner-site-portal__main relative z-10 grid h-[calc(100svh-var(--ff-nav-height))] grid-cols-1 gap-4 overflow-hidden px-ff-x py-4 md:gap-6 md:py-6",
+          "partner-site-portal__main relative z-10 grid grid-cols-1 gap-4 overflow-hidden px-ff-x py-4 md:gap-6 md:py-6",
+          isPage
+            ? "min-h-[calc(100svh-(var(--ff-nav-height)*2))]"
+            : "h-[calc(100svh-var(--ff-nav-height))]",
           isColossal
             ? "md:grid-cols-[minmax(15rem,0.18fr)_1fr]"
             : "md:grid-cols-[minmax(12rem,0.18fr)_1fr]",

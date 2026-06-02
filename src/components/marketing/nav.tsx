@@ -4,18 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  MARKETING_PARTNERS,
-  PartnerPortal,
-  type PartnerId,
-} from "@/components/marketing/partner-portal";
+import { MARKETING_PARTNERS } from "@/components/marketing/partner-portal";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { type: "link", href: "/site/work", label: "Work" },
   { type: "link", href: "/site/directors", label: "Talent" },
-  { type: "partner", partnerId: "youth" },
-  { type: "partner", partnerId: "colossal" },
+  { type: "partner", href: "/site/youth", partnerId: "youth" },
+  { type: "partner", href: "/site/colossal", partnerId: "colossal" },
   { type: "link", href: "/site/about", label: "About" },
   { type: "link", href: "/site/contact", label: "Contact" },
 ] as const;
@@ -26,7 +22,8 @@ export function MarketingNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [activePartner, setActivePartner] = useState<PartnerId | null>(null);
+  const partnerRoute =
+    pathname?.startsWith("/site/youth") || pathname?.startsWith("/site/colossal");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -46,24 +43,13 @@ export function MarketingNav() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
-  useEffect(() => {
-    if (!activePartner) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActivePartner(null);
-    };
-    document.documentElement.classList.add("overflow-hidden");
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.documentElement.classList.remove("overflow-hidden");
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [activePartner]);
-
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
-        scrolled
+        partnerRoute
+          ? "bg-black border-b border-white/15"
+          : scrolled
           ? "bg-[rgb(var(--ff-rgb-paper)_/_0.85)] backdrop-blur-md border-b border-[rgb(var(--ff-rgb-ink)_/_0.06)]"
           : "bg-transparent border-b border-transparent",
       )}
@@ -83,7 +69,7 @@ export function MarketingNav() {
               height={933}
               sizes="36px"
               priority
-              className="h-9 w-auto"
+              className={cn("h-9 w-auto", partnerRoute && "invert")}
             />
           </Link>
         </div>
@@ -93,15 +79,24 @@ export function MarketingNav() {
             {NAV_ITEMS.map((item) => {
               if (item.type === "partner") {
                 const partner = MARKETING_PARTNERS[item.partnerId];
+                const active = pathname?.startsWith(item.href);
                 return (
                   <li key={item.partnerId} className="flex items-center">
-                    <button
-                      type="button"
-                      onClick={() => setActivePartner(item.partnerId)}
-                      className="ff-nav-label inline-flex h-ff-nav items-center text-ff-muted transition-colors duration-150 ease-out hover:text-ff-ink focus-visible:text-ff-ink"
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "ff-nav-label inline-flex h-ff-nav items-center transition-colors duration-150 ease-out",
+                        partnerRoute
+                          ? active
+                            ? "text-white"
+                            : "text-white/55 hover:text-white focus-visible:text-white"
+                          : active
+                            ? "text-ff-ink"
+                            : "text-ff-muted hover:text-ff-ink focus-visible:text-ff-ink",
+                      )}
                     >
                       {partner.label}
-                    </button>
+                    </Link>
                   </li>
                 );
               }
@@ -113,9 +108,13 @@ export function MarketingNav() {
                     href={item.href}
                     className={cn(
                       "ff-nav-label inline-flex h-ff-nav items-center transition-colors",
-                      active
-                        ? "text-ff-ink"
-                        : "text-ff-muted hover:text-ff-ink",
+                      partnerRoute
+                        ? active
+                          ? "text-white"
+                          : "text-white/55 hover:text-white"
+                        : active
+                          ? "text-ff-ink"
+                          : "text-ff-muted hover:text-ff-ink",
                     )}
                   >
                     {item.label}
@@ -132,7 +131,10 @@ export function MarketingNav() {
           aria-controls={MOBILE_MENU_ID}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro text-ff-ink min-[1180px]:hidden"
+          className={cn(
+            "font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro min-[1180px]:hidden",
+            partnerRoute ? "text-white" : "text-ff-ink",
+          )}
         >
           {open ? "Close" : "Menu"}
         </button>
@@ -153,17 +155,14 @@ export function MarketingNav() {
                   const partner = MARKETING_PARTNERS[item.partnerId];
                   return (
                     <li key={item.partnerId}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setOpen(false);
-                          setActivePartner(item.partnerId);
-                        }}
+                      <Link
+                        href={item.href}
                         tabIndex={open ? 0 : -1}
+                        onClick={() => setOpen(false)}
                         className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
                       >
                         {partner.label}
-                      </button>
+                      </Link>
                     </li>
                   );
                 }
@@ -183,14 +182,6 @@ export function MarketingNav() {
             </ul>
           </div>
         </div>
-
-      {activePartner && (
-        <PartnerPortal
-          partnerId={activePartner}
-          onClose={() => setActivePartner(null)}
-          onPartnerChange={setActivePartner}
-        />
-      )}
     </header>
   );
 }

@@ -17,7 +17,13 @@ const SOCIALS = [
 export function MarketingFooter() {
   const pathname = usePathname();
 
-  if (pathname === "/site/about") return null;
+  if (
+    pathname === "/site/about" ||
+    pathname?.startsWith("/site/youth") ||
+    pathname?.startsWith("/site/colossal")
+  ) {
+    return null;
+  }
 
   return (
     <footer className="border-t ff-rule mt-32">
