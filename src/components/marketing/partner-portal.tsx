@@ -233,50 +233,54 @@ function PartnerSitePortal({
           isPage
             ? "min-h-[calc(100svh-(var(--ff-nav-height)*2))]"
             : "h-[calc(100svh-var(--ff-nav-height))]",
-          isColossal
-            ? "md:grid-cols-[minmax(15rem,0.18fr)_1fr]"
-            : "md:grid-cols-[minmax(12rem,0.18fr)_1fr]",
+          isPage
+            ? "md:grid-cols-1"
+            : isColossal
+              ? "md:grid-cols-[minmax(15rem,0.18fr)_1fr]"
+              : "md:grid-cols-[minmax(12rem,0.18fr)_1fr]",
         )}
       >
-        <aside className="partner-site-portal__rail hidden min-w-0 overflow-hidden border-r border-white/15 pr-5 md:flex md:flex-col md:justify-between">
-          <div>
-            <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/42">
-              {partner.location}
-            </p>
-            <p
-              className={cn(
-                "partner-site-portal__rail-title ff-font-display mt-4 max-w-full font-semibold uppercase leading-[0.86] tracking-normal",
-                isColossal
-                  ? "text-[clamp(2.25rem,3.25vw,3.25rem)]"
-                  : "text-[clamp(2.25rem,3.5vw,3.6rem)]",
-              )}
-            >
-              {partner.heroLines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </p>
-            <div className="mt-8 grid grid-cols-2 gap-px border border-white/12 bg-white/12">
-              {partner.index.map((item) => (
-                <span
-                  key={item}
-                  className="bg-black px-3 py-3 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/56"
-                >
-                  {item}
-                </span>
-              ))}
+        {!isPage && (
+          <aside className="partner-site-portal__rail hidden min-w-0 overflow-hidden border-r border-white/15 pr-5 md:flex md:flex-col md:justify-between">
+            <div>
+              <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/42">
+                {partner.location}
+              </p>
+              <p
+                className={cn(
+                  "partner-site-portal__rail-title ff-font-display mt-4 max-w-full font-semibold uppercase leading-[0.86] tracking-normal",
+                  isColossal
+                    ? "text-[clamp(2.25rem,3.25vw,3.25rem)]"
+                    : "text-[clamp(2.25rem,3.5vw,3.6rem)]",
+                )}
+              >
+                {partner.heroLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </p>
+              <div className="mt-8 grid grid-cols-2 gap-px border border-white/12 bg-white/12">
+                {partner.index.map((item) => (
+                  <span
+                    key={item}
+                    className="bg-black px-3 py-3 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/56"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-          <a
-            href={partner.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/70 transition-colors hover:text-white"
-          >
-            Open full site →
-          </a>
-        </aside>
+            <a
+              href={partner.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/70 transition-colors hover:text-white"
+            >
+              Open full site →
+            </a>
+          </aside>
+        )}
 
         <section className="partner-site-portal__browser min-h-0 overflow-hidden border border-white/18 bg-[#050505]">
           <div className="flex h-11 items-center justify-between border-b border-white/14 bg-black px-3 md:px-4">
