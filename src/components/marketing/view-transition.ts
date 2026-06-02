@@ -477,7 +477,7 @@ export async function startMarketingViewTransition(
       clearMarketingTransitionDelay();
       clearMarketingTransitionPoster();
       document.documentElement.classList.remove(MEDIA_TRANSITION_ACTIVE_CLASS);
-      router.push(href);
+      window.location.assign(href);
       return;
     }
 
