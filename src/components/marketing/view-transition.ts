@@ -5,6 +5,7 @@ const TRANSITION_POSTER_KEY = "ff:marketing-transition-poster";
 const VIEWER_SCROLL_KEY = "ff:marketing-scroll-viewer";
 const TRANSITION_DURATION_MS = 1320;
 const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
+const SOURCE_MEDIA_READY_TIMEOUT_MS = 1800;
 const MEDIA_TRANSITION_ACTIVE_CLASS = "marketing-media-transition-active";
 const MEDIA_TRANSITION_OVERLAY_SELECTOR = ".marketing-media-transition";
 
@@ -102,6 +103,87 @@ function getFeaturedReelTarget() {
   );
 }
 
+function isValidRect(rect: DOMRect) {
+  return (
+    Number.isFinite(rect.left) &&
+    Number.isFinite(rect.top) &&
+    Number.isFinite(rect.width) &&
+    Number.isFinite(rect.height) &&
+    rect.width > 0 &&
+    rect.height > 0
+  );
+}
+
+function isSourceMediaFrameReady(sourceElement: HTMLElement) {
+  const rect = sourceElement.getBoundingClientRect();
+  if (!isValidRect(rect)) return false;
+
+  const style = window.getComputedStyle(sourceElement);
+  if (
+    style.visibility === "hidden" ||
+    style.display === "none" ||
+    style.opacity === "0" ||
+    style.clipPath.includes("100%")
+  ) {
+    return false;
+  }
+
+  const image = sourceElement.querySelector<HTMLImageElement>("img");
+  if (!image) return true;
+
+  const imageStyle = window.getComputedStyle(image);
+  return (
+    image.complete &&
+    image.naturalWidth > 0 &&
+    imageStyle.visibility !== "hidden" &&
+    imageStyle.display !== "none" &&
+    imageStyle.opacity !== "0"
+  );
+}
+
+function waitForSourceMediaFrameReady(
+  sourceElement: HTMLElement,
+  timeoutMs = SOURCE_MEDIA_READY_TIMEOUT_MS,
+) {
+  const startedAt = performance.now();
+
+  return new Promise<boolean>((resolve) => {
+    const tick = () => {
+      if (isSourceMediaFrameReady(sourceElement)) {
+        resolve(true);
+        return;
+      }
+      if (performance.now() - startedAt >= timeoutMs) {
+        resolve(false);
+        return;
+      }
+      window.requestAnimationFrame(tick);
+    };
+
+    tick();
+  });
+}
+
+function isFeaturedReelTargetVisuallyReady(target: HTMLElement) {
+  const poster = target.querySelector<HTMLImageElement>(
+    "[data-marketing-poster-layer]",
+  );
+  const video = target.querySelector<HTMLVideoElement>("video");
+  const mediaReady = target.getAttribute("data-marketing-media-ready");
+  const autoplayState = target.getAttribute("data-marketing-autoplay-state");
+
+  if (poster?.complete && poster.naturalWidth > 0) return true;
+  if (
+    mediaReady === "video" &&
+    video &&
+    video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
+  ) {
+    return true;
+  }
+  if (autoplayState === "unavailable") return true;
+  return !poster && !video;
+}
+
 function waitForFeaturedReelTarget(timeoutMs = 900) {
   const startedAt = performance.now();
 
@@ -109,11 +191,20 @@ function waitForFeaturedReelTarget(timeoutMs = 900) {
     const tick = () => {
       const target = getFeaturedReelTarget();
       if (target) {
-        resolve(target.getBoundingClientRect());
-        return;
+        const rect = target.getBoundingClientRect();
+        if (
+          isValidRect(rect) &&
+          (isFeaturedReelTargetVisuallyReady(target) ||
+            performance.now() - startedAt >= timeoutMs)
+        ) {
+          resolve(rect);
+          return;
+        }
       }
       if (performance.now() - startedAt >= timeoutMs) {
-        resolve(null);
+        const target = getFeaturedReelTarget();
+        const rect = target?.getBoundingClientRect();
+        resolve(rect && isValidRect(rect) ? rect : null);
         return;
       }
       window.requestAnimationFrame(tick);
@@ -345,7 +436,7 @@ function animateDirectorName({
   return true;
 }
 
-export function startMarketingViewTransition(
+export async function startMarketingViewTransition(
   router: RouterLike,
   href: string,
   options: MarketingTransitionOptions = {},
@@ -371,6 +462,17 @@ export function startMarketingViewTransition(
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      clearMarketingTransitionDelay();
+      clearMarketingTransitionPoster();
+      document.documentElement.classList.remove(MEDIA_TRANSITION_ACTIVE_CLASS);
+      router.push(href);
+      return;
+    }
+
+    const sourceReady = options.sourceElement
+      ? await waitForSourceMediaFrameReady(options.sourceElement)
+      : true;
+    if (!sourceReady) {
       clearMarketingTransitionDelay();
       clearMarketingTransitionPoster();
       document.documentElement.classList.remove(MEDIA_TRANSITION_ACTIVE_CLASS);

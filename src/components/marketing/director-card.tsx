@@ -89,7 +89,7 @@ export function DirectorCard({
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       className="ff-focusable ff-fluid-card group block"
-      prefetch
+      prefetch={!playProjectId}
     >
       {(indexLabel || indexMeta) && (
         <div className="ff-card-index-row">

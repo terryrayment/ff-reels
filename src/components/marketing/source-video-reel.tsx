@@ -52,12 +52,22 @@ export function PosterOnlyReel({
   title,
 }: PosterOnlyReelProps) {
   const sectionRef = useRef<HTMLElement>(null);
+  const posterRef = useRef<HTMLImageElement>(null);
   const [landingPoster] = useState(() =>
     getMarketingTransitionPoster(posterUrl),
   );
   const displayPosterUrl = landingPoster ?? posterUrl;
+  const [posterReady, setPosterReady] = useState(!displayPosterUrl);
 
   useViewerScroll(projectId, sectionRef);
+
+  useEffect(() => {
+    setPosterReady(!displayPosterUrl);
+    const image = posterRef.current;
+    if (image?.complete && image.naturalWidth > 0) {
+      setPosterReady(true);
+    }
+  }, [displayPosterUrl]);
 
   useEffect(() => {
     clearMarketingTransitionPoster();
@@ -71,18 +81,24 @@ export function PosterOnlyReel({
           className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black"
           data-featured-project-id={projectId}
           data-marketing-featured-media-target
-          data-marketing-media-ready="poster"
+          data-marketing-media-ready={posterReady ? "poster" : "loading"}
           data-marketing-autoplay-state="unavailable"
         >
           {displayPosterUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
+              ref={posterRef}
               src={displayPosterUrl}
               alt=""
               aria-hidden="true"
               data-marketing-poster-layer
-              className="ff-media-fill pointer-events-none object-cover"
+              className={`ff-media-fill pointer-events-none object-cover transition-opacity duration-200 ease-out ${
+                posterReady ? "opacity-100" : "opacity-0"
+              }`}
+              loading="eager"
+              fetchPriority="high"
               decoding="async"
+              onLoad={() => setPosterReady(true)}
             />
           ) : (
             <div className="ff-media-fallback">
@@ -112,12 +128,14 @@ export function SourceVideoReel({
 }: SourceVideoReelProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const posterRef = useRef<HTMLImageElement>(null);
   const [landingPoster] = useState(() =>
     getMarketingTransitionPoster(posterUrl),
   );
   const displayPosterUrl = landingPoster ?? posterUrl;
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [posterReady, setPosterReady] = useState(!displayPosterUrl);
   const [shouldPlay, setShouldPlay] = useState(
     () => getMarketingTransitionDelay() <= 0,
   );
@@ -128,6 +146,14 @@ export function SourceVideoReel({
   useEffect(() => {
     clearMarketingTransitionPoster();
   }, []);
+
+  useEffect(() => {
+    setPosterReady(!displayPosterUrl);
+    const image = posterRef.current;
+    if (image?.complete && image.naturalWidth > 0) {
+      setPosterReady(true);
+    }
+  }, [displayPosterUrl]);
 
   useViewerScroll(projectId, sectionRef);
 
@@ -210,20 +236,26 @@ export function SourceVideoReel({
           className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black transition-opacity duration-150"
           data-featured-project-id={projectId}
           data-marketing-featured-media-target
-          data-marketing-media-ready={videoReady ? "video" : "poster"}
+          data-marketing-media-ready={
+            videoReady ? "video" : posterReady ? "poster" : "loading"
+          }
           data-marketing-autoplay-state={autoplayState}
         >
           {displayPosterUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
+              ref={posterRef}
               src={displayPosterUrl}
               alt=""
               aria-hidden="true"
               data-marketing-poster-layer
               className={`ff-media-fill pointer-events-none object-cover transition-opacity duration-200 ease-out ${
-                showVideo ? "opacity-0" : "opacity-100"
+                showVideo || !posterReady ? "opacity-0" : "opacity-100"
               }`}
+              loading="eager"
+              fetchPriority="high"
               decoding="async"
+              onLoad={() => setPosterReady(true)}
             />
           )}
           <video

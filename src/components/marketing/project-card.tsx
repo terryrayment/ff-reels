@@ -37,6 +37,8 @@ interface ProjectCardProps {
   indexMeta?: string | null;
   /** Optional editorial tags shown below card meta. */
   tags?: readonly string[];
+  /** Eagerly load important above-the-fold thumbnails. */
+  imagePriority?: boolean;
 }
 
 export function ProjectCard({
@@ -49,6 +51,7 @@ export function ProjectCard({
   indexLabel,
   indexMeta,
   tags,
+  imagePriority = false,
 }: ProjectCardProps) {
   const router = useRouter();
   const directorSlug = project.director.slug.trim();
@@ -130,7 +133,7 @@ export function ProjectCard({
       <div
         ref={mediaRef}
         data-marketing-media-frame
-        className={`ff-media-frame ff-media-reveal aspect-video${mediaVisible ? " is-visible" : ""}`}
+        className={`ff-media-frame ff-media-reveal aspect-video${mediaVisible || imagePriority ? " is-visible" : ""}`}
       >
         {still ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -138,7 +141,8 @@ export function ProjectCard({
             ref={imageRef}
             src={still}
             alt={project.title}
-            loading="lazy"
+            loading={imagePriority ? "eager" : "lazy"}
+            fetchPriority={imagePriority ? "high" : "auto"}
             decoding="async"
             width={thumbnailWidth}
             height={thumbnailHeight}
@@ -178,7 +182,7 @@ export function ProjectCard({
       href={href}
       onClick={handleClick}
       className="ff-focusable ff-fluid-card group block"
-      prefetch
+      prefetch={!canOpenViewer}
       data-cursor={canPlay ? "play" : "link"}
     >
       {cardContent}

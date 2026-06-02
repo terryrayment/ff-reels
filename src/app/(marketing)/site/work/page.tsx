@@ -115,7 +115,7 @@ export default async function WorkPage({
         </div>
       ) : (
         <div className="ff-grid-work">
-          {items.map((p) => {
+          {items.map((p, index) => {
             const disciplineLabel = DISCIPLINES.find(
               (d) => d.contentType === p.contentType,
             )?.label;
@@ -128,6 +128,7 @@ export default async function WorkPage({
                 }}
                 disciplineLabel={disciplineLabel ?? null}
                 showYear
+                imagePriority={index < 3}
               />
             );
           })}
