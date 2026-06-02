@@ -282,7 +282,14 @@ function PartnerSitePortal({
           </aside>
         )}
 
-        <section className="partner-site-portal__browser min-h-0 overflow-hidden border border-white/18 bg-[#050505]">
+        <section
+          className={cn(
+            "partner-site-portal__browser overflow-hidden border border-white/18 bg-[#050505]",
+            isPage
+              ? "h-[calc(100svh-(var(--ff-nav-height)*2)-2rem)] min-h-[42rem]"
+              : "min-h-0",
+          )}
+        >
           <div className="flex h-11 items-center justify-between border-b border-white/14 bg-black px-3 md:px-4">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-white/80" />
@@ -302,72 +309,14 @@ function PartnerSitePortal({
             </a>
           </div>
 
-          <div className="partner-site-portal__preview h-[calc(100%-2.75rem)] overflow-y-auto bg-black">
-            <div className="partner-site-portal__preview-hero min-h-full px-5 py-6 md:px-9 md:py-10">
-              <div className="flex items-center justify-between border-b border-white/14 pb-4 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/48">
-                <span>{partner.kicker}</span>
-                <span>{partner.cityCode}</span>
-              </div>
-
-              <div className="grid min-h-[calc(100svh-13rem)] content-between gap-10 py-8">
-                <div>
-                  <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/52">
-                    {partner.location}
-                  </p>
-                  <h2
-                    className={cn(
-                      "ff-font-display mt-5 max-w-[9ch] font-semibold uppercase leading-[0.78] tracking-normal text-white",
-                      isColossal
-                        ? "text-[clamp(4.5rem,13vw,12rem)]"
-                        : "text-[clamp(5rem,16vw,15rem)]",
-                    )}
-                  >
-                    {partner.heroLines.map((line) => (
-                      <span key={line} className="block">
-                        {line}
-                      </span>
-                    ))}
-                  </h2>
-                </div>
-
-                <div className="grid gap-6 md:grid-cols-[0.9fr_1.1fr] md:items-end">
-                  <p className="ff-font-display text-[clamp(2.15rem,5.4vw,5.75rem)] font-semibold uppercase leading-[0.9] text-white">
-                    {partner.headline}
-                  </p>
-                  <p className="max-w-xl font-helveticaText text-[clamp(1.1rem,1.9vw,1.65rem)] leading-[1.18] text-white/70">
-                    {partner.body}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid border-y border-white/14 md:grid-cols-4">
-                {partner.modules.map((module) => (
-                  <article
-                    key={`${module.label}-${module.title}`}
-                    className="min-w-0 overflow-hidden border-b border-white/14 py-5 md:border-b-0 md:border-r md:px-5 md:last:border-r-0"
-                  >
-                    <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/42">
-                      {module.label}
-                    </p>
-                    <h3 className="ff-font-display mt-5 text-[clamp(1.75rem,3vw,2.75rem)] font-semibold uppercase leading-[0.9] text-white">
-                      {module.title}
-                    </h3>
-                    <p className="mt-5 font-helveticaText text-ff-small leading-[1.35] text-white/62">
-                      {module.text}
-                    </p>
-                    <p className="mt-4 font-helveticaText text-ff-small leading-[1.35] text-white/42">
-                      {module.detail}
-                    </p>
-                  </article>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-x-5 gap-y-2 py-6 font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/45">
-                {partner.ticker.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </div>
-            </div>
+          <div className="partner-site-portal__preview h-[calc(100%-2.75rem)] overflow-hidden bg-black">
+            <iframe
+              src={partner.href}
+              title={`${partner.label} website preview`}
+              className="h-full w-full border-0 bg-black"
+              loading="eager"
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
           </div>
         </section>
       </main>
