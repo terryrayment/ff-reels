@@ -76,27 +76,6 @@ export function consumeMarketingViewerScroll() {
   return shouldScroll;
 }
 
-function getFeaturedReelTargetRect() {
-  const viewportWidth = window.innerWidth;
-  const width =
-    viewportWidth >= 768
-      ? Math.min(viewportWidth * 0.64, 920)
-      : viewportWidth - 48;
-  const x = (viewportWidth - width) / 2;
-  const directorNameTarget = document.querySelector<HTMLElement>(
-    "[data-marketing-director-name-target]",
-  );
-  const directorNameRect = directorNameTarget?.getBoundingClientRect();
-  const y = directorNameRect
-    ? directorNameRect.bottom + (viewportWidth >= 1024 ? 40 : 32)
-    : viewportWidth >= 1024
-      ? 104
-      : 88;
-  const height = width * (9 / 16);
-
-  return { x, y, width, height };
-}
-
 function getFeaturedReelTarget() {
   return document.querySelector<HTMLElement>(
     "[data-marketing-featured-media-target]",
@@ -114,9 +93,23 @@ function isValidRect(rect: DOMRect) {
   );
 }
 
+function isUsableTransitionRect(rect: DOMRect) {
+  if (!isValidRect(rect)) return false;
+
+  const maxDimension = Math.max(window.innerWidth, window.innerHeight) * 2;
+  return (
+    rect.width <= maxDimension &&
+    rect.height <= maxDimension &&
+    rect.left > -window.innerWidth &&
+    rect.left < window.innerWidth * 2 &&
+    rect.top >= 0 &&
+    rect.top < window.innerHeight
+  );
+}
+
 function isSourceMediaFrameReady(sourceElement: HTMLElement) {
   const rect = sourceElement.getBoundingClientRect();
-  if (!isValidRect(rect)) return false;
+  if (!isUsableTransitionRect(rect)) return false;
 
   const style = window.getComputedStyle(sourceElement);
   if (
@@ -193,7 +186,7 @@ function waitForFeaturedReelTarget(timeoutMs = 900) {
       if (target) {
         const rect = target.getBoundingClientRect();
         if (
-          isValidRect(rect) &&
+          isUsableTransitionRect(rect) &&
           (isFeaturedReelTargetVisuallyReady(target) ||
             performance.now() - startedAt >= timeoutMs)
         ) {
@@ -204,7 +197,7 @@ function waitForFeaturedReelTarget(timeoutMs = 900) {
       if (performance.now() - startedAt >= timeoutMs) {
         const target = getFeaturedReelTarget();
         const rect = target?.getBoundingClientRect();
-        resolve(rect && isValidRect(rect) ? rect : null);
+        resolve(rect && isUsableTransitionRect(rect) ? rect : null);
         return;
       }
       window.requestAnimationFrame(tick);
@@ -230,7 +223,7 @@ function animateMediaFrame({
   if (!sourceElement || typeof document === "undefined") return false;
 
   const from = sourceElement.getBoundingClientRect();
-  if (from.width <= 0 || from.height <= 0) return false;
+  if (!isUsableTransitionRect(from)) return false;
 
   const overlay = document.createElement("div");
   overlay.setAttribute("aria-hidden", "true");
@@ -264,7 +257,15 @@ function animateMediaFrame({
 
   waitForFeaturedReelTarget()
     .then((targetRect) => {
-      const to = targetRect ?? getFeaturedReelTargetRect();
+      if (!targetRect) {
+        return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration: 180,
+          easing: "ease-out",
+          fill: "forwards",
+        }).finished;
+      }
+
+      const to = targetRect;
       const remaining = Math.max(
         TRANSITION_DURATION_MS - (performance.now() - startedAt),
         760,
@@ -458,7 +459,7 @@ export async function startMarketingViewTransition(
       ) ||
       document.querySelector(MEDIA_TRANSITION_OVERLAY_SELECTOR)
     ) {
-      return;
+      finishMarketingMediaTransition();
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
