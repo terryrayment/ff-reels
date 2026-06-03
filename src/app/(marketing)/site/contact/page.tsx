@@ -74,23 +74,8 @@ export default function ContactPage() {
   return (
     <div className="ff-shell ff-page">
       <header className="ff-page-heading-row">
-        <h1 className="ff-display-page max-w-5xl">
-          Talk to the people making the work.
-        </h1>
+        <h1 className="ff-display-page max-w-5xl">CONTACT</h1>
       </header>
-
-      <section className="ff-section-grid border-y ff-rule py-8 md:py-10">
-        <div className="ff-label-column">
-          <p className="ff-kicker">Direct</p>
-        </div>
-        <div className="ff-copy-column">
-          <p className="ff-lede max-w-3xl">
-            No form. Send the brief, the unfinished thought, the director
-            question, the schedule problem, or the thing that needs a producer
-            before it needs a deck.
-          </p>
-        </div>
-      </section>
 
       <section className="ff-section-stack">
         <ul className="ff-list-rows">
