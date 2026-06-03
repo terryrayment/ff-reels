@@ -2,13 +2,12 @@
 
 import MuxPlayer from "@mux/mux-player-react";
 import { useEffect, useRef, useState } from "react";
+import { useTransitionPoster } from "@/components/marketing/use-transition-poster";
 import {
   MARKETING_TRANSITION_FINISHED,
   clearMarketingTransitionDelay,
-  clearMarketingTransitionPoster,
   consumeMarketingViewerScroll,
   getMarketingTransitionDelay,
-  getMarketingTransitionPoster,
 } from "@/components/marketing/view-transition";
 
 const PLAY_AFTER_LAND_DELAY_MS = 280;
@@ -30,19 +29,24 @@ export function FeaturedReel({
 }: FeaturedReelProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const playerRef = useRef<HTMLElement | null>(null);
-  const [landingPoster] = useState(() =>
-    getMarketingTransitionPoster(posterUrl),
-  );
-  const [canPlay, setCanPlay] = useState(
-    () => getMarketingTransitionDelay() <= 0,
-  );
+  const posterRef = useRef<HTMLImageElement>(null);
+  const displayPosterUrl = useTransitionPoster(projectId, posterUrl);
+  const [posterReady, setPosterReady] = useState(!displayPosterUrl);
+  const [muxPlaying, setMuxPlaying] = useState(false);
   const [shouldPlay, setShouldPlay] = useState(
     () => getMarketingTransitionDelay() <= 0,
   );
+  const [autoplayState, setAutoplayState] = useState<
+    "idle" | "requested" | "playing" | "blocked" | "error"
+  >("idle");
 
   useEffect(() => {
-    clearMarketingTransitionPoster();
-  }, []);
+    setPosterReady(!displayPosterUrl);
+    const image = posterRef.current;
+    if (image?.complete && image.naturalWidth > 0) {
+      setPosterReady(true);
+    }
+  }, [displayPosterUrl]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !consumeMarketingViewerScroll()) {
@@ -63,15 +67,16 @@ export function FeaturedReel({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    setMuxPlaying(false);
+    setAutoplayState("idle");
+
     const delay = getMarketingTransitionDelay();
     if (delay <= 0) {
       clearMarketingTransitionDelay();
-      setCanPlay(true);
       setShouldPlay(true);
       return;
     }
 
-    setCanPlay(false);
     setShouldPlay(false);
 
     let released = false;
@@ -80,24 +85,23 @@ export function FeaturedReel({
       if (released) return;
       released = true;
       clearMarketingTransitionDelay();
-      setCanPlay(true);
       playTimer = window.setTimeout(() => {
         setShouldPlay(true);
       }, PLAY_AFTER_LAND_DELAY_MS);
     };
 
     const timer = window.setTimeout(release, delay);
-    window.addEventListener(MARKETING_TRANSITION_FINISHED, release, { once: true });
+    window.addEventListener(MARKETING_TRANSITION_FINISHED, release, {
+      once: true,
+    });
 
     return () => {
       window.clearTimeout(timer);
       if (playTimer) window.clearTimeout(playTimer);
       window.removeEventListener(MARKETING_TRANSITION_FINISHED, release);
     };
-  }, [muxPlaybackId]);
+  }, [projectId, muxPlaybackId]);
 
-  // Some browsers do not honor autoplay on a custom element after a route
-  // view transition, so nudge playback once the shared-media morph has ended.
   useEffect(() => {
     if (!shouldPlay) return;
 
@@ -105,70 +109,86 @@ export function FeaturedReel({
       | (HTMLElement & { play?: () => Promise<void>; muted?: boolean })
       | null;
     if (!el) return;
+
     let cancelled = false;
     const tryPlay = () => {
       if (cancelled || !el.play) return;
       el.muted = true;
-      el.play().catch(() => {});
+      setAutoplayState("requested");
+      el.play().catch(() => {
+        if (!cancelled) setAutoplayState("blocked");
+      });
     };
+
     tryPlay();
-    const t = setTimeout(tryPlay, 400);
+    const retry = window.setTimeout(tryPlay, 400);
+
+    const onPlaying = () => {
+      setMuxPlaying(true);
+      setAutoplayState("playing");
+    };
+    el.addEventListener("playing", onPlaying);
+
     return () => {
       cancelled = true;
-      clearTimeout(t);
+      window.clearTimeout(retry);
+      el.removeEventListener("playing", onPlaying);
     };
   }, [shouldPlay, muxPlaybackId]);
 
+  const showMux = muxPlaying && autoplayState === "playing";
+
   return (
-    <section
-      ref={sectionRef}
-      className="mx-auto w-[calc(100vw-48px)] md:w-[64vw] max-w-[920px] mb-14 lg:mb-20"
-    >
-      <div
-        className={`ff-media-frame ff-media-frame-dark aspect-video transition-opacity duration-150 [&_mux-player]:h-full [&_mux-player]:w-full ${
-          canPlay ? "opacity-100" : "opacity-0"
-        }`}
-        style={
-          {
-            "--media-object-fit": "cover",
-          } as React.CSSProperties
-        }
-        data-featured-project-id={projectId}
-        data-marketing-featured-media-target
-      >
-        {landingPoster && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={landingPoster}
-            alt=""
-            aria-hidden="true"
-            className={`ff-media-fill z-10 object-cover pointer-events-none transition-opacity duration-150 ${
-              shouldPlay ? "opacity-0" : "opacity-100"
-            }`}
-            decoding="async"
-          />
-        )}
-        <MuxPlayer
-          ref={playerRef as React.RefObject<never>}
-          playbackId={muxPlaybackId}
-          poster={landingPoster ?? posterUrl ?? undefined}
-          streamType="on-demand"
-          {...(shouldPlay ? { autoPlay: "muted" as const } : {})}
-          muted
-          playsInline
-          preload={shouldPlay ? "auto" : "metadata"}
-        />
-      </div>
-      <div className="mt-5">
-        <div>
-          {brand && (
-            <p className="ff-card-brand">
-              {brand}
-            </p>
+    <section ref={sectionRef} className="ff-shell mb-12">
+      <div className="mx-auto w-full md:w-[60%]">
+        <div
+          className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black [&_mux-player]:h-full [&_mux-player]:w-full"
+          style={
+            {
+              "--media-object-fit": "cover",
+            } as React.CSSProperties
+          }
+          data-featured-project-id={projectId}
+          data-marketing-featured-media-target
+          data-marketing-media-ready={
+            showMux ? "video" : posterReady ? "poster" : "loading"
+          }
+          data-marketing-autoplay-state={autoplayState}
+        >
+          {displayPosterUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              ref={posterRef}
+              src={displayPosterUrl}
+              alt=""
+              aria-hidden="true"
+              data-marketing-poster-layer
+              className={`ff-media-fill pointer-events-none object-cover transition-opacity duration-200 ease-out ${
+                showMux || !posterReady ? "opacity-0" : "opacity-100"
+              }`}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              onLoad={() => setPosterReady(true)}
+            />
           )}
-          <p className="ff-display-feature mt-1">
-            {title}
-          </p>
+          <MuxPlayer
+            ref={playerRef as React.RefObject<never>}
+            playbackId={muxPlaybackId}
+            poster={displayPosterUrl ?? undefined}
+            streamType="on-demand"
+            {...(shouldPlay ? { autoPlay: "muted" as const } : {})}
+            muted
+            playsInline
+            preload={shouldPlay ? "auto" : "metadata"}
+            className={`transition-opacity duration-200 ease-out ${
+              showMux ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        </div>
+        <div className="mt-4">
+          {brand && <p className="ff-card-brand">{brand}</p>}
+          <p className="ff-display-feature mt-1">{title}</p>
         </div>
       </div>
     </section>

@@ -157,6 +157,47 @@ function waitForSourceMediaFrameReady(
   });
 }
 
+function isDestinationHandoffReady(target: HTMLElement) {
+  const rect = target.getBoundingClientRect();
+  if (!isUsableTransitionRect(rect)) return false;
+
+  const mediaReady = target.getAttribute("data-marketing-media-ready");
+  if (
+    mediaReady === "poster" ||
+    mediaReady === "video" ||
+    mediaReady === "unavailable"
+  ) {
+    return true;
+  }
+
+  const poster = target.querySelector<HTMLImageElement>(
+    "[data-marketing-poster-layer]",
+  );
+  if (!poster) return true;
+  return poster.complete && poster.naturalWidth > 0;
+}
+
+function waitForDestinationHandoff(timeoutMs = 1200) {
+  const startedAt = performance.now();
+
+  return new Promise<void>((resolve) => {
+    const tick = () => {
+      const target = getFeaturedReelTarget();
+      if (target && isDestinationHandoffReady(target)) {
+        resolve();
+        return;
+      }
+      if (performance.now() - startedAt >= timeoutMs) {
+        resolve();
+        return;
+      }
+      window.requestAnimationFrame(tick);
+    };
+
+    tick();
+  });
+}
+
 function isFeaturedReelTargetVisuallyReady(target: HTMLElement) {
   const poster = target.querySelector<HTMLImageElement>(
     "[data-marketing-poster-layer]",
@@ -207,11 +248,13 @@ function waitForFeaturedReelTarget(timeoutMs = 900) {
   });
 }
 
-function finishMarketingMediaTransition() {
+function finishMarketingMediaTransition(options?: { keepOverlays?: boolean }) {
   document.documentElement.classList.remove(MEDIA_TRANSITION_ACTIVE_CLASS);
-  document
-    .querySelectorAll(MEDIA_TRANSITION_OVERLAY_SELECTOR)
-    .forEach((overlay) => overlay.remove());
+  if (!options?.keepOverlays) {
+    document
+      .querySelectorAll(MEDIA_TRANSITION_OVERLAY_SELECTOR)
+      .forEach((node) => node.remove());
+  }
   mediaTransitionInFlight = false;
   window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
 }
@@ -286,8 +329,9 @@ function animateMediaFrame({
         },
       ).finished;
     })
+    .then(() => waitForDestinationHandoff())
     .then(() => {
-      finishMarketingMediaTransition();
+      finishMarketingMediaTransition({ keepOverlays: true });
       return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: 140,
         easing: "ease-out",

@@ -1,13 +1,12 @@
 "use client";
 
 import { type RefObject, useEffect, useRef, useState } from "react";
+import { useTransitionPoster } from "@/components/marketing/use-transition-poster";
 import {
   MARKETING_TRANSITION_FINISHED,
   clearMarketingTransitionDelay,
-  clearMarketingTransitionPoster,
   consumeMarketingViewerScroll,
   getMarketingTransitionDelay,
-  getMarketingTransitionPoster,
 } from "@/components/marketing/view-transition";
 
 const PLAY_AFTER_LAND_DELAY_MS = 280;
@@ -53,10 +52,7 @@ export function PosterOnlyReel({
 }: PosterOnlyReelProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const posterRef = useRef<HTMLImageElement>(null);
-  const [landingPoster] = useState(() =>
-    getMarketingTransitionPoster(posterUrl),
-  );
-  const displayPosterUrl = landingPoster ?? posterUrl;
+  const displayPosterUrl = useTransitionPoster(projectId, posterUrl);
   const [posterReady, setPosterReady] = useState(!displayPosterUrl);
 
   useViewerScroll(projectId, sectionRef);
@@ -70,9 +66,8 @@ export function PosterOnlyReel({
   }, [displayPosterUrl]);
 
   useEffect(() => {
-    clearMarketingTransitionPoster();
     clearMarketingTransitionDelay();
-  }, []);
+  }, [projectId]);
 
   return (
     <section ref={sectionRef} className="ff-shell mb-12">
@@ -129,10 +124,7 @@ export function SourceVideoReel({
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const posterRef = useRef<HTMLImageElement>(null);
-  const [landingPoster] = useState(() =>
-    getMarketingTransitionPoster(posterUrl),
-  );
-  const displayPosterUrl = landingPoster ?? posterUrl;
+  const displayPosterUrl = useTransitionPoster(projectId, posterUrl);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [posterReady, setPosterReady] = useState(!displayPosterUrl);
@@ -142,10 +134,6 @@ export function SourceVideoReel({
   const [autoplayState, setAutoplayState] = useState<
     "idle" | "requested" | "playing" | "blocked" | "error"
   >("idle");
-
-  useEffect(() => {
-    clearMarketingTransitionPoster();
-  }, []);
 
   useEffect(() => {
     setPosterReady(!displayPosterUrl);
@@ -233,7 +221,7 @@ export function SourceVideoReel({
     <section ref={sectionRef} className="ff-shell mb-12">
       <div className="mx-auto w-full md:w-[60%]">
         <div
-          className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black transition-opacity duration-150"
+          className="ff-media-frame ff-media-frame-dark aspect-video overflow-hidden bg-black"
           data-featured-project-id={projectId}
           data-marketing-featured-media-target
           data-marketing-media-ready={
