@@ -27,8 +27,7 @@ const PARTNERS = [
     tags: ["Casting", "Locations", "Crew", "Local read"],
     visual: {
       label: "ASHE VERSUS",
-      vimeoId: "909300493",
-      hash: "9fec138dfe",
+      videoSrc: "/versant/pepsi-black-skate.mp4",
     },
   },
   {
