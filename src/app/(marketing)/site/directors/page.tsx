@@ -27,7 +27,6 @@ export default async function DirectorsPage() {
         <h1 className="ff-display-page">
           <RevealText text="Directors" />
         </h1>
-        <p className="ff-kicker">{directors.length} on roster</p>
       </header>
 
       {directors.length === 0 ? (
