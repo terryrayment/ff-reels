@@ -31,17 +31,17 @@ const CONTACTS = [
 const OFFICES = [
   {
     city: "Los Angeles",
-    lines: ["Production, directors, sales, and West Coast agency work."],
+    lines: ["1618 Lucretia Avenue", "Los Angeles, CA 90026"],
     href: "https://goo.gl/maps/BNAoVp5KUmcKbveMA",
   },
   {
     city: "New York",
-    lines: ["Agency partnerships, editorial work, and East Coast production."],
+    lines: ["77 East 12th Street #17H", "New York, NY 10003"],
     href: "https://goo.gl/maps/FG86ZiBWzyAwyCvb7",
   },
   {
-    city: "Sao Paulo / Curitiba",
-    lines: ["THE YOUTH and COLOSSAL for production, post, animation, and VFX."],
+    city: "São Paulo / Curitiba",
+    lines: ["São Paulo, Brazil", "Curitiba, Brazil"],
     href: null,
   },
 ];
@@ -157,15 +157,6 @@ export default function ContactPage() {
             ))}
           </ul>
         </div>
-      </section>
-
-      <section className="ff-section-stack ff-section-border">
-        <a
-          href="mailto:scott@friendsandfamily.tv,jed@friendsandfamily.tv,alana@friendsandfamily.tv?subject=Friends%20%26%20Family%20brief"
-          className="ff-display-section transition-colors hover:text-ff-muted"
-        >
-          Email the team
-        </a>
       </section>
     </div>
   );
