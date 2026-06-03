@@ -5,10 +5,9 @@ import { ProjectCard } from "@/components/marketing/project-card";
 import { RevealText } from "@/components/marketing/reveal-text";
 import {
   type CanonicalContentType,
-  type CanonicalProject,
-  getCanonicalDirector,
   getCanonicalWork,
 } from "@/lib/marketing/canonical-source";
+import { getDirectorPortfolioPlayId } from "@/lib/marketing/play-project-id";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -34,27 +33,6 @@ function resolveDiscipline(raw: string | undefined): DisciplineSlug {
 function getWork(contentType: CanonicalContentType | null) {
   const items = getCanonicalWork(contentType);
   return { items, totalCount: items.length };
-}
-
-function normalizeProjectKey(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
-
-function getDirectorPortfolioPlayId(project: CanonicalProject) {
-  const director = getCanonicalDirector(project.director.slug);
-  const brand = normalizeProjectKey(project.brand);
-  const title = normalizeProjectKey(project.title);
-
-  return (
-    director?.portfolio.find(
-      (p) =>
-        normalizeProjectKey(p.brand) === brand &&
-        normalizeProjectKey(p.title) === title,
-    )?.id ?? null
-  );
 }
 
 export default async function WorkPage({

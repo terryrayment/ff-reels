@@ -186,7 +186,7 @@ export function FeaturedReel({
             }`}
           />
         </div>
-        <div className="mt-4">
+        <div className="mt-4 marketing-transition-reveal" data-marketing-transition-reveal>
           {brand && <p className="ff-card-brand">{brand}</p>}
           <p className="ff-display-feature mt-1">{title}</p>
         </div>

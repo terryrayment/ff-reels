@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
+import { prepareMarketingCardSourceForTransition } from "@/components/marketing/prepare-marketing-card-source";
 import { useRevealOnce } from "@/components/marketing/use-reveal-once";
 
 interface DirectorCardProps {
@@ -63,7 +64,7 @@ export function DirectorCard({
     }
   }, [stillUrl]);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
       return;
     e.preventDefault();
@@ -73,10 +74,16 @@ export function DirectorCard({
     const sourceNameElement = e.currentTarget.querySelector<HTMLElement>(
       "[data-marketing-director-name-source]",
     );
-    startMarketingViewTransition(router, href, {
+    await prepareMarketingCardSourceForTransition(
+      e.currentTarget,
+      sourceElement,
+      imageRef,
+    );
+    const posterUrl = imageRef.current?.currentSrc || imageRef.current?.src || stillUrl;
+    await startMarketingViewTransition(router, href, {
       sourceElement,
       sourceNameElement,
-      imageUrl: stillUrl,
+      imageUrl: posterUrl,
       directorName: name,
       directorSlug: slug,
     });

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DirectorCard } from "@/components/marketing/director-card";
 import { RevealText } from "@/components/marketing/reveal-text";
+import { getHeroPlayProjectId } from "@/lib/marketing/play-project-id";
 import { getCanonicalDirectors } from "@/lib/marketing/canonical-source";
 
 export const metadata: Metadata = {
@@ -15,9 +16,9 @@ export default async function DirectorsPage() {
     return {
       ...director,
       stillUrl: heroProject?.thumbnailUrl ?? director.imageUrl,
-      cardPlaybackId: null,
+      cardPlaybackId: heroProject?.muxPlaybackId ?? null,
       sourceVideoUrl: heroProject?.sourceVideoUrl ?? null,
-      playProjectId: heroProject?.sourceVideoUrl ? heroProject.id : null,
+      playProjectId: getHeroPlayProjectId(heroProject),
     };
   });
 

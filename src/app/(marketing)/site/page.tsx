@@ -7,6 +7,7 @@ import {
   getCanonicalDirectors,
   getCanonicalWork,
 } from "@/lib/marketing/canonical-source";
+import { getHeroPlayProjectId } from "@/lib/marketing/play-project-id";
 
 export const metadata: Metadata = {
   title: { absolute: "Friends & Family — Creative Studio" },
@@ -32,9 +33,9 @@ export default async function MarketingHomePage() {
     return {
       ...director,
       stillUrl: heroProject?.thumbnailUrl ?? director.imageUrl,
-      cardPlaybackId: null,
+      cardPlaybackId: heroProject?.muxPlaybackId ?? null,
       sourceVideoUrl: heroProject?.sourceVideoUrl ?? null,
-      playProjectId: heroProject?.sourceVideoUrl ? heroProject.id : null,
+      playProjectId: getHeroPlayProjectId(heroProject),
     };
   });
   const recentProjects = getCanonicalWork().slice(0, 8);

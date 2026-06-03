@@ -281,7 +281,9 @@ html {
     transform 420ms var(--ff-ease-out);
 }
 
-.marketing-media-transition-active .marketing-transition-reveal {
+.marketing-media-transition-active [data-marketing-transition-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
   pointer-events: none;
 }
 

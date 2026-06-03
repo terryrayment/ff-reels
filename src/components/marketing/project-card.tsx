@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
+import { prepareMarketingCardSourceForTransition } from "@/components/marketing/prepare-marketing-card-source";
+import { resolveProjectCardPlayId } from "@/lib/marketing/play-project-id";
 import { useRevealOnce } from "@/components/marketing/use-reveal-once";
 
 export interface ProjectCardData {
@@ -55,8 +57,7 @@ export function ProjectCard({
 }: ProjectCardProps) {
   const router = useRouter();
   const directorSlug = project.director.slug.trim();
-  const playProjectId =
-    project.playProjectId === undefined ? project.id : project.playProjectId;
+  const playProjectId = resolveProjectCardPlayId(project);
   const canOpenViewer = Boolean(
     playProjectId &&
       (project.muxPlaybackId || project.sourceVideoUrl || project.thumbnailUrl),
@@ -107,37 +108,6 @@ export function ProjectCard({
   const fallbackLabel = project.brand || project.title;
   const thumbnailHeight = Math.round((thumbnailWidth * 9) / 16);
 
-  const prepareWorkCardSource = async (
-    link: HTMLAnchorElement,
-    sourceElement: HTMLElement | null,
-  ) => {
-    link.scrollIntoView({ block: "center", inline: "nearest" });
-    sourceElement?.classList.add("is-visible");
-
-    const image = imageRef.current;
-    if (image && !image.complete) {
-      await new Promise<void>((resolve) => {
-        const done = () => resolve();
-        image.addEventListener("load", done, { once: true });
-        image.addEventListener("error", done, { once: true });
-        window.setTimeout(done, 1600);
-      });
-    }
-
-    if (image && image.naturalWidth === 0) {
-      await new Promise<void>((resolve) => {
-        const done = () => resolve();
-        image.addEventListener("load", done, { once: true });
-        image.addEventListener("error", done, { once: true });
-        window.setTimeout(done, 1600);
-      });
-    }
-
-    await new Promise<void>((resolve) => {
-      window.requestAnimationFrame(() => resolve());
-    });
-  };
-
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Let modified clicks (cmd/ctrl/shift) and middle-click follow default browser behaviour.
     if (!href) return;
@@ -147,7 +117,11 @@ export function ProjectCard({
     const sourceElement = e.currentTarget.querySelector<HTMLElement>(
       "[data-marketing-media-frame]",
     );
-    await prepareWorkCardSource(e.currentTarget, sourceElement);
+    await prepareMarketingCardSourceForTransition(
+      e.currentTarget,
+      sourceElement,
+      imageRef,
+    );
     const posterUrl = imageRef.current?.currentSrc || imageRef.current?.src || still;
     await startMarketingViewTransition(router, href, {
       sourceElement,

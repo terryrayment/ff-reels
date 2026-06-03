@@ -106,7 +106,10 @@ export function PosterOnlyReel({
             </p>
           </div>
         </div>
-        <p className="ff-kicker-muted mt-4">
+        <p
+          className="ff-kicker-muted mt-4 marketing-transition-reveal"
+          data-marketing-transition-reveal
+        >
           {brand} — {title}
         </p>
       </div>
@@ -272,7 +275,10 @@ export function SourceVideoReel({
             }}
           />
         </div>
-        <p className="ff-kicker-muted mt-4">
+        <p
+          className="ff-kicker-muted mt-4 marketing-transition-reveal"
+          data-marketing-transition-reveal
+        >
           {brand} — {title}
         </p>
       </div>

@@ -353,6 +353,10 @@ function applyOverlayFrame(
   overlay.style.height = `${rect.height}px`;
 }
 
+function freezeRect(rect: DOMRect) {
+  return new DOMRect(rect.x, rect.y, rect.width, rect.height);
+}
+
 function animateMediaFrame({
   sourceElement,
   imageUrl,
@@ -363,7 +367,7 @@ function animateMediaFrame({
     return false;
   }
 
-  const initialFrom = sourceElement.getBoundingClientRect();
+  const initialFrom = freezeRect(sourceElement.getBoundingClientRect());
   if (!isUsableSourceTransitionRect(initialFrom)) return false;
 
   const overlay = document.createElement("div");
@@ -392,11 +396,10 @@ function animateMediaFrame({
 
   document.body.appendChild(overlay);
 
-  const startedAt = performance.now();
+  const from = initialFrom;
 
   waitForFeaturedReelTarget()
     .then(async (targetRect) => {
-      const from = sourceElement.getBoundingClientRect();
       if (!targetRect || !isUsableSourceTransitionRect(from)) {
         return overlay.animate([{ opacity: 0 }, { opacity: 0 }], {
           duration: 1,
@@ -407,11 +410,11 @@ function animateMediaFrame({
       await waitForDestinationHandoff();
 
       const remeasuredTarget = getFeaturedReelTarget()?.getBoundingClientRect();
-      const to =
+      const toRect =
         remeasuredTarget && isUsableDestinationTransitionRect(remeasuredTarget)
-          ? remeasuredTarget
-          : targetRect;
-      if (!isUsableDestinationTransitionRect(to)) {
+          ? freezeRect(remeasuredTarget)
+          : freezeRect(targetRect);
+      if (!isUsableDestinationTransitionRect(toRect)) {
         return overlay.animate([{ opacity: 0 }, { opacity: 0 }], {
           duration: 1,
           fill: "forwards",
@@ -421,21 +424,21 @@ function animateMediaFrame({
       applyOverlayFrame(overlay, from);
       overlay.style.opacity = "1";
 
-      const remaining = Math.max(
-        TRANSITION_DURATION_MS - (performance.now() - startedAt),
-        760,
+      getStorage()?.setItem(
+        TRANSITION_UNTIL_KEY,
+        String(Date.now() + TRANSITION_DURATION_MS),
       );
 
       return overlay.animate(
         [
           { transform: "translate3d(0, 0, 0) scale(1)", opacity: 1 },
           {
-            transform: `translate3d(${to.x - from.left}px, ${to.y - from.top}px, 0) scale(${to.width / from.width}, ${to.height / from.height})`,
+            transform: `translate3d(${toRect.x - from.left}px, ${toRect.y - from.top}px, 0) scale(${toRect.width / from.width}, ${toRect.height / from.height})`,
             opacity: 1,
           },
         ],
         {
-          duration: remaining,
+          duration: TRANSITION_DURATION_MS,
           easing: TRANSITION_EASING,
           fill: "forwards",
         },
@@ -683,6 +686,9 @@ export async function startMarketingViewTransition(
       window.setTimeout(finishMarketingMediaTransition, TRANSITION_DURATION_MS);
     }
     if (hasMediaOverlay || hasNameOverlay) {
+      if (href.includes("?play=")) {
+        requestMarketingViewerScroll();
+      }
       router.push(href);
       return;
     }
