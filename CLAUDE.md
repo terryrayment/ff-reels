@@ -344,3 +344,15 @@ If SEO behavior changes (metadata, robots, sitemap, canonical, indexability), up
 - `docs/SEO.md`
 - `docs/DEPLOYMENT.md` (post-deploy SEO checks)
 - `CLAUDE.md` (if SEO guardrails/invariants changed)
+
+## Marketing site transitions (Talent + Work)
+
+**Read first:** `docs/marketing/transitions/transition.md`
+
+Friends & Family marketing pages (`/site`, `/site/directors`, `/site/work`) use a custom thumbnail-to-viewer morph. Do not change card click handlers, `view-transition.ts`, featured reel components, or transition CSS without reading that doc and running matrix QA:
+
+```bash
+node scripts/marketing/run-transition-matrix-qc.mjs --url=https://reels.friendsandfamily.tv
+```
+
+Locked invariants: one visible hero layer during morph, frozen source rect at click, destination hidden until morph finishes, no scroll during morph, portfolio `?play=` ids only.

@@ -1,0 +1,21 @@
+---
+description: Marketing site thumbnail-to-viewer transitions (Talent + Work)
+globs:
+  - src/components/marketing/**
+  - src/app/(marketing)/**
+  - src/lib/marketing/**
+  - src/app/globals.css
+alwaysApply: false
+---
+
+# Marketing transitions
+
+Before changing Talent/Work card clicks or viewer morph behavior, read **`docs/marketing/transitions/transition.md`**.
+
+Run matrix QA after any change:
+
+```bash
+node scripts/marketing/run-transition-matrix-qc.mjs --url=https://reels.friendsandfamily.tv
+```
+
+Non-negotiable: one hero layer during morph, freeze source rect at click, hide `[data-marketing-featured-media-target]` until morph completes, no scroll during morph.
