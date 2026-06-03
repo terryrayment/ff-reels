@@ -10,6 +10,9 @@ const DESTINATION_TARGET_TIMEOUT_MS = 1500;
 const DESTINATION_HANDOFF_TIMEOUT_MS = 1400;
 const MEDIA_TRANSITION_ACTIVE_CLASS = "marketing-media-transition-active";
 const MEDIA_TRANSITION_OVERLAY_SELECTOR = ".marketing-media-transition";
+const NAME_TRANSITION_OVERLAY_SELECTOR = ".marketing-director-name-transition";
+const NAME_MORPH_MAX_WIDTH_RATIO = 2.4;
+const NAME_MORPH_MAX_TRAVEL_RATIO = 0.55;
 
 let mediaTransitionInFlight = false;
 
@@ -138,6 +141,55 @@ function isUsableDestinationTransitionRect(rect: DOMRect) {
 
 function isUsableTransitionRect(rect: DOMRect) {
   return isUsableDestinationTransitionRect(rect);
+}
+
+function isVisibleElement(element: HTMLElement) {
+  const style = window.getComputedStyle(element);
+  return (
+    style.visibility !== "hidden" &&
+    style.display !== "none" &&
+    Number(style.opacity) > 0.05
+  );
+}
+
+function isUsableNameSourceRect(rect: DOMRect) {
+  if (!isUsableSourceTransitionRect(rect)) return false;
+  return rect.width >= 24 && rect.height >= 12;
+}
+
+function isUsableNameDestinationRect(rect: DOMRect) {
+  if (!isUsableDestinationTransitionRect(rect)) return false;
+  return (
+    rect.width >= 24 &&
+    rect.height >= 12 &&
+    rect.top >= 0 &&
+    rect.top < window.innerHeight * 0.65 &&
+    rect.left >= -8 &&
+    rect.left < window.innerWidth
+  );
+}
+
+function isSafeNameMorphPath(from: DOMRect, to: DOMRect) {
+  const widthRatio = to.width / from.width;
+  const heightRatio = to.height / Math.max(from.height, 1);
+  const travelX = Math.abs(to.left - from.left);
+  const travelY = Math.abs(to.top - from.top);
+  const maxTravel = Math.max(window.innerWidth, window.innerHeight) * NAME_MORPH_MAX_TRAVEL_RATIO;
+
+  return (
+    widthRatio >= 1 / NAME_MORPH_MAX_WIDTH_RATIO &&
+    widthRatio <= NAME_MORPH_MAX_WIDTH_RATIO &&
+    heightRatio >= 1 / NAME_MORPH_MAX_WIDTH_RATIO &&
+    heightRatio <= NAME_MORPH_MAX_WIDTH_RATIO &&
+    travelX <= maxTravel &&
+    travelY <= maxTravel
+  );
+}
+
+function removeNameTransitionOverlays() {
+  document.querySelectorAll(NAME_TRANSITION_OVERLAY_SELECTOR).forEach((node) => {
+    node.remove();
+  });
 }
 
 function isSourceMediaFrameReady(sourceElement: HTMLElement) {
@@ -286,6 +338,7 @@ function finishMarketingMediaTransition(options?: { keepOverlays?: boolean }) {
       .querySelectorAll(MEDIA_TRANSITION_OVERLAY_SELECTOR)
       .forEach((node) => node.remove());
   }
+  removeNameTransitionOverlays();
   mediaTransitionInFlight = false;
   window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
 }
@@ -419,19 +472,69 @@ function waitForDirectorNameTarget(slug: string, timeoutMs = 900) {
   return new Promise<HTMLElement | null>((resolve) => {
     const tick = () => {
       const target = getDirectorNameTarget(slug);
-      if (target) {
+      if (target && isNameTargetReady(target)) {
         resolve(target);
         return;
       }
       if (performance.now() - startedAt >= timeoutMs) {
         resolve(null);
-        return;
+      } else {
+        window.requestAnimationFrame(tick);
       }
-      window.requestAnimationFrame(tick);
     };
 
     tick();
   });
+}
+
+function isNameTargetReady(target: HTMLElement) {
+  if (!isVisibleElement(target)) return false;
+  const rect = target.getBoundingClientRect();
+  return isUsableNameDestinationRect(rect);
+}
+
+function createDirectorNameOverlay(
+  sourceNameElement: HTMLElement,
+  directorName: string,
+) {
+  const from = sourceNameElement.getBoundingClientRect();
+  if (!isUsableNameSourceRect(from)) return null;
+
+  const sourceStyle = window.getComputedStyle(sourceNameElement);
+  const overlay = document.createElement("div");
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.className = "marketing-director-name-transition";
+  overlay.textContent = directorName;
+  overlay.style.position = "fixed";
+  overlay.style.left = `${from.left}px`;
+  overlay.style.top = `${from.top}px`;
+  overlay.style.width = `${from.width}px`;
+  overlay.style.minHeight = `${from.height}px`;
+  overlay.style.height = "auto";
+  overlay.style.overflow = "hidden";
+  overlay.style.zIndex = "2147483647";
+  overlay.style.pointerEvents = "none";
+  overlay.style.transformOrigin = "top left";
+  overlay.style.fontFamily = sourceStyle.fontFamily;
+  overlay.style.fontSize = sourceStyle.fontSize;
+  overlay.style.fontWeight = sourceStyle.fontWeight;
+  overlay.style.lineHeight = sourceStyle.lineHeight;
+  overlay.style.letterSpacing = sourceStyle.letterSpacing;
+  overlay.style.color = sourceStyle.color;
+  overlay.style.willChange = "transform, opacity";
+  document.body.appendChild(overlay);
+  return { overlay, from, sourceStyle };
+}
+
+function fadeDirectorNameOverlay(overlay: HTMLDivElement, durationMs = 260) {
+  return overlay
+    .animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: durationMs,
+      easing: "ease-out",
+      fill: "forwards",
+    })
+    .finished.finally(() => overlay.remove())
+    .catch(() => overlay.remove());
 }
 
 function animateDirectorName({
@@ -449,76 +552,48 @@ function animateDirectorName({
     return false;
   }
 
-  const from = sourceNameElement.getBoundingClientRect();
-  if (from.width <= 0 || from.height <= 0) return false;
+  if (document.querySelectorAll(NAME_TRANSITION_OVERLAY_SELECTOR).length > 0) {
+    removeNameTransitionOverlays();
+  }
 
-  const sourceStyle = window.getComputedStyle(sourceNameElement);
-  const overlay = document.createElement("div");
-  overlay.setAttribute("aria-hidden", "true");
-  overlay.className = "marketing-director-name-transition";
-  overlay.textContent = directorName;
-  overlay.style.position = "fixed";
-  overlay.style.left = `${from.left}px`;
-  overlay.style.top = `${from.top}px`;
-  overlay.style.width = `${from.width}px`;
-  overlay.style.minHeight = `${from.height}px`;
-  overlay.style.height = "auto";
-  overlay.style.overflow = "visible";
-  overlay.style.zIndex = "2147483647";
-  overlay.style.pointerEvents = "none";
-  overlay.style.transformOrigin = "top left";
-  overlay.style.fontFamily = sourceStyle.fontFamily;
-  overlay.style.fontSize = sourceStyle.fontSize;
-  overlay.style.fontWeight = sourceStyle.fontWeight;
-  overlay.style.lineHeight = sourceStyle.lineHeight;
-  overlay.style.letterSpacing = sourceStyle.letterSpacing;
-  overlay.style.color = sourceStyle.color;
-  overlay.style.willChange = "left, top, width, height, font-size, line-height";
+  const created = createDirectorNameOverlay(sourceNameElement, directorName);
+  if (!created) return false;
 
-  document.body.appendChild(overlay);
-
+  const { overlay, from } = created;
   const startedAt = performance.now();
 
   waitForDirectorNameTarget(directorSlug)
     .then((target) => {
       if (!target) {
-        return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
-          duration: 180,
-          easing: "ease-out",
-          fill: "forwards",
-        }).finished;
+        return fadeDirectorNameOverlay(overlay);
       }
 
       const to = target.getBoundingClientRect();
-      const targetStyle = window.getComputedStyle(target);
+      if (
+        !isUsableNameDestinationRect(to) ||
+        !isSafeNameMorphPath(from, to)
+      ) {
+        return fadeDirectorNameOverlay(overlay);
+      }
+
       const remaining = Math.max(
         TRANSITION_DURATION_MS - (performance.now() - startedAt),
         620,
       );
+      const dx = to.left - from.left;
+      const dy = to.top - from.top;
+      const scaleX = to.width / from.width;
+      const scaleY = to.height / Math.max(from.height, 1);
 
       return overlay
         .animate(
           [
             {
-              left: `${from.left}px`,
-              top: `${from.top}px`,
-              width: `${from.width}px`,
-              minHeight: `${from.height}px`,
-              height: "auto",
-              fontSize: sourceStyle.fontSize,
-              lineHeight: sourceStyle.lineHeight,
-              letterSpacing: sourceStyle.letterSpacing,
+              transform: "translate3d(0, 0, 0) scale(1, 1)",
               opacity: 1,
             },
             {
-              left: `${to.left}px`,
-              top: `${to.top}px`,
-              width: `${to.width}px`,
-              minHeight: `${to.height}px`,
-              height: "auto",
-              fontSize: targetStyle.fontSize,
-              lineHeight: targetStyle.lineHeight,
-              letterSpacing: targetStyle.letterSpacing,
+              transform: `translate3d(${dx}px, ${dy}px, 0) scale(${scaleX}, ${scaleY})`,
               opacity: 1,
             },
           ],
@@ -528,13 +603,12 @@ function animateDirectorName({
             fill: "forwards",
           },
         )
-        .finished.then(
-          () =>
-            overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
-              duration: 120,
-              easing: "ease-out",
-              fill: "forwards",
-            }).finished,
+        .finished.then(() =>
+          overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 140,
+            easing: "ease-out",
+            fill: "forwards",
+          }).finished,
         );
     })
     .finally(() => overlay.remove())
@@ -563,7 +637,8 @@ export async function startMarketingViewTransition(
       document.documentElement.classList.contains(
         MEDIA_TRANSITION_ACTIVE_CLASS,
       ) ||
-      document.querySelector(MEDIA_TRANSITION_OVERLAY_SELECTOR)
+      document.querySelector(MEDIA_TRANSITION_OVERLAY_SELECTOR) ||
+      document.querySelector(NAME_TRANSITION_OVERLAY_SELECTOR)
     ) {
       finishMarketingMediaTransition();
     }

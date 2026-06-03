@@ -291,7 +291,7 @@ html {
 
 .marketing-director-name-transition {
   contain: layout style;
-  overflow: visible;
+  overflow: hidden;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
