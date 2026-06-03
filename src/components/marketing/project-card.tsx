@@ -107,7 +107,29 @@ export function ProjectCard({
   const fallbackLabel = project.brand || project.title;
   const thumbnailHeight = Math.round((thumbnailWidth * 9) / 16);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const prepareWorkCardSource = async (
+    link: HTMLAnchorElement,
+    sourceElement: HTMLElement | null,
+  ) => {
+    link.scrollIntoView({ block: "center", inline: "nearest" });
+    sourceElement?.classList.add("is-visible");
+
+    const image = imageRef.current;
+    if (image && !image.complete) {
+      await new Promise<void>((resolve) => {
+        const done = () => resolve();
+        image.addEventListener("load", done, { once: true });
+        image.addEventListener("error", done, { once: true });
+        window.setTimeout(done, 1600);
+      });
+    }
+
+    await new Promise<void>((resolve) => {
+      window.requestAnimationFrame(() => resolve());
+    });
+  };
+
+  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Let modified clicks (cmd/ctrl/shift) and middle-click follow default browser behaviour.
     if (!href) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
@@ -116,9 +138,11 @@ export function ProjectCard({
     const sourceElement = e.currentTarget.querySelector<HTMLElement>(
       "[data-marketing-media-frame]",
     );
-    startMarketingViewTransition(router, href, {
+    await prepareWorkCardSource(e.currentTarget, sourceElement);
+    const posterUrl = imageRef.current?.currentSrc || imageRef.current?.src || still;
+    await startMarketingViewTransition(router, href, {
       sourceElement,
-      imageUrl: still,
+      imageUrl: posterUrl,
     });
   };
 
