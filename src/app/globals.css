@@ -51,6 +51,9 @@
     var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
   --ff-font-mono:
     var(--font-ibm-plex-mono), "SFMono-Regular", "Roboto Mono", monospace;
+  --ff-font-label:
+    "Suisse Intl Mono", "SuisseIntlMono", "Suisse Intl Mono Bold",
+    var(--ff-font-mono);
   --ff-container: 1400px;
   --ff-page-x: clamp(1.5rem, 2.75vw, 2.5rem);
   --ff-nav-height: 4rem;
@@ -249,6 +252,9 @@ body {
     var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
   --ff-font-mono:
     var(--font-ibm-plex-mono), "SFMono-Regular", "Roboto Mono", monospace;
+  --ff-font-label:
+    "Suisse Intl Mono", "SuisseIntlMono", "Suisse Intl Mono Bold",
+    var(--ff-font-mono);
   color: var(--foreground);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
@@ -857,9 +863,9 @@ mux-player {
 
   .ff-kicker,
   .ff-kicker-muted {
-    font-family: var(--ff-font-mono);
+    font-family: var(--ff-font-label);
     font-size: var(--ff-type-micro);
-    font-weight: 500;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: 0;
     text-transform: uppercase;
