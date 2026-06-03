@@ -32,17 +32,14 @@ const OFFICES = [
   {
     city: "Los Angeles",
     lines: ["1618 Lucretia Avenue", "Los Angeles, CA 90026"],
-    href: "https://goo.gl/maps/BNAoVp5KUmcKbveMA",
   },
   {
     city: "New York",
     lines: ["77 East 12th Street #17H", "New York, NY 10003"],
-    href: "https://goo.gl/maps/FG86ZiBWzyAwyCvb7",
   },
   {
     city: "São Paulo / Curitiba",
     lines: ["São Paulo, Brazil", "Curitiba, Brazil"],
-    href: null,
   },
 ];
 
@@ -114,22 +111,14 @@ export default function ContactPage() {
         <div className="ff-wide-column grid gap-8 md:grid-cols-3">
           {OFFICES.map((office) => (
             <div key={office.city}>
-              <p className="ff-display-feature">{office.city}</p>
+              <p className="ff-display-feature min-[1180px]:whitespace-nowrap">
+                {office.city}
+              </p>
               {office.lines.map((line) => (
                 <p key={line} className="ff-copy-small mt-3">
                   {line}
                 </p>
               ))}
-              {office.href && (
-                <a
-                  href={office.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ff-text-link mt-4 inline-block"
-                >
-                  Open map
-                </a>
-              )}
             </div>
           ))}
         </div>
