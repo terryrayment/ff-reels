@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { ContactBioAccordion } from "@/components/marketing/contact-bio-accordion";
+
 export const metadata: Metadata = {
   title: "Contact",
   description:
@@ -74,31 +76,11 @@ export default function ContactPage() {
   return (
     <div className="ff-shell ff-page">
       <header className="ff-page-heading-row">
-        <h1 className="ff-display-page max-w-5xl">CONTACT</h1>
+        <h1 className="ff-display-page">CONTACT</h1>
       </header>
 
       <section className="ff-section-stack">
-        <ul className="ff-list-rows">
-          {CONTACTS.map((person) => (
-            <li
-              key={person.email}
-              className="grid gap-5 border-t border-ff-line-soft py-8 lg:grid-cols-12 lg:py-10"
-            >
-              <div className="lg:col-span-4">
-                <p className="ff-display-section">{person.name}</p>
-                <p className="ff-kicker-muted mt-3">{person.role}</p>
-              </div>
-              <div className="lg:col-span-6">
-                <p className="ff-body max-w-3xl">{person.bio}</p>
-              </div>
-              <div className="lg:col-span-2 lg:text-right">
-                <a href={`mailto:${person.email}`} className="ff-text-link">
-                  {person.email}
-                </a>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ContactBioAccordion contacts={CONTACTS} />
       </section>
 
       <section className="ff-section-stack ff-section-border ff-section-grid">
