@@ -117,12 +117,8 @@ export default async function DirectorDetailPage({
 
         {grouped.length > 0 && (
           <section className="ff-shell">
-            <div className="mb-9 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+            <div className="mb-9">
               <h2 className="ff-display-section">Work gallery</h2>
-              <p className="ff-kicker">
-                {director.portfolio.length}{" "}
-                {director.portfolio.length === 1 ? "film" : "films"}
-              </p>
             </div>
             {grouped.map((group) => (
               <div key={group.key} className="mb-20 last:mb-0">
