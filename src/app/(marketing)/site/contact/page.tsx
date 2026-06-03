@@ -44,17 +44,29 @@ const OFFICES = [
 ];
 
 const REPS = [
-  { region: "West Coast", name: "Uncle Lefty", email: "james@unclelefty.com" },
   {
     region: "West Coast",
-    name: "Uncle Lefty",
-    email: "laurel-ann@unclelefty.com",
+    company: "Uncle Lefty",
+    contacts: [
+      { name: "James Barry", email: "james@unclelefty.com" },
+      { name: "Laurel-Ann Robinson", email: "laurel-ann@unclelefty.com" },
+    ],
   },
-  { region: "East Coast", name: "Talk Shop", email: "katie.northy@talk-shop.tv" },
   {
     region: "East Coast",
-    name: "Talk Shop",
-    email: "kenard.jackson@talk-shop.tv",
+    company: "Talk Shop",
+    contacts: [
+      { name: "Katie Northy", email: "katie.northy@talk-shop.tv" },
+      { name: "Kenard Jackson", email: "kenard.jackson@talk-shop.tv" },
+    ],
+  },
+  {
+    region: "Midwest",
+    company: "CCCo.",
+    contacts: [
+      { name: "Chiara Chung", email: "chiara@chiarachung.com" },
+      { name: "Gunder Kehoe", email: "gunder@chiarachung.com" },
+    ],
   },
 ];
 
@@ -132,16 +144,25 @@ export default function ContactPage() {
           <ul className="ff-list-rows">
             {REPS.map((rep) => (
               <li
-                key={`${rep.name}-${rep.email}`}
-                className="ff-list-row-compact"
+                key={rep.company}
+                className="grid gap-5 border-t border-ff-line-soft py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start lg:py-10"
               >
                 <div>
-                  <p className="ff-display-feature">{rep.name}</p>
+                  <p className="ff-display-feature">{rep.company}</p>
                   <p className="ff-kicker-muted">{rep.region}</p>
                 </div>
-                <a href={`mailto:${rep.email}`} className="ff-text-link">
-                  {rep.email}
-                </a>
+                <ul className="space-y-2 md:text-right">
+                  {rep.contacts.map((contact) => (
+                    <li key={contact.email}>
+                      <a
+                        href={`mailto:${contact.email}`}
+                        className="ff-text-link"
+                      >
+                        {contact.name} · {contact.email}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>
