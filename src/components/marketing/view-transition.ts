@@ -6,6 +6,8 @@ const VIEWER_SCROLL_KEY = "ff:marketing-scroll-viewer";
 const TRANSITION_DURATION_MS = 1320;
 const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
 const SOURCE_MEDIA_READY_TIMEOUT_MS = 1800;
+const DESTINATION_TARGET_TIMEOUT_MS = 1500;
+const DESTINATION_HANDOFF_TIMEOUT_MS = 1400;
 const MEDIA_TRANSITION_ACTIVE_CLASS = "marketing-media-transition-active";
 const MEDIA_TRANSITION_OVERLAY_SELECTOR = ".marketing-media-transition";
 
@@ -206,7 +208,7 @@ function isDestinationHandoffReady(target: HTMLElement) {
   return poster.complete && poster.naturalWidth > 0;
 }
 
-function waitForDestinationHandoff(timeoutMs = 1200) {
+function waitForDestinationHandoff(timeoutMs = DESTINATION_HANDOFF_TIMEOUT_MS) {
   const startedAt = performance.now();
 
   return new Promise<void>((resolve) => {
@@ -247,7 +249,7 @@ function isFeaturedReelTargetVisuallyReady(target: HTMLElement) {
   return !poster && !video;
 }
 
-function waitForFeaturedReelTarget(timeoutMs = 900) {
+function waitForFeaturedReelTarget(timeoutMs = DESTINATION_TARGET_TIMEOUT_MS) {
   const startedAt = performance.now();
 
   return new Promise<DOMRect | null>((resolve) => {
@@ -288,6 +290,16 @@ function finishMarketingMediaTransition(options?: { keepOverlays?: boolean }) {
   window.dispatchEvent(new Event(MARKETING_TRANSITION_FINISHED));
 }
 
+function applyOverlayFrame(
+  overlay: HTMLDivElement,
+  rect: DOMRect,
+) {
+  overlay.style.left = `${rect.left}px`;
+  overlay.style.top = `${rect.top}px`;
+  overlay.style.width = `${rect.width}px`;
+  overlay.style.height = `${rect.height}px`;
+}
+
 function animateMediaFrame({
   sourceElement,
   imageUrl,
@@ -298,22 +310,20 @@ function animateMediaFrame({
     return false;
   }
 
-  const from = sourceElement.getBoundingClientRect();
-  if (!isUsableSourceTransitionRect(from)) return false;
+  const initialFrom = sourceElement.getBoundingClientRect();
+  if (!isUsableSourceTransitionRect(initialFrom)) return false;
 
   const overlay = document.createElement("div");
   overlay.setAttribute("aria-hidden", "true");
   overlay.className = "marketing-media-transition";
   overlay.style.position = "fixed";
-  overlay.style.left = `${from.left}px`;
-  overlay.style.top = `${from.top}px`;
-  overlay.style.width = `${from.width}px`;
-  overlay.style.height = `${from.height}px`;
+  applyOverlayFrame(overlay, initialFrom);
   overlay.style.zIndex = "2147483647";
   overlay.style.overflow = "hidden";
   overlay.style.background = "#050505";
   overlay.style.pointerEvents = "none";
   overlay.style.transformOrigin = "top left";
+  overlay.style.opacity = "0";
 
   if (imageUrl) {
     const image = document.createElement("img");
@@ -332,16 +342,32 @@ function animateMediaFrame({
   const startedAt = performance.now();
 
   waitForFeaturedReelTarget()
-    .then((targetRect) => {
-      if (!targetRect) {
-        return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
-          duration: 180,
-          easing: "ease-out",
+    .then(async (targetRect) => {
+      const from = sourceElement.getBoundingClientRect();
+      if (!targetRect || !isUsableSourceTransitionRect(from)) {
+        return overlay.animate([{ opacity: 0 }, { opacity: 0 }], {
+          duration: 1,
           fill: "forwards",
         }).finished;
       }
 
-      const to = targetRect;
+      await waitForDestinationHandoff();
+
+      const remeasuredTarget = getFeaturedReelTarget()?.getBoundingClientRect();
+      const to =
+        remeasuredTarget && isUsableDestinationTransitionRect(remeasuredTarget)
+          ? remeasuredTarget
+          : targetRect;
+      if (!isUsableDestinationTransitionRect(to)) {
+        return overlay.animate([{ opacity: 0 }, { opacity: 0 }], {
+          duration: 1,
+          fill: "forwards",
+        }).finished;
+      }
+
+      applyOverlayFrame(overlay, from);
+      overlay.style.opacity = "1";
+
       const remaining = Math.max(
         TRANSITION_DURATION_MS - (performance.now() - startedAt),
         760,
@@ -362,7 +388,6 @@ function animateMediaFrame({
         },
       ).finished;
     })
-    .then(() => waitForDestinationHandoff())
     .then(() => {
       finishMarketingMediaTransition({ keepOverlays: true });
       return overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
@@ -436,7 +461,9 @@ function animateDirectorName({
   overlay.style.left = `${from.left}px`;
   overlay.style.top = `${from.top}px`;
   overlay.style.width = `${from.width}px`;
-  overlay.style.height = `${from.height}px`;
+  overlay.style.minHeight = `${from.height}px`;
+  overlay.style.height = "auto";
+  overlay.style.overflow = "visible";
   overlay.style.zIndex = "2147483647";
   overlay.style.pointerEvents = "none";
   overlay.style.transformOrigin = "top left";
@@ -476,7 +503,8 @@ function animateDirectorName({
               left: `${from.left}px`,
               top: `${from.top}px`,
               width: `${from.width}px`,
-              height: `${from.height}px`,
+              minHeight: `${from.height}px`,
+              height: "auto",
               fontSize: sourceStyle.fontSize,
               lineHeight: sourceStyle.lineHeight,
               letterSpacing: sourceStyle.letterSpacing,
@@ -486,7 +514,8 @@ function animateDirectorName({
               left: `${to.left}px`,
               top: `${to.top}px`,
               width: `${to.width}px`,
-              height: `${to.height}px`,
+              minHeight: `${to.height}px`,
+              height: "auto",
               fontSize: targetStyle.fontSize,
               lineHeight: targetStyle.lineHeight,
               letterSpacing: targetStyle.letterSpacing,

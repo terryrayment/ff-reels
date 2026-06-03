@@ -282,13 +282,16 @@ html {
 }
 
 .marketing-media-transition-active .marketing-transition-reveal {
-  opacity: 0;
   pointer-events: none;
-  transform: none;
+}
+
+.marketing-media-transition-active [data-marketing-featured-media-target] video {
+  opacity: 0 !important;
 }
 
 .marketing-director-name-transition {
-  contain: layout paint style;
+  contain: layout style;
+  overflow: visible;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -919,7 +922,9 @@ mux-player {
 
   .ff-display-director {
     font-size: var(--ff-type-director);
-    line-height: var(--ff-leading-display);
+    line-height: 1;
+    padding-bottom: 0.08em;
+    overflow: visible;
   }
 
   .ff-display-section {
@@ -950,6 +955,7 @@ mux-player {
     display: inline-block;
     overflow: hidden;
     vertical-align: top;
+    padding-bottom: 0.12em;
   }
 
   .ff-reveal-text__space {
@@ -969,6 +975,10 @@ mux-player {
   .ff-reveal-text.is-visible .ff-reveal-text__char {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+  }
+
+  .ff-reveal-text.is-visible .ff-reveal-text__word {
+    overflow: visible;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1541,10 +1551,6 @@ mux-player {
     border-color: var(--ff-color-ink);
     color: var(--ff-color-ink);
     transform: translate3d(0.18rem, 0, 0);
-  }
-
-  .marketing-media-transition-active [data-marketing-featured-media-target] {
-    opacity: 0;
   }
 
   @media (hover: none) {
