@@ -32,15 +32,35 @@ function useViewerScroll(projectId: string, sectionRef: RefObject<HTMLElement>) 
       return;
     }
 
-    const section = sectionRef.current;
-    if (!section) return;
+    const scrollToViewer = () => {
+      const section = sectionRef.current;
+      if (!section) return;
 
-    window.requestAnimationFrame(() => {
-      const navHeight = window.innerWidth >= 1024 ? 104 : 88;
-      const top =
-        section.getBoundingClientRect().top + window.scrollY - navHeight - 16;
-      window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
-    });
+      window.requestAnimationFrame(() => {
+        const navHeight = window.innerWidth >= 1024 ? 104 : 88;
+        const top =
+          section.getBoundingClientRect().top + window.scrollY - navHeight - 16;
+        window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+      });
+    };
+
+    if (
+      document.documentElement.classList.contains(
+        "marketing-media-transition-active",
+      )
+    ) {
+      window.addEventListener(MARKETING_TRANSITION_FINISHED, scrollToViewer, {
+        once: true,
+      });
+      return () => {
+        window.removeEventListener(
+          MARKETING_TRANSITION_FINISHED,
+          scrollToViewer,
+        );
+      };
+    }
+
+    scrollToViewer();
   }, [projectId, sectionRef]);
 }
 

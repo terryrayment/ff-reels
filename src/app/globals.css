@@ -287,6 +287,15 @@ html {
   pointer-events: none;
 }
 
+.marketing-media-transition-active {
+  overflow: hidden;
+}
+
+.marketing-media-transition-active [data-marketing-featured-media-target] {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+
 .marketing-media-transition-active [data-marketing-featured-media-target] video {
   opacity: 0 !important;
 }

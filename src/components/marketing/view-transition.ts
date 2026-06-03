@@ -686,9 +686,6 @@ export async function startMarketingViewTransition(
       window.setTimeout(finishMarketingMediaTransition, TRANSITION_DURATION_MS);
     }
     if (hasMediaOverlay || hasNameOverlay) {
-      if (href.includes("?play=")) {
-        requestMarketingViewerScroll();
-      }
       router.push(href);
       return;
     }
