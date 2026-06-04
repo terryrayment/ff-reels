@@ -1,11 +1,14 @@
 import type { RefObject } from "react";
+import { isSameDirectorPlayNavigation } from "@/components/marketing/view-transition";
 
 export async function prepareMarketingCardSourceForTransition(
   link: HTMLAnchorElement,
   sourceElement: HTMLElement | null,
   imageRef: RefObject<HTMLImageElement | null>,
 ) {
-  link.scrollIntoView({ block: "center", inline: "nearest" });
+  if (!isSameDirectorPlayNavigation(link.href)) {
+    link.scrollIntoView({ block: "center", inline: "nearest" });
+  }
   sourceElement?.classList.add("is-visible");
 
   const image = imageRef.current;

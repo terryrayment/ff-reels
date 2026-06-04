@@ -1,15 +1,10 @@
 "use client";
 
-import { type RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTransitionPoster } from "@/components/marketing/use-transition-poster";
-import {
-  MARKETING_TRANSITION_FINISHED,
-  clearMarketingTransitionDelay,
-  consumeMarketingViewerScroll,
-  getMarketingTransitionDelay,
-} from "@/components/marketing/view-transition";
-
-const PLAY_AFTER_LAND_DELAY_MS = 280;
+import { useMarketingViewerScroll } from "@/components/marketing/use-marketing-viewer-scroll";
+import { useMarketingGalleryPlayDefer } from "@/components/marketing/use-marketing-gallery-play-defer";
+import { clearMarketingTransitionDelay } from "@/components/marketing/view-transition";
 
 interface SourceVideoReelProps {
   projectId: string;
@@ -26,43 +21,6 @@ interface PosterOnlyReelProps {
   title: string;
 }
 
-function useViewerScroll(projectId: string, sectionRef: RefObject<HTMLElement>) {
-  useEffect(() => {
-    if (typeof window === "undefined" || !consumeMarketingViewerScroll()) {
-      return;
-    }
-
-    const scrollToViewer = () => {
-      const section = sectionRef.current;
-      if (!section) return;
-
-      window.requestAnimationFrame(() => {
-        const navHeight = window.innerWidth >= 1024 ? 104 : 88;
-        const top =
-          section.getBoundingClientRect().top + window.scrollY - navHeight - 16;
-        window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
-      });
-    };
-
-    if (
-      document.documentElement.classList.contains(
-        "marketing-media-transition-active",
-      )
-    ) {
-      window.addEventListener(MARKETING_TRANSITION_FINISHED, scrollToViewer, {
-        once: true,
-      });
-      return () => {
-        window.removeEventListener(
-          MARKETING_TRANSITION_FINISHED,
-          scrollToViewer,
-        );
-      };
-    }
-
-    scrollToViewer();
-  }, [projectId, sectionRef]);
-}
 
 export function PosterOnlyReel({
   projectId,
@@ -75,7 +33,7 @@ export function PosterOnlyReel({
   const displayPosterUrl = useTransitionPoster(projectId, posterUrl);
   const [posterReady, setPosterReady] = useState(!displayPosterUrl);
 
-  useViewerScroll(projectId, sectionRef);
+  useMarketingViewerScroll(projectId, sectionRef);
 
   useEffect(() => {
     setPosterReady(!displayPosterUrl);
@@ -151,9 +109,7 @@ export function SourceVideoReel({
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [posterReady, setPosterReady] = useState(!displayPosterUrl);
-  const [shouldPlay, setShouldPlay] = useState(
-    () => getMarketingTransitionDelay() <= 0,
-  );
+  const shouldPlay = useMarketingGalleryPlayDefer(projectId);
   const [autoplayState, setAutoplayState] = useState<
     "idle" | "requested" | "playing" | "blocked" | "error"
   >("idle");
@@ -166,42 +122,7 @@ export function SourceVideoReel({
     }
   }, [displayPosterUrl]);
 
-  useViewerScroll(projectId, sectionRef);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const delay = getMarketingTransitionDelay();
-    if (delay <= 0) {
-      clearMarketingTransitionDelay();
-      setShouldPlay(true);
-      return;
-    }
-
-    setShouldPlay(false);
-
-    let released = false;
-    let playTimer: number | undefined;
-    const release = () => {
-      if (released) return;
-      released = true;
-      clearMarketingTransitionDelay();
-      playTimer = window.setTimeout(() => {
-        setShouldPlay(true);
-      }, PLAY_AFTER_LAND_DELAY_MS);
-    };
-
-    const timer = window.setTimeout(release, delay);
-    window.addEventListener(MARKETING_TRANSITION_FINISHED, release, {
-      once: true,
-    });
-
-    return () => {
-      window.clearTimeout(timer);
-      if (playTimer) window.clearTimeout(playTimer);
-      window.removeEventListener(MARKETING_TRANSITION_FINISHED, release);
-    };
-  }, [projectId, sourceVideoUrl]);
+  useMarketingViewerScroll(projectId, sectionRef);
 
   useEffect(() => {
     setVideoReady(false);

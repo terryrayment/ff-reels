@@ -3,6 +3,9 @@
 const TRANSITION_UNTIL_KEY = "ff:marketing-transition-until";
 const TRANSITION_POSTER_KEY = "ff:marketing-transition-poster";
 const VIEWER_SCROLL_KEY = "ff:marketing-scroll-viewer";
+const GALLERY_PLAY_DEFER_KEY = "ff:marketing-gallery-play-defer";
+const GALLERY_SCROLL_MS = 680;
+const GALLERY_SCROLL_TOP_GAP_PX = 16;
 const TRANSITION_DURATION_MS = 1320;
 const TRANSITION_EASING = "cubic-bezier(0.76, 0, 0.24, 1)";
 const SOURCE_MEDIA_READY_TIMEOUT_MS = 1800;
@@ -18,6 +21,9 @@ let mediaTransitionInFlight = false;
 
 export const MARKETING_TRANSITION_FINISHED =
   "ff:marketing-route-transition-finished";
+
+export const MARKETING_VIEWER_SCROLL_FINISHED =
+  "ff:marketing-viewer-scroll-finished";
 
 type RouterLike = {
   push: (href: string) => void;
@@ -74,11 +80,96 @@ export function requestMarketingViewerScroll() {
   getStorage()?.setItem(VIEWER_SCROLL_KEY, "1");
 }
 
+export function requestMarketingGalleryPlayDefer() {
+  getStorage()?.setItem(GALLERY_PLAY_DEFER_KEY, "1");
+}
+
 export function consumeMarketingViewerScroll() {
   const storage = getStorage();
   const shouldScroll = storage?.getItem(VIEWER_SCROLL_KEY) === "1";
   storage?.removeItem(VIEWER_SCROLL_KEY);
   return shouldScroll;
+}
+
+export function consumeMarketingGalleryPlayDefer() {
+  const storage = getStorage();
+  const defer = storage?.getItem(GALLERY_PLAY_DEFER_KEY) === "1";
+  storage?.removeItem(GALLERY_PLAY_DEFER_KEY);
+  return defer;
+}
+
+export function isSameDirectorPlayNavigation(href: string) {
+  return isSamePathQueryNavigation(href);
+}
+
+function marketingNavHeightPx() {
+  if (typeof window === "undefined") return 88;
+  return window.innerWidth >= 1024 ? 104 : 88;
+}
+
+function marketingPrefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+function resolveFeaturedViewerSection(section?: HTMLElement | null) {
+  return (
+    section ??
+    document
+      .querySelector<HTMLElement>("[data-marketing-featured-media-target]")
+      ?.closest("section") ??
+    null
+  );
+}
+
+/** Scroll target: frame the viewer just below the fixed nav. */
+function getMarketingFeaturedViewerScrollTop(section: HTMLElement) {
+  const navHeight = marketingNavHeightPx();
+  const rect = section.getBoundingClientRect();
+  return Math.max(
+    window.scrollY + rect.top - navHeight - GALLERY_SCROLL_TOP_GAP_PX,
+    0,
+  );
+}
+
+/** Easy-ease scroll up to frame the featured viewer (director gallery switches). */
+export function animateMarketingFeaturedViewerScroll(
+  section?: HTMLElement | null,
+): Promise<boolean> {
+  if (typeof window === "undefined") return Promise.resolve(false);
+
+  const target = resolveFeaturedViewerSection(section);
+  if (!target) return Promise.resolve(false);
+
+  const endY = getMarketingFeaturedViewerScrollTop(target);
+  const startY = window.scrollY;
+
+  if (Math.abs(endY - startY) < 2 || marketingPrefersReducedMotion()) {
+    window.scrollTo({ top: endY, behavior: "auto" });
+    return Promise.resolve(true);
+  }
+
+  return new Promise((resolve) => {
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / GALLERY_SCROLL_MS, 1);
+      const eased = easeInOutCubic(progress);
+      window.scrollTo(0, startY + (endY - startY) * eased);
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        resolve(true);
+      }
+    };
+
+    requestAnimationFrame(tick);
+  });
 }
 
 function getFeaturedReelTarget() {
@@ -631,6 +722,7 @@ export async function startMarketingViewTransition(
       clearMarketingTransitionDelay();
       clearMarketingTransitionPoster();
       requestMarketingViewerScroll();
+      requestMarketingGalleryPlayDefer();
       router.push(href);
       return;
     }
