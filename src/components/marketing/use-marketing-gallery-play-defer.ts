@@ -23,17 +23,24 @@ export function useMarketingGalleryPlayDefer(projectId: string) {
     setShouldPlay(false);
 
     if (consumeMarketingGalleryPlayDefer()) {
-      const startPlay = () => setShouldPlay(true);
+      let released = false;
+      const startPlay = () => {
+        if (released) return;
+        released = true;
+        setShouldPlay(true);
+      };
       window.addEventListener(
         MARKETING_VIEWER_SCROLL_FINISHED,
         startPlay,
         { once: true },
       );
+      const fallback = window.setTimeout(startPlay, 1500);
       return () => {
         window.removeEventListener(
           MARKETING_VIEWER_SCROLL_FINISHED,
           startPlay,
         );
+        window.clearTimeout(fallback);
       };
     }
 

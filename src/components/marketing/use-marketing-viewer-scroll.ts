@@ -43,7 +43,11 @@ export function useMarketingViewerScroll(
       await animateMarketingFeaturedViewerScroll(sectionRef.current);
       if (cancelled) return;
 
-      window.dispatchEvent(new Event(MARKETING_VIEWER_SCROLL_FINISHED));
+      requestAnimationFrame(() => {
+        if (!cancelled) {
+          window.dispatchEvent(new Event(MARKETING_VIEWER_SCROLL_FINISHED));
+        }
+      });
     };
 
     void run();

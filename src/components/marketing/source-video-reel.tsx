@@ -153,9 +153,16 @@ export function SourceVideoReel({
     };
 
     tryPlay();
+    const retry = window.setTimeout(tryPlay, 400);
+    const onReady = () => tryPlay();
+    video.addEventListener("loadeddata", onReady);
+    video.addEventListener("canplay", onReady);
 
     return () => {
       cancelled = true;
+      window.clearTimeout(retry);
+      video.removeEventListener("loadeddata", onReady);
+      video.removeEventListener("canplay", onReady);
     };
   }, [projectId, shouldPlay, sourceVideoUrl, videoFailed]);
 
