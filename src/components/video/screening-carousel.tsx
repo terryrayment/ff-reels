@@ -26,6 +26,8 @@ import {
   Camera,
 } from "lucide-react";
 
+const FF_DIRECTOR_URL = "https://www.friendsandfamily.tv/directors";
+
 interface SpotDirectorInfo {
   id: string;
   name: string;
@@ -1682,7 +1684,7 @@ export function ScreeningCarousel({
                     {rosterHighlights.map((d) => (
                       <a
                         key={d.id}
-                        href={`https://reels.friendsandfamily.tv/directors/${d.id}`}
+                        href={`${FF_DIRECTOR_URL}/${d.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-4 group cursor-pointer"
