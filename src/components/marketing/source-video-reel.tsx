@@ -147,26 +147,38 @@ export function SourceVideoReel({
       video.muted = true;
       video.playsInline = true;
       setAutoplayState("requested");
-      video.play().catch(() => {
+      void video.play().then(() => {
+        if (!cancelled) setAutoplayState("playing");
+      }).catch(() => {
         if (!cancelled) setAutoplayState("blocked");
       });
     };
 
     tryPlay();
-    const retry = window.setTimeout(tryPlay, 400);
+    const retries = [400, 900, 1500].map((ms) =>
+      window.setTimeout(tryPlay, ms),
+    );
     const onReady = () => tryPlay();
     video.addEventListener("loadeddata", onReady);
     video.addEventListener("canplay", onReady);
+    video.addEventListener("canplaythrough", onReady);
 
     return () => {
       cancelled = true;
-      window.clearTimeout(retry);
+      retries.forEach((id) => window.clearTimeout(id));
       video.removeEventListener("loadeddata", onReady);
       video.removeEventListener("canplay", onReady);
+      video.removeEventListener("canplaythrough", onReady);
     };
   }, [projectId, shouldPlay, sourceVideoUrl, videoFailed]);
 
-  const showVideo = videoReady && !videoFailed && autoplayState === "playing";
+  // Reveal video once loaded after play is allowed — not only after autoplay succeeds.
+  const showVideo =
+    videoReady &&
+    !videoFailed &&
+    (shouldPlay ||
+      autoplayState === "playing" ||
+      autoplayState === "blocked");
 
   return (
     <section ref={sectionRef} className="ff-shell mb-12">
