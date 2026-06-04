@@ -205,6 +205,7 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
       aria-roledescription="carousel"
     >
       <div className="ff-home-spot-carousel__inner">
+      <div className="ff-home-spot-carousel__frame">
       <Link
         href={active.href}
         className="ff-home-spot-carousel__link"
@@ -326,6 +327,7 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
           <span className="sr-only">Current spot: </span>
           {active.brand} — {active.title}
         </p>
+      </div>
       </div>
       </div>
     </section>
