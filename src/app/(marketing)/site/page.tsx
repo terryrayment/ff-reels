@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DirectorCard } from "@/components/marketing/director-card";
+import { HomeSpotCarousel } from "@/components/marketing/home-spot-carousel";
 import { ProjectCard } from "@/components/marketing/project-card";
 import {
   getCanonicalDirector,
   getCanonicalWork,
 } from "@/lib/marketing/canonical-source";
+import { buildHomeSpotCarouselSlides } from "@/lib/marketing/home-spot-carousel";
 import { getHeroPlayProjectId } from "@/lib/marketing/play-project-id";
 
 export const metadata: Metadata = {
@@ -88,6 +90,7 @@ function getFeaturedDirectors() {
 
 export default function MarketingHomePage() {
   const featuredWork = getFeaturedWork();
+  const spotCarouselSlides = buildHomeSpotCarouselSlides(featuredWork);
   const featuredDirectors = getFeaturedDirectors().map((director) => {
     const heroProject = director.portfolio[0] ?? null;
     return {
@@ -101,16 +104,10 @@ export default function MarketingHomePage() {
 
   return (
     <div className="ff-home">
-      <section className="ff-shell ff-page ff-home-hero">
-        <div className="ff-home-statement-row">
-          <div>
-            <h1 className="ff-display-hero ff-home-statement">Friends &amp; Family</h1>
-          </div>
-          <p className="ff-body ff-home-statement-side">
-            Commercial films, culture work, and director-led production.
-          </p>
-        </div>
-      </section>
+      <h1 className="sr-only">Friends &amp; Family</h1>
+      {spotCarouselSlides.length > 0 && (
+        <HomeSpotCarousel slides={spotCarouselSlides} />
+      )}
 
       <nav
         className="ff-shell ff-home-route-index"
