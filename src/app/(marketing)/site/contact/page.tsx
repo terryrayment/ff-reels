@@ -20,7 +20,7 @@ const CONTACTS = [
     name: "Jed Herold",
     role: "Executive Producer",
     email: "jed@friendsandfamily.tv",
-    bio: "An integrated executive producer and project management leader with 20+ years across video, digital, social, and print production. Jed has held senior roles at BBDO, McCann, Grey, and Johannes Leonardo, bringing deep agency-side insight to every production and one of the widest collaborator networks in the business.",
+    bio: "Jed has a 20-plus year history as working professional in the commercial industry. His broad experience in production has given him the advantage of a wide network of collaborators and skills.",
   },
   {
     name: "Alana Hearn",
