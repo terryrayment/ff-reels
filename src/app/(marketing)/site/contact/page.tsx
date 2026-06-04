@@ -89,10 +89,8 @@ export default function ContactPage() {
         </div>
         <div className="ff-wide-column grid gap-8 md:grid-cols-3">
           {OFFICES.map((office) => (
-            <div key={office.city}>
-              <p className="ff-display-feature min-[1180px]:whitespace-nowrap">
-                {office.city}
-              </p>
+            <div key={office.city} className="min-w-0">
+              <p className="ff-display-feature">{office.city}</p>
               {office.lines.map((line) => (
                 <p key={line} className="ff-copy-small mt-3">
                   {line}

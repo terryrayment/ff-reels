@@ -102,7 +102,7 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
             alt=""
             decoding="async"
             draggable={false}
-            className="ff-about-trail-photo pointer-events-none absolute select-none object-cover shadow-[0_18px_50px_rgba(17,17,17,0.12)]"
+            className="ff-about-trail-photo pointer-events-none absolute select-none object-cover"
             style={
               {
                 left: photo.x,
