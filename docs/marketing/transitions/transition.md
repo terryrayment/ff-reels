@@ -185,6 +185,18 @@ Report JSON and screenshots under `test-results/desktop-functionality-audit/[tim
 
 ---
 
+## Cross-browser compatibility QA
+
+```bash
+npm run marketing:cross-browser-qc
+```
+
+Runs Chromium, Firefox, WebKit (Safari-like), and mobile device emulation against production. Optional: `--quick` for a faster layout/nav subset.
+
+Artifacts under `test-results/cross-browser-compatibility-audit/[timestamp]/` (gitignored). Real-device cloud (BrowserStack/Sauce) not included — run separately when credentials are available.
+
+---
+
 ## Incident history (do not regress)
 
 | Date | Symptom | Root cause | Fix commit |
