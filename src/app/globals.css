@@ -1126,6 +1126,7 @@ mux-player {
     right: 0;
     visibility: hidden;
     opacity: 0;
+    pointer-events: none;
     transform: translate3d(0, -0.45rem, 0);
     transition:
       opacity 220ms var(--ff-ease-out),
@@ -1137,6 +1138,7 @@ mux-player {
   .ff-mobile-menu.is-open {
     visibility: visible;
     opacity: 1;
+    pointer-events: auto;
     transform: translate3d(0, 0, 0);
     transition-delay: 0s;
   }
@@ -1297,7 +1299,10 @@ mux-player {
 
   .ff-filter-link {
     font-family: var(--ff-font-text);
-    padding: 0.25rem;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 0.375rem 0.25rem;
     font-size: var(--ff-type-micro);
     font-weight: 540;
     line-height: 1;

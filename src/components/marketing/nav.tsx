@@ -26,6 +26,15 @@ export function MarketingNav() {
     pathname?.startsWith("/site/youth") || pathname?.startsWith("/site/colossal");
 
   useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
+
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -135,7 +144,7 @@ export function MarketingNav() {
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
           className={cn(
-            "font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro min-[1180px]:hidden",
+            "inline-flex min-h-11 min-w-11 items-center justify-center font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro min-[1180px]:hidden",
             partnerRoute ? "text-white" : "text-ff-ink",
           )}
         >
