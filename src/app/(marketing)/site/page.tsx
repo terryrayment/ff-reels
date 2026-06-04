@@ -52,8 +52,8 @@ const HOME_ROUTES = [
 
 /** Homepage carousel only — does not change global Work archive order. */
 const CAROUSEL_WORK_IDS = [
-  "source-work-001-caleb-slain-ford-lobo",
   "source-work-003-bueno-citi-can-i-click-it",
+  "source-work-001-caleb-slain-ford-lobo",
   "source-work-002-matt-dilmore-little-caesars-pizza-bot",
   "source-work-055-terry-rayment-cadillac-tree-hunting",
   "source-work-020-james-frost-nike-human-printing-press",

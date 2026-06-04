@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { prepareMarketingCardSourceForTransition } from "@/components/marketing/prepare-marketing-card-source";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
+import { cn } from "@/lib/utils";
 import {
   HOME_SPOT_CLIP_DURATION_SECONDS,
   type HomeSpotCarouselSlide,
@@ -17,6 +18,10 @@ interface HomeSpotCarouselProps {
 
 function muxPoster(playbackId: string) {
   return `https://image.mux.com/${playbackId}/thumbnail.jpg?width=1920`;
+}
+
+function formatIndexLabel(index: number) {
+  return String(index + 1).padStart(2, "0");
 }
 
 export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
@@ -200,135 +205,145 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
 
   return (
     <section
-      className="ff-home-spot-carousel"
+      className="ff-home-spot-carousel ff-shell"
       aria-label="Featured spots"
       aria-roledescription="carousel"
     >
-      <div className="ff-home-spot-carousel__inner">
-      <div className="ff-home-spot-carousel__frame">
-      <Link
-        href={active.href}
-        className="ff-home-spot-carousel__link"
-        data-cursor="link"
-        onClick={handleOpenSpot}
-      >
-        <div
-          className="ff-home-spot-carousel__stage"
-          data-marketing-media-frame
-        >
-          {slides.map((slide, index) => {
-            const isActive = index === activeIndex;
-            const slidePoster =
-              slide.thumbnailUrl ??
-              (slide.muxPlaybackId ? muxPoster(slide.muxPlaybackId) : null);
+      <div className="ff-home-spot-carousel__split">
+        <div className="ff-home-spot-carousel__media-col">
+          <Link
+            href={active.href}
+            className="ff-home-spot-carousel__link"
+            data-cursor="link"
+            onClick={handleOpenSpot}
+            aria-label={`${active.brand} ${active.title}, Dir. ${active.directorName}`}
+          >
+            <div
+              className="ff-home-spot-carousel__stage"
+              data-marketing-media-frame
+            >
+              {slides.map((slide, index) => {
+                const isActive = index === activeIndex;
+                const slidePoster =
+                  slide.thumbnailUrl ??
+                  (slide.muxPlaybackId ? muxPoster(slide.muxPlaybackId) : null);
 
-            return (
-              <div
-                key={slide.id}
-                className={`ff-home-spot-carousel__slide${isActive ? " is-active" : ""}`}
-                aria-hidden={!isActive}
-              >
-                {slidePoster ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    ref={isActive ? posterRef : undefined}
-                    src={slidePoster}
-                    alt=""
-                    className="ff-home-spot-carousel__poster"
-                    loading={index === 0 ? "eager" : "lazy"}
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                    decoding="async"
-                  />
-                ) : (
-                  <div className="ff-home-spot-carousel__fallback">
-                    <span>
-                      {slide.brand} — {slide.title}
-                    </span>
+                return (
+                  <div
+                    key={slide.id}
+                    className={`ff-home-spot-carousel__slide${isActive ? " is-active" : ""}`}
+                    aria-hidden={!isActive}
+                  >
+                    {slidePoster ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        ref={isActive ? posterRef : undefined}
+                        src={slidePoster}
+                        alt=""
+                        className="ff-home-spot-carousel__poster"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        fetchPriority={index === 0 ? "high" : "auto"}
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="ff-home-spot-carousel__fallback">
+                        <span>
+                          {slide.brand} — {slide.title}
+                        </span>
+                      </div>
+                    )}
+
+                    {isActive && !reduceMotion && slide.sourceVideoUrl ? (
+                      <video
+                        ref={videoRef}
+                        key={slide.id}
+                        className="ff-home-spot-carousel__video"
+                        src={slide.sourceVideoUrl}
+                        muted
+                        playsInline
+                        preload="auto"
+                      />
+                    ) : null}
+
+                    {isActive && !reduceMotion && slide.muxPlaybackId ? (
+                      <MuxPlayer
+                        ref={muxRef as React.RefObject<never>}
+                        key={slide.id}
+                        playbackId={slide.muxPlaybackId}
+                        streamType="on-demand"
+                        muted
+                        playsInline
+                        preload="auto"
+                        poster={slidePoster ?? undefined}
+                        className="ff-home-spot-carousel__mux"
+                        nohotkeys
+                      />
+                    ) : null}
                   </div>
-                )}
-
-                {isActive && !reduceMotion && slide.sourceVideoUrl ? (
-                  <video
-                    ref={videoRef}
-                    key={slide.id}
-                    className="ff-home-spot-carousel__video"
-                    src={slide.sourceVideoUrl}
-                    muted
-                    playsInline
-                    preload="auto"
-                  />
-                ) : null}
-
-                {isActive && !reduceMotion && slide.muxPlaybackId ? (
-                  <MuxPlayer
-                    ref={muxRef as React.RefObject<never>}
-                    key={slide.id}
-                    playbackId={slide.muxPlaybackId}
-                    streamType="on-demand"
-                    muted
-                    playsInline
-                    preload="auto"
-                    poster={slidePoster ?? undefined}
-                    className="ff-home-spot-carousel__mux"
-                    nohotkeys
-                  />
-                ) : null}
-              </div>
-            );
-          })}
-
-          <div className="ff-home-spot-carousel__shade" aria-hidden="true" />
-          <div className="ff-home-spot-carousel__caption">
-            <p className="ff-home-spot-carousel__brand">{active.brand}</p>
-            <p className="ff-home-spot-carousel__title">{active.title}</p>
-            <p className="ff-home-spot-carousel__director">
-              Dir. {active.directorName}
-            </p>
-          </div>
+                );
+              })}
+            </div>
+          </Link>
         </div>
-      </Link>
 
-      <div className="ff-home-spot-carousel__controls">
-        <div
-          className="ff-home-spot-carousel__dots"
-          role="tablist"
-          aria-label="Spot slides"
+        <nav
+          className="ff-home-spot-carousel__index"
+          aria-label="Featured spot index"
         >
-          {slides.map((slide, index) => {
-            const isActive = index === activeIndex;
-            const isPast = index < activeIndex;
-            const isRunning = isActive && progressRunning && !reduceMotion;
+          <ol className="ff-home-spot-carousel__index-list">
+            {slides.map((slide, index) => {
+              const isActive = index === activeIndex;
+              const isRunning = isActive && progressRunning && !reduceMotion;
 
-            return (
-              <button
-                key={slide.id}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-label={`${slide.brand} ${slide.title}`}
-                className={`ff-home-spot-carousel__dot${isActive ? " is-active" : ""}`}
-                onClick={() => goTo(index)}
-              >
-                <span
-                  key={isActive ? `progress-${progressEpoch}` : slide.id}
-                  className={`ff-home-spot-carousel__dot-fill${isRunning ? " is-running" : ""}${isPast ? " is-complete" : ""}`}
-                  style={
-                    {
-                      "--ff-spot-clip-duration": `${clipDuration}s`,
-                    } as React.CSSProperties
-                  }
-                  aria-hidden="true"
-                />
-              </button>
-            );
-          })}
-        </div>
-        <p className="ff-home-spot-carousel__hint">
-          <span className="sr-only">Current spot: </span>
-          {active.brand} — {active.title}
-        </p>
-      </div>
-      </div>
+              return (
+                <li key={slide.id} className="ff-home-spot-carousel__index-item">
+                  <button
+                    type="button"
+                    className={cn(
+                      "ff-home-spot-carousel__index-row",
+                      isActive && "is-active",
+                    )}
+                    aria-current={isActive ? "true" : undefined}
+                    aria-label={`${slide.brand} ${slide.title}, Dir. ${slide.directorName}`}
+                    onClick={() => goTo(index)}
+                  >
+                    <span className="ff-home-spot-carousel__index-num">
+                      {formatIndexLabel(index)}
+                    </span>
+                    <span className="ff-home-spot-carousel__index-copy">
+                      <span className="ff-home-spot-carousel__index-brand">
+                        {slide.brand}
+                      </span>
+                      <span className="ff-home-spot-carousel__index-title">
+                        {slide.title}
+                      </span>
+                      {isActive ? (
+                        <span className="ff-home-spot-carousel__index-director">
+                          Dir. {slide.directorName}
+                        </span>
+                      ) : null}
+                    </span>
+                    {isActive ? (
+                      <span
+                        key={`progress-${progressEpoch}`}
+                        className={cn(
+                          "ff-home-spot-carousel__index-progress",
+                          isRunning && "is-running",
+                        )}
+                        style={
+                          {
+                            "--ff-spot-clip-duration": `${clipDuration}s`,
+                          } as React.CSSProperties
+                        }
+                        aria-hidden="true"
+                      />
+                    ) : null}
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
       </div>
     </section>
   );
