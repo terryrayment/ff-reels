@@ -802,6 +802,12 @@ mux-player {
     margin-bottom: clamp(1.75rem, 3.5vw, 3rem);
   }
 
+  .ff-home-spot-carousel__inner {
+    width: 50%;
+    max-width: 50%;
+    margin-inline: auto;
+  }
+
   .ff-home-spot-carousel__link {
     display: block;
     color: inherit;
@@ -820,8 +826,8 @@ mux-player {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    max-height: min(78svh, 820px);
-    min-height: min(52vw, 320px);
+    max-height: min(39svh, 410px);
+    min-height: min(26vw, 160px);
     overflow: hidden;
     background: var(--ff-color-media);
   }
@@ -914,7 +920,7 @@ mux-player {
   .ff-home-spot-carousel__title {
     margin-top: 0.35rem;
     font-family: var(--ff-font-display);
-    font-size: clamp(1.75rem, 4vw, 3.25rem);
+    font-size: clamp(1.25rem, 2.2vw, 2rem);
     font-weight: 660;
     font-stretch: 86%;
     line-height: 0.95;
@@ -941,22 +947,34 @@ mux-player {
 
   .ff-home-spot-carousel__dots {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.5rem;
+    width: 100%;
   }
 
   .ff-home-spot-carousel__dot {
-    width: 2.25rem;
+    position: relative;
+    flex: 1 1 0;
+    min-width: 2rem;
     height: 2px;
     padding: 0;
     border: 0;
     background: var(--ff-color-line);
     cursor: pointer;
-    transition: background-color var(--ff-duration-fast) var(--ff-ease-out);
+    overflow: hidden;
   }
 
-  .ff-home-spot-carousel__dot.is-active {
+  .ff-home-spot-carousel__dot-fill {
+    display: block;
+    height: 100%;
+    width: 0;
     background: var(--ff-site-accent);
+    transform-origin: left center;
+    transition: width 90ms linear;
+  }
+
+  .ff-home-spot-carousel__dot.is-active .ff-home-spot-carousel__dot-fill {
+    transition: width 120ms linear;
   }
 
   .ff-home-spot-carousel__dot:focus-visible {
@@ -1091,6 +1109,11 @@ mux-player {
   }
 
   @media (max-width: 767px) {
+    .ff-home-spot-carousel__inner {
+      width: 100%;
+      max-width: 100%;
+    }
+
     .ff-home-statement-row {
       gap: 1.2rem;
     }

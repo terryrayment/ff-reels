@@ -27,9 +27,20 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
   const muxRef = useRef<HTMLElement | null>(null);
   const posterRef = useRef<HTMLImageElement>(null);
   const clipEndRef = useRef(0);
+  const [clipProgress, setClipProgress] = useState(0);
+  const [progressEpoch, setProgressEpoch] = useState(0);
 
   const active = slides[activeIndex] ?? slides[0];
   const clipDuration = HOME_SPOT_CLIP_DURATION_SECONDS;
+
+  const updateClipProgress = useCallback(
+    (currentTime: number) => {
+      const elapsed = Math.max(0, currentTime - active.clipStartSeconds);
+      const ratio = Math.min(1, elapsed / clipDuration);
+      setClipProgress(ratio * 100);
+    },
+    [active.clipStartSeconds, clipDuration],
+  );
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -42,6 +53,8 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
   const goTo = useCallback(
     (index: number) => {
       if (slides.length === 0) return;
+      setClipProgress(0);
+      setProgressEpoch((value) => value + 1);
       setActiveIndex(((index % slides.length) + slides.length) % slides.length);
     },
     [slides.length],
@@ -73,8 +86,10 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
       else video.addEventListener("loadedmetadata", seekAndPlay, { once: true });
 
       const onTimeUpdate = () => {
+        updateClipProgress(video.currentTime);
         if (video.currentTime >= clipEndRef.current) {
           video.pause();
+          setClipProgress(100);
           advance();
         }
       };
@@ -110,12 +125,13 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
       const retry = window.setTimeout(seekAndPlay, 400);
 
       const onTimeUpdate = () => {
-        if (
-          el.currentTime !== undefined &&
-          el.currentTime >= clipEndRef.current
-        ) {
-          el.pause?.();
-          advance();
+        if (el.currentTime !== undefined) {
+          updateClipProgress(el.currentTime);
+          if (el.currentTime >= clipEndRef.current) {
+            el.pause?.();
+            setClipProgress(100);
+            advance();
+          }
         }
       };
       el.addEventListener("timeupdate", onTimeUpdate);
@@ -137,6 +153,12 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
         cleanup = onMux(muxRef.current);
       } else {
         fallbackTimer = window.setTimeout(advance, clipDuration * 1000);
+        const progressStart = Date.now();
+        const progressTimer = window.setInterval(() => {
+          const elapsed = (Date.now() - progressStart) / 1000;
+          setClipProgress(Math.min(100, (elapsed / clipDuration) * 100));
+        }, 50);
+        cleanup = () => window.clearInterval(progressTimer);
       }
     }, 0);
 
@@ -146,7 +168,14 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
       if (fallbackTimer) window.clearTimeout(fallbackTimer);
       cleanup?.();
     };
-  }, [active, activeIndex, advance, clipDuration, reduceMotion]);
+  }, [
+    active,
+    activeIndex,
+    advance,
+    clipDuration,
+    reduceMotion,
+    updateClipProgress,
+  ]);
 
   const handleOpenSpot = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
@@ -171,10 +200,11 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
 
   return (
     <section
-      className="ff-home-spot-carousel"
+      className="ff-home-spot-carousel ff-shell"
       aria-label="Featured spots"
       aria-roledescription="carousel"
     >
+      <div className="ff-home-spot-carousel__inner">
       <Link
         href={active.href}
         className="ff-home-spot-carousel__link"
@@ -257,28 +287,44 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
         </div>
       </Link>
 
-      <div className="ff-home-spot-carousel__controls ff-shell">
+      <div className="ff-home-spot-carousel__controls">
         <div
           className="ff-home-spot-carousel__dots"
           role="tablist"
           aria-label="Spot slides"
         >
-          {slides.map((slide, index) => (
-            <button
-              key={slide.id}
-              type="button"
-              role="tab"
-              aria-selected={index === activeIndex}
-              aria-label={`${slide.brand} ${slide.title}`}
-              className={`ff-home-spot-carousel__dot${index === activeIndex ? " is-active" : ""}`}
-              onClick={() => goTo(index)}
-            />
-          ))}
+          {slides.map((slide, index) => {
+            const isActive = index === activeIndex;
+            const isPast = index < activeIndex;
+            const fillWidth = isPast ? 100 : isActive ? clipProgress : 0;
+
+            return (
+              <button
+                key={slide.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-label={`${slide.brand} ${slide.title}`}
+                className={`ff-home-spot-carousel__dot${isActive ? " is-active" : ""}`}
+                onClick={() => goTo(index)}
+              >
+                <span
+                  key={isActive ? `progress-${progressEpoch}` : slide.id}
+                  className="ff-home-spot-carousel__dot-fill"
+                  style={{
+                    width: reduceMotion && isActive ? "100%" : `${fillWidth}%`,
+                  }}
+                  aria-hidden="true"
+                />
+              </button>
+            );
+          })}
         </div>
         <p className="ff-home-spot-carousel__hint">
           <span className="sr-only">Current spot: </span>
           {active.brand} — {active.title}
         </p>
+      </div>
       </div>
     </section>
   );

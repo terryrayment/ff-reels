@@ -1,5 +1,38 @@
-import type { CanonicalProject } from "@/lib/marketing/canonical-source";
+import {
+  type CanonicalProject,
+  getCanonicalDirector,
+} from "@/lib/marketing/canonical-source";
 import { getDirectorPortfolioPlayId } from "@/lib/marketing/play-project-id";
+
+/** Prefer director portfolio MP4s (1080p) over work-archive low-res Vimeo URLs. */
+function resolveCarouselPlayback(project: CanonicalProject, playId: string) {
+  const portfolio =
+    getCanonicalDirector(project.director.slug)?.portfolio.find(
+      (entry) => entry.id === playId,
+    ) ?? null;
+
+  if (portfolio?.muxPlaybackId) {
+    return {
+      muxPlaybackId: portfolio.muxPlaybackId,
+      sourceVideoUrl: null as string | null,
+      thumbnailUrl: portfolio.thumbnailUrl ?? project.thumbnailUrl,
+    };
+  }
+
+  if (portfolio?.sourceVideoUrl) {
+    return {
+      muxPlaybackId: null as string | null,
+      sourceVideoUrl: portfolio.sourceVideoUrl,
+      thumbnailUrl: portfolio.thumbnailUrl ?? project.thumbnailUrl,
+    };
+  }
+
+  return {
+    muxPlaybackId: project.muxPlaybackId,
+    sourceVideoUrl: project.sourceVideoUrl,
+    thumbnailUrl: project.thumbnailUrl,
+  };
+}
 
 /** Seconds to play per spot before advancing to the next slide. */
 export const HOME_SPOT_CLIP_DURATION_SECONDS = 10;
@@ -40,15 +73,17 @@ export function buildHomeSpotCarouselSlides(
         Boolean(project.muxPlaybackId || project.sourceVideoUrl || project.thumbnailUrl);
       if (!canPlay || !playId) return null;
 
+      const playback = resolveCarouselPlayback(project, playId);
+
       return {
         id: project.id,
         brand: project.brand,
         title: project.title,
         directorName: project.director.name,
         directorSlug: project.director.slug,
-        thumbnailUrl: project.thumbnailUrl,
-        muxPlaybackId: project.muxPlaybackId,
-        sourceVideoUrl: project.sourceVideoUrl,
+        thumbnailUrl: playback.thumbnailUrl,
+        muxPlaybackId: playback.muxPlaybackId,
+        sourceVideoUrl: playback.sourceVideoUrl,
         href: `/site/directors/${project.director.slug}?play=${playId}`,
         clipStartSeconds: HOME_SPOT_CLIP_START_SECONDS[project.id] ?? 3,
       };
