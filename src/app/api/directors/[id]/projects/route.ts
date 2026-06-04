@@ -18,7 +18,7 @@ export async function GET(
 
   const projects = await prisma.project.findMany({
     where: { directorId: params.id },
-    orderBy: { sortOrder: "asc" },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     include: {
       frameGrabs: { orderBy: { sortOrder: "asc" }, take: 1 },
     },

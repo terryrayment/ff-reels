@@ -116,7 +116,7 @@ Client: Select file + director + metadata
 Mux: video.asset.ready
   → POST /api/mux/webhook (signature verified)
   → Find Project by muxAssetId
-  → Update: muxPlaybackId, duration, muxStatus = "ready"
+  → Update: muxPlaybackId, duration, muxStatus = "ready", isPublished = true
   → Update: aspectRatio (from Mux track data)
 
 Mux: video.asset.errored

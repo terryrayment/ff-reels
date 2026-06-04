@@ -331,6 +331,9 @@ export function UploadManager({ directors }: UploadManagerProps) {
           filename: file.name,
           contentType: file.type,
           fileSizeMb: Math.round((file.size / 1048576) * 100) / 100,
+          brand: brand.trim() || undefined,
+          agency: agency.trim() || undefined,
+          year: year.trim() || undefined,
         }),
       });
 

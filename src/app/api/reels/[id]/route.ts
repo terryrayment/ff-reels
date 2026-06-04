@@ -84,8 +84,21 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "ADMIN") {
+  if (!session || !["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const reel = await prisma.reel.findUnique({
+    where: { id: params.id },
+    select: { createdById: true },
+  });
+
+  if (!reel) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  if (session.user.role === "REP" && reel.createdById !== session.user.id) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   await prisma.reel.delete({ where: { id: params.id } });

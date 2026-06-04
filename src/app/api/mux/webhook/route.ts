@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
           data: {
             muxPlaybackId: playbackId,
             muxStatus: "ready",
+            isPublished: true,
             ...(duration != null ? { duration } : {}),
             ...(aspectRatio ? { aspectRatio } : {}),
           },

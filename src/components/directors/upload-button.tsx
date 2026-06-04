@@ -40,6 +40,9 @@ export function UploadButton({ directorId, directorName }: UploadButtonProps) {
           filename: file.name,
           contentType: file.type,
           fileSizeMb: Math.round((file.size / 1048576) * 100) / 100,
+          brand: brand.trim() || undefined,
+          agency: agency.trim() || undefined,
+          year: year.trim() || undefined,
         }),
       });
 

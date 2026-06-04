@@ -13,8 +13,24 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const reelForAccess = await prisma.reel.findUnique({
+    where: { id: params.id },
+    select: { createdById: true },
+  });
+
+  if (!reelForAccess) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  if (
+    session.user.role === "REP" &&
+    reelForAccess.createdById !== session.user.id
+  ) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { projectIds } = await req.json();

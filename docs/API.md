@@ -225,7 +225,7 @@ Get reel with director, items (with projects), and screening links (with view co
 | reelType | enum |
 
 ### `DELETE /api/reels/[id]`
-**Auth:** ADMIN
+**Auth:** Scoped manage access (`ADMIN|PRODUCER` any reel, `REP` own reels)
 
 Cascades: deletes items, screening links, views, spot views, gallery images.
 
@@ -502,10 +502,13 @@ Initiate dual upload (Mux + R2) for a new spot.
 | filename | string | yes |
 | contentType | string | yes |
 | fileSizeMb | number | no |
+| brand | string | no |
+| agency | string | no |
+| year | string | no |
 
 **Response:** `{ projectId, muxUploadUrl, muxUploadId, r2UploadUrl }`
 
-Creates project record with `muxStatus: "waiting"` and a `SPOT_ADDED` update.
+Creates project record with metadata, `muxStatus: "waiting"`, and a `SPOT_ADDED` update.
 
 ---
 
@@ -553,7 +556,7 @@ Close a view session. Sent via `navigator.sendBeacon` (text/plain body).
 **Auth:** Mux signature verification (`MUX_WEBHOOK_SECRET`)
 
 Handles Mux video processing events:
-- `video.asset.ready` → Updates project with `muxPlaybackId`, `duration`, `aspectRatio`
+- `video.asset.ready` → Updates project with `muxPlaybackId`, `duration`, `aspectRatio`, and publishes it for reel builders
 - `video.asset.errored` → Sets `muxStatus = "errored"`
 
 ---

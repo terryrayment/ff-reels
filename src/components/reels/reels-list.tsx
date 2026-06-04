@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Film, Send, Eye, Flame, Search, Copy } from "lucide-react";
+import { Film, Send, Eye, Flame, Search, Copy, Trash2 } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 import { ScreeningLinkButton } from "@/components/reels/screening-link-button";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
 
 type ReelWithStats = {
   id: string;
@@ -41,6 +43,9 @@ export function ReelsList({
 }) {
   const [search, setSearch] = useState("");
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ReelWithStats | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState("");
   const router = useRouter();
 
   const filtered = search.trim()
@@ -67,6 +72,39 @@ export function ReelsList({
       }
     } finally {
       setDuplicatingId(null);
+    }
+  }
+
+  function handleDeletePrompt(e: React.MouseEvent, reel: ReelWithStats) {
+    e.preventDefault();
+    e.stopPropagation();
+    setDeleteError("");
+    setDeleteTarget(reel);
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+
+    setDeletingId(deleteTarget.id);
+    setDeleteError("");
+    try {
+      const res = await fetch(`/api/reels/${deleteTarget.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Failed to delete reel");
+      }
+
+      setDeleteTarget(null);
+      router.refresh();
+    } catch (error) {
+      setDeleteError(
+        error instanceof Error ? error.message : "Failed to delete reel"
+      );
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -239,19 +277,33 @@ export function ReelsList({
                 </div>
               </Link>
 
-              {/* Duplicate button — appears on hover */}
-              <button
-                onClick={(e) => handleDuplicate(e, reel.id)}
-                disabled={duplicatingId === reel.id}
-                title="Duplicate reel"
-                className="absolute right-2 top-2 md:right-3 md:top-3 opacity-0 group-hover/row:opacity-100 focus:opacity-100 transition-opacity z-10 w-8 h-8 rounded-md bg-white border border-[#DEDDD7] hover:border-[#999] hover:bg-[#FAFAF7] flex items-center justify-center"
-              >
-                {duplicatingId === reel.id ? (
-                  <span className="w-3 h-3 border-2 border-[#999] border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Copy size={12} className="text-[#999]" />
-                )}
-              </button>
+              {/* Row actions — appear on hover */}
+              <div className="absolute right-2 top-2 md:right-3 md:top-3 opacity-100 md:opacity-0 md:group-hover/row:opacity-100 md:focus-within:opacity-100 transition-opacity z-10 flex items-center gap-1.5">
+                <button
+                  onClick={(e) => handleDuplicate(e, reel.id)}
+                  disabled={duplicatingId === reel.id}
+                  title="Duplicate reel"
+                  className="w-8 h-8 rounded-md bg-white border border-[#DEDDD7] hover:border-[#999] hover:bg-[#FAFAF7] flex items-center justify-center disabled:opacity-60"
+                >
+                  {duplicatingId === reel.id ? (
+                    <span className="w-3 h-3 border-2 border-[#999] border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Copy size={12} className="text-[#999]" />
+                  )}
+                </button>
+                <button
+                  onClick={(e) => handleDeletePrompt(e, reel)}
+                  disabled={deletingId === reel.id}
+                  title="Delete reel"
+                  className="w-8 h-8 rounded-md bg-white border border-red-100 hover:border-red-300 hover:bg-red-50 flex items-center justify-center disabled:opacity-60"
+                >
+                  {deletingId === reel.id ? (
+                    <span className="w-3 h-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Trash2 size={12} className="text-red-500" />
+                  )}
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -278,6 +330,54 @@ export function ReelsList({
           </Link>
         </div>
       )}
+
+      <Modal
+        open={deleteTarget !== null}
+        onClose={() => {
+          if (!deletingId) setDeleteTarget(null);
+        }}
+        title="Delete reel"
+        description="This cannot be undone."
+      >
+        {deleteTarget && (
+          <div className="space-y-4">
+            <div className="rounded-lg border border-red-100 bg-red-50/60 px-4 py-3">
+              <p className="text-[13px] font-medium text-[#111]">
+                Delete &ldquo;{deleteTarget.title}&rdquo;?
+              </p>
+              <p className="mt-1 text-[12px] text-[#777]">
+                This removes the reel, its screening links, and viewing analytics.
+              </p>
+            </div>
+
+            {deleteError && (
+              <p className="rounded-md bg-red-50 px-3 py-2 text-[12px] text-red-600">
+                {deleteError}
+              </p>
+            )}
+
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setDeleteTarget(null)}
+                disabled={deletingId !== null}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                loading={deletingId === deleteTarget.id}
+                onClick={handleDelete}
+              >
+                <Trash2 size={13} />
+                Delete reel
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </>
   );
 }

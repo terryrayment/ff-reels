@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { directorId, title, filename, contentType, fileSizeMb } = body;
+    const { directorId, title, filename, contentType, fileSizeMb, brand, agency, year } = body;
 
     // Create a Mux direct upload
     const mux = getMux();
@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
       data: {
         directorId,
         title,
+        brand: brand || null,
+        agency: agency || null,
+        year: year ? parseInt(year) : null,
         originalFilename: filename,
         fileSizeMb,
         muxUploadId: upload.id,

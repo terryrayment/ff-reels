@@ -854,8 +854,19 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
               <div className="py-12 text-center rounded-xl border border-dashed border-[#E8E7E3]">
                 <Film size={20} className="text-[#ddd] mx-auto mb-2" />
                 <p className="text-sm text-[#999]">
-                  No published spots for this director.
+                  {spotSearch.trim()
+                    ? `No spots match "${spotSearch.trim()}".`
+                    : "No published spots for this director."}
                 </p>
+                {spotSearch.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => setSpotSearch("")}
+                    className="mt-3 text-[11px] text-[#777] underline underline-offset-2 hover:text-[#111]"
+                  >
+                    Clear search
+                  </button>
+                )}
               </div>
             )}
           </div>

@@ -17,6 +17,8 @@ interface Project {
   muxPlaybackId: string | null;
   thumbnailUrl: string | null;
   isPublished: boolean;
+  originalFilename: string | null;
+  createdAt: string;
 }
 
 interface AddSpotsModalProps {
@@ -82,9 +84,12 @@ export function AddSpotsModal({
 
   // Available projects = published ones not already in the reel
   const availableProjects = useMemo(() => {
-    return projects.filter(
-      (p) => p.isPublished && !existingProjectIds.includes(p.id)
-    );
+    return projects
+      .filter((p) => p.isPublished && !existingProjectIds.includes(p.id))
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
   }, [projects, existingProjectIds]);
 
   // Filter by search query
@@ -96,7 +101,9 @@ export function AddSpotsModal({
         p.title.toLowerCase().includes(q) ||
         (p.brand && p.brand.toLowerCase().includes(q)) ||
         (p.agency && p.agency.toLowerCase().includes(q)) ||
-        (p.category && p.category.toLowerCase().includes(q))
+        (p.category && p.category.toLowerCase().includes(q)) ||
+        (p.originalFilename && p.originalFilename.toLowerCase().includes(q)) ||
+        p.year?.toString().includes(q)
     );
   }, [availableProjects, search]);
 
