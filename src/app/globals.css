@@ -1132,7 +1132,7 @@ mux-player {
   .ff-home-route-link {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    align-items: start;
+    align-items: center;
     gap: clamp(1rem, 3vw, 2rem);
     border-bottom: 1px solid var(--ff-color-line-soft);
     padding: clamp(1.1rem, 2.2vw, 1.35rem) 0;
@@ -1141,7 +1141,6 @@ mux-player {
   }
 
   .ff-home-route-link__index {
-    padding-top: 0.35em;
     font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 520;
@@ -1150,13 +1149,6 @@ mux-player {
     text-transform: uppercase;
     color: var(--ff-color-faint);
     transition: color var(--ff-duration-fast) var(--ff-ease-out);
-  }
-
-  .ff-home-route-link__body {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    gap: 0.45rem;
   }
 
   .ff-home-route-link__label {
@@ -1169,17 +1161,7 @@ mux-player {
     text-transform: uppercase;
   }
 
-  .ff-home-route-link__desc {
-    max-width: 36rem;
-    font-family: var(--ff-font-text);
-    font-size: var(--ff-type-small);
-    line-height: var(--ff-leading-body);
-    color: var(--ff-color-body);
-    transition: color var(--ff-duration-fast) var(--ff-ease-out);
-  }
-
   .ff-home-route-link__arrow {
-    padding-top: 0.45em;
     font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     line-height: 1;

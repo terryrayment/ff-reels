@@ -16,37 +16,31 @@ const HOME_ROUTES = [
     index: "01",
     label: "Work",
     href: "/site/work",
-    description: "Selected films, commercials, and moving-image work.",
   },
   {
     index: "02",
     label: "Talent",
     href: "/site/directors",
-    description: "Directors and creators represented by Friends & Family.",
   },
   {
     index: "03",
     label: "The Youth",
     href: "/site/youth",
-    description: "Culture-led work, new voices, and youth-facing projects.",
   },
   {
     index: "04",
     label: "Colossal",
     href: "/site/colossal",
-    description: "Large-scale creative production and extended worlds.",
   },
   {
     index: "05",
     label: "About",
     href: "/site/about",
-    description: "Who we are.",
   },
   {
     index: "06",
     label: "Contact",
     href: "/site/contact",
-    description: "Start a project.",
   },
 ] as const;
 
@@ -90,12 +84,7 @@ export default function MarketingHomePage() {
                 data-cursor="link"
               >
                 <span className="ff-home-route-link__index">{route.index}</span>
-                <span className="ff-home-route-link__body">
-                  <span className="ff-home-route-link__label">{route.label}</span>
-                  <span className="ff-home-route-link__desc">
-                    {route.description}
-                  </span>
-                </span>
+                <span className="ff-home-route-link__label">{route.label}</span>
                 <span className="ff-home-route-link__arrow" aria-hidden="true">
                   →
                 </span>
