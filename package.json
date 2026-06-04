@@ -11,6 +11,7 @@
     "seo:pack": "node scripts/generate-friendsandfamily-seo-pack.mjs",
     "seo:webflow:apply": "node scripts/apply-webflow-seo-pack.mjs",
     "marketing:transition-qc": "node scripts/marketing/run-transition-matrix-qc.mjs --url=https://reels.friendsandfamily.tv",
+    "marketing:desktop-qc": "node scripts/marketing/run-desktop-functionality-audit.mjs --url=https://reels.friendsandfamily.tv",
     "cap:sync": "npx cap sync",
     "cap:ios": "npx cap open ios",
     "cap:android": "npx cap open android",

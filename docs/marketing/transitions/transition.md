@@ -171,6 +171,20 @@ Optional: `--headed` for visual debugging. Report JSON written under `test-resul
 
 ---
 
+## Desktop functionality QA (full marketing site)
+
+```bash
+npm run marketing:desktop-qc
+```
+
+Optional flags (pass through to the script): `--headed` for visual debugging; `--quick` for layout, nav, filters, and meta routes only (~2 min, skips bulk Work/Talent card clicks).
+
+Report JSON and screenshots under `test-results/desktop-functionality-audit/[timestamp]/` (gitignored — do not commit).
+
+**Pass criteria:** `summary.json` has `"pass": true` and `"criticalFailures": 0`. Complements transition matrix QA with multi-viewport layout, nav, Work filter, gallery-switch, link crawl, and keyboard smoke checks on production.
+
+---
+
 ## Incident history (do not regress)
 
 | Date | Symptom | Root cause | Fix commit |
