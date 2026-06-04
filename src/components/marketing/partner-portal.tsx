@@ -90,20 +90,6 @@ export type PartnerId = keyof typeof MARKETING_PARTNERS;
 
 type PartnerConfig = (typeof MARKETING_PARTNERS)[PartnerId];
 
-const PARTNER_PAGE_FALLBACK: Record<
-  PartnerId,
-  { title: string; body: string }
-> = {
-  youth: {
-    title: "THE YOUTH",
-    body: "Culture-led work, directors, and projects from The Youth.",
-  },
-  colossal: {
-    title: "COLOSSAL",
-    body: "Animation, illustration, VFX, and mixed-media production.",
-  },
-};
-
 interface PartnerPortalProps {
   partnerId: PartnerId;
   onClose: () => void;
@@ -165,10 +151,6 @@ function PartnerSitePortal({
   const isPage = mode === "page";
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeTimedOut, setIframeTimedOut] = useState(false);
-  const [iframeErrored, setIframeErrored] = useState(false);
-  const fallback = PARTNER_PAGE_FALLBACK[partnerId];
-  const showEmbedFallback =
-    isPage && (iframeErrored || (iframeTimedOut && !iframeLoaded));
 
   useEffect(() => {
     if (!isPage) return;
@@ -176,77 +158,33 @@ function PartnerSitePortal({
   }, [isPage, partnerId]);
 
   useEffect(() => {
+    if (isPage) return;
+
     setIframeLoaded(false);
     setIframeTimedOut(false);
-    setIframeErrored(false);
 
     const timeout = window.setTimeout(() => {
       setIframeTimedOut(true);
     }, PARTNER_EMBED_TIMEOUT_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [partnerId]);
+  }, [isPage, partnerId]);
 
   if (isPage) {
     return (
-      <div className="ff-partner-embed ff-shell ff-page">
+      <div className="ff-partner-site-embed">
         <span id={titleId} className="sr-only">
           {partner.label}
         </span>
-        <header className="ff-partner-embed__header">
-          <div>
-            <p className="ff-kicker-muted">{partner.location}</p>
-            <h1 className="ff-display-page mt-3">{fallback.title}</h1>
-          </div>
-          <a
-            href={partner.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ff-partner-page__cta inline-flex shrink-0 items-baseline gap-2"
-            data-cursor="link"
-          >
-            Open full site
-            <span aria-hidden="true">→</span>
-          </a>
-        </header>
-
-        <div className="ff-partner-embed__stage">
-          <iframe
-            key={partner.href}
-            src={partner.href}
-            title={`${partner.label} website preview`}
-            className="ff-partner-embed__iframe"
-            loading="eager"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-            onLoad={() => setIframeLoaded(true)}
-            onError={() => setIframeErrored(true)}
-          />
-
-          {!iframeLoaded && !iframeTimedOut && !iframeErrored && (
-            <p className="ff-partner-embed__loading" aria-live="polite">
-              Loading preview…
-            </p>
-          )}
-
-          {showEmbedFallback && (
-            <div className="ff-partner-embed__fallback">
-              <p className="ff-body ff-partner-page__lede max-w-2xl">
-                {fallback.body}
-              </p>
-              <a
-                href={partner.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ff-partner-page__cta mt-8 inline-flex items-baseline gap-2"
-                data-cursor="link"
-              >
-                Open full site
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          )}
-        </div>
+        <iframe
+          key={partner.href}
+          src={partner.href}
+          title={`${partner.label} website`}
+          className="ff-partner-site-embed__frame"
+          loading="eager"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+        />
       </div>
     );
   }
