@@ -1276,6 +1276,16 @@ mux-player {
     color: var(--ff-color-muted);
   }
 
+  .ff-section-label {
+    font-family: var(--ff-font-text);
+    font-size: calc(var(--ff-type-micro) * 1.25);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--ff-track-micro);
+    text-transform: uppercase;
+    color: var(--ff-color-muted);
+  }
+
   .ff-meta {
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-meta);
