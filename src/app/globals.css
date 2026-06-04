@@ -768,6 +768,10 @@ mux-player {
     padding-bottom: var(--ff-space-page-bottom);
   }
 
+  .ff-contact-page {
+    padding-inline: calc(var(--ff-page-x) * 2);
+  }
+
   .ff-page-heading-row {
     @apply flex items-baseline justify-between gap-6;
     margin-bottom: var(--ff-space-header-gap);

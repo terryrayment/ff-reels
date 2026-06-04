@@ -74,7 +74,7 @@ const REPS = [
 
 export default function ContactPage() {
   return (
-    <div className="ff-shell ff-page">
+    <div className="ff-shell ff-page ff-contact-page">
       <header className="ff-page-heading-row">
         <h1 className="ff-display-page">CONTACT</h1>
       </header>
