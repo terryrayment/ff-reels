@@ -91,11 +91,13 @@ export default function ContactPage() {
           {OFFICES.map((office) => (
             <div key={office.city} className="min-w-0">
               <p className="ff-display-feature">{office.city}</p>
-              {office.lines.map((line) => (
-                <p key={line} className="ff-copy-small mt-3">
-                  {line}
-                </p>
-              ))}
+              <div className="mt-3 space-y-1.5">
+                {office.lines.map((line) => (
+                  <p key={line} className="ff-copy-small">
+                    {line}
+                  </p>
+                ))}
+              </div>
             </div>
           ))}
         </div>
