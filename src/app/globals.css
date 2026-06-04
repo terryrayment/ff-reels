@@ -900,11 +900,14 @@ mux-player {
     padding-top: 0;
   }
 
+  .ff-home-spot-carousel__index-inner {
+    position: relative;
+  }
+
   .ff-home-spot-carousel__index-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    border-top: 1px solid var(--ff-color-line-soft);
   }
 
   .ff-home-spot-carousel__index-item {
@@ -917,17 +920,14 @@ mux-player {
     grid-template-columns: 2.25rem 1fr;
     gap: clamp(1rem, 2.4vw, 1.5rem);
     width: 100%;
-    padding: clamp(1.05rem, 1.9vw, 1.35rem) 0 clamp(1.05rem, 1.9vw, 1.35rem)
+    padding: clamp(0.7rem, 1.4vw, 0.95rem) 0 clamp(0.7rem, 1.4vw, 0.95rem)
       0.85rem;
     border: 0;
-    border-bottom: 1px solid var(--ff-color-line-soft);
     background: transparent;
     color: var(--ff-color-muted);
     text-align: left;
     cursor: pointer;
-    transition:
-      color var(--ff-duration-fast) var(--ff-ease-out),
-      background-color var(--ff-duration-fast) var(--ff-ease-out);
+    transition: color 520ms var(--ff-ease-out);
   }
 
   .ff-home-spot-carousel__index-row:focus-visible {
@@ -940,14 +940,14 @@ mux-player {
   }
 
   .ff-home-spot-carousel__index-num {
-    padding-top: 0.08em;
+    padding-top: 0.12em;
     font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 500;
     letter-spacing: var(--ff-track-micro);
     line-height: 1.2;
     color: var(--ff-color-faint);
-    transition: color var(--ff-duration-fast) var(--ff-ease-out);
+    transition: color 520ms var(--ff-ease-out);
   }
 
   .ff-home-spot-carousel__index-row.is-active
@@ -977,7 +977,7 @@ mux-player {
     text-transform: uppercase;
     line-height: 1.25;
     color: var(--ff-color-faint);
-    transition: color var(--ff-duration-fast) var(--ff-ease-out);
+    transition: color 520ms var(--ff-ease-out);
   }
 
   .ff-home-spot-carousel__index-row.is-active
@@ -994,7 +994,10 @@ mux-player {
     letter-spacing: 0;
     text-transform: uppercase;
     color: var(--ff-color-muted);
-    transition: color var(--ff-duration-fast) var(--ff-ease-out);
+    transition:
+      color 520ms var(--ff-ease-out),
+      font-size 520ms var(--ff-ease-out),
+      font-weight 520ms var(--ff-ease-out);
   }
 
   .ff-home-spot-carousel__index-row.is-active
@@ -1012,22 +1015,39 @@ mux-player {
   }
 
   .ff-home-spot-carousel__index-director {
+    overflow: hidden;
+    max-height: 2rem;
     margin-top: 0.45rem;
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-small);
     line-height: 1.35;
     color: var(--ff-color-muted);
     text-transform: none;
+    opacity: 1;
+    transition:
+      opacity 520ms var(--ff-ease-out),
+      max-height 520ms var(--ff-ease-out),
+      margin-top 520ms var(--ff-ease-out);
+  }
+
+  .ff-home-spot-carousel__index-director.is-collapsed {
+    max-height: 0;
+    margin-top: 0;
+    opacity: 0;
   }
 
   .ff-home-spot-carousel__index-indicator {
     position: absolute;
-    top: -1px;
-    bottom: -1px;
+    top: 0;
     left: 0;
     width: 3px;
+    height: var(--ff-index-indicator-h, 0px);
     background: var(--ff-site-accent);
     pointer-events: none;
+    transform: translateY(var(--ff-index-indicator-y, 0px));
+    transition:
+      transform 520ms var(--ff-ease-out),
+      height 520ms var(--ff-ease-out);
   }
 
   .ff-home-spot-carousel__index-indicator::after {
@@ -1044,6 +1064,10 @@ mux-player {
       forwards;
   }
 
+  .ff-home-spot-carousel__index-indicator.is-reduced-motion {
+    transition: none;
+  }
+
   @keyframes ff-home-spot-indicator {
     from {
       transform: scaleY(1);
@@ -1055,8 +1079,30 @@ mux-player {
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .ff-home-spot-carousel__index-indicator {
+      transition: none;
+    }
+
     .ff-home-spot-carousel__index-indicator::after {
       display: none;
+    }
+
+    .ff-home-spot-carousel__index-title,
+    .ff-home-spot-carousel__index-director,
+    .ff-home-spot-carousel__index-num,
+    .ff-home-spot-carousel__index-brand {
+      transition: none;
+    }
+
+    .ff-home-spot-carousel__index-row:not(.is-active)
+      .ff-home-spot-carousel__index-title {
+      font-size: clamp(0.92rem, 1.25vw, 1.05rem);
+      font-weight: 620;
+    }
+
+    .ff-home-spot-carousel__index-row.is-active
+      .ff-home-spot-carousel__index-title {
+      font-weight: 680;
     }
   }
 
@@ -1069,6 +1115,17 @@ mux-player {
     .ff-home-spot-carousel__index-row {
       min-height: 3rem;
       padding-block: 0.85rem;
+    }
+
+    .ff-home-spot-carousel__index-row:not(.is-active)
+      .ff-home-spot-carousel__index-title {
+      font-size: clamp(0.92rem, 1.25vw, 1.05rem);
+      font-weight: 620;
+    }
+
+    .ff-home-spot-carousel__index-row.is-active
+      .ff-home-spot-carousel__index-title {
+      font-weight: 680;
     }
 
     .ff-home-spot-carousel__index-row:not(.is-active)

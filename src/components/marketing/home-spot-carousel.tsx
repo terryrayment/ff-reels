@@ -3,7 +3,7 @@
 import MuxPlayer from "@mux/mux-player-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { prepareMarketingCardSourceForTransition } from "@/components/marketing/prepare-marketing-card-source";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 import { cn } from "@/lib/utils";
@@ -34,10 +34,48 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
   const clipEndRef = useRef(0);
   const [progressRunning, setProgressRunning] = useState(false);
   const [progressEpoch, setProgressEpoch] = useState(0);
+  const indexInnerRef = useRef<HTMLDivElement>(null);
+  const indexListRef = useRef<HTMLOListElement>(null);
+  const indexRowRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [indexIndicator, setIndexIndicator] = useState({ y: 0, h: 0 });
 
   const active = slides[activeIndex] ?? slides[0];
   const clipDuration = HOME_SPOT_CLIP_DURATION_SECONDS;
   const clipDurationMs = clipDuration * 1000;
+  const clipProgressRunning = progressRunning && !reduceMotion;
+
+  const syncIndexIndicator = useCallback(() => {
+    const inner = indexInnerRef.current;
+    const row = indexRowRefs.current[activeIndex];
+    if (!inner || !row) return;
+    const innerRect = inner.getBoundingClientRect();
+    const rowRect = row.getBoundingClientRect();
+    setIndexIndicator({
+      y: rowRect.top - innerRect.top,
+      h: rowRect.height,
+    });
+  }, [activeIndex]);
+
+  useLayoutEffect(() => {
+    syncIndexIndicator();
+  }, [syncIndexIndicator, slides.length]);
+
+  useEffect(() => {
+    const inner = indexInnerRef.current;
+    if (!inner) return;
+
+    const observer = new ResizeObserver(() => syncIndexIndicator());
+    observer.observe(inner);
+    indexRowRefs.current.forEach((row) => {
+      if (row) observer.observe(row);
+    });
+
+    window.addEventListener("resize", syncIndexIndicator);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", syncIndexIndicator);
+    };
+  }, [syncIndexIndicator, slides.length]);
 
   useEffect(() => {
     setProgressRunning(false);
@@ -290,14 +328,33 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
           className="ff-home-spot-carousel__index"
           aria-label="Featured spot index"
         >
-          <ol className="ff-home-spot-carousel__index-list">
+          <div ref={indexInnerRef} className="ff-home-spot-carousel__index-inner">
+            <span
+              key={`indicator-${progressEpoch}`}
+              className={cn(
+                "ff-home-spot-carousel__index-indicator",
+                clipProgressRunning && "is-running",
+                reduceMotion && "is-reduced-motion",
+              )}
+              style={
+                {
+                  "--ff-index-indicator-y": `${indexIndicator.y}px`,
+                  "--ff-index-indicator-h": `${indexIndicator.h}px`,
+                  "--ff-spot-clip-duration": `${clipDuration}s`,
+                } as React.CSSProperties
+              }
+              aria-hidden="true"
+            />
+            <ol ref={indexListRef} className="ff-home-spot-carousel__index-list">
             {slides.map((slide, index) => {
               const isActive = index === activeIndex;
-              const isRunning = isActive && progressRunning && !reduceMotion;
 
               return (
                 <li key={slide.id} className="ff-home-spot-carousel__index-item">
                   <button
+                    ref={(node) => {
+                      indexRowRefs.current[index] = node;
+                    }}
                     type="button"
                     className={cn(
                       "ff-home-spot-carousel__index-row",
@@ -317,32 +374,21 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
                       <span className="ff-home-spot-carousel__index-title">
                         {slide.title}
                       </span>
-                      {isActive ? (
-                        <span className="ff-home-spot-carousel__index-director">
-                          Dir. {slide.directorName}
-                        </span>
-                      ) : null}
-                    </span>
-                    {isActive ? (
                       <span
-                        key={`indicator-${progressEpoch}`}
                         className={cn(
-                          "ff-home-spot-carousel__index-indicator",
-                          isRunning && "is-running",
+                          "ff-home-spot-carousel__index-director",
+                          !isActive && "is-collapsed",
                         )}
-                        style={
-                          {
-                            "--ff-spot-clip-duration": `${clipDuration}s`,
-                          } as React.CSSProperties
-                        }
-                        aria-hidden="true"
-                      />
-                    ) : null}
+                      >
+                        Dir. {slide.directorName}
+                      </span>
+                    </span>
                   </button>
                 </li>
               );
             })}
-          </ol>
+            </ol>
+          </div>
         </nav>
       </div>
     </section>
