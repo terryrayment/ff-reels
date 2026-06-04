@@ -11,12 +11,7 @@ export default async function ReelsPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
-  const isRep = session.user.role === "REP";
-
-  const where = isRep ? { createdById: session.user.id } : {};
-
   const reels = await prisma.reel.findMany({
-    where,
     orderBy: { updatedAt: "desc" },
     take: 100,
     include: {
@@ -140,7 +135,7 @@ export default async function ReelsPage() {
         </div>
       </div>
 
-      <ReelsList reels={reelsWithStats} isRep={isRep} />
+      <ReelsList reels={reelsWithStats} />
     </div>
   );
 }

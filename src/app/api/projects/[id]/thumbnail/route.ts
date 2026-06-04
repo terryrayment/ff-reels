@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { getUploadUrl, R2_BUCKET, r2 } from "@/lib/r2/client";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
+
 function buildThumbnailProxyUrl(projectId: string, r2Key: string) {
   return `/api/projects/${projectId}/thumbnail?key=${encodeURIComponent(r2Key)}`;
 }
@@ -59,7 +61,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "ADMIN") {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

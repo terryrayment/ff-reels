@@ -14,7 +14,7 @@ export default async function TreatmentsPage() {
   const session = await getServerSession(authOptions);
   const canManage =
     !!session &&
-    (session.user.role === "ADMIN" || session.user.role === "PRODUCER");
+    ["ADMIN", "PRODUCER", "REP"].includes(session.user.role);
 
   // Get all directors that have treatment samples, grouped by director
   const [directors, allDirectors] = await Promise.all([

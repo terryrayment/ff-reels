@@ -43,7 +43,7 @@ Account / Session / VerificationToken (NextAuth)
 ```
 ADMIN      Full access + user management
 PRODUCER   Directors, upload, reels, analytics
-REP        Build/share reels, own analytics
+REP        Same shared team access as PRODUCER
 VIEWER     Screening links only (default)
 ```
 
@@ -441,7 +441,7 @@ These columns are frequently queried but lack explicit indexes:
 |-------|-----------|---------------|
 | Project | directorId | Director detail page, reel builder |
 | Reel | directorId | Director detail page, reel listing |
-| Reel | createdById | REP-filtered reel listing |
+| Reel | createdById | My Activity filtering, reel authorship |
 | ScreeningLink | reelId | Reel detail page |
 | ReelView | screeningLinkId | Analytics, view counts |
 | ReelView | startedAt | Time-based analytics |

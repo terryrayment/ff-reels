@@ -13,13 +13,13 @@ test("reels list exposes a confirmed delete action", () => {
   assert.match(source, /router\.refresh\(\)/);
 });
 
-test("reel delete API follows scoped manage access", () => {
+test("reel delete API allows team roles to delete any reel", () => {
   const source = readFileSync("src/app/api/reels/[id]/route.ts", "utf8");
   const deleteBlock = source.match(/export async function DELETE[\s\S]*?^}/m)?.[0] ?? "";
 
-  assert.match(deleteBlock, /\["ADMIN",\s*"PRODUCER",\s*"REP"\]/);
-  assert.match(deleteBlock, /createdById/);
-  assert.match(deleteBlock, /session\.user\.role === "REP"/);
-  assert.match(deleteBlock, /return NextResponse\.json\(\{ error: "Forbidden" \}, \{ status: 403 \}\)/);
+  assert.match(source, /\["ADMIN",\s*"PRODUCER",\s*"REP"\]/);
+  assert.match(deleteBlock, /TEAM_ROLES\.includes\(session\.user\.role\)/);
+  assert.doesNotMatch(deleteBlock, /session\.user\.role === "REP"/);
+  assert.doesNotMatch(deleteBlock, /return NextResponse\.json\(\{ error: "Forbidden" \}, \{ status: 403 \}\)/);
   assert.match(deleteBlock, /prisma\.reel\.delete/);
 });

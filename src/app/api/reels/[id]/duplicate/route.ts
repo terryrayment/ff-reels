@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { generateToken } from "@/lib/utils";
 
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
+
 /**
  * POST /api/reels/[id]/duplicate
  * Clone a reel with all its spots. New reel gets " (Copy)" suffix.
@@ -13,7 +15,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

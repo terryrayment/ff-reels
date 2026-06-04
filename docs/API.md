@@ -46,8 +46,8 @@ Set password from invite link.
 
 - Team roles: `ADMIN`, `PRODUCER`, `REP`
 - Director role: `DIRECTOR` (scoped to records tied to `session.user.directorId`)
-- `canViewReel`: `ADMIN|PRODUCER` any reel, `REP` only reels they created, `DIRECTOR` only reels for their director profile
-- `canManageReel`: `ADMIN|PRODUCER` any reel, `REP` only reels they created
+- `canViewReel`: team roles can view any reel in the shared library
+- `canManageReel`: team roles can manage any reel in the shared library
 - `canAccessProject`: team roles any project, `DIRECTOR` only own projects
 - Token download fallback: reel/project download endpoints accept either a valid scoped screening token or an authorized session
 
@@ -179,8 +179,7 @@ Generate presigned R2 upload URL for a custom thumbnail.
 **Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 List reels.
-- `ADMIN` and `PRODUCER` see all reels
-- `REP` sees only their own (filtered by `createdById`)
+- Team roles see all reels in the shared library.
 
 **Response:** Array of reels with director, item count, screening link count, and latest view timestamp.
 
@@ -205,17 +204,12 @@ Create a reel with projects. Auto-creates a screening link (30-day expiry) and `
 **Response:** `201` — Reel with `screeningUrl`
 
 ### `GET /api/reels/[id]`
-**Auth:** Scoped by reel ownership:
-- `ADMIN` and `PRODUCER` can view any reel
-- `REP` can view reels they created
-- `DIRECTOR` can view reels tied to their own director profile
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Get reel with director, items (with projects), and screening links (with view counts).
 
 ### `PATCH /api/reels/[id]`
-**Auth:** Scoped manage access:
-- `ADMIN` and `PRODUCER` can update any reel
-- `REP` can update reels they created
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 | Field | Type |
 |-------|------|
@@ -225,12 +219,12 @@ Get reel with director, items (with projects), and screening links (with view co
 | reelType | enum |
 
 ### `DELETE /api/reels/[id]`
-**Auth:** Scoped manage access (`ADMIN|PRODUCER` any reel, `REP` own reels)
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Cascades: deletes items, screening links, views, spot views, gallery images.
 
 ### `PUT /api/reels/[id]/items`
-**Auth:** Scoped manage access (`ADMIN|PRODUCER` any reel, `REP` own reels)
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Replace all reel items. Runs in a transaction (delete all → create new).
 
@@ -248,7 +242,7 @@ Creates a short-lived signed preview token (1 hour) for unpublished preview flow
 ## Screening Links
 
 ### `POST /api/reels/[id]/screening-links`
-**Auth:** Scoped manage access (`ADMIN|PRODUCER` any reel, `REP` own reels)
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Create a screening link for a reel. Auto-creates or links contact record.
 
@@ -266,14 +260,14 @@ Create a screening link for a reel. Auto-creates or links contact record.
 ### Gallery
 
 ### `GET /api/reels/[id]/gallery`
-**Auth:** Scoped reel view access (`ADMIN|PRODUCER` any, `REP` own, `DIRECTOR` own)
+**Auth:** Authorized session
 
 List gallery images with presigned R2 download URLs (1-hour expiry).
 
 **Response:** `{ status, images: [{ id, imageUrl, thumbnailUrl, timeOffset, aiScore, width, height }] }`
 
 ### `POST /api/reels/[id]/gallery/generate`
-**Auth:** Scoped manage access (`ADMIN|PRODUCER` any, `REP` own)
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Trigger AI gallery generation. Returns 409 if already generating.
 
@@ -296,14 +290,14 @@ Streams a ZIP of downloadable reel videos:
 ## Contacts
 
 ### `GET /api/contacts`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 List all contacts (max 200) with engagement stats.
 
 **Response:** Array of contacts with `company`, `totalViews`, `reelsSent`, `avgCompletion`, `lastActive`, `uniqueDirectors`.
 
 ### `POST /api/contacts`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Create or upsert a contact.
 
@@ -321,17 +315,17 @@ Create or upsert a contact.
 **Response:** `201` — Contact with company
 
 ### `GET /api/contacts/search?q=xxx`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Autocomplete search by name or email. Min 2 characters. Returns max 10 results.
 
 ### `GET /api/contacts/[id]`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Contact with company, screening links, and full view history.
 
 ### `PATCH /api/contacts/[id]`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 | Field | Type |
 |-------|------|
@@ -353,12 +347,12 @@ Unlinks screening links (sets `contactId = null`) rather than cascading.
 ## Companies
 
 ### `GET /api/companies`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 List all companies ordered by name, with contact counts.
 
 ### `POST /api/companies`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -427,7 +421,7 @@ Paginated activity feed. Pinned items first, then by creation date.
 **Response:** `{ updates, nextCursor }`
 
 ### `POST /api/updates`
-**Auth:** ADMIN or REP
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Post an admin note to the activity feed.
 
@@ -491,7 +485,7 @@ Manually add an industry credit. Deduplicates against 30-day window and runs qua
 ## Upload
 
 ### `POST /api/upload`
-**Auth:** ADMIN
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
 
 Initiate dual upload (Mux + R2) for a new spot.
 

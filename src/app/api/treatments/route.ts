@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { generateToken } from "@/lib/utils";
 
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
+
 /**
  * POST /api/treatments
  * Create a new treatment sample for a director. Generates a short share token
@@ -14,7 +16,7 @@ import { generateToken } from "@/lib/utils";
  */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "PRODUCER"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

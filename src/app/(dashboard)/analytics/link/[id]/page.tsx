@@ -43,14 +43,6 @@ export default async function LinkDetailPage({
 
   if (!link) return notFound();
 
-  // REP users can only see their own reels
-  if (
-    session.user.role === "REP" &&
-    link.reel.createdBy?.id !== session.user.id
-  ) {
-    return notFound();
-  }
-
   // Engagement score + committee detection
   const [engagementScoreMap, committeeMap] = await Promise.all([
     getEngagementScores([link.id]),

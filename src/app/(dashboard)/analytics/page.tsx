@@ -26,9 +26,6 @@ export default async function AnalyticsPage({
   const session = await getServerSession(authOptions);
   if (!session) return null;
 
-  const isAdmin = session.user.role === "ADMIN";
-  const userId = session.user.id;
-
   // Date range filtering
   const fromDate = searchParams.from ? new Date(searchParams.from) : null;
   const toDate = searchParams.to
@@ -42,12 +39,9 @@ export default async function AnalyticsPage({
 
   const hasDateFilter = !!(fromDate || toDate);
 
-  // Role-based ownership filters
-  const reelOwnerFilter = isAdmin ? {} : { createdById: userId };
-  const viewOwnerFilter = isAdmin
-    ? {}
-    : { screeningLink: { reel: { createdById: userId } } };
-  const ownerFilter = isAdmin ? {} : { reel: { createdById: userId } };
+  const reelOwnerFilter = {};
+  const viewOwnerFilter = {};
+  const ownerFilter = {};
 
   // ── Fetch all dashboard data in parallel ──
   const [, viewsPerDay, engagement, topSpots, reels] =
@@ -238,9 +232,7 @@ export default async function AnalyticsPage({
             Analytics
           </h1>
           <p className="text-[12px] text-[#666] mt-3">
-            {isAdmin
-              ? "All reel activity, ranked by client signal and recency."
-              : "Your reel engagement, ranked by client signal and recency."}
+            All reel activity, ranked by client signal and recency.
           </p>
         </div>
         <div className="flex flex-col items-start gap-3 md:items-end">

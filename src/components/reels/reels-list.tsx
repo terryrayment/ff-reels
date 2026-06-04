@@ -34,13 +34,7 @@ type ReelWithStats = {
   isHotLead: boolean;
 };
 
-export function ReelsList({
-  reels,
-  isRep,
-}: {
-  reels: ReelWithStats[];
-  isRep: boolean;
-}) {
+export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
   const [search, setSearch] = useState("");
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ReelWithStats | null>(null);
@@ -127,8 +121,7 @@ export function ReelsList({
 
       {/* Count */}
       <p className="section-header mb-4">
-        {filtered.length} reel{filtered.length !== 1 ? "s" : ""}
-        {isRep ? " by you" : " found"}
+        {filtered.length} reel{filtered.length !== 1 ? "s" : ""} found
         {search.trim() && filtered.length !== reels.length && (
           <span>
             {" "}

@@ -36,7 +36,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

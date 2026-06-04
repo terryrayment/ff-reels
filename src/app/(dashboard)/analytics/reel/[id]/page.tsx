@@ -65,16 +65,12 @@ export default async function ReelAnalyticsDetailPage({
   const session = await getServerSession(authOptions);
   if (!session) return null;
 
-  const isAdmin = session.user.role === "ADMIN";
-  const canSeeOwnReels = ["ADMIN", "REP", "PRODUCER"].includes(session.user.role);
+  const canSeeTeamReels = ["ADMIN", "PRODUCER", "REP"].includes(session.user.role);
 
-  if (!canSeeOwnReels) return notFound();
+  if (!canSeeTeamReels) return notFound();
 
   const reel = await prisma.reel.findFirst({
-    where: {
-      id: params.id,
-      ...(isAdmin ? {} : { createdById: session.user.id }),
-    },
+    where: { id: params.id },
     include: {
       director: { select: { id: true, name: true } },
       createdBy: { select: { id: true, name: true } },

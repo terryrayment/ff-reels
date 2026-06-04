@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
+
 /**
  * GET /api/reels/[id]
  * Get a single reel with all items and screening links.
@@ -49,7 +51,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -84,21 +86,17 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const reel = await prisma.reel.findUnique({
     where: { id: params.id },
-    select: { createdById: true },
+    select: { id: true },
   });
 
   if (!reel) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
-  if (session.user.role === "REP" && reel.createdById !== session.user.id) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   await prisma.reel.delete({ where: { id: params.id } });

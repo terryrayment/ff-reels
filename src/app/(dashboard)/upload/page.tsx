@@ -8,8 +8,7 @@ export default async function UploadPage() {
   const session = await getServerSession(authOptions);
   if (!session) return null;
 
-  // Only admins can access upload
-  if (session.user.role !== "ADMIN") {
+  if (!["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
     redirect("/dashboard");
   }
 

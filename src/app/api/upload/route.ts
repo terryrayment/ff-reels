@@ -5,6 +5,8 @@ import { getMux } from "@/lib/mux/client";
 import { getUploadUrl } from "@/lib/r2/client";
 import { prisma } from "@/lib/db";
 
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
+
 /**
  * POST /api/upload
  * Creates a Mux direct upload URL and an R2 presigned upload URL.
@@ -14,7 +16,7 @@ import { prisma } from "@/lib/db";
  */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "ADMIN") {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

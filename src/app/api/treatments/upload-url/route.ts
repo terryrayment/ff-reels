@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth/options";
 import { getUploadUrl } from "@/lib/r2/client";
 
 const MAX_PDF_BYTES = 100 * 1024 * 1024; // 100MB
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
 
 /**
  * POST /api/treatments/upload-url
@@ -12,7 +13,7 @@ const MAX_PDF_BYTES = 100 * 1024 * 1024; // 100MB
  */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "PRODUCER"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -6,7 +6,7 @@ import { QuickReelBuilder } from "@/components/reels/quick-reel-builder";
 
 export default async function QuickReelPage() {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
     redirect("/login");
   }
 

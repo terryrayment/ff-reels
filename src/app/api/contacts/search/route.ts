@@ -3,13 +3,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
+
 /**
  * GET /api/contacts/search?q=sarah
  * Autocomplete search for contacts.
  */
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -4,24 +4,20 @@ import { authOptions } from "@/lib/auth/options";
 import { prisma } from "@/lib/db";
 import { generateToken } from "@/lib/utils";
 
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
+
 /**
  * GET /api/reels
  * List reels with director info and item counts.
- * ADMIN sees all reels. REP sees only their own.
+ * Team roles see the shared reel library.
  */
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const where =
-    session.user.role === "REP"
-      ? { createdById: session.user.id }
-      : {};
-
   const reels = await prisma.reel.findMany({
-    where,
     orderBy: { updatedAt: "desc" },
     take: 200,
     include: {
@@ -39,7 +35,7 @@ export async function GET() {
  */
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

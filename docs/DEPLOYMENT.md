@@ -214,7 +214,7 @@ This runs the industry scraper at **8:00 AM UTC (3:00 AM EST)** daily.
 - [ ] Cron job visible in Vercel Dashboard → Cron Jobs
 - [ ] Test a screening link from production URL
 - [ ] Verify `POST /api/reels/preview` returns 401 when logged out
-- [ ] Verify `GET /api/reels/[id]` returns 403 for a REP on someone else’s reel
+- [ ] Verify a REP can view, edit, add spots to, and delete reels created by another team member
 - [ ] Verify gallery/video/project download endpoints work with valid screening token and deny invalid token
 - [ ] Verify `https://reels.friendsandfamily.tv/robots.txt` disallows private/auth/tokenized routes
 - [ ] Verify `https://reels.friendsandfamily.tv/sitemap.xml` only lists approved indexable public routes
@@ -418,7 +418,6 @@ These endpoints have no authentication:
 - Role checked on every API request via `getServerSession()`
 - JWT callback refreshes role from DB on every request
 - Team roles are `ADMIN`, `PRODUCER`, `REP`
-- `ADMIN|PRODUCER`: global access to team resources
-- `REP`: can view/manage only reels they created
+- `ADMIN|PRODUCER|REP`: shared access to team reel, upload, analytics, treatment, and client CRM resources
 - `DIRECTOR`: can access only resources tied to their own `directorId`
-- ADMIN-only: user management, director creation/deletion, upload, project deletion
+- ADMIN-only: user management, director creation/deletion, project deletion, contact deletion

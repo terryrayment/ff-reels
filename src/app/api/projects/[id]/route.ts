@@ -70,8 +70,8 @@ export async function PATCH(
     return NextResponse.json(updated);
   }
 
-  // ADMIN / REP: full metadata update
-  if (!["ADMIN", "REP"].includes(session.user.role)) {
+  // Team roles: full metadata update
+  if (!["ADMIN", "PRODUCER", "REP"].includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

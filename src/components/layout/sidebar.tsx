@@ -37,7 +37,7 @@ const navItems: NavItem[] = [
   { href: "/reels", label: "Reels", roles: ["ADMIN", "PRODUCER", "REP"], icon: Clapperboard },
   { href: "/analytics", label: "Analytics", roles: ["ADMIN", "PRODUCER", "REP"], icon: BarChart3 },
   { href: "/leads", label: "Leads", roles: ["ADMIN", "PRODUCER", "REP"], icon: Search },
-  { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER"], icon: Users },
+  { href: "/directors", label: "Directors", roles: ["ADMIN", "PRODUCER", "REP"], icon: Users },
   { href: "/photographers", label: "Photographers", roles: ["ADMIN", "PRODUCER", "REP"], icon: Briefcase },
   { href: "/treatments", label: "Treatments", roles: ["ADMIN", "PRODUCER", "REP"], icon: FileText },
   { href: "/users", label: "Users", roles: ["ADMIN"], icon: UserCog },
@@ -97,7 +97,7 @@ export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
     : navItems
         .filter((item) => item.roles.includes(role))
         .filter((item) => item.href !== "/leads" || leadsEnabled);
-  const canUpload = !isPreview && (role === "ADMIN" || role === "PRODUCER");
+  const canUpload = !isPreview && ["ADMIN", "PRODUCER", "REP"].includes(role);
 
   // Close mobile sidebar on navigation
   useEffect(() => {
@@ -254,7 +254,7 @@ export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
           );
         })}
 
-        {/* Upload Spots -- ADMIN + PRODUCER */}
+        {/* Upload Spots -- team roles */}
         {canUpload && (
           <div className="pt-3 mt-3 border-t border-[#DEDDD7] mx-2">
             <Link

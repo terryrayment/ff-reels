@@ -18,11 +18,10 @@ test("director projects API returns newest projects as a deterministic tie-break
   assert.match(source, /orderBy:\s*\[\s*\{ sortOrder:\s*"asc" \},\s*\{ createdAt:\s*"desc" \}\s*\]/);
 });
 
-test("reel item updates follow scoped manage access", () => {
+test("reel item updates allow team roles to manage any reel", () => {
   const source = readFileSync("src/app/api/reels/[id]/items/route.ts", "utf8");
 
   assert.match(source, /\["ADMIN",\s*"PRODUCER",\s*"REP"\]/);
-  assert.match(source, /createdById/);
-  assert.match(source, /session\.user\.role === "REP"/);
-  assert.match(source, /return NextResponse\.json\(\{ error: "Forbidden" \}, \{ status: 403 \}\)/);
+  assert.doesNotMatch(source, /session\.user\.role === "REP"/);
+  assert.doesNotMatch(source, /return NextResponse\.json\(\{ error: "Forbidden" \}, \{ status: 403 \}\)/);
 });

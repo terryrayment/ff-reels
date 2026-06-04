@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { generateReelGallery } from "@/lib/gallery/generate";
 
 export const maxDuration = 60;
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
 
 /**
  * POST /api/reels/[id]/gallery/generate
@@ -16,7 +17,7 @@ export async function POST(
   { params }: { params: { id: string } },
 ) {
   const session = await getServerSession(authOptions);
-  if (!session || !["ADMIN", "REP"].includes(session.user.role)) {
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

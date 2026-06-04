@@ -25,12 +25,10 @@ export default async function DashboardPage({
   const showMine = searchParams.mine === "true";
 
   // When "My Activity" is active, filter everything by current user's reels
-  const reelOwnerFilter =
-    !isAdmin || showMine ? { createdById: userId } : {};
-  const viewOwnerFilter =
-    !isAdmin || showMine
-      ? { screeningLink: { reel: { createdById: userId } } }
-      : {};
+  const reelOwnerFilter = showMine ? { createdById: userId } : {};
+  const viewOwnerFilter = showMine
+    ? { screeningLink: { reel: { createdById: userId } } }
+    : {};
 
   // Weekly digest: start of current week (Monday)
   const startOfWeek = new Date();
@@ -59,10 +57,10 @@ export default async function DashboardPage({
     // Director Scorecards
     directorsForCards,
   ] = await Promise.all([
-    isAdmin && !showMine
+    !showMine
       ? prisma.director.count({ where: { isActive: true } })
       : 0,
-    isAdmin && !showMine ? prisma.project.count() : 0,
+    !showMine ? prisma.project.count() : 0,
     prisma.reel.count({ where: reelOwnerFilter }),
     prisma.screeningLink.count({
       where: { isActive: true, reel: reelOwnerFilter },
@@ -299,7 +297,7 @@ export default async function DashboardPage({
   });
 
   const rosterStats =
-    isAdmin && !showMine
+    !showMine
       ? [
           { label: "Directors", value: directorCount, href: "/directors" },
           { label: "Spots", value: projectCount, href: "/directors" },
@@ -311,7 +309,12 @@ export default async function DashboardPage({
           { label: "Active Links", value: linkCount, href: "/analytics" },
         ];
 
-  const roleLabel = isAdmin ? "Producer" : "Sales Rep";
+  const roleLabel =
+    session.user.role === "ADMIN"
+      ? "Admin"
+      : session.user.role === "PRODUCER"
+        ? "Producer"
+        : "Sales Rep";
   const currentUserName = session.user.name || "";
 
   // Group recent views by director+recipient to deduplicate

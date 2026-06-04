@@ -336,7 +336,7 @@ components/
 The sidebar renders different nav items based on role:
 - ADMIN: 9 items (Dashboard, Reels, Analytics, Contacts, Directors, Treatments, Industry, Users, Upload)
 - PRODUCER: 8 items (same minus Users)
-- REP: 6 items (Dashboard, Reels, Analytics, Contacts, Treatments, Industry)
+- REP: 8 items (same as Producer)
 - VIEWER: No sidebar (screening links only)
 
 Mobile: hamburger menu with backdrop blur overlay.
@@ -364,10 +364,9 @@ Capacitor App Shell
 
 ### Authentication Boundaries
 - **Public:** `/s/[token]` (screening), `/login`, `/set-password`, tracking APIs, Mux webhook
-- **Any session:** GET endpoints for directors, projects, reels, updates, industry credits
-- **ADMIN + REP:** Reel CRUD, contact CRUD, screening link creation, company CRUD
-- **ADMIN + PRODUCER + REP:** Project creation, director project management
-- **ADMIN only:** Upload, user management, director CRUD, project delete
+- **Any session:** selected public/session-backed GET endpoints for directors, projects, updates, and industry credits
+- **ADMIN + PRODUCER + REP:** Reel CRUD, screening link creation, upload, project creation/metadata, treatment management, contact read/create/update, company read/create
+- **ADMIN only:** User management, director CRUD, project delete, contact delete
 
 ### Webhook Security
 Mux webhook verifies signature using `MUX_WEBHOOK_SECRET` before processing events.
@@ -376,8 +375,9 @@ Mux webhook verifies signature using `MUX_WEBHOOK_SECRET` before processing even
 `/api/cron/scrape-industry` validates `CRON_SECRET` header (set by Vercel automatically for cron jobs).
 
 ### Data Isolation
-- REP users only see their own reels (`createdById` filter)
-- Analytics filtered by role — REPs see only their own screening link data
+- Team roles share the reel library and analytics by default.
+- The dashboard My Activity toggle filters by `createdById` when a user wants only their own activity.
+- DIRECTOR users are scoped to resources tied to their own `directorId`.
 - User management restricted to ADMIN role
 
 ---
