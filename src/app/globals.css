@@ -897,7 +897,7 @@ mux-player {
 
   .ff-home-spot-carousel__index {
     min-width: 0;
-    padding-top: 0.15rem;
+    padding-top: 0;
   }
 
   .ff-home-spot-carousel__index-list {
@@ -914,41 +914,40 @@ mux-player {
   .ff-home-spot-carousel__index-row {
     position: relative;
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: clamp(0.85rem, 2vw, 1.25rem);
+    grid-template-columns: 2.25rem 1fr;
+    gap: clamp(1rem, 2.4vw, 1.5rem);
     width: 100%;
-    padding: clamp(0.95rem, 1.8vw, 1.2rem) 0;
+    padding: clamp(1.05rem, 1.9vw, 1.35rem) 0 clamp(1.05rem, 1.9vw, 1.35rem)
+      0.85rem;
     border: 0;
     border-bottom: 1px solid var(--ff-color-line-soft);
     background: transparent;
     color: var(--ff-color-muted);
     text-align: left;
     cursor: pointer;
-    transition: color var(--ff-duration-fast) var(--ff-ease-out);
+    transition:
+      color var(--ff-duration-fast) var(--ff-ease-out),
+      background-color var(--ff-duration-fast) var(--ff-ease-out);
   }
 
-  .ff-home-spot-carousel__index-row:hover,
   .ff-home-spot-carousel__index-row:focus-visible {
-    color: var(--ff-color-ink);
     outline: none;
-  }
-
-  .ff-home-spot-carousel__index-row:focus-visible {
-    box-shadow: inset 2px 0 0 var(--ff-site-accent);
+    background: rgb(var(--ff-rgb-accent) / 0.04);
   }
 
   .ff-home-spot-carousel__index-row.is-active {
     color: var(--ff-color-ink);
-    box-shadow: inset 2px 0 0 var(--ff-site-accent);
   }
 
   .ff-home-spot-carousel__index-num {
+    padding-top: 0.08em;
     font-family: var(--ff-font-mono);
     font-size: var(--ff-type-label);
     font-weight: 500;
     letter-spacing: var(--ff-track-micro);
     line-height: 1.2;
     color: var(--ff-color-faint);
+    transition: color var(--ff-duration-fast) var(--ff-ease-out);
   }
 
   .ff-home-spot-carousel__index-row.is-active
@@ -956,91 +955,108 @@ mux-player {
     color: var(--ff-site-accent);
   }
 
+  .ff-home-spot-carousel__index-row:not(.is-active):hover
+    .ff-home-spot-carousel__index-num,
+  .ff-home-spot-carousel__index-row:not(.is-active):focus-visible
+    .ff-home-spot-carousel__index-num {
+    color: var(--ff-site-accent);
+  }
+
   .ff-home-spot-carousel__index-copy {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.15rem;
     min-width: 0;
   }
 
   .ff-home-spot-carousel__index-brand {
     font-family: var(--ff-font-mono);
-    font-size: var(--ff-type-label);
+    font-size: 0.6875rem;
     font-weight: 520;
-    letter-spacing: var(--ff-track-wide);
+    letter-spacing: 0.11em;
     text-transform: uppercase;
-    line-height: 1.2;
+    line-height: 1.25;
+    color: var(--ff-color-faint);
+    transition: color var(--ff-duration-fast) var(--ff-ease-out);
+  }
+
+  .ff-home-spot-carousel__index-row.is-active
+    .ff-home-spot-carousel__index-brand {
+    color: var(--ff-color-ink);
   }
 
   .ff-home-spot-carousel__index-title {
     font-family: var(--ff-font-display);
-    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
-    font-weight: 660;
+    font-size: clamp(0.92rem, 1.25vw, 1.05rem);
+    font-weight: 620;
     font-stretch: 86%;
-    line-height: 0.98;
+    line-height: 1;
     letter-spacing: 0;
     text-transform: uppercase;
+    color: var(--ff-color-muted);
+    transition: color var(--ff-duration-fast) var(--ff-ease-out);
   }
 
-  .ff-home-spot-carousel__index-row:not(.is-active)
+  .ff-home-spot-carousel__index-row.is-active
     .ff-home-spot-carousel__index-title {
-    font-size: clamp(0.95rem, 1.35vw, 1.1rem);
-    font-weight: 620;
+    font-size: clamp(1.45rem, 2.35vw, 2rem);
+    font-weight: 680;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-home-spot-carousel__index-row:not(.is-active):hover
+    .ff-home-spot-carousel__index-title,
+  .ff-home-spot-carousel__index-row:not(.is-active):focus-visible
+    .ff-home-spot-carousel__index-title {
     color: var(--ff-color-body);
   }
 
   .ff-home-spot-carousel__index-director {
-    margin-top: 0.35rem;
+    margin-top: 0.45rem;
     font-family: var(--ff-font-text);
     font-size: var(--ff-type-small);
-    line-height: 1.3;
+    line-height: 1.35;
     color: var(--ff-color-muted);
     text-transform: none;
   }
 
-  .ff-home-spot-carousel__index-progress {
+  .ff-home-spot-carousel__index-indicator {
     position: absolute;
-    left: 0;
-    right: 0;
+    top: -1px;
     bottom: -1px;
-    height: 1px;
-    background: var(--ff-color-line-soft);
-    overflow: hidden;
-  }
-
-  .ff-home-spot-carousel__index-progress::after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 100%;
+    left: 0;
+    width: 3px;
     background: var(--ff-site-accent);
-    transform: scaleX(0);
-    transform-origin: left center;
+    pointer-events: none;
   }
 
-  .ff-home-spot-carousel__index-progress.is-complete::after {
-    transform: scaleX(1);
+  .ff-home-spot-carousel__index-indicator::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(var(--ff-rgb-paper) / 0.72);
+    transform-origin: top center;
+    transform: scaleY(1);
   }
 
-  .ff-home-spot-carousel__index-progress.is-running::after {
-    animation: ff-home-spot-progress var(--ff-spot-clip-duration, 10s) linear
+  .ff-home-spot-carousel__index-indicator.is-running::after {
+    animation: ff-home-spot-indicator var(--ff-spot-clip-duration, 10s) linear
       forwards;
   }
 
-  @keyframes ff-home-spot-progress {
+  @keyframes ff-home-spot-indicator {
     from {
-      transform: scaleX(0);
+      transform: scaleY(1);
     }
 
     to {
-      transform: scaleX(1);
+      transform: scaleY(0);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ff-home-spot-carousel__index-progress.is-running::after {
-      animation: none;
-      transform: scaleX(1);
+    .ff-home-spot-carousel__index-indicator::after {
+      display: none;
     }
   }
 

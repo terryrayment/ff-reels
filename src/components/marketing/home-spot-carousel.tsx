@@ -325,9 +325,9 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
                     </span>
                     {isActive ? (
                       <span
-                        key={`progress-${progressEpoch}`}
+                        key={`indicator-${progressEpoch}`}
                         className={cn(
-                          "ff-home-spot-carousel__index-progress",
+                          "ff-home-spot-carousel__index-indicator",
                           isRunning && "is-running",
                         )}
                         style={
