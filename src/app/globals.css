@@ -1020,6 +1020,23 @@ mux-player {
     padding-bottom: clamp(2.5rem, 5vw, 4rem);
   }
 
+  .ff-partner-page__lede {
+    color: var(--ff-color-body);
+  }
+
+  .ff-partner-page__cta {
+    font-family: var(--ff-font-display);
+    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-weight: 660;
+    font-stretch: 86%;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--ff-color-ink);
+    text-decoration: none;
+    transition: color var(--ff-duration-fast) var(--ff-ease-out);
+  }
+
   .ff-home-route-list {
     list-style: none;
     margin: 0;
@@ -2162,7 +2179,9 @@ mux-player {
 .ff-site-theme .ff-home-route-link:hover .ff-home-route-link__arrow,
 .ff-site-theme .ff-home-route-link:focus-visible .ff-home-route-link__arrow,
 .ff-site-theme .ff-home-contact-link:hover,
-.ff-site-theme .ff-home-contact-link:focus-visible {
+.ff-site-theme .ff-home-contact-link:focus-visible,
+.ff-site-theme .ff-partner-page__cta:hover,
+.ff-site-theme .ff-partner-page__cta:focus-visible {
   color: var(--ff-site-accent);
 }
 

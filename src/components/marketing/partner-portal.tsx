@@ -90,6 +90,20 @@ export type PartnerId = keyof typeof MARKETING_PARTNERS;
 
 type PartnerConfig = (typeof MARKETING_PARTNERS)[PartnerId];
 
+const PARTNER_PAGE_FALLBACK: Record<
+  PartnerId,
+  { title: string; body: string }
+> = {
+  youth: {
+    title: "THE YOUTH",
+    body: "Culture-led work, directors, and projects from The Youth.",
+  },
+  colossal: {
+    title: "COLOSSAL",
+    body: "Animation, illustration, VFX, and mixed-media production.",
+  },
+};
+
 interface PartnerPortalProps {
   partnerId: PartnerId;
   onClose: () => void;
@@ -149,6 +163,7 @@ function PartnerSitePortal({
   const isPage = mode === "page";
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeTimedOut, setIframeTimedOut] = useState(false);
+  const fallback = PARTNER_PAGE_FALLBACK[partnerId];
 
   useEffect(() => {
     if (!isPage) return;
@@ -156,6 +171,8 @@ function PartnerSitePortal({
   }, [isPage, partnerId]);
 
   useEffect(() => {
+    if (isPage) return;
+
     setIframeLoaded(false);
     setIframeTimedOut(false);
 
@@ -164,7 +181,32 @@ function PartnerSitePortal({
     }, 12_000);
 
     return () => window.clearTimeout(timeout);
-  }, [partnerId]);
+  }, [isPage, partnerId]);
+
+  if (isPage) {
+    return (
+      <div className="ff-partner-page ff-shell ff-page">
+        <span id={titleId} className="sr-only">
+          {partner.label}
+        </span>
+        <p className="ff-kicker-muted">{partner.location}</p>
+        <h1 className="ff-display-page mt-3">{fallback.title}</h1>
+        <p className="ff-body ff-partner-page__lede mt-6 max-w-2xl">
+          {fallback.body}
+        </p>
+        <a
+          href={partner.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ff-partner-page__cta mt-10 inline-flex items-baseline gap-2"
+          data-cursor="link"
+        >
+          Open full site
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div
