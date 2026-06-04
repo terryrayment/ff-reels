@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const MARKETING_PARTNERS = {
@@ -146,6 +147,24 @@ function PartnerSitePortal({
 }: PartnerSitePortalProps) {
   const isColossal = partner.label === "COLOSSAL";
   const isPage = mode === "page";
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeTimedOut, setIframeTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (!isPage) return;
+    window.scrollTo(0, 0);
+  }, [isPage, partnerId]);
+
+  useEffect(() => {
+    setIframeLoaded(false);
+    setIframeTimedOut(false);
+
+    const timeout = window.setTimeout(() => {
+      setIframeTimedOut(true);
+    }, 12_000);
+
+    return () => window.clearTimeout(timeout);
+  }, [partnerId]);
 
   return (
     <div
@@ -163,9 +182,11 @@ function PartnerSitePortal({
       <span id={titleId} className="sr-only">
         {partner.label}
       </span>
-      <div className="partner-site-portal__curtain" aria-hidden="true">
-        <span>{partner.label}</span>
-      </div>
+      {!isPage && (
+        <div className="partner-site-portal__curtain" aria-hidden="true">
+          <span>{partner.label}</span>
+        </div>
+      )}
 
       {!isPage && (
         <header className="relative z-20 grid h-ff-nav grid-cols-[1fr_auto] items-center border-b border-white/15 bg-black px-ff-x md:grid-cols-[1fr_auto_1fr]">
@@ -263,17 +284,45 @@ function PartnerSitePortal({
           className={cn(
             "partner-site-portal__browser overflow-hidden border border-white/18 bg-[#050505]",
             isPage
-              ? "h-[calc(100svh-var(--ff-nav-height)-2rem)] min-h-[42rem]"
+              ? "flex h-[calc(100svh-var(--ff-nav-height)-2rem)] min-h-[42rem] flex-col"
               : "min-h-0",
           )}
+          style={isPage ? { opacity: 1 } : undefined}
         >
-          <div className="partner-site-portal__preview h-full overflow-hidden bg-black">
+          {isPage && (
+            <div className="flex shrink-0 items-center justify-between gap-4 border-b border-white/12 bg-black px-ff-x py-3">
+              <p className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white/72">
+                {!iframeLoaded && !iframeTimedOut
+                  ? "Loading site…"
+                  : iframeTimedOut && !iframeLoaded
+                    ? "Preview unavailable"
+                    : partner.location}
+              </p>
+              <a
+                href={partner.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-helveticaText text-ff-label font-medium uppercase tracking-ff-wide text-white transition-colors hover:text-white/72"
+              >
+                Open full site →
+              </a>
+            </div>
+          )}
+          <div
+            className={cn(
+              "partner-site-portal__preview overflow-hidden bg-black",
+              isPage ? "min-h-0 flex-1" : "h-full",
+            )}
+          >
             <iframe
+              key={partner.href}
               src={partner.href}
               title={`${partner.label} website preview`}
               className="h-full w-full border-0 bg-black"
               loading="eager"
               referrerPolicy="strict-origin-when-cross-origin"
+              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+              onLoad={() => setIframeLoaded(true)}
             />
           </div>
         </section>
@@ -381,6 +430,11 @@ function PartnerSitePortal({
 
         .partner-site-portal__browser {
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+        }
+
+        .partner-site-page .partner-site-portal__browser {
+          opacity: 1;
+          animation: none;
         }
 
         @media (max-width: 767px) {

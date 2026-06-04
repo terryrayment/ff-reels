@@ -1,110 +1,106 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { DirectorCard } from "@/components/marketing/director-card";
-import { Magnetic } from "@/components/marketing/magnetic";
-import { ProjectCard } from "@/components/marketing/project-card";
-import {
-  getCanonicalDirectors,
-  getCanonicalWork,
-} from "@/lib/marketing/canonical-source";
-import { getHeroPlayProjectId } from "@/lib/marketing/play-project-id";
+import { getCanonicalWork } from "@/lib/marketing/canonical-source";
 
 export const metadata: Metadata = {
-  title: { absolute: "Friends & Family — Creative Studio" },
+  title: { absolute: "Friends & Family — Commercial Production" },
   description:
-    "Friends & Family is a creative studio for directors, production, post, animation, and VFX across Los Angeles, New York, Sao Paulo, and Curitiba.",
+    "Friends & Family is a commercial production company representing directors, creators, and culture-makers.",
   alternates: { canonical: "/site" },
 };
 
-const PROJECT_TAG_SETS = [
-  ["Direction", "Production", "Campaign"],
-  ["Creative Direction", "Edit", "Finish"],
-  ["Post", "Animation", "VFX"],
-  ["Culture", "Design", "Motion"],
+const HOME_PATHS = [
+  { index: "01", label: "Selected Work", href: "/site/work" },
+  { index: "02", label: "Directors", href: "/site/directors" },
+  { index: "03", label: "The Youth", href: "/site/youth" },
+  { index: "04", label: "Colossal", href: "/site/colossal" },
 ] as const;
 
-function formatIndex(index: number) {
-  return String(index + 1).padStart(2, "0");
-}
-
-export default async function MarketingHomePage() {
-  const featuredDirectors = getCanonicalDirectors().map((director) => {
-    const heroProject = director.portfolio[0] ?? null;
-    return {
-      ...director,
-      stillUrl: heroProject?.thumbnailUrl ?? director.imageUrl,
-      cardPlaybackId: heroProject?.muxPlaybackId ?? null,
-      sourceVideoUrl: heroProject?.sourceVideoUrl ?? null,
-      playProjectId: getHeroPlayProjectId(heroProject),
-    };
-  });
-  const recentProjects = getCanonicalWork().slice(0, 8);
+export default function MarketingHomePage() {
+  const heroProject = getCanonicalWork()[0] ?? null;
 
   return (
-    <>
-      <section className="ff-shell ff-page">
-        <h1 className="sr-only">Friends &amp; Family</h1>
-        {featuredDirectors.length === 0 ? (
-          <EmptyMessage message="No directors published yet." />
-        ) : (
-          <div className="ff-grid-directors">
-            {featuredDirectors.map((d, i) => (
-              <DirectorCard
-                key={d.id}
-                slug={d.slug}
-                name={d.name}
-                positioning={null}
-                stillUrl={d.stillUrl}
-                muxPlaybackId={d.cardPlaybackId}
-                sourceVideoUrl={d.sourceVideoUrl}
-                playProjectId={d.playProjectId}
-                indexLabel={formatIndex(i)}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="border-t ff-rule">
-        <div className="ff-shell ff-section-y">
-          <div className="ff-page-heading-row">
-            <h2 className="ff-display-section">Selected work</h2>
-            <Magnetic>
-              <Link
-                href="/site/work"
-                className="ff-link-small"
-                data-cursor="link"
-              >
-                View archive →
-              </Link>
-            </Magnetic>
-          </div>
-
-          {recentProjects.length === 0 ? (
-            <EmptyMessage message="No projects published yet." />
-          ) : (
-            <div className="ff-grid-work md:grid-cols-4">
-              {recentProjects.map((p, i) => (
-                <ProjectCard
-                  key={p.id}
-                  project={p}
-                  indexLabel={formatIndex(i)}
-                  indexMeta={p.brand ?? "Work"}
-                  tags={PROJECT_TAG_SETS[i % PROJECT_TAG_SETS.length]}
-                />
-              ))}
-            </div>
-          )}
+    <section className="ff-shell ff-page">
+      <div className="ff-home-statement-row">
+        <div>
+          <h1 className="ff-display-hero ff-home-statement">Friends &amp; Family</h1>
         </div>
-      </section>
-    </>
-  );
-}
+        <p className="ff-body ff-home-statement-side">
+          Commercial films, culture work, and director-led production.
+        </p>
+      </div>
 
-function EmptyMessage({ message }: { message: string }) {
-  return (
-    <div className="ff-empty-state">
-      <p>{message}</p>
-    </div>
+      <div className="ff-home-cta-row">
+        <Link href="/site/work" className="ff-button-primary" data-cursor="link">
+          Watch the work
+        </Link>
+        <Link
+          href="/site/directors"
+          className="ff-button-primary"
+          data-cursor="link"
+        >
+          Meet the talent
+        </Link>
+        <Link href="/site/contact" className="ff-button-primary" data-cursor="link">
+          Contact us
+        </Link>
+      </div>
+
+      {heroProject && (
+        <div className="ff-home-hero-media ff-media-frame">
+          {heroProject.sourceVideoUrl ? (
+            <video
+              src={heroProject.sourceVideoUrl}
+              poster={heroProject.thumbnailUrl ?? undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="ff-home-hero-media__asset"
+              aria-label={`${heroProject.brand}, ${heroProject.title}`}
+            />
+          ) : heroProject.thumbnailUrl ? (
+            <Image
+              src={heroProject.thumbnailUrl}
+              alt={`${heroProject.brand}, ${heroProject.title}`}
+              width={1920}
+              height={1080}
+              sizes="(min-width: 1280px) 1200px, 100vw"
+              priority
+              className="ff-home-hero-media__asset"
+            />
+          ) : null}
+          <p className="ff-home-hero-caption">
+            {heroProject.brand}, {heroProject.title}
+            <span aria-hidden="true"> · </span>
+            Dir. {heroProject.director.name}
+          </p>
+        </div>
+      )}
+
+      <nav className="ff-home-path-list" aria-label="Site sections">
+        <ul>
+          {HOME_PATHS.map((path) => (
+            <li key={path.href}>
+              <Link href={path.href} className="ff-home-path-link" data-cursor="link">
+                <span className="ff-home-path-link__index">{path.index}</span>
+                <span className="ff-home-path-link__label">{path.label}</span>
+                <span className="ff-home-path-link__arrow" aria-hidden="true">
+                  →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <p className="ff-meta ff-home-about-link">
+        <Link href="/site/about" className="ff-link-small" data-cursor="link">
+          About Friends &amp; Family
+        </Link>
+      </p>
+    </section>
   );
 }

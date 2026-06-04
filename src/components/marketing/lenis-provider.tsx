@@ -1,10 +1,22 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import Lenis from "lenis";
 
+function isPartnerRoute(pathname: string | null) {
+  return (
+    pathname?.startsWith("/site/youth") ||
+    pathname?.startsWith("/site/colossal")
+  );
+}
+
 export function LenisProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   useEffect(() => {
+    if (isPartnerRoute(pathname)) return;
+
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     if (reduceMotion.matches) return;
@@ -31,7 +43,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       window.cancelAnimationFrame(frame);
       lenis.destroy();
     };
-  }, []);
+  }, [pathname]);
 
   return <>{children}</>;
 }
