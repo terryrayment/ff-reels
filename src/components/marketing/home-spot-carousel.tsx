@@ -27,20 +27,16 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
   const muxRef = useRef<HTMLElement | null>(null);
   const posterRef = useRef<HTMLImageElement>(null);
   const clipEndRef = useRef(0);
-  const [clipProgress, setClipProgress] = useState(0);
+  const [progressRunning, setProgressRunning] = useState(false);
   const [progressEpoch, setProgressEpoch] = useState(0);
 
   const active = slides[activeIndex] ?? slides[0];
   const clipDuration = HOME_SPOT_CLIP_DURATION_SECONDS;
+  const clipDurationMs = clipDuration * 1000;
 
-  const updateClipProgress = useCallback(
-    (currentTime: number) => {
-      const elapsed = Math.max(0, currentTime - active.clipStartSeconds);
-      const ratio = Math.min(1, elapsed / clipDuration);
-      setClipProgress(ratio * 100);
-    },
-    [active.clipStartSeconds, clipDuration],
-  );
+  useEffect(() => {
+    setProgressRunning(false);
+  }, [activeIndex]);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -53,12 +49,20 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
   const goTo = useCallback(
     (index: number) => {
       if (slides.length === 0) return;
-      setClipProgress(0);
+      setProgressRunning(false);
       setProgressEpoch((value) => value + 1);
       setActiveIndex(((index % slides.length) + slides.length) % slides.length);
     },
     [slides.length],
   );
+
+  const startProgress = useCallback(() => {
+    if (reduceMotion) return;
+    setProgressRunning(false);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setProgressRunning(true));
+    });
+  }, [reduceMotion]);
 
   const advance = useCallback(() => {
     goTo(activeIndex + 1);
@@ -79,17 +83,16 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
           /* ignore seek before metadata */
         }
         video.muted = true;
-        void video.play().catch(() => {});
+        void video.play().then(() => startProgress()).catch(() => {});
       };
 
       if (video.readyState >= 1) seekAndPlay();
       else video.addEventListener("loadedmetadata", seekAndPlay, { once: true });
 
       const onTimeUpdate = () => {
-        updateClipProgress(video.currentTime);
         if (video.currentTime >= clipEndRef.current) {
           video.pause();
-          setClipProgress(100);
+          setProgressRunning(false);
           advance();
         }
       };
@@ -118,26 +121,27 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
           /* ignore */
         }
         el.muted = true;
-        void el.play?.().catch(() => {});
+        void el.play?.().then(() => startProgress()).catch(() => {});
       };
 
       seekAndPlay();
       const retry = window.setTimeout(seekAndPlay, 400);
 
+      const onPlaying = () => startProgress();
+      el.addEventListener("playing", onPlaying);
+
       const onTimeUpdate = () => {
-        if (el.currentTime !== undefined) {
-          updateClipProgress(el.currentTime);
-          if (el.currentTime >= clipEndRef.current) {
-            el.pause?.();
-            setClipProgress(100);
-            advance();
-          }
+        if (el.currentTime !== undefined && el.currentTime >= clipEndRef.current) {
+          el.pause?.();
+          setProgressRunning(false);
+          advance();
         }
       };
       el.addEventListener("timeupdate", onTimeUpdate);
 
       return () => {
         window.clearTimeout(retry);
+        el.removeEventListener("playing", onPlaying);
         el.removeEventListener("timeupdate", onTimeUpdate);
         el.pause?.();
       };
@@ -152,13 +156,8 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
       } else if (active.muxPlaybackId && muxRef.current) {
         cleanup = onMux(muxRef.current);
       } else {
-        fallbackTimer = window.setTimeout(advance, clipDuration * 1000);
-        const progressStart = Date.now();
-        const progressTimer = window.setInterval(() => {
-          const elapsed = (Date.now() - progressStart) / 1000;
-          setClipProgress(Math.min(100, (elapsed / clipDuration) * 100));
-        }, 50);
-        cleanup = () => window.clearInterval(progressTimer);
+        startProgress();
+        fallbackTimer = window.setTimeout(advance, clipDurationMs);
       }
     }, 0);
 
@@ -173,8 +172,9 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
     activeIndex,
     advance,
     clipDuration,
+    clipDurationMs,
     reduceMotion,
-    updateClipProgress,
+    startProgress,
   ]);
 
   const handleOpenSpot = async (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -296,7 +296,7 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
           {slides.map((slide, index) => {
             const isActive = index === activeIndex;
             const isPast = index < activeIndex;
-            const fillWidth = isPast ? 100 : isActive ? clipProgress : 0;
+            const isRunning = isActive && progressRunning && !reduceMotion;
 
             return (
               <button
@@ -310,10 +310,12 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
               >
                 <span
                   key={isActive ? `progress-${progressEpoch}` : slide.id}
-                  className="ff-home-spot-carousel__dot-fill"
-                  style={{
-                    width: reduceMotion && isActive ? "100%" : `${fillWidth}%`,
-                  }}
+                  className={`ff-home-spot-carousel__dot-fill${isRunning ? " is-running" : ""}${isPast ? " is-complete" : ""}`}
+                  style={
+                    {
+                      "--ff-spot-clip-duration": `${clipDuration}s`,
+                    } as React.CSSProperties
+                  }
                   aria-hidden="true"
                 />
               </button>

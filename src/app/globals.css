@@ -966,15 +966,41 @@ mux-player {
 
   .ff-home-spot-carousel__dot-fill {
     display: block;
+    width: 100%;
     height: 100%;
-    width: 0;
     background: var(--ff-site-accent);
+    transform: scaleX(0);
     transform-origin: left center;
-    transition: width 90ms linear;
+    will-change: transform;
   }
 
-  .ff-home-spot-carousel__dot.is-active .ff-home-spot-carousel__dot-fill {
-    transition: width 120ms linear;
+  .ff-home-spot-carousel__dot-fill.is-complete {
+    transform: scaleX(1);
+  }
+
+  .ff-home-spot-carousel__dot-fill.is-running {
+    animation: ff-home-spot-progress var(--ff-spot-clip-duration, 10s) linear
+      forwards;
+  }
+
+  @keyframes ff-home-spot-progress {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ff-home-spot-carousel__dot.is-active .ff-home-spot-carousel__dot-fill {
+      transform: scaleX(1);
+    }
+
+    .ff-home-spot-carousel__dot-fill.is-running {
+      animation: none;
+    }
   }
 
   .ff-home-spot-carousel__dot:focus-visible {
