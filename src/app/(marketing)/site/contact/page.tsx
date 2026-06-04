@@ -116,7 +116,7 @@ export default function ContactPage() {
                   <p className="ff-display-feature">{rep.company}</p>
                   <p className="ff-kicker-muted">{rep.region}</p>
                 </div>
-                <ul className="space-y-2 md:text-right">
+                <ul className="space-y-1 md:text-right">
                   {rep.contacts.map((contact) => (
                     <li key={contact.email}>
                       <a
