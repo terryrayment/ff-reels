@@ -1024,6 +1024,56 @@ mux-player {
     color: var(--ff-color-body);
   }
 
+  .ff-partner-embed__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .ff-partner-embed__stage {
+    position: relative;
+    min-height: clamp(24rem, calc(100svh - var(--ff-nav-height) - 14rem), 72rem);
+    overflow: hidden;
+    border: 1px solid var(--ff-color-line-soft);
+    background: var(--ff-color-paper);
+  }
+
+  .ff-partner-embed__iframe {
+    display: block;
+    width: 100%;
+    height: clamp(24rem, calc(100svh - var(--ff-nav-height) - 14rem), 72rem);
+    min-height: inherit;
+    border: 0;
+    background: #050505;
+  }
+
+  .ff-partner-embed__loading {
+    position: absolute;
+    inset: auto 1rem 1rem auto;
+    margin: 0;
+    padding: 0.45rem 0.75rem;
+    font-family: var(--ff-font-mono);
+    font-size: var(--ff-type-label);
+    letter-spacing: var(--ff-track-micro);
+    text-transform: uppercase;
+    color: var(--ff-color-faint);
+    background: color-mix(in srgb, var(--ff-color-paper) 92%, transparent);
+    pointer-events: none;
+  }
+
+  .ff-partner-embed__fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background: color-mix(in srgb, var(--ff-color-paper) 94%, transparent);
+  }
+
   .ff-partner-page__cta {
     font-family: var(--ff-font-display);
     font-size: clamp(1.5rem, 2.5vw, 2.25rem);

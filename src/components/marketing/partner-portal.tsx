@@ -151,6 +151,8 @@ export function PartnerPage({ partnerId }: { partnerId: PartnerId }) {
   );
 }
 
+const PARTNER_EMBED_TIMEOUT_MS = 10_000;
+
 function PartnerSitePortal({
   partnerId,
   partner,
@@ -163,7 +165,10 @@ function PartnerSitePortal({
   const isPage = mode === "page";
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeTimedOut, setIframeTimedOut] = useState(false);
+  const [iframeErrored, setIframeErrored] = useState(false);
   const fallback = PARTNER_PAGE_FALLBACK[partnerId];
+  const showEmbedFallback =
+    isPage && (iframeErrored || (iframeTimedOut && !iframeLoaded));
 
   useEffect(() => {
     if (!isPage) return;
@@ -171,39 +176,77 @@ function PartnerSitePortal({
   }, [isPage, partnerId]);
 
   useEffect(() => {
-    if (isPage) return;
-
     setIframeLoaded(false);
     setIframeTimedOut(false);
+    setIframeErrored(false);
 
     const timeout = window.setTimeout(() => {
       setIframeTimedOut(true);
-    }, 12_000);
+    }, PARTNER_EMBED_TIMEOUT_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [isPage, partnerId]);
+  }, [partnerId]);
 
   if (isPage) {
     return (
-      <div className="ff-partner-page ff-shell ff-page">
+      <div className="ff-partner-embed ff-shell ff-page">
         <span id={titleId} className="sr-only">
           {partner.label}
         </span>
-        <p className="ff-kicker-muted">{partner.location}</p>
-        <h1 className="ff-display-page mt-3">{fallback.title}</h1>
-        <p className="ff-body ff-partner-page__lede mt-6 max-w-2xl">
-          {fallback.body}
-        </p>
-        <a
-          href={partner.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ff-partner-page__cta mt-10 inline-flex items-baseline gap-2"
-          data-cursor="link"
-        >
-          Open full site
-          <span aria-hidden="true">→</span>
-        </a>
+        <header className="ff-partner-embed__header">
+          <div>
+            <p className="ff-kicker-muted">{partner.location}</p>
+            <h1 className="ff-display-page mt-3">{fallback.title}</h1>
+          </div>
+          <a
+            href={partner.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ff-partner-page__cta inline-flex shrink-0 items-baseline gap-2"
+            data-cursor="link"
+          >
+            Open full site
+            <span aria-hidden="true">→</span>
+          </a>
+        </header>
+
+        <div className="ff-partner-embed__stage">
+          <iframe
+            key={partner.href}
+            src={partner.href}
+            title={`${partner.label} website preview`}
+            className="ff-partner-embed__iframe"
+            loading="eager"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+            onLoad={() => setIframeLoaded(true)}
+            onError={() => setIframeErrored(true)}
+          />
+
+          {!iframeLoaded && !iframeTimedOut && !iframeErrored && (
+            <p className="ff-partner-embed__loading" aria-live="polite">
+              Loading preview…
+            </p>
+          )}
+
+          {showEmbedFallback && (
+            <div className="ff-partner-embed__fallback">
+              <p className="ff-body ff-partner-page__lede max-w-2xl">
+                {fallback.body}
+              </p>
+              <a
+                href={partner.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ff-partner-page__cta mt-8 inline-flex items-baseline gap-2"
+                data-cursor="link"
+              >
+                Open full site
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
