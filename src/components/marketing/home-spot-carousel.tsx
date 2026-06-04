@@ -200,7 +200,7 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
 
   return (
     <section
-      className="ff-home-spot-carousel ff-shell"
+      className="ff-home-spot-carousel"
       aria-label="Featured spots"
       aria-roledescription="carousel"
     >
