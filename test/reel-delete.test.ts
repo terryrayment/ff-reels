@@ -13,6 +13,17 @@ test("reels list exposes a confirmed delete action", () => {
   assert.match(source, /router\.refresh\(\)/);
 });
 
+test("reel row actions reserve their own lane instead of overlapping stats", () => {
+  const source = readFileSync("src/components/reels/reels-list.tsx", "utf8");
+  const linkBlock = source.match(/<Link[\s\S]*?href=\{`\/reels\/\$\{reel\.id\}`\}[\s\S]*?>/)?.[0] ?? "";
+  const actionsBlock = source.match(/\{\/\* Row actions[\s\S]*?<button/)?.[0] ?? "";
+
+  assert.match(linkBlock, /pr-24/);
+  assert.match(linkBlock, /md:pr-28/);
+  assert.match(actionsBlock, /top-1\/2/);
+  assert.match(actionsBlock, /-translate-y-1\/2/);
+});
+
 test("reel delete API allows team roles to delete any reel", () => {
   const source = readFileSync("src/app/api/reels/[id]/route.ts", "utf8");
   const deleteBlock = source.match(/export async function DELETE[\s\S]*?^}/m)?.[0] ?? "";

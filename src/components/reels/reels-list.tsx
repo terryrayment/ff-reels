@@ -136,7 +136,7 @@ export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
             <div key={reel.id} className="relative group/row">
               <Link
                 href={`/reels/${reel.id}`}
-                className="content-card flex items-center gap-3 md:gap-5 p-3 md:p-4 group"
+                className="content-card flex items-center gap-3 md:gap-5 p-3 pr-24 md:p-4 md:pr-28 group"
               >
                 {/* Activity indicator dot */}
                 <div className="flex-shrink-0 hidden md:block">
@@ -271,11 +271,12 @@ export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
               </Link>
 
               {/* Row actions — appear on hover */}
-              <div className="absolute right-2 top-2 md:right-3 md:top-3 opacity-100 md:opacity-0 md:group-hover/row:opacity-100 md:focus-within:opacity-100 transition-opacity z-10 flex items-center gap-1.5">
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 md:right-3 opacity-100 md:opacity-0 md:group-hover/row:opacity-100 md:focus-within:opacity-100 transition-opacity z-10 flex items-center gap-1.5">
                 <button
                   onClick={(e) => handleDuplicate(e, reel.id)}
                   disabled={duplicatingId === reel.id}
                   title="Duplicate reel"
+                  aria-label={`Duplicate ${reel.title}`}
                   className="w-8 h-8 rounded-md bg-white border border-[#DEDDD7] hover:border-[#999] hover:bg-[#FAFAF7] flex items-center justify-center disabled:opacity-60"
                 >
                   {duplicatingId === reel.id ? (
@@ -288,6 +289,7 @@ export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
                   onClick={(e) => handleDeletePrompt(e, reel)}
                   disabled={deletingId === reel.id}
                   title="Delete reel"
+                  aria-label={`Delete ${reel.title}`}
                   className="w-8 h-8 rounded-md bg-white border border-red-100 hover:border-red-300 hover:bg-red-50 flex items-center justify-center disabled:opacity-60"
                 >
                   {deletingId === reel.id ? (
