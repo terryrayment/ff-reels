@@ -72,7 +72,10 @@ const serviceSchema = {
 
 export default function CommercialProductionLosAngelesPage() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16 sm:px-8">
+    <main
+      className="ff-site-theme mx-auto min-h-screen max-w-4xl bg-ff-paper px-6 py-16 text-ff-ink sm:px-8"
+      data-ff-colorway="portfolio-olive"
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -80,10 +83,10 @@ export default function CommercialProductionLosAngelesPage() {
         }}
       />
 
-      <h1 className="text-4xl font-semibold tracking-tight text-[#1A1A1A] sm:text-5xl">
+      <h1 className="text-4xl font-semibold tracking-tight text-ff-ink sm:text-5xl">
         High-End Commercial Production Company in Los Angeles
       </h1>
-      <p className="mt-6 text-lg leading-relaxed text-[#3C3C3C]">
+      <p className="mt-6 text-lg leading-relaxed text-ff-copy">
         Friends & Family develops and produces director-led commercial work for
         brands and agencies. Our focus is cinematic storytelling, precise
         execution, and campaign-level craft across broadcast, digital, and
@@ -91,17 +94,17 @@ export default function CommercialProductionLosAngelesPage() {
       </p>
 
       <section className="mt-10 grid gap-6 sm:grid-cols-2">
-        <div className="rounded-2xl border border-[#DDD9CF] bg-white p-6">
-          <h2 className="text-xl font-semibold">What We Produce</h2>
-          <p className="mt-3 text-sm leading-relaxed text-[#4B4B4B]">
+        <div className="rounded-2xl border border-ff-line-soft bg-ff-paper-soft p-6">
+          <h2 className="text-xl font-semibold text-ff-ink">What We Produce</h2>
+          <p className="mt-3 text-sm leading-relaxed text-ff-copy">
             National and regional commercials, campaign films, product spots,
             branded content, and social-first edits built from one production
             system.
           </p>
         </div>
-        <div className="rounded-2xl border border-[#DDD9CF] bg-white p-6">
-          <h2 className="text-xl font-semibold">How We Work</h2>
-          <p className="mt-3 text-sm leading-relaxed text-[#4B4B4B]">
+        <div className="rounded-2xl border border-ff-line-soft bg-ff-paper-soft p-6">
+          <h2 className="text-xl font-semibold text-ff-ink">How We Work</h2>
+          <p className="mt-3 text-sm leading-relaxed text-ff-copy">
             Director discovery, treatment development, budgeting, production,
             and post are aligned around creative intent and clear client
             communication.
@@ -109,16 +112,18 @@ export default function CommercialProductionLosAngelesPage() {
         </div>
       </section>
 
-      <section className="mt-10 rounded-2xl border border-[#DDD9CF] bg-white p-6">
-        <h2 className="text-2xl font-semibold">Los Angeles Production Partner</h2>
-        <p className="mt-3 leading-relaxed text-[#4B4B4B]">
+      <section className="mt-10 rounded-2xl border border-ff-line-soft bg-ff-paper-soft p-6">
+        <h2 className="text-2xl font-semibold text-ff-ink">
+          Los Angeles Production Partner
+        </h2>
+        <p className="mt-3 leading-relaxed text-ff-copy">
           We support agency and brand teams that need a trusted Los Angeles
           partner for high-stakes commercial production. For current roster,
           work, and inquiries, visit the primary site.
         </p>
         <a
           href={absoluteMarketingUrl()}
-          className="mt-5 inline-flex rounded-full bg-[#1A1A1A] px-5 py-2 text-sm font-medium text-white transition hover:bg-black"
+          className="ff-button-primary mt-5 inline-flex rounded-full px-5 py-2 text-sm font-medium transition"
         >
           Visit friendsandfamily.tv
         </a>

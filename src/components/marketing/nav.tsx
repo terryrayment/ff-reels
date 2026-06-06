@@ -79,7 +79,10 @@ export function MarketingNav() {
               height={933}
               sizes="36px"
               priority
-              className={cn("h-9 w-auto", partnerRoute && "invert")}
+              className={cn(
+                "ff-site-logomark h-9 w-auto",
+                partnerRoute && "invert",
+              )}
             />
           </Link>
         </div>

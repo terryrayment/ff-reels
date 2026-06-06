@@ -38,7 +38,10 @@ export default function MarketingLayout({
 }) {
   return (
     <LenisProvider>
-      <div className="ff-site-theme min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
+      <div
+        className="ff-site-theme min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText"
+        data-ff-colorway="portfolio-olive"
+      >
         <MarketingNav />
         <main className="flex-1">{children}</main>
         <MarketingFooter />
