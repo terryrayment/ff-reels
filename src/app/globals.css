@@ -161,6 +161,38 @@
   --ff-focus-ring: 0 0 0 2px rgb(var(--ff-rgb-accent) / 0.42);
 }
 
+/* Portfolio olive colorway test — toggle via data-ff-colorway on .ff-site-theme */
+.ff-site-theme[data-ff-colorway="portfolio-olive"] {
+  --ff-site-bg: #3f4b34;
+  --ff-site-bg-deep: #20271d;
+  --ff-site-ink: #d8d8bf;
+  --ff-site-ink-strong: #efefd8;
+  --ff-site-muted: #b3b8a6;
+  --ff-site-border: rgb(216 216 191 / 0.2);
+  --ff-site-surface: #4a563d;
+  --ff-site-surface-soft: #333d2b;
+  --ff-site-accent: #efefd8;
+  --ff-site-accent-ink: #20271d;
+  --ff-site-media-bg: #0b0d09;
+  --ff-site-focus: #efefd8;
+
+  --border-subtle: rgb(216 216 191 / 0.12);
+  --surface-active: #333d2b;
+  --surface-hover: #4a563d;
+  --surface-nav: rgb(63 75 52 / 0.92);
+  --text-tertiary: #b3b8a6;
+  --text-quaternary: #8f9583;
+  --ff-color-body: rgb(216 216 191 / 0.82);
+  --ff-color-faint: #8f9583;
+  --ff-color-line-soft: rgb(216 216 191 / 0.12);
+  --ff-color-media: #0b0d09;
+  --ff-color-media-soft: #20271d;
+  --ff-rgb-paper: 63 75 52;
+  --ff-rgb-ink: 216 216 191;
+  --ff-rgb-accent: 239 239 216;
+  --ff-focus-ring: 0 0 0 2px rgb(239 239 216 / 0.45);
+}
+
 @media (min-width: 768px) {
   :root {
     --ff-space-page-top: 8rem;
@@ -2287,6 +2319,34 @@ mux-player {
   background: rgb(var(--ff-rgb-accent) / 0.45);
 }
 
+.ff-site-theme[data-ff-colorway="portfolio-olive"] ::-webkit-scrollbar-thumb {
+  background: rgb(216 216 191 / 0.18);
+}
+
+.ff-site-theme[data-ff-colorway="portfolio-olive"] ::-webkit-scrollbar-thumb:hover {
+  background: rgb(239 239 216 / 0.35);
+}
+
+.ff-site-theme[data-ff-colorway="portfolio-olive"] .ff-media-frame-dark {
+  background: #0b0d09;
+}
+
+.ff-site-theme[data-ff-colorway="portfolio-olive"] .ff-button-primary:hover,
+.ff-site-theme[data-ff-colorway="portfolio-olive"] .ff-button-primary:focus-visible {
+  background: var(--ff-site-surface-soft);
+  color: var(--ff-site-ink-strong);
+}
+
+.ff-site-theme[data-ff-colorway="portfolio-olive"] .ff-site-logomark:not(.invert) {
+  filter: brightness(0) saturate(100%) invert(87%) sepia(12%) saturate(384%)
+    hue-rotate(13deg) brightness(99%) contrast(89%);
+}
+
+.ff-site-theme[data-ff-colorway="portfolio-olive"] .ff-home-spot-carousel__stage,
+.ff-site-theme[data-ff-colorway="portfolio-olive"] .ff-media-frame {
+  border-radius: 2px;
+}
+
 .ff-site-theme .ff-link-small:hover,
 .ff-site-theme .ff-link-small:focus-visible,
 .ff-site-theme .ff-text-link:hover,
@@ -2343,6 +2403,10 @@ mux-player {
 
 .ff-site-theme .ff-media-fallback span {
   color: rgb(20 19 15 / 0.38);
+}
+
+.ff-site-theme[data-ff-colorway="portfolio-olive"] .ff-media-fallback span {
+  color: rgb(216 216 191 / 0.48);
 }
 
 /* View Transitions — fluid morph between project thumbnail positions across routes */
