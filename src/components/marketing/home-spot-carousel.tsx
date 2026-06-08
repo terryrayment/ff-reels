@@ -3,7 +3,7 @@
 import MuxPlayer from "@mux/mux-player-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { prepareMarketingCardSourceForTransition } from "@/components/marketing/prepare-marketing-card-source";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 import { cn } from "@/lib/utils";
@@ -34,51 +34,17 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
   const clipEndRef = useRef(0);
   const [progressRunning, setProgressRunning] = useState(false);
   const [progressEpoch, setProgressEpoch] = useState(0);
-  const indexInnerRef = useRef<HTMLDivElement>(null);
-  const indexListRef = useRef<HTMLOListElement>(null);
-  const indexRowRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const [indexIndicator, setIndexIndicator] = useState({ y: 0, h: 0 });
+  const sectionRef = useRef<HTMLElement>(null);
+  const [mediaReady, setMediaReady] = useState(false);
 
   const active = slides[activeIndex] ?? slides[0];
   const clipDuration = HOME_SPOT_CLIP_DURATION_SECONDS;
   const clipDurationMs = clipDuration * 1000;
   const clipProgressRunning = progressRunning && !reduceMotion;
 
-  const syncIndexIndicator = useCallback(() => {
-    const inner = indexInnerRef.current;
-    const row = indexRowRefs.current[activeIndex];
-    if (!inner || !row) return;
-    const innerRect = inner.getBoundingClientRect();
-    const rowRect = row.getBoundingClientRect();
-    setIndexIndicator({
-      y: rowRect.top - innerRect.top,
-      h: rowRect.height,
-    });
-  }, [activeIndex]);
-
-  useLayoutEffect(() => {
-    syncIndexIndicator();
-  }, [syncIndexIndicator, slides.length]);
-
-  useEffect(() => {
-    const inner = indexInnerRef.current;
-    if (!inner) return;
-
-    const observer = new ResizeObserver(() => syncIndexIndicator());
-    observer.observe(inner);
-    indexRowRefs.current.forEach((row) => {
-      if (row) observer.observe(row);
-    });
-
-    window.addEventListener("resize", syncIndexIndicator);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", syncIndexIndicator);
-    };
-  }, [syncIndexIndicator, slides.length]);
-
   useEffect(() => {
     setProgressRunning(false);
+    setMediaReady(false);
   }, [activeIndex]);
 
   useEffect(() => {
@@ -223,9 +189,10 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
   const handleOpenSpot = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
-    const sourceElement = e.currentTarget.querySelector<HTMLElement>(
+    const sourceElement = sectionRef.current?.querySelector<HTMLElement>(
       "[data-marketing-media-frame]",
     );
+    if (!sourceElement) return;
     await prepareMarketingCardSourceForTransition(
       e.currentTarget,
       sourceElement,
@@ -243,6 +210,7 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
 
   return (
     <section
+      ref={sectionRef}
       className="ff-home-spot-carousel ff-shell"
       aria-label="Featured spots"
       aria-roledescription="carousel"
@@ -295,11 +263,18 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
                       <video
                         ref={videoRef}
                         key={slide.id}
-                        className="ff-home-spot-carousel__video"
+                        className={cn(
+                          "ff-home-spot-carousel__video",
+                          mediaReady && "is-ready",
+                        )}
                         src={slide.sourceVideoUrl}
+                        width={1920}
+                        height={1080}
                         muted
                         playsInline
                         preload="auto"
+                        onLoadedData={() => setMediaReady(true)}
+                        onCanPlay={() => setMediaReady(true)}
                       />
                     ) : null}
 
@@ -324,72 +299,82 @@ export function HomeSpotCarousel({ slides }: HomeSpotCarouselProps) {
           </Link>
         </div>
 
-        <nav
-          className="ff-home-spot-carousel__index"
-          aria-label="Featured spot index"
-        >
-          <div ref={indexInnerRef} className="ff-home-spot-carousel__index-inner">
+        <div className="ff-home-spot-carousel__editorial">
+          <div className="ff-home-spot-carousel__active" aria-live="polite">
             <span
               key={`indicator-${progressEpoch}`}
               className={cn(
-                "ff-home-spot-carousel__index-indicator",
+                "ff-home-spot-carousel__active-indicator",
                 clipProgressRunning && "is-running",
                 reduceMotion && "is-reduced-motion",
               )}
               style={
                 {
-                  "--ff-index-indicator-y": `${indexIndicator.y}px`,
-                  "--ff-index-indicator-h": `${indexIndicator.h}px`,
                   "--ff-spot-clip-duration": `${clipDuration}s`,
                 } as React.CSSProperties
               }
               aria-hidden="true"
             />
-            <ol ref={indexListRef} className="ff-home-spot-carousel__index-list">
-            {slides.map((slide, index) => {
-              const isActive = index === activeIndex;
-
-              return (
-                <li key={slide.id} className="ff-home-spot-carousel__index-item">
-                  <button
-                    ref={(node) => {
-                      indexRowRefs.current[index] = node;
-                    }}
-                    type="button"
-                    className={cn(
-                      "ff-home-spot-carousel__index-row",
-                      isActive && "is-active",
-                    )}
-                    aria-current={isActive ? "true" : undefined}
-                    aria-label={`${slide.brand} ${slide.title}, Dir. ${slide.directorName}`}
-                    onClick={() => goTo(index)}
-                  >
-                    <span className="ff-home-spot-carousel__index-num">
-                      {formatIndexLabel(index)}
-                    </span>
-                    <span className="ff-home-spot-carousel__index-copy">
-                      <span className="ff-home-spot-carousel__index-brand">
-                        {slide.brand}
-                      </span>
-                      <span className="ff-home-spot-carousel__index-title">
-                        {slide.title}
-                      </span>
-                      <span
-                        className={cn(
-                          "ff-home-spot-carousel__index-director",
-                          !isActive && "is-collapsed",
-                        )}
-                      >
-                        Dir. {slide.directorName}
-                      </span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-            </ol>
+            <span className="ff-home-spot-carousel__active-num">
+              {formatIndexLabel(activeIndex)}
+            </span>
+            <Link
+              href={active.href}
+              className="ff-home-spot-carousel__active-link ff-focusable"
+              data-cursor="link"
+              onClick={handleOpenSpot}
+              aria-label={`${active.brand} ${active.title}, Dir. ${active.directorName}`}
+            >
+              <span className="ff-home-spot-carousel__active-brand">
+                {active.brand}
+              </span>
+              <span className="ff-home-spot-carousel__active-title">
+                {active.title}
+              </span>
+            </Link>
+            <p className="ff-home-spot-carousel__active-director">
+              Dir. {active.directorName}
+            </p>
+            <Link
+              href={active.href}
+              className="ff-home-spot-carousel__active-action ff-focusable"
+              data-cursor="link"
+              onClick={handleOpenSpot}
+            >
+              View project
+            </Link>
           </div>
-        </nav>
+
+          <nav
+            className="ff-home-spot-carousel__next"
+            aria-label="Next featured spots"
+          >
+            <p className="ff-home-spot-carousel__next-label">NEXT</p>
+            <ol className="ff-home-spot-carousel__next-list">
+              {slides.map((slide, index) => {
+                if (index === activeIndex) return null;
+
+                return (
+                  <li key={slide.id} className="ff-home-spot-carousel__next-item">
+                    <button
+                      type="button"
+                      className="ff-home-spot-carousel__next-row ff-focusable"
+                      aria-label={`Show ${slide.brand} ${slide.title}`}
+                      onClick={() => goTo(index)}
+                    >
+                      <span className="ff-home-spot-carousel__next-num">
+                        {formatIndexLabel(index)}
+                      </span>
+                      <span className="ff-home-spot-carousel__next-copy">
+                        {slide.brand} — {slide.title}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
+        </div>
       </div>
     </section>
   );

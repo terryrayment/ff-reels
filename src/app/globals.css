@@ -855,8 +855,16 @@ mux-player {
 
   .ff-home-spot-carousel__link {
     display: block;
+    position: relative;
+    width: 100%;
     color: inherit;
     text-decoration: none;
+  }
+
+  .ff-home-spot-carousel__link::before {
+    content: "";
+    display: block;
+    padding-top: 56.25%;
   }
 
   .ff-home-spot-carousel__link:focus-visible {
@@ -868,11 +876,13 @@ mux-player {
   }
 
   .ff-home-spot-carousel__stage {
-    position: relative;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     overflow: hidden;
     background: var(--ff-color-media);
+    contain: layout paint;
   }
 
   .ff-home-spot-carousel__slide {
@@ -902,7 +912,16 @@ mux-player {
     z-index: 1;
   }
 
-  .ff-home-spot-carousel__video,
+  .ff-home-spot-carousel__video {
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 320ms var(--ff-ease-out);
+  }
+
+  .ff-home-spot-carousel__video.is-ready {
+    opacity: 1;
+  }
+
   .ff-home-spot-carousel__mux {
     z-index: 2;
   }
@@ -927,162 +946,29 @@ mux-player {
     text-align: center;
   }
 
-  .ff-home-spot-carousel__index {
+  .ff-home-spot-carousel__editorial {
     min-width: 0;
-    padding-top: 0;
-  }
-
-  .ff-home-spot-carousel__index-inner {
-    position: relative;
-  }
-
-  .ff-home-spot-carousel__index-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .ff-home-spot-carousel__index-item {
-    margin: 0;
-  }
-
-  .ff-home-spot-carousel__index-row {
-    position: relative;
-    display: grid;
-    grid-template-columns: 2.25rem 1fr;
-    gap: clamp(1rem, 2.4vw, 1.5rem);
-    width: 100%;
-    padding: clamp(0.7rem, 1.4vw, 0.95rem) 0 clamp(0.7rem, 1.4vw, 0.95rem)
-      0.85rem;
-    border: 0;
-    background: transparent;
-    color: var(--ff-color-muted);
-    text-align: left;
-    cursor: pointer;
-    transition: color 520ms var(--ff-ease-out);
-  }
-
-  .ff-home-spot-carousel__index-row:focus-visible {
-    outline: none;
-    background: rgb(var(--ff-rgb-accent) / 0.04);
-  }
-
-  .ff-home-spot-carousel__index-row.is-active {
-    color: var(--ff-color-ink);
-  }
-
-  .ff-home-spot-carousel__index-num {
-    padding-top: 0.12em;
-    font-family: var(--ff-font-mono);
-    font-size: var(--ff-type-label);
-    font-weight: 500;
-    letter-spacing: var(--ff-track-micro);
-    line-height: 1.2;
-    color: var(--ff-color-faint);
-    transition: color 520ms var(--ff-ease-out);
-  }
-
-  .ff-home-spot-carousel__index-row.is-active
-    .ff-home-spot-carousel__index-num {
-    color: var(--ff-site-accent);
-  }
-
-  .ff-home-spot-carousel__index-row:not(.is-active):hover
-    .ff-home-spot-carousel__index-num,
-  .ff-home-spot-carousel__index-row:not(.is-active):focus-visible
-    .ff-home-spot-carousel__index-num {
-    color: var(--ff-site-accent);
-  }
-
-  .ff-home-spot-carousel__index-copy {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
-    min-width: 0;
+    gap: clamp(1rem, 2vw, 1.35rem);
   }
 
-  .ff-home-spot-carousel__index-brand {
-    font-family: var(--ff-font-mono);
-    font-size: 0.6875rem;
-    font-weight: 520;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
-    line-height: 1.25;
-    color: var(--ff-color-faint);
-    transition: color 520ms var(--ff-ease-out);
+  .ff-home-spot-carousel__active {
+    position: relative;
+    padding: 0 0 0 clamp(1rem, 1.8vw, 1.35rem);
   }
 
-  .ff-home-spot-carousel__index-row.is-active
-    .ff-home-spot-carousel__index-brand {
-    color: var(--ff-color-ink);
-  }
-
-  .ff-home-spot-carousel__index-title {
-    font-family: var(--ff-font-display);
-    font-size: clamp(0.92rem, 1.25vw, 1.05rem);
-    font-weight: 620;
-    font-stretch: 86%;
-    line-height: 1;
-    letter-spacing: 0;
-    text-transform: uppercase;
-    color: var(--ff-color-muted);
-    transition:
-      color 520ms var(--ff-ease-out),
-      font-size 520ms var(--ff-ease-out),
-      font-weight 520ms var(--ff-ease-out);
-  }
-
-  .ff-home-spot-carousel__index-row.is-active
-    .ff-home-spot-carousel__index-title {
-    font-size: clamp(1.45rem, 2.35vw, 2rem);
-    font-weight: 680;
-    color: var(--ff-color-ink);
-  }
-
-  .ff-home-spot-carousel__index-row:not(.is-active):hover
-    .ff-home-spot-carousel__index-title,
-  .ff-home-spot-carousel__index-row:not(.is-active):focus-visible
-    .ff-home-spot-carousel__index-title {
-    color: var(--ff-color-body);
-  }
-
-  .ff-home-spot-carousel__index-director {
-    overflow: hidden;
-    max-height: 2rem;
-    margin-top: 0.45rem;
-    font-family: var(--ff-font-text);
-    font-size: var(--ff-type-small);
-    line-height: 1.35;
-    color: var(--ff-color-muted);
-    text-transform: none;
-    opacity: 1;
-    transition:
-      opacity 520ms var(--ff-ease-out),
-      max-height 520ms var(--ff-ease-out),
-      margin-top 520ms var(--ff-ease-out);
-  }
-
-  .ff-home-spot-carousel__index-director.is-collapsed {
-    max-height: 0;
-    margin-top: 0;
-    opacity: 0;
-  }
-
-  .ff-home-spot-carousel__index-indicator {
+  .ff-home-spot-carousel__active-indicator {
     position: absolute;
     top: 0;
     left: 0;
     width: 3px;
-    height: var(--ff-index-indicator-h, 0px);
+    height: clamp(3.25rem, 7vw, 4.5rem);
     background: var(--ff-site-accent);
     pointer-events: none;
-    transform: translateY(var(--ff-index-indicator-y, 0px));
-    transition:
-      transform 520ms var(--ff-ease-out),
-      height 520ms var(--ff-ease-out);
   }
 
-  .ff-home-spot-carousel__index-indicator::after {
+  .ff-home-spot-carousel__active-indicator::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -1091,13 +977,154 @@ mux-player {
     transform: scaleY(1);
   }
 
-  .ff-home-spot-carousel__index-indicator.is-running::after {
+  .ff-home-spot-carousel__active-indicator.is-running::after {
     animation: ff-home-spot-indicator var(--ff-spot-clip-duration, 10s) linear
       forwards;
   }
 
-  .ff-home-spot-carousel__index-indicator.is-reduced-motion {
+  .ff-home-spot-carousel__active-indicator.is-reduced-motion {
     transition: none;
+  }
+
+  .ff-home-spot-carousel__active-num {
+    display: block;
+    margin-bottom: 0.85rem;
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-small);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+    color: var(--ff-color-faint);
+  }
+
+  .ff-home-spot-carousel__active-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ff-home-spot-carousel__active-link:focus-visible {
+    outline: none;
+    box-shadow: var(--ff-focus-ring);
+  }
+
+  .ff-home-spot-carousel__active-brand {
+    display: block;
+    margin-bottom: 0.55rem;
+    font-family: var(--ff-font-mono);
+    font-size: 0.75rem;
+    font-weight: 520;
+    letter-spacing: 0.12em;
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: var(--ff-color-body);
+  }
+
+  .ff-home-spot-carousel__active-title {
+    display: block;
+    font-family: var(--ff-font-display);
+    font-size: clamp(2rem, 4.2vw, 3.75rem);
+    font-weight: 680;
+    font-stretch: 86%;
+    line-height: 0.92;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-home-spot-carousel__active-director {
+    margin: 0.85rem 0 0;
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-small);
+    line-height: 1.35;
+    color: var(--ff-color-muted);
+  }
+
+  .ff-home-spot-carousel__active-action {
+    display: inline-block;
+    margin-top: 1rem;
+    padding-bottom: clamp(0.85rem, 1.6vw, 1.15rem);
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-small);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.35;
+    text-transform: none;
+    text-decoration: none;
+    color: var(--ff-color-faint);
+    transition: color 240ms var(--ff-ease-out);
+  }
+
+  .ff-home-spot-carousel__active-action:hover,
+  .ff-home-spot-carousel__active-action:focus-visible {
+    color: var(--ff-color-ink);
+  }
+
+  .ff-home-spot-carousel__next {
+    min-width: 0;
+  }
+
+  .ff-home-spot-carousel__next-label {
+    margin: 0 0 0.45rem;
+    font-family: var(--ff-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 520;
+    letter-spacing: 0.14em;
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: var(--ff-color-faint);
+  }
+
+  .ff-home-spot-carousel__next-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ff-home-spot-carousel__next-item {
+    margin: 0;
+  }
+
+  .ff-home-spot-carousel__next-row {
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    gap: 0.65rem;
+    width: 100%;
+    padding: 0.28rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--ff-color-muted);
+    text-align: left;
+    cursor: pointer;
+    transition: color 240ms var(--ff-ease-out);
+  }
+
+  .ff-home-spot-carousel__next-row:focus-visible {
+    outline: none;
+    color: var(--ff-color-ink);
+    background: rgb(var(--ff-rgb-accent) / 0.04);
+  }
+
+  .ff-home-spot-carousel__next-row:hover {
+    color: var(--ff-color-body);
+  }
+
+  .ff-home-spot-carousel__next-num {
+    padding-top: 0;
+    font-family: var(--ff-font-text);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+    color: var(--ff-color-faint);
+  }
+
+  .ff-home-spot-carousel__next-copy {
+    min-width: 0;
+    font-family: var(--ff-font-text);
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    color: inherit;
   }
 
   @keyframes ff-home-spot-indicator {
@@ -1111,30 +1138,15 @@ mux-player {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ff-home-spot-carousel__index-indicator {
-      transition: none;
-    }
-
-    .ff-home-spot-carousel__index-indicator::after {
+    .ff-home-spot-carousel__active-indicator::after {
       display: none;
     }
 
-    .ff-home-spot-carousel__index-title,
-    .ff-home-spot-carousel__index-director,
-    .ff-home-spot-carousel__index-num,
-    .ff-home-spot-carousel__index-brand {
+    .ff-home-spot-carousel__active-title,
+    .ff-home-spot-carousel__active-action,
+    .ff-home-spot-carousel__next-row,
+    .ff-home-spot-carousel__video {
       transition: none;
-    }
-
-    .ff-home-spot-carousel__index-row:not(.is-active)
-      .ff-home-spot-carousel__index-title {
-      font-size: clamp(0.92rem, 1.25vw, 1.05rem);
-      font-weight: 620;
-    }
-
-    .ff-home-spot-carousel__index-row.is-active
-      .ff-home-spot-carousel__index-title {
-      font-weight: 680;
     }
   }
 
@@ -1144,34 +1156,17 @@ mux-player {
       gap: 1.25rem;
     }
 
-    .ff-home-spot-carousel__index-row {
-      min-height: 3rem;
-      padding-block: 0.85rem;
+    .ff-home-spot-carousel__active {
+      padding-left: 1rem;
     }
 
-    .ff-home-spot-carousel__index-row:not(.is-active)
-      .ff-home-spot-carousel__index-title {
-      font-size: clamp(0.92rem, 1.25vw, 1.05rem);
-      font-weight: 620;
+    .ff-home-spot-carousel__active-title {
+      font-size: clamp(1.75rem, 9vw, 2.65rem);
     }
 
-    .ff-home-spot-carousel__index-row.is-active
-      .ff-home-spot-carousel__index-title {
-      font-weight: 680;
-    }
-
-    .ff-home-spot-carousel__index-row:not(.is-active)
-      .ff-home-spot-carousel__index-copy {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.35rem 0.5rem;
-    }
-
-    .ff-home-spot-carousel__index-row:not(.is-active)
-      .ff-home-spot-carousel__index-brand::after {
-      content: " —";
-      color: var(--ff-color-faint);
+    .ff-home-spot-carousel__next-row {
+      min-height: 0;
+      padding-block: 0.35rem;
     }
   }
 
@@ -1230,12 +1225,11 @@ mux-player {
   }
 
   .ff-home-route-link__index {
-    font-family: var(--ff-font-mono);
-    font-size: var(--ff-type-label);
-    font-weight: 520;
-    line-height: 1;
-    letter-spacing: var(--ff-track-wide);
-    text-transform: uppercase;
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-small);
+    font-weight: 400;
+    line-height: 1.35;
+    letter-spacing: 0;
     color: var(--ff-color-faint);
     transition: color var(--ff-duration-fast) var(--ff-ease-out);
   }
