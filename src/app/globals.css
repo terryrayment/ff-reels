@@ -1419,12 +1419,12 @@ mux-player {
 
   .ff-kicker,
   .ff-kicker-muted {
-    font-family: var(--ff-font-label);
-    font-size: var(--ff-type-micro);
-    font-weight: 700;
-    line-height: 1;
+    font-family: var(--ff-font-text);
+    font-size: var(--ff-type-small);
+    font-weight: 400;
+    line-height: var(--ff-leading-body);
     letter-spacing: 0;
-    text-transform: uppercase;
+    text-transform: none;
     font-stretch: normal;
     font-variation-settings: normal;
   }
