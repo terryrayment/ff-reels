@@ -33,7 +33,7 @@ const CONTACTS = [
 const OFFICES = [
   {
     city: "Los Angeles",
-    lines: ["1618 Lucretia Avenue", "Los Angeles, CA 90026"],
+    lines: ["3023 Dolores St", "Los Angeles, CA 90065"],
   },
   {
     city: "New York",

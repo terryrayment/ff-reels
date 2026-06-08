@@ -8,8 +8,8 @@ import { MARKETING_PARTNERS } from "@/components/marketing/partner-portal";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
+  { type: "link", href: "/site/directors", label: "Directors" },
   { type: "link", href: "/site/work", label: "Work" },
-  { type: "link", href: "/site/directors", label: "Talent" },
   { type: "partner", href: "/site/youth", partnerId: "youth" },
   { type: "partner", href: "/site/colossal", partnerId: "colossal" },
   { type: "link", href: "/site/about", label: "About" },
@@ -163,42 +163,42 @@ export function MarketingNav() {
           open && "is-open",
         )}
       >
-          <div className="px-6 py-5">
-            <ul className="space-y-3">
-              {NAV_ITEMS.map((item) => {
-                if (item.type === "partner") {
-                  const partner = MARKETING_PARTNERS[item.partnerId];
-                  return (
-                    <li key={item.partnerId}>
-                      <Link
-                        href={item.href}
-                        prefetch={false}
-                        tabIndex={open ? 0 : -1}
-                        onClick={() => setOpen(false)}
-                        className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
-                      >
-                        {partner.label}
-                      </Link>
-                    </li>
-                  );
-                }
-
+        <div className="px-6 py-5">
+          <ul className="space-y-3">
+            {NAV_ITEMS.map((item) => {
+              if (item.type === "partner") {
+                const partner = MARKETING_PARTNERS[item.partnerId];
                 return (
-                  <li key={item.href}>
+                  <li key={item.partnerId}>
                     <Link
                       href={item.href}
                       prefetch={false}
                       tabIndex={open ? 0 : -1}
-                      className="ff-font-display block text-ff-nav-drawer font-medium text-ff-ink"
+                      onClick={() => setOpen(false)}
+                      className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
                     >
-                      {item.label}
+                      {partner.label}
                     </Link>
                   </li>
                 );
-              })}
-            </ul>
-          </div>
+              }
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    prefetch={false}
+                    tabIndex={open ? 0 : -1}
+                    className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
+      </div>
     </header>
   );
 }
