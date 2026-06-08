@@ -2018,8 +2018,14 @@ mux-player {
   }
 
   .ff-about-trail-photo {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--ff-about-photo-rotate, 0deg));
+  }
+
+  /* Cosmos-style micro-settle: pop in place, no vertical drift. */
+  .ff-about-trail-photo--cosmos {
     opacity: 0;
-    animation: ffAboutTrailIn 260ms var(--ff-ease-out) both;
+    animation: ffAboutMicroSettle 220ms cubic-bezier(0.34, 1.12, 0.64, 1) both;
     will-change: opacity, transform;
   }
 
@@ -2117,7 +2123,8 @@ mux-player {
 
     .ff-mobile-menu,
     .ff-mobile-menu li,
-    .ff-about-trail-photo {
+    .ff-about-trail-photo,
+    .ff-about-trail-photo--cosmos {
       transition: none;
       animation: none;
       will-change: auto;
@@ -2258,11 +2265,15 @@ mux-player {
   }
 }
 
-@keyframes ffAboutTrailIn {
+@keyframes ffAboutMicroSettle {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.96)
-      rotate(var(--ff-about-photo-rotate, 0deg));
+    transform: translate(-50%, -50%) scale(0.9)
+      rotate(
+        calc(
+          var(--ff-about-photo-rotate, 0deg) + var(--ff-about-settle-rotate, 0deg)
+        )
+      );
   }
   to {
     opacity: 1;
