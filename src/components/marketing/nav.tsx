@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MARKETING_PARTNERS } from "@/components/marketing/partner-portal";
+import { ImprintNavHoverStrip } from "@/components/marketing/imprint-nav-hover-strip";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -17,6 +18,55 @@ const NAV_ITEMS = [
 ] as const;
 
 const MOBILE_MENU_ID = "marketing-mobile-menu";
+
+function PartnerNavLink({
+  href,
+  label,
+  partnerId,
+  active,
+  partnerRoute,
+  tabIndex,
+  onNavigate,
+}: {
+  href: string;
+  label: string;
+  partnerId: keyof typeof MARKETING_PARTNERS;
+  active: boolean;
+  partnerRoute: boolean;
+  tabIndex?: number;
+  onNavigate?: () => void;
+}) {
+  const linkClass = cn(
+    "ff-nav-label inline-flex h-ff-nav items-center transition-colors duration-150 ease-out",
+    partnerRoute
+      ? active
+        ? "text-white"
+        : "text-white/55 hover:text-white focus-visible:text-white"
+      : active
+        ? "text-ff-ink"
+        : "text-ff-muted hover:text-ff-ink focus-visible:text-ff-ink",
+  );
+
+  return (
+    <div className="ff-imprint-nav-item group/imprint relative flex items-center">
+      <Link
+        href={href}
+        prefetch={false}
+        tabIndex={tabIndex}
+        onClick={onNavigate}
+        className={linkClass}
+        aria-describedby={`imprint-nav-tip-${partnerId}`}
+      >
+        {label}
+      </Link>
+      <ImprintNavHoverStrip
+        id={`imprint-nav-tip-${partnerId}`}
+        partnerId={partnerId}
+        onNavigate={onNavigate}
+      />
+    </div>
+  );
+}
 
 export function MarketingNav() {
   const pathname = usePathname();
@@ -95,22 +145,13 @@ export function MarketingNav() {
                 const active = pathname?.startsWith(item.href);
                 return (
                   <li key={item.partnerId} className="flex items-center">
-                    <Link
+                    <PartnerNavLink
                       href={item.href}
-                      prefetch={false}
-                      className={cn(
-                        "ff-nav-label inline-flex h-ff-nav items-center transition-colors duration-150 ease-out",
-                        partnerRoute
-                          ? active
-                            ? "text-white"
-                            : "text-white/55 hover:text-white focus-visible:text-white"
-                          : active
-                            ? "text-ff-ink"
-                            : "text-ff-muted hover:text-ff-ink focus-visible:text-ff-ink",
-                      )}
-                    >
-                      {partner.label}
-                    </Link>
+                      label={partner.label}
+                      partnerId={item.partnerId}
+                      active={!!active}
+                      partnerRoute={partnerRoute}
+                    />
                   </li>
                 );
               }
@@ -179,6 +220,11 @@ export function MarketingNav() {
                     >
                       {partner.label}
                     </Link>
+                    <ImprintNavHoverStrip
+                      partnerId={item.partnerId}
+                      variant="drawer"
+                      onNavigate={() => setOpen(false)}
+                    />
                   </li>
                 );
               }
