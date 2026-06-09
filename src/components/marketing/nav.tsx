@@ -36,6 +36,8 @@ function PartnerNavLink({
   tabIndex?: number;
   onNavigate?: () => void;
 }) {
+  const [hoverOpen, setHoverOpen] = useState(false);
+
   const linkClass = cn(
     "ff-nav-label inline-flex h-ff-nav items-center transition-colors duration-150 ease-out",
     partnerRoute
@@ -48,7 +50,20 @@ function PartnerNavLink({
   );
 
   return (
-    <div className="ff-imprint-nav-item group/imprint relative flex items-center">
+    <div
+      className={cn(
+        "ff-imprint-nav-item group/imprint relative flex items-center",
+        hoverOpen && "is-imprint-hover-open",
+      )}
+      onMouseEnter={() => setHoverOpen(true)}
+      onMouseLeave={() => setHoverOpen(false)}
+      onFocus={() => setHoverOpen(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setHoverOpen(false);
+        }
+      }}
+    >
       <Link
         href={href}
         prefetch={false}

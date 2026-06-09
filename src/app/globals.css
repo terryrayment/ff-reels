@@ -1996,6 +1996,16 @@ mux-player {
     position: relative;
   }
 
+  .ff-imprint-nav-hover::before {
+    content: "";
+    position: absolute;
+    top: -0.65rem;
+    left: 50%;
+    width: max(100%, 8rem);
+    height: 0.75rem;
+    transform: translateX(-50%);
+  }
+
   .ff-imprint-nav-hover {
     position: absolute;
     top: calc(100% - 0.2rem);
@@ -2024,10 +2034,7 @@ mux-player {
     transition: opacity 120ms var(--ff-ease-out);
   }
 
-  .ff-imprint-nav-item:hover .ff-imprint-nav-hover,
-  .ff-imprint-nav-item:focus-within .ff-imprint-nav-hover,
-  .ff-imprint-nav-hover:hover,
-  .ff-imprint-nav-hover:focus-within {
+  .ff-imprint-nav-item.is-imprint-hover-open .ff-imprint-nav-hover {
     opacity: 1;
     pointer-events: auto;
   }
@@ -2041,10 +2048,7 @@ mux-player {
       transform 320ms var(--ff-ease-out) 0s;
   }
 
-  .ff-imprint-nav-item:hover .ff-imprint-nav-hover__segment,
-  .ff-imprint-nav-item:focus-within .ff-imprint-nav-hover__segment,
-  .ff-imprint-nav-hover:hover .ff-imprint-nav-hover__segment,
-  .ff-imprint-nav-hover:focus-within .ff-imprint-nav-hover__segment {
+  .ff-imprint-nav-item.is-imprint-hover-open .ff-imprint-nav-hover__segment {
     opacity: 1;
     transform: translateY(0);
     transition-delay: var(--ff-imprint-stagger, 0s);
@@ -2630,14 +2634,12 @@ mux-player {
       transition: none;
     }
 
-    .ff-imprint-nav-item:hover .ff-imprint-nav-hover,
-    .ff-imprint-nav-item:focus-within .ff-imprint-nav-hover {
+    .ff-imprint-nav-item.is-imprint-hover-open .ff-imprint-nav-hover {
       opacity: 1;
     }
 
     .ff-imprint-nav-hover__segment,
-    .ff-imprint-nav-item:hover .ff-imprint-nav-hover__segment,
-    .ff-imprint-nav-item:focus-within .ff-imprint-nav-hover__segment {
+    .ff-imprint-nav-item.is-imprint-hover-open .ff-imprint-nav-hover__segment {
       opacity: 1;
       transform: none;
       transition: none;
