@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { RevealText } from "@/components/marketing/reveal-text";
-import {
-  type CanonicalContentType,
-  getCanonicalWork,
-} from "@/lib/marketing/canonical-source";
+import { getCanonicalWork } from "@/lib/marketing/canonical-source";
 import { getDirectorPortfolioPlayId } from "@/lib/marketing/play-project-id";
 
 export const metadata: Metadata = {
@@ -12,12 +9,6 @@ export const metadata: Metadata = {
   description:
     "Explore Friends & Family director work across commercials, case studies, films, production, post, animation, and VFX.",
   alternates: { canonical: "/site/work" },
-};
-
-const DISCIPLINE_LABELS: Record<CanonicalContentType, string> = {
-  SPOT: "Commercials",
-  CASE_STUDY: "Case studies",
-  SHORT_FILM: "Films",
 };
 
 function getWork() {
@@ -52,7 +43,6 @@ export default function WorkPage() {
                 ...p,
                 playProjectId: getDirectorPortfolioPlayId(p),
               }}
-              disciplineLabel={DISCIPLINE_LABELS[p.contentType] ?? null}
               showYear
               imagePriority={index < 3}
             />

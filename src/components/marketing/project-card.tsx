@@ -164,9 +164,23 @@ export function ProjectCard({
         )}
       </div>
       <div className="mt-4">
-        {project.brand && <p className="ff-card-brand">{project.brand}</p>}
-        <p className="ff-display-card mt-1.5 leading-[1.05]">{project.title}</p>
-        {metaLine && <p className="ff-meta mt-2">{metaLine}</p>}
+        {project.brand ? (
+          <>
+            <p className="ff-display-card ff-card-client leading-[1.05]">
+              {project.brand}
+            </p>
+            <p className="ff-display-card ff-card-title mt-1.5 leading-[1.05]">
+              {project.title}
+            </p>
+          </>
+        ) : (
+          <p className="ff-display-card ff-card-client leading-[1.05]">
+            {project.title}
+          </p>
+        )}
+        {metaLine && (
+          <p className="ff-display-card ff-card-director mt-2">{metaLine}</p>
+        )}
         {tags && tags.length > 0 && (
           <div className="ff-card-tag-row">
             {tags.map((tag) => (

@@ -45,7 +45,7 @@ export const MARKETING_PARTNERS = {
     ],
   },
   youth: {
-    label: "THE YOUTH",
+    label: "THE YOUTH COMPANY",
     location: "São Paulo",
     href: "https://theyouth.com.br/",
     cityCode: "SP",

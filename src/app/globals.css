@@ -1371,33 +1371,43 @@ mux-player {
   .ff-home-spot-carousel__active-brand {
     display: block;
     margin-bottom: 0.55rem;
-    font-family: var(--ff-font-mono);
-    font-size: 0.75rem;
-    font-weight: 520;
-    letter-spacing: 0.12em;
-    line-height: 1.25;
-    text-transform: uppercase;
-    color: var(--ff-color-body);
-  }
-
-  .ff-home-spot-carousel__active-title {
-    display: block;
     font-family: var(--ff-font-display);
     font-size: clamp(2rem, 4.2vw, 3.75rem);
-    font-weight: 680;
+    font-weight: 660;
     font-stretch: 86%;
+    font-variation-settings:
+      "wdth" 86,
+      "wght" 660;
     line-height: 0.92;
     letter-spacing: 0;
     text-transform: uppercase;
     color: var(--ff-color-ink);
   }
 
+  .ff-home-spot-carousel__active-title,
+  .ff-home-spot-carousel__active-director {
+    font-family: var(--ff-font-display);
+    font-size: var(--ff-type-body);
+    font-stretch: 86%;
+    line-height: 1.05;
+    letter-spacing: 0;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-home-spot-carousel__active-title {
+    display: block;
+    font-weight: 660;
+    font-variation-settings:
+      "wdth" 86,
+      "wght" 660;
+  }
+
   .ff-home-spot-carousel__active-director {
     margin: 0.85rem 0 0;
-    font-family: var(--ff-font-text);
-    font-size: var(--ff-type-small);
-    line-height: 1.35;
-    color: var(--ff-color-muted);
+    font-weight: 420;
+    font-variation-settings:
+      "wdth" 86,
+      "wght" 420;
   }
 
   .ff-home-spot-carousel__active-action {
@@ -1520,7 +1530,7 @@ mux-player {
       padding-left: 1rem;
     }
 
-    .ff-home-spot-carousel__active-title {
+    .ff-home-spot-carousel__active-brand {
       font-size: clamp(1.75rem, 9vw, 2.65rem);
     }
 
@@ -1825,6 +1835,25 @@ mux-player {
     font-size: var(--ff-type-card);
     line-height: 1;
     overflow-wrap: anywhere;
+  }
+
+  .ff-card-client {
+    font-size: var(--ff-type-feature);
+    text-transform: uppercase;
+  }
+
+  .ff-card-title,
+  .ff-card-director {
+    font-size: var(--ff-type-body);
+    line-height: 1.05;
+    color: var(--ff-color-ink);
+  }
+
+  .ff-card-director {
+    font-weight: 420;
+    font-variation-settings:
+      "wdth" 86,
+      "wght" 420;
   }
 
   .ff-reveal-text {
