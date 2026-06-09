@@ -7,7 +7,8 @@ Operational guide for contributors working in this repository.
 **Friends & Family Reels** is an internal platform for Friends & Family, a commercial production company. It manages director reels, screening links with viewer analytics, and industry intelligence.
 
 - **App**: `reels.friendsandfamily.tv` (this repo, deployed on Vercel)
-- **Marketing site**: `friendsandfamily.tv` (separate Webflow site)
+- **Marketing site**: Public pages at `/site/*` in this repo (also served from `reels.friendsandfamily.tv/site`). Legacy Webflow at `friendsandfamily.tv` may still exist for some URLs — verify live routing before assuming a single host.
+- **Decision history**: `docs/LEDGER.md` (chronological; read before large marketing pivots)
 
 Core workflows: build curated reels from director projects → send screening links to agency contacts → track engagement analytics → surface industry credits via nightly scraper.
 
@@ -48,10 +49,14 @@ src/
 │   ├── (screening)/         # Public + tokenized playback
 │   │   ├── s/[token]/       # Screening link viewer
 │   │   └── preview/[token]/ # Admin preview (signed JWT in URL)
-│   ├── api/                 # API routes (all return X-Robots-Tag: noindex)
-│   └── commercial-production-company-los-angeles/  # SEO landing page (only indexed page)
+│   ├── (marketing)/         # Public marketing site (indexed — see SEO Rules)
+│   │   └── site/            # Home splash, work, directors, about, contact, youth, colossal
+│   │       └── home/preview* # Homepage mockup previews (noindex)
+│   ├── api/                 # API routes (private routes return X-Robots-Tag: noindex)
+│   └── commercial-production-company-los-angeles/  # SEO landing page
 ├── components/
 │   ├── ui/                  # Button, Input, Badge, Modal, EmptyState, etc.
+│   ├── marketing/           # Nav, footer, transitions, home-splash, directors-list, etc.
 │   ├── reels/               # Reel builder, galleries, screening links
 │   ├── directors/           # Roster grid, profile, headshot upload
 │   ├── video/               # Mux player, screening tracker, carousel
@@ -70,6 +75,7 @@ src/
 │   ├── scraper/             # Industry credits engine + 10 source adapters
 │   ├── analytics/           # Scoring, device detection, geo, queries
 │   ├── seo/                 # URL helpers, structured data
+│   ├── marketing/           # canonical-source, transitions, carousel/splash data
 │   └── utils.ts             # cn(), timeAgo(), formatDuration(), slugify()
 ├── types/
 │   └── next-auth.d.ts       # Augmented Session type (role, directorId)
@@ -234,11 +240,12 @@ Do not merge changes that violate these:
 
 ## SEO Rules
 
-- **Only** `/commercial-production-company-los-angeles` is indexed. Everything else is private.
-- All private/auth/tokenized/API routes get `X-Robots-Tag: noindex, nofollow` via `next.config.mjs` headers.
-- `src/app/robots.ts` and `src/app/sitemap.ts` must stay in sync with this policy.
+Indexable public routes are defined in `src/app/sitemap.ts` and allowlisted in `src/app/robots.ts`. As of the June 2026 marketing ship, this includes `/site`, `/site/work`, `/site/directors`, `/site/directors/[slug]`, `/site/about`, `/site/contact`, and `/commercial-production-company-los-angeles`. Partner imprint routes (`/site/youth`, `/site/colossal`) and homepage mockup previews (`/site/home/preview*`, `/site/preview/*`) are not in the sitemap — keep them `noindex` unless product explicitly expands indexability.
+
+- Private/auth/tokenized/API routes get `X-Robots-Tag: noindex, nofollow` via `next.config.mjs` headers where applicable.
+- `src/app/robots.ts` and `src/app/sitemap.ts` must stay in sync with indexability policy.
 - Dashboard and screening layouts set `robots: { index: false, follow: false, nocache: true }` in metadata.
-- If SEO behavior changes, update `docs/SEO.md` + `docs/DEPLOYMENT.md` + this file.
+- If SEO behavior changes, update `docs/SEO.md` + `docs/DEPLOYMENT.md` + this file + `docs/LEDGER.md`.
 
 ## Required Local Checks Before Merge
 
@@ -252,6 +259,14 @@ npm run seo:audit -- --url=https://www.friendsandfamily.tv
 ```
 
 If any check is skipped, call it out in PR notes.
+
+If the PR touches marketing pages, components under `src/components/marketing/`, or `src/lib/marketing/`, also run:
+
+```bash
+npm run marketing:transition-qc
+```
+
+(See `docs/marketing/transitions/transition.md`. Production matrix hits `https://reels.friendsandfamily.tv`.)
 
 ## Auth Regression Smoke Test
 
@@ -339,20 +354,50 @@ If any endpoint auth behavior changes, update all three in the same PR:
 - `docs/DEPLOYMENT.md` (smoke tests/checklist)
 - `CLAUDE.md` (if guardrails/invariants changed)
 
+If SEO or marketing indexability changes, also update `docs/LEDGER.md` with the decision and commit hash.
+
 If SEO behavior changes (metadata, robots, sitemap, canonical, indexability), update:
 
 - `docs/SEO.md`
 - `docs/DEPLOYMENT.md` (post-deploy SEO checks)
 - `CLAUDE.md` (if SEO guardrails/invariants changed)
 
-## Marketing site transitions (Talent + Work)
+## Marketing site (`/site`)
 
-**Read first:** `docs/marketing/transitions/transition.md`
+**Read first:** `docs/LEDGER.md` (June 2026 section) and `docs/marketing/transitions/transition.md`.
 
-Friends & Family marketing pages (`/site`, `/site/directors`, `/site/work`) use a custom thumbnail-to-viewer morph. Do not change card click handlers, `view-transition.ts`, featured reel components, or transition CSS without reading that doc and running matrix QA:
+### Routes and data
+
+| Route | Purpose |
+|-------|---------|
+| `/site` | Production homepage — full-screen video splash (`HomeSplash`) |
+| `/site/work` | Work archive grid + viewer transitions |
+| `/site/directors` | Name-list index with hover preview (`DirectorsList`) |
+| `/site/directors/[slug]` | Director portfolio viewer |
+| `/site/about`, `/site/contact` | Static editorial pages |
+| `/site/youth`, `/site/colossal` | Partner imprint pages (imprint nav hovers) |
+| `/site/home/preview*` | Homepage mockup previews — **noindex** |
+
+Canonical brands, directors, spots, thumbnails, and `?play=` ids: `src/lib/marketing/canonical-source.ts`.
+
+### Visual system
+
+- Marketing shell: `src/components/marketing/marketing-chrome.tsx` sets `data-ff-colorway="portfolio-olive"` and `data-ff-home-splash="true"` on `/site` only (footer hidden on splash).
+- Tokens and marketing CSS: `src/app/globals.css` (search for `ff-site-theme`, `portfolio-olive`, `ff-home-splash`).
+- Reversible colorway: remove the `data-ff-colorway` attribute and the olive token block in CSS.
+
+### Homepage carousel (retained, not on `/site`)
+
+`src/components/marketing/home-spot-carousel.tsx` implements the editorial split carousel (oversized active title, compact `NEXT` list, fixed-height progress indicator). It is **not** mounted on the production homepage after the splash pivot (`49fa40ac`); CSS and component remain for reuse and previews. Slide data: `src/lib/marketing/home-spot-carousel.ts`.
+
+### Card-to-viewer transitions
+
+Friends & Family marketing pages use a custom thumbnail-to-viewer morph. Do not change card click handlers, `view-transition.ts`, featured reel components, or transition CSS without reading the transition doc and running matrix QA:
 
 ```bash
-node scripts/marketing/run-transition-matrix-qc.mjs --url=https://reels.friendsandfamily.tv
+npm run marketing:transition-qc
+# or against a preview:
+node scripts/marketing/run-transition-matrix-qc.mjs --url=http://localhost:3000
 ```
 
 Locked invariants: one visible hero layer during morph, frozen source rect at click, destination hidden until morph finishes, no scroll during morph, portfolio `?play=` ids only.

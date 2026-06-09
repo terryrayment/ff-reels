@@ -13,12 +13,7 @@ export const IMPRINT_NAV_HOVER_ITEMS: Record<PartnerId, ImprintNavHoverItem[]> =
     { label: "PRODUCTION", href: "/site/youth" },
     { label: "BRAZIL", href: "/site/youth" },
   ],
-  colossal: [
-    { label: "POST", href: "/site/colossal" },
-    { label: "ANIMATION", href: "/site/colossal" },
-    { label: "VFX", href: "/site/colossal" },
-    { label: "FINISHING", href: "/site/colossal" },
-  ],
+  colossal: [{ label: "ANIMATION", href: "/site/colossal" }],
 };
 
 type ImprintNavHoverStripProps = {

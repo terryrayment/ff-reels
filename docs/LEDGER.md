@@ -11,6 +11,7 @@ A chronological record of every major decision, design pivot, feature addition, 
 - [Day 3: Mobile, Gallery, and Design Maturity (March 4, 2026)](#day-3-mobile-gallery-and-design-maturity-march-4-2026)
 - [Day 4: Performance, Security, and Scale (March 5, 2026)](#day-4-performance-security-and-scale-march-5-2026)
 - [Day 5: CRM, Team Management, and Polish (March 6, 2026)](#day-5-crm-team-management-and-polish-march-6-2026)
+- [June 2026: Marketing Site in Next.js](#june-2026-marketing-site-in-nextjs)
 - [Design Philosophy](#design-philosophy)
 - [Architectural Decisions](#architectural-decisions)
 - [Known Debt & Open Questions](#known-debt--open-questions)
@@ -247,6 +248,46 @@ A chronological record of every major decision, design pivot, feature addition, 
 
 ---
 
+## June 2026: Marketing Site in Next.js
+
+Public marketing pages now live in this repo under `(marketing)/site/*`, served from `reels.friendsandfamily.tv/site` (and indexed per `src/app/sitemap.ts`). Canonical project/director data lives in `src/lib/marketing/canonical-source.ts`. Card-to-viewer morph transitions are documented in `docs/marketing/transitions/transition.md` — matrix QA via `npm run marketing:transition-qc`.
+
+### Homepage evolution
+
+| Commit | Decision | Why |
+|--------|----------|-----|
+| `182cb902` | Replace static hero with 10-second **spot carousel** | Editorial featured-work loop with in-place index + viewer deep links |
+| `6c36976e` – `357697a0` | Carousel index iterations (typography, indicator, dividers) | Tighter editorial hierarchy before the splash pivot |
+| `9683fee3` | **Portfolio olive colorway** on marketing shell | Reversible token block via `data-ff-colorway="portfolio-olive"` in `marketing-chrome.tsx` + `globals.css` |
+| `9c7ae619` | **Oversized active title + compact NEXT list** | Active project dominates right column; inactive rows under `NEXT`; fixed-height progress bar (not tied to title block height) |
+| `49fa40ac` | **Ship full-screen video splash** as production `/site` homepage | Pivot from carousel to looping hero (`HomeSplash`); footer hidden on splash route |
+| `558038ca` | Cosmos micro-settle on About photo trail | Motion polish on `/site/about` without changing transition contract |
+
+**Current production homepage:** `HomeSplash` (`src/components/marketing/home-splash.tsx`) — not the spot carousel. `HomeSpotCarousel` remains in the tree (CSS + component) for reuse; homepage mockup previews live under `/site/home/preview*` (noindex).
+
+### Directors, contact, imprint nav
+
+| Commit | Decision | Why |
+|--------|----------|-----|
+| `49fa40ac` | Webflow-style **directors name list** with hover preview | `DirectorsList` — name index + media preview + existing viewer transitions |
+| `49fa40ac` | Contact role typography + LA office address | Align contact bios with site kicker type |
+| `3e6b8474` | Match `ff-kicker` labels to contact role typography | Visual consistency across contact accordion |
+| `422079b1` | **Imprint nav** capability hovers on THE YOUTH + COLOSSAL | Hover reveals capability strip on partner imprint routes |
+| `ea8de071` | Fix imprint strip staying visible after hover ends | Hover lifecycle bugfix on imprint nav |
+
+### SEO indexability shift
+
+Marketing routes (`/site`, `/site/work`, `/site/directors`, `/site/directors/[slug]`, `/site/about`, `/site/contact`, plus the LA landing page) are allowlisted in `src/app/robots.ts` and `src/app/sitemap.ts`. Preview routes under `/site/home/preview*` and `/site/preview/*` stay `noindex`. Private app routes remain disallowed.
+
+### Marketing invariants (do not break casually)
+
+1. Viewer deep links use portfolio `?play=` ids from canonical source — not bare director landing URLs.
+2. Transition morph: one visible hero layer, frozen source rect at click, destination hidden until morph completes — see transition doc.
+3. Olive colorway is opt-in on the marketing shell attribute; revert by removing `data-ff-colorway` and the token block in `globals.css`.
+4. Homepage splash uses `data-ff-home-splash="true"` on the marketing shell — nav/footer chrome differs on `/site` only.
+
+---
+
 ## Design Philosophy
 
 ### Visual Language
@@ -319,4 +360,5 @@ A chronological record of every major decision, design pivot, feature addition, 
 | Mar 4, 2026 | **Mobile + Polish** — Capacitor, PWA, design maturity, autoplay, content types | 15 commits |
 | Mar 5, 2026 | **Hardening** — Security fixes, performance (Neon timeouts), webhook verification, 4 new scrapers | 8 commits |
 | Mar 6, 2026 | **CRM + Team** — Contact management, user invites, multi-director reels, email config | 9 commits |
-| **Total** | | **72 commits in 4 days** |
+| Jun 2026 | **Marketing site** — Next.js `/site`, olive colorway, carousel → splash pivot, directors list, imprint nav | see [June 2026 section](#june-2026-marketing-site-in-nextjs) |
+| **Total (Day 1–5)** | | **72 commits in 4 days** |
