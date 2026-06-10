@@ -1339,6 +1339,626 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       ],
     },
   },
+
+  apex: {
+    slug: "apex",
+    accent: "#1A1A1A",
+    company: "Apex Space",
+    recipientName: "Ian Cinnamon",
+    recipientFirst: "Ian",
+    recipientEmail: "ian.cinnamon@apexspace.com",
+    metaTitle: "Friends & Family for Apex Space",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Apex Space.",
+    heroFor: "Apex",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Apex because the Factory One buildout only exists in this state once, and with satellites shipping later this year the window to film the hardware is narrow.",
+    ticker:
+      "Founded 2022 in Los Angeles · $2.3B valuation, June 2026 · 200+ satellites a year at peak capacity · Factory One: 100,000+ sq ft by end of 2026 · 350+ employees, doubled in a year · Backed by a16z, 8VC, CRV, Point72 · $46M U.S. Space Force contract",
+    studio: {
+      headline: "A production company built for the new space industrial base",
+      subline: "Cleanroom protocols, ITAR-aware crews, a factory floor that looks different every month, the list goes on.",
+    },
+    noticed: {
+      title: "Factory One, mid-expansion.",
+      intro:
+        "We read the June raise coverage and Ian's interviews. Here's what stuck.",
+      cards: [
+        {
+          label: "The buildout window",
+          body: "You're adding 30,000 square feet by the end of 2026 on the way to 200 buses a year. That buildout is the visual story most aerospace companies wish they had, and it only exists in this state once.",
+        },
+        {
+          label: "Productized, not bespoke",
+          body: "Aries, Nova, and Comet as configurable products is a genuinely different pitch in an industry of one-off programs. The film should sell the catalog logic, not just hardware beauty shots.",
+        },
+        {
+          label: "Hardware leaves the building",
+          body: "Several satellites launch later in 2026. There's a narrow window to film the real thing on the floor before it's in orbit, and that footage becomes the brand archive for years.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You build satellites like products.",
+      titleAccent: "We'll film it like one.",
+      intro:
+        "We'd start with a half-day walkthrough of Factory One to map what's shootable now versus post-expansion. Then a single anthem film cut for recruiting, customers, and the next raise.",
+      gives: [
+        ["Brief", "Anthem film plus cutdowns"],
+        ["Production", "Cleanroom-ready crews, LA-based, two-day shoot"],
+        ["Deliverables", "90s hero, 30s cuts, social verticals, stills"],
+        ["Audience", "Constellation customers, DoD, candidates, investors"],
+      ],
+      tags: [
+        "Brand film",
+        "Factory doc",
+        "Recruiting film",
+        "Launch content",
+        "Founder interview",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  epirus: {
+    slug: "epirus",
+    accent: "#0F0E12",
+    company: "Epirus",
+    recipientName: "Andy Lowery",
+    recipientFirst: "Andy",
+    recipientEmail: "andy.lowery@epirusinc.com",
+    metaTitle: "Friends & Family for Epirus",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Epirus.",
+    heroFor: "Epirus",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Epirus because 49 drones falling out of the sky at once is a story that wants to be filmed, not explained.",
+    ticker:
+      "Founded 2018 · $550M+ raised, $250M Series D in 2025 · 49 drones downed in seconds at Camp Atterbury · First known defeat of fiber-optic guided drones, Jan 2026 · $43.5M Army IFPC-HPM Gen II contract · Built in Torrance, CA · Partners include General Dynamics and Northrop Grumman",
+    studio: {
+      headline: "A production company built for the people redefining defense",
+      subline: "Secure facilities, hardware that can't leave the building, crews who know what not to film, the list goes on.",
+    },
+    noticed: {
+      title: "A force field, on camera.",
+      intro:
+        "We watched the CNBC appearance and read the Camp Atterbury coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "Instantly visual",
+          body: "Most deep-tech products need an animation to explain. Leonidas drops 49 drones out of the sky in seconds. That's a rare gift: an effect a camera can simply show.",
+        },
+        {
+          label: "The voice is already there",
+          body: "Andy talks about centaur warfare and reactor rooms with the ease of someone who has lived both. Most defense companies have to manufacture a spokesperson. You have one, and he just needs frames built around him.",
+        },
+        {
+          label: "Story lagging the scale",
+          body: "A $250M Series D to hyperscale production, new COO and CPO this month, Army Gen II deliveries underway. The company is moving faster than its public story, and recruiting, customers, and Congress all watch video first.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "We make work that holds up under scrutiny.",
+      titleAccent: "Yours has to.",
+      intro:
+        "Defense-tech audiences are skeptical of gloss and allergic to vagueness. We shoot real hardware, real engineers, and real tests, then cut it so it moves.",
+      gives: [
+        ["Brief", "Brand film plus recruiting and capability cuts"],
+        ["Production", "Torrance facility and range shoots, security-aware workflow"],
+        ["Deliverables", "Hero film, social verticals, event loops, stills"],
+        ["Audience", "DoD customers, engineers you want to hire, investors"],
+      ],
+      tags: [
+        "Brand film",
+        "Recruiting film",
+        "Facility shoot",
+        "Capability demo",
+        "Founder profile",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  slingshot: {
+    slug: "slingshot",
+    accent: "#1B1D22",
+    company: "Slingshot Aerospace",
+    recipientName: "Tim Solms",
+    recipientFirst: "Tim",
+    recipientEmail: "tim.solms@slingshotaerospace.com",
+    metaTitle: "Friends & Family for Slingshot Aerospace",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Slingshot Aerospace.",
+    heroFor: "Slingshot",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Slingshot because the brand film hasn't caught up to the contracts, and making complex systems legible to generals, allies, and recruits is exactly our kind of assignment.",
+    ticker:
+      "Founded 2017 · ~$120M raised · 220+ sensors, 22 sites · $27M Space Force OTTI contract, Jan 2026 · UK Space Agency optical partner · Fast Company Most Innovative 2026 · Trusted by NASA and U.S. Space Force",
+    studio: {
+      headline: "A production company built for the people watching the sky",
+      subline: "Telescope sites on five continents, a Space Force training floor, launch windows that will not move, the list goes on.",
+    },
+    noticed: {
+      title: "Seeing is not the pitch.",
+      intro:
+        "We read the OTTI contract news and spent time on the site. Here's what stuck.",
+      cards: [
+        {
+          label: "From seeing to acting",
+          body: "Your homepage says awareness is no longer enough, and that's a sharp move. You're selling the jump from seeing to understanding to acting, and that arc is a story structure, not a feature list.",
+        },
+        {
+          label: "Orange against the void",
+          body: "A near-black site with one defiant orange is a confident system. Film handles that contrast better than any web page can, especially with real telescopes under real night sky.",
+        },
+        {
+          label: "The training turn",
+          body: "TALOS and the OTTI contract shift you from data company to the company that teaches Guardians how orbit conflict feels. That's human material: operators, screens, decisions under pressure.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You track everything above us.",
+      titleAccent: "We make people feel why that matters.",
+      intro:
+        "Slingshot sits at a rare intersection of defense gravity and commercial clarity. We'd build a cinematic anthem plus modular product films that work for generals, allies, and the engineers you're hiring.",
+      gives: [
+        ["Brief", "Brand anthem plus modular product films"],
+        ["Production", "El Segundo HQ shoot, sensor-site footage, orbit CG"],
+        ["Deliverables", "90s anthem, 30s cutdowns, social verticals, booth loop"],
+        ["Audience", "DoD and allied space agencies, operators, engineering hires"],
+      ],
+      tags: [
+        "Brand film",
+        "Product launch",
+        "CG orbit viz",
+        "Recruiting film",
+        "Trade show",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  aptera: {
+    slug: "aptera",
+    accent: "#4F7A1E",
+    company: "Aptera Motors",
+    recipientName: "Chris Anthony",
+    recipientFirst: "Chris",
+    recipientEmail: "chris@aptera.us",
+    metaTitle: "Friends & Family for Aptera Motors",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Aptera Motors.",
+    heroFor: "Aptera",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Aptera because the moments coming next happen once: first deliveries, first owners, first sun-powered commutes. That footage can't be reshot later.",
+    ticker:
+      "Carlsbad, CA · Nasdaq: SEV · 17,000+ crowdfund investors · $130M+ community raised · 40 solar miles a day · 400 mi range · 0.13 drag coefficient · First 5 validation vehicles, May 2026",
+    studio: {
+      headline: "A production company built for the solar electric road",
+      subline: "Validation-line milestones filmed as they happen, a 17,000-investor community waiting on every update, delivery-day stories about to start, the list goes on.",
+    },
+    noticed: {
+      title: "Funded by believers.",
+      intro:
+        "We watched the validation-vehicle announcement and the community updates. Here's what stuck.",
+      cards: [
+        {
+          label: "17,000 investors",
+          body: "Over 17,000 people put more than $130M into Aptera before Wall Street did. That community expects to see progress, not just read about it. Every milestone video is also an investor update, and the bar for those keeps rising.",
+        },
+        {
+          label: "The never-charge promise",
+          body: "Forty solar miles a day means most commutes never touch a plug. That's an idea you have to show: sun on the panels, odometer climbing, nothing else. It films beautifully because it's true.",
+        },
+        {
+          label: "A shape that stops traffic",
+          body: "A 0.13 drag coefficient gives you a vehicle that looks like nothing else on the road. People already point cameras at it. The official footage should be as considered as the aerodynamics.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You built the most efficient vehicle on the road.",
+      titleAccent: "The story should move just as efficiently.",
+      intro:
+        "Aptera is entering its delivery era and the moments coming next happen once. We capture launch films, community updates, and delivery-day stories with a small crew that moves at startup speed.",
+      gives: [
+        ["Brief", "Launch and delivery-era brand films"],
+        ["Production", "Lean San Diego-based crews, fast turnarounds"],
+        ["Deliverables", "Hero film, cutdowns, investor updates, social verticals"],
+        ["Audience", "Reservation holders, retail investors, the EV-curious public"],
+      ],
+      tags: [
+        "Launch film",
+        "Delivery stories",
+        "Founder updates",
+        "Investor comms",
+        "Factory doc",
+        "Social verticals",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  ntwrk: {
+    slug: "ntwrk",
+    accent: "#101113",
+    company: "Complex NTWRK",
+    recipientName: "Aaron Levant",
+    recipientFirst: "Aaron",
+    recipientEmail: "aaron@complex.com",
+    metaTitle: "Friends & Family for Complex NTWRK",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Complex NTWRK.",
+    heroFor: "Complex",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Complex because you ship content at the speed of drops, streams, and festival weekends, and director-led craft that holds up at that pace is the whole reason we exist.",
+    ticker:
+      "NTWRK acquired Complex for $108.6M in 2024 · ComplexCon 2025: record 70,000 in Las Vegas · 400+ brands · Verzuz x Complex debut hit 8M livestream viewers · ComplexCon Hong Kong grew 30% · ComplexCon LA returns Oct 3 and 4, 2026 · HQ Los Angeles",
+    studio: {
+      headline: "A production company built for convergence culture",
+      subline: "Drop campaigns that turn around in days, festival content shot in the chaos of 70,000 people, brand collabs on social timelines, the list goes on.",
+    },
+    noticed: {
+      title: "Three businesses, one brand.",
+      intro:
+        "We read the ComplexCon numbers and Aaron's interviews. Here's what stuck.",
+      cards: [
+        {
+          label: "Three engines at once",
+          body: "Commerce, events, and editorial each carry about a third of Complex NTWRK. That's three content engines running simultaneously, each with its own velocity and visual bar, and most production partners can only keep up with one.",
+        },
+        {
+          label: "ComplexCon is the flywheel",
+          body: "A record 70,000 people in Vegas, 30 percent growth in Hong Kong, and a hometown LA return this October. Every edition generates a year of content demand before, during, and after the weekend.",
+        },
+        {
+          label: "Built by an operator",
+          body: "Aaron started Agenda in the back of a Thai restaurant and has launched dozens of event brands since. He moves fast and expects partners who do too. So do we, and LA to LA helps.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You make culture move.",
+      titleAccent: "We make it look like cinema.",
+      intro:
+        "ComplexCon LA is October 3 and 4. The smartest first project is locking the capture and campaign plan now, so the hometown edition gets film that works all year.",
+      gives: [
+        ["Brief", "Campaign films, drop content, festival capture, collab spots"],
+        ["Production", "LA-based, director-led, fast turnaround, on-site event crews"],
+        ["Deliverables", "Hero films, social cutdowns, livestream packaging, photo"],
+        ["Audience", "Superfans of sneakers, streetwear, music, food, and art"],
+      ],
+      tags: [
+        "Brand films",
+        "Drop campaigns",
+        "Event capture",
+        "Livestream packaging",
+        "Artist collabs",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  karat: {
+    slug: "karat",
+    accent: "#4733FF",
+    company: "Karat Financial",
+    recipientName: "Eric Wei",
+    recipientFirst: "Eric",
+    recipientEmail: "eric@trykarat.com",
+    metaTitle: "Friends & Family for Karat",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Karat Financial.",
+    heroFor: "Karat",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Karat because your customers are on camera every day, the audience can smell stock footage from a mile away, and that raises the production bar in a way we find genuinely fun.",
+    ticker:
+      "$1.5B+ in credit extended · Founded 2019 by Eric Wei and Will Kim · ~$100M raised · Series B led by SignalFire · Backed by Y Combinator and Union Square Ventures · Business banking launched May 2025 · Avg creator credit limit $25,000",
+    studio: {
+      headline: "A production company built for the creator economy",
+      subline: "Launch films, card and banking campaigns, creator testimonial spots, event and community content, the list goes on.",
+    },
+    noticed: {
+      title: "Banking the unbanked famous.",
+      intro:
+        "We read the banking-launch coverage and Eric's creator-finance writing. Here's what stuck.",
+      cards: [
+        {
+          label: "A different bet",
+          body: "Approving cards on income and audience data instead of FICO is a genuinely different bet on who is creditworthy. That's a story worth showing through real creators, not explaining in a deck.",
+        },
+        {
+          label: "From card to full stack",
+          body: "The banking launch with Grasshopper turned Karat from one product into checking, payments, bookkeeping, and invoicing. A brand moment like that deserves film made by people who shoot business stories for a living.",
+        },
+        {
+          label: "Creators sell Karat best",
+          body: "Your site leads with real creators and Eric calls community the growth hack. Production built around real creator voices, docu and scripted, is exactly our lane.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You bank the people who make things.",
+      titleAccent: "We film the people who make things.",
+      intro:
+        "Karat's customers are on camera every day, so the brand bar is high. We'd build creator-fluent commercial work that matches it, starting with the full-stack banking story.",
+      gives: [
+        ["Brief", "Launch and trust-building films creators have to believe"],
+        ["Production", "Director-led shoots with real Karat creators"],
+        ["Deliverables", "Hero film plus cutdowns for YouTube, TikTok, paid, site"],
+        ["Audience", "Full-time creators and the managers and agencies behind them"],
+      ],
+      tags: [
+        "Brand film",
+        "Creator testimonials",
+        "Product launch",
+        "Docu-style",
+        "Paid social",
+        "Case studies",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "patrick-ta": {
+    slug: "patrick-ta",
+    accent: "#6E3B33",
+    company: "Patrick Ta Beauty",
+    recipientName: "Kimberly Villatoro",
+    recipientFirst: "Kimberly",
+    recipientEmail: "kimberly@patrickta.com",
+    metaTitle: "Friends & Family for Patrick Ta Beauty",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Patrick Ta Beauty.",
+    heroFor: "Patrick Ta Beauty",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Patrick Ta Beauty because your best media is Patrick's hands at work, and launch content now has to land in Riyadh and Mexico City as much as LA. That changes how you shoot, not just how you subtitle.",
+    ticker:
+      "Founded 2019 · Top-10 brand at Sephora · #1 blush at Sephora · ~$100M in sales · Sephora Mexico, Aug 2025 · Sephora Middle East, 34 doors, Jan 2026 · 17-hour lines at the Melrose pop-up · 4.75-star average ratings",
+    studio: {
+      headline: "A production company built for the glow economy",
+      subline: "Campaign films, artist-led tutorial content, launch-day social cuts, retail screens for 34 Sephora doors, the list goes on.",
+    },
+    noticed: {
+      title: "The blush that broke Sephora.",
+      intro:
+        "We did the homework on the brand, the pop-up, and the international run. Here's what stuck.",
+      cards: [
+        {
+          label: "The technique is the media",
+          body: "Powder first, then cream. One application technique turned a product demo into the number one blush at Sephora. Your best media is Patrick's hands at work, and it deserves production that keeps up with the artistry.",
+        },
+        {
+          label: "Lines around the block",
+          body: "Fans camped 17 hours for the Melrose pop-up and Sephora sales jumped 28 percent that week. Experiential is clearly part of the playbook now, and capturing those moments well multiplies their reach long after the tent comes down.",
+        },
+        {
+          label: "The world is watching",
+          body: "70 percent of Patrick's audience is international and the Middle East drives over a third of global sales. Launch content has to work in Riyadh and Mexico City as much as LA, and that's a shooting decision, not a subtitling one.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You built the glow.",
+      titleAccent: "We film it like it matters.",
+      intro:
+        "We're a production company in Los Angeles, minutes from your West Hollywood world. We'd start with launch films and evergreen artistry content for the hero franchises, shot to travel.",
+      gives: [
+        ["Brief", "Launch films and evergreen artistry content"],
+        ["Production", "LA-based shoots, talent-friendly sets, fast turnarounds"],
+        ["Deliverables", "Hero film, cutdowns, vertical social, retail screens, regional versions"],
+        ["Audience", "Sephora shoppers in North America, Mexico, and the Gulf"],
+      ],
+      tags: [
+        "Campaign film",
+        "Tutorial content",
+        "Pop-up capture",
+        "Retail screens",
+        "Product macro",
+        "Regional versioning",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  harbinger: {
+    slug: "harbinger",
+    accent: "#003242",
+    company: "Harbinger Motors",
+    recipientName: "Fred DePerez",
+    recipientFirst: "Fred",
+    recipientEmail: "fred.deperez@harbingermotors.com",
+    metaTitle: "Friends & Family for Harbinger Motors",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Harbinger Motors.",
+    heroFor: "Harbinger",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Harbinger because the revolution is under the body where a camera can't casually find it, and that's a filmmaking problem, not a messaging problem.",
+    ticker:
+      "Founded 2021 in Garden Grove, CA · ~$360M raised, Series C co-led by FedEx · ~4,690 vehicle orders worth ~$500M · Serial production launched April 2025 · FedEx deliveries began 2025 · Up to 500 miles with hybrid range extender · 10-year battery and drivetrain warranty",
+    studio: {
+      headline: "A production company built for the people electrifying the working truck",
+      subline: "Factory floors that double as sets, vehicles that can't leave the line, FedEx-grade brand approvals, the list goes on.",
+    },
+    noticed: {
+      title: "Familiar form, invisible story.",
+      intro:
+        "We read the Series C coverage and the IPO reports. Here's what stuck.",
+      cards: [
+        {
+          label: "The revolution hides",
+          body: "Your tagline is Familiar Form, Revolutionary Foundation, but the revolution lives under the body where a camera can't casually find it. That's solvable with the right cutaways, builds, and factory access, and it's a fun problem.",
+        },
+        {
+          label: "FedEx changed the audience",
+          body: "A FedEx order and a THOR partnership mean your buyers are fleet directors and procurement teams now. They respond to TCO math, uptime, and the 10-year warranty told plainly, on camera, by operators.",
+        },
+        {
+          label: "Before the quiet period",
+          body: "Reports say you're working with Goldman on a potential IPO. Companies entering that phase suddenly need a deep library of brand film, founder story, and product footage, and it's far cheaper to build it before the quiet period than during it.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You're scaling production and telling a bigger story.",
+      titleAccent: "We make the films that carry it.",
+      intro:
+        "We build brand and product films for companies at exactly this inflection point, concept through delivery, so your team stays focused on trucks.",
+      gives: [
+        ["Brief", "Founder story, product films, fleet-customer proof"],
+        ["Production", "Garden Grove factory shoots, on-route with fleet partners"],
+        ["Deliverables", "Anthem film, product explainers, testimonials, cutdowns"],
+        ["Audience", "Fleet buyers, dealers, investors, the talent you hire next"],
+      ],
+      tags: [
+        "Brand anthem",
+        "Founder film",
+        "Factory shoot",
+        "Product explainer",
+        "Customer testimonial",
+        "Investor cut",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  merit: {
+    slug: "merit",
+    accent: "#62605E",
+    company: "MERIT Beauty",
+    recipientName: "Katherine Power",
+    recipientFirst: "Katherine",
+    recipientEmail: "katherine@meritbeauty.com",
+    metaTitle: "Friends & Family for MERIT Beauty",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for MERIT Beauty.",
+    heroFor: "MERIT",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with MERIT because effortless is the hardest thing to shoot, and a brand built on restraint needs production with the same discipline.",
+    ticker:
+      "Launched January 2021 with 7 products · ~$200M annual retail sales · 800 Sephora doors in North America · Sephora UK, March 2025 · Retrospect fragrance launch · Profitable, $100M+ net revenue in 2024 · Founder of Who What Wear and Versed",
+    studio: {
+      headline: "A production company built for beauty with intention",
+      subline: "Campaign films, Sephora retail assets, talent shoots with real skin and real light, the list goes on.",
+    },
+    noticed: {
+      title: "Five minutes, framed.",
+      intro:
+        "We did the homework on the brand system and the international run. Here's what stuck.",
+      cards: [
+        {
+          label: "Effortless is hard",
+          body: "MERIT's entire pitch is the five-minute routine, born from one bathroom video. Product film has to feel unhurried and inevitable, which is much harder to shoot than maximalist beauty. We consider that the fun part.",
+        },
+        {
+          label: "Three categories, one voice",
+          body: "Makeup, skincare, and now fragrance with Retrospect. Each needs its own visual language while staying inside one of the most disciplined brand systems in beauty. That's a production design problem before it's a media problem.",
+        },
+        {
+          label: "The Sephora machine",
+          body: "800 doors in North America, the UK as of March 2025, France next. International retail rollouts eat content: localized cutdowns, in-store screens, launch assets, all on retail calendars that do not move.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You built a brand on restraint.",
+      titleAccent: "We shoot like we read the same brief.",
+      intro:
+        "We make commercial work for brands where the craft is in what gets left out. Minimalist beauty needs maximal production discipline, and that's our native register.",
+      gives: [
+        ["Brief", "Quiet luxury beauty that converts at Sephora and on social"],
+        ["Production", "LA-based crews, beauty lighting, real-skin talent direction"],
+        ["Deliverables", "Hero film, retail cutdowns, vertical social, stills"],
+        ["Audience", "Routine-minimalists shopping Sephora, DTC, and UK/EU"],
+      ],
+      tags: [
+        "Beauty film",
+        "Campaign",
+        "Sephora retail",
+        "Fragrance launch",
+        "Product tabletop",
+        "Vertical social",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  seed: {
+    slug: "seed",
+    accent: "#1C3A13",
+    company: "Seed Health",
+    recipientName: "Ara Katz",
+    recipientFirst: "Ara",
+    recipientEmail: "ara@seed.com",
+    metaTitle: "Friends & Family for Seed Health",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Seed Health.",
+    heroFor: "Seed",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Seed because you spent ten years earning the right to be believed, and the first brand campaign should spend that credibility carefully.",
+    ticker:
+      "Founded 2015, Venice CA · DS-01: 24 strains, 53.6B AFU · First CMO Anisha Raghavan, May 2026 · ~$200M revenue 2024 · Nationwide at Target · FDA-authorized IND for IBS · SeedLabs and LUCA Biologics",
+    studio: {
+      headline: "A production company built for the microbiome era",
+      subline: "Clinical claims that need legal-clean visuals, founder stories without wellness cliches, retail cutdowns for Target endcaps, the list goes on.",
+    },
+    noticed: {
+      title: "Science before selling.",
+      intro:
+        "We did the homework on the brand and the new chapter. Here's what stuck.",
+      cards: [
+        {
+          label: "The influencer exam",
+          body: "Seed makes influencers pass a science exam before they can post about the product. A brand that vets its spokespeople that hard will vet its production partners the same way. We like that.",
+        },
+        {
+          label: "First CMO, first campaign",
+          body: "For a decade Seed grew on founder voice, education, and word of mouth. Hiring your first CMO signals the shift to mass brand building, and that means film at scale for the first time in the company's life.",
+        },
+        {
+          label: "Three seconds in an aisle",
+          body: "The Target launch means the story has to land in three seconds on a shelf, not three paragraphs on a product page. That's a craft problem, not a media problem, and it's the exact translation we do for science-heavy brands.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Science this rigorous deserves film this considered.",
+      titleAccent: "We shoot the proof, not the promise.",
+      intro:
+        "Seed spent ten years earning the right to be believed. The first brand campaign should spend that credibility carefully, with directors who can make clinical truth feel cinematic.",
+      gives: [
+        ["Brief", "Translate microbiome science into brand film without dumbing it down"],
+        ["Production", "Director-led shoots, tabletop and macro work, founder docu-style"],
+        ["Deliverables", "Hero film, retail cutdowns, social verticals, PDP assets"],
+        ["Audience", "Health-curious skeptics, new Target shoppers, subscribers"],
+      ],
+      tags: [
+        "Brand film",
+        "Tabletop macro",
+        "Founder doc",
+        "Retail cutdowns",
+        "Science explainer",
+        "Social-first",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
 };
 
 export const PITCH_SLUGS = Object.keys(PITCH_COMPANIES);

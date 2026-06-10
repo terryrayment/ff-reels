@@ -81,6 +81,17 @@ export async function middleware(req: NextRequest) {
     "/topicals": "/pitch/topicals",
     "/cymbiotika": "/pitch/cymbiotika",
     "/rabbit": "/pitch/rabbit",
+    // Wave 3 (SoCal)
+    "/apex": "/pitch/apex",
+    "/epirus": "/pitch/epirus",
+    "/slingshot": "/pitch/slingshot",
+    "/aptera": "/pitch/aptera",
+    "/ntwrk": "/pitch/ntwrk",
+    "/karat": "/pitch/karat",
+    "/patrick-ta": "/pitch/patrick-ta",
+    "/harbinger": "/pitch/harbinger",
+    "/merit": "/pitch/merit",
+    "/seed": "/pitch/seed",
   };
   const vanityTarget = VANITY_PATH_REWRITES[req.nextUrl.pathname];
   if (vanityTarget) {
