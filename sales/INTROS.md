@@ -1056,3 +1056,179 @@ I run Friends & Family — director-led production company. We make pieces that 
 
 Terry
 Friends & Family
+
+---
+
+## Custom Pitch Page Intros (June 2026)
+
+A second wave for 10 priority targets, each paired with a custom capabilities page at `reels.friendsandfamily.tv/<slug>`. These replace the v1 intros above for these 10 names. Voice rules: disarming above everything, lead with Terry not the company, one specific thing we genuinely noticed, then the link. No em dashes.
+
+### P1. Chris Power, Hadrian — reels.friendsandfamily.tv/hadrian
+
+**Subject:** the clock strip on your website
+
+Chris,
+
+I noticed the header on hadrian.co tells time in California, Arizona, Alabama, and DC. A company keeping time across a rebuilding country. I've directed commercials for twenty years and that's an opening shot, not a UI detail.
+
+I'm Terry. I run Friends & Family, a director-led production company in LA. We make films for Callaway, ESPN, Nike, Apple, Ford, and Netflix, and my team put together a short capabilities page just for Hadrian:
+
+reels.friendsandfamily.tv/hadrian
+
+Factory 2 is in Torrance and we shoot all over LA. Happy to drive over and walk the shop, no deck, no agenda.
+
+Terry
+Friends & Family
+
+### P2. Brandon Tseng, Shield AI — reels.friendsandfamily.tv/shield-ai
+
+**Subject:** Netflix found it first
+
+Brandon,
+
+The documentary cameras in Unknown: Killer Robots found the human story at Shield AI before your own marketing did. That's not a criticism, it's the most fixable gap in defense tech.
+
+I'm Terry, a director who runs Friends & Family, a production company that shoots for Netflix, ESPN, Ford, and Apple. X-BAT lifting off a ship deck with no runway is a one-shot film waiting to happen, and my team built a short page about what we'd do with it:
+
+reels.friendsandfamily.tv/shield-ai
+
+Fifteen minutes whenever it suits. San Diego is an easy drive.
+
+Terry
+Friends & Family
+
+### P3. Tom Mueller, Impulse Space — reels.friendsandfamily.tv/impulse
+
+**Subject:** the garage years deserve better footage
+
+Tom,
+
+A lumberjack's son builds the biggest amateur liquid-fuel engine ever in the Mojave, then designs Merlin, then starts over. Somebody is going to tell that story and it would be a shame if it got told badly.
+
+I'm Terry. I run Friends & Family, a director-led production company twenty minutes up the freeway from Redondo Beach. We shoot for Apple, Nike, Ford, ESPN, and Netflix. My team made a short capabilities page just for Impulse, including what we'd do about those 144 open roles:
+
+reels.friendsandfamily.tv/impulse
+
+Coffee at your shop or ours.
+
+Terry
+Friends & Family
+
+### P4. JoeBen Bevirt, Joby Aviation — reels.friendsandfamily.tv/joby
+
+**Subject:** quiet aircraft, loud city
+
+JoeBen,
+
+Millions of people saw thirty seconds of news footage of your Manhattan flight. The cinematic version of that moment, the hush of it over all that noise, doesn't exist yet. It should exist before the first paying passenger boards in Dubai.
+
+I'm Terry, a director who runs Friends & Family. We make films for Apple, Ford, ESPN, Nike, and Netflix, and the hard part of your next chapter is feeling, not physics. That's our department. My team put together a short page just for Joby:
+
+reels.friendsandfamily.tv/joby
+
+I'd love fifteen minutes. I grew up on the same coast you fly over.
+
+Terry
+Friends & Family
+
+### P5. Bill Shufelt, Athletic Brewing — reels.friendsandfamily.tv/athletic
+
+**Subject:** the 19th hole, honestly
+
+Bill,
+
+Full disclosure: there's a Run Wild in my golf bag most weekends. I shoot for Callaway, so the post-round NA beer is genuinely part of my life, not a line I wrote for this email.
+
+I'm Terry. I run Friends & Family, a director-led production company that makes athlete-true film for Callaway, ESPN, and Nike. Your media spend is up 120% this summer and that's exactly the moment production quality either scales with the budget or gets exposed by it. My team made a short page just for Athletic:
+
+reels.friendsandfamily.tv/athletic
+
+Fifteen minutes any time. I'll bring the trail-doc idea about Two for the Trails.
+
+Terry
+Friends & Family
+
+### P6. Ben Goodwin, Olipop — reels.friendsandfamily.tv/olipop
+
+**Subject:** founder-formulator, meet founder-director
+
+Ben,
+
+You formulated every flavor yourself before anyone called it a brand. I direct the work my company sells. I've found people who built the thing by hand talk about craft the same way, which makes the first call easy.
+
+I'm Terry and I run Friends & Family, a production company that makes warm, human, broadcast-grade film for Nike, Apple, ESPN, Ford, and Netflix. You're about to make more film in 18 months than in your first eight years, and my team built a short page about how we'd help:
+
+reels.friendsandfamily.tv/olipop
+
+Fifteen minutes whenever. I'll admit my favorite flavor on the call.
+
+Terry
+Friends & Family
+
+### P7. Gabi Lewis, Magic Spoon — reels.friendsandfamily.tv/magic-spoon
+
+**Subject:** the full version, not the :06
+
+Gabi,
+
+It's Magic proved you already know your world is cinematic. Guitar solos, skateboard grinds, the whole 90s extreme-kids genre. Our directors grew up shooting exactly that. The pastries and the marshmallow chapter deserve the full version, not just the cutdowns.
+
+I'm Terry. I run Friends & Family, a director-led production company for Nike, Apple, ESPN, Ford, and Netflix. My team put together a short capabilities page just for Magic Spoon:
+
+reels.friendsandfamily.tv/magic-spoon
+
+Also, Exo to Magic Spoon is one of the great try-again stories and I'd love to hear it firsthand. Fifteen minutes any time.
+
+Terry
+Friends & Family
+
+### P8. Andrew Benin, Graza — reels.friendsandfamily.tv/graza
+
+**Subject:** confession about your Sizzle bottle
+
+Andrew,
+
+The Sizzle bottle on my counter is nearly empty and I mostly use it wrong. I drizzle with it. I know. In the spirit of your 35,444-person apology email, I figured I'd open with the confession.
+
+I'm Terry and I run Friends & Family, a director-led production company that shoots for ESPN, Ford, Nike, Apple, and Netflix, including plenty of live sport. Mayo plus NASCAR plus mass retail is a film problem now, and keeping the weird intact at that scale is our favorite kind of assignment. My team made a short page just for Graza:
+
+reels.friendsandfamily.tv/graza
+
+Fifteen minutes whenever suits.
+
+Terry
+Friends & Family
+
+### P9. Shiza Shahid, Our Place — reels.friendsandfamily.tv/our-place
+
+**Subject:** the film your founding story never got
+
+Shiza,
+
+Our Place is the rare cookware brand whose actual product story is people, and the film that carries that idea at cinematic scale hasn't been made yet. The founding story alone, home-cooked meals as how a family holds onto identity, deserves a director.
+
+I'm Terry. I run Friends & Family, an LA production company, founder-run like yours, that makes human-first films for Apple, Nike, ESPN, Ford, and Netflix. My team put together a short page just for Our Place:
+
+reels.friendsandfamily.tv/our-place
+
+I'd genuinely rather walk the Melrose store and grab a coffee than send anything else. That offer stands either way.
+
+Terry
+Friends & Family
+
+### P10. Matt Taylor, Tracksmith — reels.friendsandfamily.tv/tracksmith
+
+**Subject:** a letter between craftspeople
+
+Matt,
+
+Tracksmith already makes some of the best brand film in running, so this is not a rescue pitch. No Days Off is shared language over here. Our Januarys look like the ones you film. Unglamorous, cumulative, consistent.
+
+I'm Terry, a director who founded Friends & Family and stayed a director instead of becoming a manager who used to direct. I noticed you just made a version of the same call, hiring your own CEO to protect the creative. What a CCO-led growth chapter usually needs is capacity at the standard you've already set. My team made a short page about exactly that:
+
+reels.friendsandfamily.tv/tracksmith
+
+Fifteen minutes whenever. Boston or Zoom.
+
+Terry
+Friends & Family

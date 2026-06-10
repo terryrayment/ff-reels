@@ -68,6 +68,35 @@ Click any name to jump to the intro email in [`INTROS.md`](./INTROS.md).
 | 29 | (verify CMO) | Sun Bum | ⬜ | TBD | – | Sun care, Encinitas |
 | 30 | [Kimberly Villatoro](./INTROS.md#30-kimberly-villatoro-patrick-ta) | Patrick Ta Beauty | ⬜ | kimberly@patrickta.com | – | Beauty, LA (CEO, not Patrick) |
 
+### West Coast — Marketing Leads (Second Contact per SoCal company)
+
+Senior marketing/brand leaders to pair with the founders above. ✅ = Apollo-verified. ⚠️ = pattern-guess, Apollo couldn't surface — keep but retry Apollo in 30 days. Full notes in [`MARKETING-LEADS.md`](./MARKETING-LEADS.md).
+
+| # | Person | Company | Title | Email |
+|---|--------|---------|-------|-------|
+| 3 | Leslie Sanchez | Castelion | VP, Marketing & Comms | leslie@castelion.com ✅ |
+| 4 | Neil Presicci | Apex Space | Head of Marketing | neil.presicci@apexspace.com ✅ |
+| 7 | Alex Pearlman | Varda Space | Head of Marketing & Comms | apearlman@varda.com ✅ |
+| 8 | Chandra Rangan | Shield AI | Chief Marketing Officer | chandra.rangan@shield.ai ⚠️ |
+| **9** | **Shane Karp** *(replaces Alex Moore)* | Epirus | VP, Marketing & Comms | shane.karp@epirusinc.com ✅ |
+| 10 | Kelli Furrer | Slingshot Aerospace | CRO / CMO | k.furrer@slingshotaerospace.com ✅ |
+| 12 | Cindy Hofbauer | Fly By Jing | Head of Marketing | cindy@flybyjing.com ✅ |
+| 14 | Lauren Murphy | Fishwife | Sr. Brand Marketing Manager | lauren@eatfishwife.com ✅ |
+| 16 | Aila Morin | MERIT Beauty | Chief Marketing Officer | aila@meritbeauty.com ⚠️ |
+| 17 | Abiola Babarinde | Topicals | Head of Brand Marketing | abiola@mytopicals.com ⚠️ |
+| 18 | Anisha Raghavan | Seed Health | Chief Marketing Officer | anisha@seed.com ⚠️ |
+| 19 | Andrei Najjar | Cymbiotika | Chief Marketing Officer | andrei@cymbiotika.com ⚠️ |
+| 21 | Sarah Hardwick | Aptera Motors | Chief Marketing Officer | sarah@aptera.us ⚠️ |
+| 22 | Fred DePerez | Harbinger Motors | SVP Sales & Marketing | fred.deperez@harbingermotors.com ✅ |
+| 23 | Michelle Johnson Cobb | Heliogen | SVP Marketing | michelle@heliogen.com ⚠️ |
+| 28 | Stef O'Sullivan | STAUD | Head of Growth & Marketing | stef@staud.clothing ⚠️ |
+| 29 | Russell Radebaugh | Sun Bum | VP Marketing | russell@sunbum.com ⚠️ |
+| 30 | Jacqueline Barrett | Patrick Ta Beauty | SVP Marketing | jacqueline@patrickta.com ✅ |
+
+**Founder-led, no separate marketing lead (stay with founder contact):** Hadrian (1), Mach (2), K2 Space (5), Impulse (6), Our Place (11), Brightland (13), Ghia (15), Bloom (20), Rabbit (24), Backbone (25), NTWRK (26), Karat (27).
+
+---
+
 ### Batch 2 — National (31–60)
 
 | # | Person | Company | Status | Email | Last Action | Note |
@@ -209,4 +238,7 @@ This sales/ directory in the repo is the **working tracker**. Research files are
 
 ## Changelog
 
+- **2026-06-10** — Built 10 custom founder pitch pages at `reels.friendsandfamily.tv/<slug>` (hadrian, shield-ai, impulse, joby, athletic, olipop, magic-spoon, graza, our-place, tracksmith) on the Versant template via `/pitch/[slug]` + `src/lib/pitch/companies.ts`. Deep research per company in [`pitch-research/`](./pitch-research/). 10 fresh intro emails in [`INTROS.md`](./INTROS.md) under "Custom Pitch Page Intros" — these supersede the v1 intros for those 10 names.
+- **2026-05-27** — Added 18 West Coast marketing-lead second contacts. Apollo verified 9 (5 confirmed exact, 3 corrected email pattern, 1 replaced wrong person → Shane Karp at Epirus). 9 remain ⚠️ pattern-guesses for retry. Board reordered so founder + marketing rows are adjacent at every company. See [`MARKETING-LEADS.md`](./MARKETING-LEADS.md).
+- **2026-05-27** — Added 18 West Coast marketing-lead second contacts (initial). Apollo verification pending.
 - **2026-05-13** — Tracker created. 60 prospects compiled. 39 Apollo-verified. CCCo. West Coast onboarding pending. Uncle Lefty exit in motion.
