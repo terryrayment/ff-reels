@@ -772,7 +772,7 @@ mux-player {
   }
 
   .quartr-input {
-    @apply rounded-md border border-[#D9D8D2] bg-white px-3 py-2.5 text-[13px] text-[#111] placeholder:text-[#AAA9A2] outline-none transition-colors;
+    @apply rounded-md border border-[#D9D8D2] bg-white py-2.5 text-[13px] text-[#111] placeholder:text-[#AAA9A2] outline-none transition-colors;
   }
   .quartr-input:focus {
     border-color: #111;
