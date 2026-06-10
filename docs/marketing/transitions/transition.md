@@ -45,6 +45,16 @@ Read this before changing transition behavior, card click handlers, viewer layou
 
 Every card that opens a director viewer must pass a **portfolio `play` id** (not a work-archive id) so the destination renders `[data-marketing-featured-media-target]`.
 
+### Touch preview behavior (2026-06-10)
+
+On touch-primary devices (`hover: none`), `DirectorCard` autoplays its muted
+preview loop while ≥60% in view, capped at 2 concurrent cards
+(`src/components/marketing/use-touch-card-preview.ts`). The click/morph path is
+unchanged — tapping a playing card is the same code path as desktop's
+click-during-hover. Previews are disabled under `prefers-reduced-motion` and
+Save-Data. The video layer stays at opacity 0 until the first `playing` event,
+so blocked autoplay (iOS Low Power Mode) leaves the still image visible.
+
 ---
 
 ## Technical architecture
