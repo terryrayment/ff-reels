@@ -195,6 +195,8 @@ export function ScreeningCarousel({
   const { viewId } = useViewContext();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  // Poster overlay dissolves into the video on play (mux's own poster hard-cuts)
+  const [posterFaded, setPosterFaded] = useState(false);
   const [activePanel, setActivePanel] = useState<
     "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | "casestudies" | "shortfilms" | "gallery" | null
   >(null);
@@ -432,6 +434,7 @@ export function ScreeningCarousel({
       setTimeout(() => {
         setCurrentIndex(index);
         setIsTransitioning(false);
+        setPosterFaded(false); // new spot starts under its poster again
       }, 400);
     },
     [currentIndex, items, isTransitioning, currentProject, sendSpotData, resetTracking]
@@ -469,6 +472,7 @@ export function ScreeningCarousel({
   // Player event handlers
   const handlePlay = () => {
     isPlaying.current = true;
+    setPosterFaded(true);
     setShowInfo(false);
     if (!spotStartedAt.current) {
       spotStartedAt.current = Date.now();
@@ -848,29 +852,64 @@ export function ScreeningCarousel({
         >
           <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
             {currentProject.muxPlaybackId ? (
-              <MuxPlayer
-                ref={playerRef}
-                key={currentProject.id}
-                playbackId={currentProject.muxPlaybackId}
-                streamType="on-demand"
-                autoPlay={currentIndex > 0 ? ("any" as const) : undefined}
-                minResolution="1080p"
-                renditionOrder="desc"
-                metadata={{
-                  video_id: currentProject.id,
-                  video_title: currentProject.title,
-                }}
-                poster={getThumbUrl(currentItem, "large") || undefined}
-                primaryColor="#ffffff"
-                secondaryColor="#0e0e0e"
-                accentColor="#666666"
-                style={{ width: "100%", height: "100%" }}
-                onPlay={handlePlay}
-                onPause={handlePause}
-                onTimeUpdate={handleTimeUpdate}
-                onEnded={handleEnded}
-                onSeeked={handleSeeked}
-              />
+              <>
+                <MuxPlayer
+                  ref={playerRef}
+                  key={currentProject.id}
+                  playbackId={currentProject.muxPlaybackId}
+                  streamType="on-demand"
+                  autoPlay={currentIndex > 0 ? ("any" as const) : undefined}
+                  minResolution="1080p"
+                  renditionOrder="desc"
+                  metadata={{
+                    video_id: currentProject.id,
+                    video_title: currentProject.title,
+                  }}
+                  primaryColor="#ffffff"
+                  secondaryColor="#0e0e0e"
+                  accentColor="#666666"
+                  style={{ width: "100%", height: "100%" }}
+                  onPlay={handlePlay}
+                  onPause={handlePause}
+                  onTimeUpdate={handleTimeUpdate}
+                  onEnded={handleEnded}
+                  onSeeked={handleSeeked}
+                />
+                {/* Poster overlay — dissolves into the playing video instead of
+                    mux's single-frame poster swap. Clicks pass through to the
+                    player, so tapping the poster starts playback. */}
+                {getThumbUrl(currentItem, "large") && (
+                  <div
+                    aria-hidden
+                    className={`absolute inset-0 z-[2] pointer-events-none transition-opacity duration-700 ease-out ${
+                      posterFaded ? "opacity-0" : "opacity-100"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={getThumbUrl(currentItem, "large")!}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Play hint — only the first spot, which doesn't autoplay */}
+                    {currentIndex === 0 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                          <svg
+                            width="20"
+                            height="24"
+                            viewBox="0 0 20 24"
+                            fill="white"
+                            className="ml-1 opacity-60"
+                          >
+                            <polygon points="0,0 20,12 0,24" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
             ) : currentProject.thumbnailUrl ? (
               /* No Mux yet — show full-size thumbnail with play overlay */
               <div className="w-full h-full relative bg-black flex items-center justify-center">
