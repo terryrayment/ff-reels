@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <>
       <h1 className="sr-only">About Friends &amp; Family</h1>
-      <AboutPhotoTrail photos={ABOUT_PHOTOS} />
+      <AboutPhotoTrail photos={ABOUT_PHOTOS} microMoves="cosmos" />
     </>
   );
 }

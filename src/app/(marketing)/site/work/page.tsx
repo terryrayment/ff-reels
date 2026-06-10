@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { ProjectCard } from "@/components/marketing/project-card";
 import { RevealText } from "@/components/marketing/reveal-text";
-import {
-  type CanonicalContentType,
-  getCanonicalWork,
-} from "@/lib/marketing/canonical-source";
+import { getCanonicalWork } from "@/lib/marketing/canonical-source";
 import { getDirectorPortfolioPlayId } from "@/lib/marketing/play-project-id";
 
 export const metadata: Metadata = {
@@ -15,34 +10,14 @@ export const metadata: Metadata = {
     "Explore Friends & Family director work across commercials, case studies, films, production, post, animation, and VFX.",
   alternates: { canonical: "/site/work" },
 };
-const DISCIPLINES = [
-  { slug: "all", label: "All", contentType: null },
-  { slug: "commercials", label: "Commercials", contentType: "SPOT" },
-  { slug: "case-studies", label: "Case studies", contentType: "CASE_STUDY" },
-  { slug: "films", label: "Films", contentType: "SHORT_FILM" },
-] as const;
 
-type DisciplineSlug = (typeof DISCIPLINES)[number]["slug"];
-
-function resolveDiscipline(raw: string | undefined): DisciplineSlug {
-  if (!raw) return "all";
-  const match = DISCIPLINES.find((d) => d.slug === raw);
-  return match?.slug ?? "all";
-}
-
-function getWork(contentType: CanonicalContentType | null) {
-  const items = getCanonicalWork(contentType);
+function getWork() {
+  const items = getCanonicalWork(null);
   return { items, totalCount: items.length };
 }
 
-export default async function WorkPage({
-  searchParams,
-}: {
-  searchParams: { type?: string };
-}) {
-  const active = resolveDiscipline(searchParams.type);
-  const activeDiscipline = DISCIPLINES.find((d) => d.slug === active)!;
-  const { items, totalCount } = getWork(activeDiscipline.contentType);
+export default function WorkPage() {
+  const { items, totalCount } = getWork();
 
   return (
     <div className="ff-shell ff-page">
@@ -55,68 +30,24 @@ export default async function WorkPage({
         </p>
       </header>
 
-      <nav aria-label="Filter by discipline" className="ff-filter-nav">
-        {DISCIPLINES.map((d, i) => {
-          const isActive = d.slug === active;
-          const href =
-            d.slug === "all" ? "/site/work" : `/site/work?type=${d.slug}`;
-          return (
-            <span key={d.slug} className="flex items-center">
-              {i > 0 && (
-                <span aria-hidden className="px-2 text-ff-label text-ff-line">
-                  ·
-                </span>
-              )}
-              <Link
-                href={href}
-                className={cn(
-                  "ff-filter-link",
-                  isActive ? "ff-filter-link-active" : "text-ff-muted",
-                )}
-              >
-                {d.label}
-              </Link>
-            </span>
-          );
-        })}
-      </nav>
-
       {items.length === 0 ? (
         <div className="ff-empty-state">
-          <p>
-            No projects in this view.{" "}
-            <Link href="/site/work" className="underline">
-              See all
-            </Link>
-            .
-          </p>
+          <p>No projects available yet.</p>
         </div>
       ) : (
         <div className="ff-grid-work">
-          {items.map((p, index) => {
-            const disciplineLabel = DISCIPLINES.find(
-              (d) => d.contentType === p.contentType,
-            )?.label;
-            return (
-              <ProjectCard
-                key={p.id}
-                project={{
-                  ...p,
-                  playProjectId: getDirectorPortfolioPlayId(p),
-                }}
-                disciplineLabel={disciplineLabel ?? null}
-                showYear
-                imagePriority={index < 3}
-              />
-            );
-          })}
+          {items.map((p, index) => (
+            <ProjectCard
+              key={p.id}
+              project={{
+                ...p,
+                playProjectId: getDirectorPortfolioPlayId(p),
+              }}
+              showYear
+              imagePriority={index < 3}
+            />
+          ))}
         </div>
-      )}
-
-      {items.length > 0 && items.length < totalCount && (
-        <p className="ff-kicker mt-12 text-center">
-          {items.length} most recent
-        </p>
       )}
     </div>
   );

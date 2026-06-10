@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export const MARKETING_PARTNERS = {
   colossal: {
-    label: "COLOSSAL",
+    label: "Colossal",
     location: "Curitiba",
     href: "https://colossal.film/",
     cityCode: "CWB",
@@ -45,7 +45,7 @@ export const MARKETING_PARTNERS = {
     ],
   },
   youth: {
-    label: "THE YOUTH",
+    label: "The Youth Company",
     location: "São Paulo",
     href: "https://theyouth.com.br/",
     cityCode: "SP",
@@ -137,6 +137,8 @@ export function PartnerPage({ partnerId }: { partnerId: PartnerId }) {
   );
 }
 
+const PARTNER_EMBED_TIMEOUT_MS = 10_000;
+
 function PartnerSitePortal({
   partnerId,
   partner,
@@ -145,7 +147,7 @@ function PartnerSitePortal({
   onClose,
   onPartnerChange,
 }: PartnerSitePortalProps) {
-  const isColossal = partner.label === "COLOSSAL";
+  const isColossal = partnerId === "colossal";
   const isPage = mode === "page";
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeTimedOut, setIframeTimedOut] = useState(false);
@@ -156,15 +158,36 @@ function PartnerSitePortal({
   }, [isPage, partnerId]);
 
   useEffect(() => {
+    if (isPage) return;
+
     setIframeLoaded(false);
     setIframeTimedOut(false);
 
     const timeout = window.setTimeout(() => {
       setIframeTimedOut(true);
-    }, 12_000);
+    }, PARTNER_EMBED_TIMEOUT_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [partnerId]);
+  }, [isPage, partnerId]);
+
+  if (isPage) {
+    return (
+      <div className="ff-partner-site-embed">
+        <span id={titleId} className="sr-only">
+          {partner.label}
+        </span>
+        <iframe
+          key={partner.href}
+          src={partner.href}
+          title={`${partner.label} website`}
+          className="ff-partner-site-embed__frame"
+          loading="eager"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+        />
+      </div>
+    );
+  }
 
   return (
     <div

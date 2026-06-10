@@ -5,11 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MARKETING_PARTNERS } from "@/components/marketing/partner-portal";
+import { ImprintNavHoverStrip } from "@/components/marketing/imprint-nav-hover-strip";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
+  { type: "link", href: "/site/directors", label: "Directors" },
   { type: "link", href: "/site/work", label: "Work" },
-  { type: "link", href: "/site/directors", label: "Talent" },
   { type: "partner", href: "/site/youth", partnerId: "youth" },
   { type: "partner", href: "/site/colossal", partnerId: "colossal" },
   { type: "link", href: "/site/about", label: "About" },
@@ -17,6 +18,70 @@ const NAV_ITEMS = [
 ] as const;
 
 const MOBILE_MENU_ID = "marketing-mobile-menu";
+
+function PartnerNavLink({
+  href,
+  label,
+  partnerId,
+  active,
+  partnerRoute,
+  tabIndex,
+  onNavigate,
+}: {
+  href: string;
+  label: string;
+  partnerId: keyof typeof MARKETING_PARTNERS;
+  active: boolean;
+  partnerRoute: boolean;
+  tabIndex?: number;
+  onNavigate?: () => void;
+}) {
+  const [hoverOpen, setHoverOpen] = useState(false);
+
+  const linkClass = cn(
+    "ff-nav-label inline-flex h-ff-nav items-center transition-colors duration-150 ease-out",
+    partnerRoute
+      ? active
+        ? "text-white"
+        : "text-white/55 hover:text-white focus-visible:text-white"
+      : active
+        ? "text-ff-ink"
+        : "text-ff-muted hover:text-ff-ink focus-visible:text-ff-ink",
+  );
+
+  return (
+    <div
+      className={cn(
+        "ff-imprint-nav-item group/imprint relative flex items-center",
+        hoverOpen && "is-imprint-hover-open",
+      )}
+      onMouseEnter={() => setHoverOpen(true)}
+      onMouseLeave={() => setHoverOpen(false)}
+      onFocus={() => setHoverOpen(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setHoverOpen(false);
+        }
+      }}
+    >
+      <Link
+        href={href}
+        prefetch={false}
+        tabIndex={tabIndex}
+        onClick={onNavigate}
+        className={linkClass}
+        aria-describedby={`imprint-nav-tip-${partnerId}`}
+      >
+        {label}
+      </Link>
+      <ImprintNavHoverStrip
+        id={`imprint-nav-tip-${partnerId}`}
+        partnerId={partnerId}
+        onNavigate={onNavigate}
+      />
+    </div>
+  );
+}
 
 export function MarketingNav() {
   const pathname = usePathname();
@@ -58,9 +123,11 @@ export function MarketingNav() {
         "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
         partnerRoute
           ? "bg-black border-b border-white/15"
-          : scrolled
-          ? "bg-[rgb(var(--ff-rgb-paper)_/_0.85)] backdrop-blur-md border-b border-[rgb(var(--ff-rgb-ink)_/_0.06)]"
-          : "bg-transparent border-b border-transparent",
+          : open
+            ? "bg-[var(--ff-site-accent)] border-b border-[rgb(var(--ff-rgb-ink)_/_0.08)]"
+            : scrolled
+              ? "bg-[rgb(var(--ff-rgb-paper)_/_0.85)] backdrop-blur-md border-b border-[rgb(var(--ff-rgb-ink)_/_0.06)]"
+              : "bg-transparent border-b border-transparent",
       )}
     >
       <nav className="mx-auto max-w-ff px-ff-x h-ff-nav flex items-center justify-between">
@@ -79,7 +146,10 @@ export function MarketingNav() {
               height={933}
               sizes="36px"
               priority
-              className={cn("h-9 w-auto", partnerRoute && "invert")}
+              className={cn(
+                "ff-site-logomark h-9 w-auto",
+                partnerRoute && "invert",
+              )}
             />
           </Link>
         </div>
@@ -92,22 +162,13 @@ export function MarketingNav() {
                 const active = pathname?.startsWith(item.href);
                 return (
                   <li key={item.partnerId} className="flex items-center">
-                    <Link
+                    <PartnerNavLink
                       href={item.href}
-                      prefetch={false}
-                      className={cn(
-                        "ff-nav-label inline-flex h-ff-nav items-center transition-colors duration-150 ease-out",
-                        partnerRoute
-                          ? active
-                            ? "text-white"
-                            : "text-white/55 hover:text-white focus-visible:text-white"
-                          : active
-                            ? "text-ff-ink"
-                            : "text-ff-muted hover:text-ff-ink focus-visible:text-ff-ink",
-                      )}
-                    >
-                      {partner.label}
-                    </Link>
+                      label={partner.label}
+                      partnerId={item.partnerId}
+                      active={!!active}
+                      partnerRoute={partnerRoute}
+                    />
                   </li>
                 );
               }
@@ -145,7 +206,11 @@ export function MarketingNav() {
           onClick={() => setOpen((v) => !v)}
           className={cn(
             "inline-flex min-h-11 min-w-11 items-center justify-center font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro min-[1180px]:hidden",
-            partnerRoute ? "text-white" : "text-ff-ink",
+            partnerRoute
+              ? "text-white"
+              : open
+                ? "text-[var(--ff-site-accent-ink)]"
+                : "text-ff-ink",
           )}
         >
           {open ? "Close" : "Menu"}
@@ -165,46 +230,53 @@ export function MarketingNav() {
         id={MOBILE_MENU_ID}
         aria-hidden={!open}
         className={cn(
-          "ff-mobile-menu min-[1180px]:hidden border-t border-ff-line-soft bg-ff-paper",
+          "ff-mobile-menu min-[1180px]:hidden",
           open && "is-open",
+          partnerRoute && "ff-mobile-menu--partner-route",
         )}
       >
-          <div className="px-6 py-5">
-            <ul className="space-y-3">
-              {NAV_ITEMS.map((item) => {
-                if (item.type === "partner") {
-                  const partner = MARKETING_PARTNERS[item.partnerId];
-                  return (
-                    <li key={item.partnerId}>
-                      <Link
-                        href={item.href}
-                        prefetch={false}
-                        tabIndex={open ? 0 : -1}
-                        onClick={() => setOpen(false)}
-                        className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
-                      >
-                        {partner.label}
-                      </Link>
-                    </li>
-                  );
-                }
-
+        <div className="ff-mobile-menu__inner">
+          <ul className="ff-mobile-menu__list">
+            {NAV_ITEMS.map((item) => {
+              if (item.type === "partner") {
+                const partner = MARKETING_PARTNERS[item.partnerId];
                 return (
-                  <li key={item.href}>
+                  <li key={item.partnerId} className="ff-mobile-menu__item">
                     <Link
                       href={item.href}
                       prefetch={false}
                       tabIndex={open ? 0 : -1}
-                      className="ff-font-display block text-ff-nav-drawer font-medium text-ff-ink"
+                      onClick={() => setOpen(false)}
+                      className="ff-mobile-menu__link ff-focusable"
                     >
-                      {item.label}
+                      {partner.label}
                     </Link>
+                    <ImprintNavHoverStrip
+                      partnerId={item.partnerId}
+                      variant="drawer"
+                      onNavigate={() => setOpen(false)}
+                    />
                   </li>
                 );
-              })}
-            </ul>
-          </div>
+              }
+
+              return (
+                <li key={item.href} className="ff-mobile-menu__item">
+                  <Link
+                    href={item.href}
+                    prefetch={false}
+                    tabIndex={open ? 0 : -1}
+                    onClick={() => setOpen(false)}
+                    className="ff-mobile-menu__link ff-focusable"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
+      </div>
     </header>
   );
 }

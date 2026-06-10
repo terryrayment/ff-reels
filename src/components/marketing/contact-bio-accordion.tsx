@@ -32,7 +32,9 @@ function ContactBioRow({ person }: { person: ContactBio }) {
           <span className="flex items-start justify-between gap-6">
             <span>
               <span className="ff-display-section block">{person.name}</span>
-              <span className="ff-kicker-muted mt-3 block">{person.role}</span>
+              <span className="ff-copy-small mt-3 block text-ff-muted">
+                {person.role}
+              </span>
             </span>
             <span
               className="ff-accordion-mark mt-2 text-ff-muted transition-colors group-hover:text-ff-ink"

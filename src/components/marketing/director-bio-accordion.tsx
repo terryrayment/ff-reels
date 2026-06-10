@@ -24,7 +24,7 @@ export function DirectorBioAccordion({
           aria-expanded={isOpen}
           aria-controls={contentId}
           onClick={() => setIsOpen((open) => !open)}
-          className="flex w-full cursor-pointer items-center justify-between gap-6 py-5 text-left text-ff-micro uppercase tracking-ff-micro text-ff-muted transition-colors hover:text-ff-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ff-site-focus)]"
+          className="flex w-full cursor-pointer items-center justify-between gap-6 py-5 text-left ff-section-label transition-colors hover:text-ff-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ff-site-focus)]"
         >
           <span>Bio</span>
           <span className="ff-accordion-mark" aria-hidden="true">

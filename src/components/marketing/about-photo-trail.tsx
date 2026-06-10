@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { AboutPhoto } from "@/lib/about/photos";
 
+export type AboutTrailMicroMoves = "off" | "cosmos";
+
 type TrailPhoto = {
   id: number;
   src: string;
@@ -11,21 +13,27 @@ type TrailPhoto = {
   y: number;
   width: number;
   rotate: number;
+  settleRotate: number;
   z: number;
 };
 
 interface AboutPhotoTrailProps {
   photos: AboutPhoto[];
+  microMoves?: AboutTrailMicroMoves;
 }
 
 const WIDTHS = [112, 140, 96, 166, 122, 150, 104, 134];
 const ROTATIONS = [-5, 3, -2, 6, -7, 2, 5, -3];
+const SETTLE_ROTATIONS = [-4, 3, -2, 5, -3, 2, 4, -1];
 const MIN_DISTANCE = 62;
 const NAV_SAFE_TOP = 88;
 const STACK_DEPTH = 48;
 const MAX_TRAIL_PHOTOS = 180;
 
-export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
+export function AboutPhotoTrail({
+  photos,
+  microMoves = "off",
+}: AboutPhotoTrailProps) {
   const [trail, setTrail] = useState<TrailPhoto[]>([]);
   const [reduceMotion, setReduceMotion] = useState(false);
   const lastPoint = useRef<{ x: number; y: number } | null>(null);
@@ -77,6 +85,9 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
           y: safeY,
           width,
           rotate: reduceMotion ? 0 : ROTATIONS[id % ROTATIONS.length],
+          settleRotate: reduceMotion
+            ? 0
+            : SETTLE_ROTATIONS[id % SETTLE_ROTATIONS.length],
           z: (id % STACK_DEPTH) + 1,
         },
       ]);
@@ -102,7 +113,14 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
             alt=""
             decoding="async"
             draggable={false}
-            className="ff-about-trail-photo pointer-events-none absolute select-none object-cover"
+            className={[
+              "ff-about-trail-photo pointer-events-none absolute select-none object-cover",
+              microMoves === "cosmos" && !reduceMotion
+                ? "ff-about-trail-photo--cosmos"
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" ")}
             style={
               {
                 left: photo.x,
@@ -110,7 +128,7 @@ export function AboutPhotoTrail({ photos }: AboutPhotoTrailProps) {
                 width: photo.width,
                 zIndex: photo.z,
                 "--ff-about-photo-rotate": `${photo.rotate}deg`,
-                transform: `translate(-50%, -50%) rotate(${photo.rotate}deg)`,
+                "--ff-about-settle-rotate": `${photo.settleRotate}deg`,
               } as React.CSSProperties
             }
           />

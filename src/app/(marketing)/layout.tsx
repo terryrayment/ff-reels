@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { MarketingNav } from "@/components/marketing/nav";
-import { MarketingFooter } from "@/components/marketing/footer";
+import { MarketingChrome } from "@/components/marketing/marketing-chrome";
 import { LenisProvider } from "@/components/marketing/lenis-provider";
 import { getAppUrl } from "@/lib/seo/site";
 
@@ -38,11 +37,7 @@ export default function MarketingLayout({
 }) {
   return (
     <LenisProvider>
-      <div className="ff-site-theme min-h-screen flex flex-col bg-ff-paper text-ff-ink font-helveticaText">
-        <MarketingNav />
-        <main className="flex-1">{children}</main>
-        <MarketingFooter />
-      </div>
+      <MarketingChrome>{children}</MarketingChrome>
     </LenisProvider>
   );
 }

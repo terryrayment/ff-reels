@@ -20,7 +20,7 @@ const CONTACTS = [
     name: "Jed Herold",
     role: "Executive Producer",
     email: "jed@friendsandfamily.tv",
-    bio: "An integrated executive producer and project management leader with 20+ years across video, digital, social, and print production. Jed has held senior roles at BBDO, McCann, Grey, and Johannes Leonardo, bringing deep agency-side insight to every production and one of the widest collaborator networks in the business.",
+    bio: "Jed has a 20-plus year history as working professional in the commercial industry. His broad experience in production has given him the advantage of a wide network of collaborators and skills.",
   },
   {
     name: "Alana Hearn",
@@ -33,7 +33,7 @@ const CONTACTS = [
 const OFFICES = [
   {
     city: "Los Angeles",
-    lines: ["1618 Lucretia Avenue", "Los Angeles, CA 90026"],
+    lines: ["3023 Dolores St", "Los Angeles, CA 90065"],
   },
   {
     city: "New York",
@@ -74,7 +74,7 @@ const REPS = [
 
 export default function ContactPage() {
   return (
-    <div className="ff-shell ff-page">
+    <div className="ff-shell ff-page ff-contact-page">
       <header className="ff-page-heading-row">
         <h1 className="ff-display-page">CONTACT</h1>
       </header>
@@ -91,11 +91,13 @@ export default function ContactPage() {
           {OFFICES.map((office) => (
             <div key={office.city} className="min-w-0">
               <p className="ff-display-feature">{office.city}</p>
-              {office.lines.map((line) => (
-                <p key={line} className="ff-copy-small mt-3">
-                  {line}
-                </p>
-              ))}
+              <div className="mt-3 space-y-1.5">
+                {office.lines.map((line) => (
+                  <p key={line} className="ff-copy-small">
+                    {line}
+                  </p>
+                ))}
+              </div>
             </div>
           ))}
         </div>
@@ -116,7 +118,7 @@ export default function ContactPage() {
                   <p className="ff-display-feature">{rep.company}</p>
                   <p className="ff-kicker-muted">{rep.region}</p>
                 </div>
-                <ul className="space-y-2 md:text-right">
+                <ul className="space-y-1 md:text-right">
                   {rep.contacts.map((contact) => (
                     <li key={contact.email}>
                       <a
