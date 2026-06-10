@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/options";
+
+const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
 
 /**
  * POST /api/reels/preview
  * Creates a short-lived signed token encoding the preview reel parameters.
  * No database records are created — the token itself carries the data.
+ * Critical invariant: requires an authenticated team role — preview
+ * tokens can expose unpublished work.
  */
 export async function POST(request: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !TEAM_ROLES.includes(session.user.role)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { directorId, projectIds, title, brand, curatorialNote, agencyName, campaignName } = body;
