@@ -7,6 +7,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
 import { prepareMarketingCardSourceForTransition } from "@/components/marketing/prepare-marketing-card-source";
 import { useRevealOnce } from "@/components/marketing/use-reveal-once";
+import { useTouchCardPreview } from "@/components/marketing/use-touch-card-preview";
 
 interface DirectorCardProps {
   slug: string;
@@ -46,6 +47,17 @@ export function DirectorCard({
   const imageRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
+  const touchPreview = useTouchCardPreview(
+    mediaRef,
+    Boolean(muxPlaybackId || sourceVideoUrl),
+  );
+  const [previewPlaying, setPreviewPlaying] = useState(false);
+  const showPreview = hovering || touchPreview;
+
+  useEffect(() => {
+    if (!showPreview) setPreviewPlaying(false);
+  }, [showPreview]);
+
   const href = playProjectId
     ? `/site/directors/${slug}?play=${playProjectId}`
     : `/site/directors/${slug}`;
@@ -129,9 +141,15 @@ export function DirectorCard({
             <span>{name}</span>
           </div>
         )}
-        {muxPlaybackId && hovering && (
+        {muxPlaybackId && showPreview && (
           <div
-            className="ff-media-fill opacity-0 animate-[fadeIn_300ms_ease-out_forwards] [&_mux-player]:h-full [&_mux-player]:w-full"
+            className={`ff-media-fill [&_mux-player]:h-full [&_mux-player]:w-full ${
+              hovering
+                ? "opacity-0 animate-[fadeIn_300ms_ease-out_forwards]"
+                : `transition-opacity duration-300 ease-out ${
+                    previewPlaying ? "opacity-100" : "opacity-0"
+                  }`
+            }`}
             style={
               {
                 "--controls": "none",
@@ -147,18 +165,22 @@ export function DirectorCard({
               loop
               playsInline
               nohotkeys
+              onPlaying={() => setPreviewPlaying(true)}
             />
           </div>
         )}
-        {!muxPlaybackId && sourceVideoUrl && hovering && (
+        {!muxPlaybackId && sourceVideoUrl && showPreview && (
           <video
-            className="ff-media-fill object-cover opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-visible:opacity-100"
+            className={`ff-media-fill object-cover transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-visible:opacity-100 ${
+              previewPlaying ? "opacity-100" : "opacity-0"
+            }`}
             src={sourceVideoUrl}
             muted
             autoPlay
             loop
             playsInline
             preload="none"
+            onPlaying={() => setPreviewPlaying(true)}
           />
         )}
       </div>
