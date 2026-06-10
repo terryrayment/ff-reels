@@ -152,6 +152,15 @@ export function MarketingNav() {
         </button>
       </nav>
 
+      {open && (
+        <div
+          role="presentation"
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-[-1] min-[1180px]:hidden"
+        />
+      )}
+
       <div
         id={MOBILE_MENU_ID}
         aria-hidden={!open}
