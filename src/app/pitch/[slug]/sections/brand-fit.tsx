@@ -25,7 +25,7 @@ export function BrandFit({ fit }: Props) {
               title={
                 <>
                   <span className="font-light">{fit.titlePlain}</span>{" "}
-                  <span className="text-[#2447FF]">{fit.titleAccent}</span>
+                  <span className="text-[var(--pitch-accent)]">{fit.titleAccent}</span>
                 </>
               }
               intro={fit.intro}

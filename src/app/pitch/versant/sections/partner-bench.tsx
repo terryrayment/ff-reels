@@ -38,7 +38,7 @@ const PARTNERS = [
 
 export function PartnerBench() {
   return (
-    <section className={`${SECTION} relative overflow-hidden bg-[#2447FF] text-[var(--versant-white)]`}>
+    <section className={`${SECTION} relative overflow-hidden bg-[var(--pitch-accent)] text-[var(--versant-white)]`}>
       <div aria-hidden="true" className={SURFACE_GRAIN} />
       <div className={`${CONTAINER} relative z-10`}>
         <SectionHeader
@@ -63,7 +63,7 @@ export function PartnerBench() {
                       href={partner.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white transition-colors duration-180 hover:text-[#B8C8FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+                      className="text-white transition-colors duration-180 hover:text-white/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
                     >
                       {partner.name}
                     </a>

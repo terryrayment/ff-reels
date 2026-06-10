@@ -52,7 +52,7 @@ export function ContactCta({ recipientFirstName }: Props) {
   return (
     <section className={`${SECTION} pb-4 lg:pb-8`}>
       <div className={CONTAINER}>
-        <div className={`${REVEAL} relative overflow-hidden rounded-[4px] bg-[#2447FF] p-5 text-white sm:p-7 lg:p-8`}>
+        <div className={`${REVEAL} relative overflow-hidden rounded-[4px] bg-[var(--pitch-accent)] p-5 text-white sm:p-7 lg:p-8`}>
           <div aria-hidden="true" className={SURFACE_GRAIN} />
           <div className="relative z-10">
           <SectionHeader

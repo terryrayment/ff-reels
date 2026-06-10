@@ -84,7 +84,7 @@ export function BrandSplash({
   return (
     <section className="overflow-x-clip px-6 pt-6 pb-0.5 text-[var(--versant-white)] sm:px-10 sm:pt-10 lg:px-14 lg:pt-14">
       <div className="mx-auto grid max-w-[1600px] gap-3 lg:grid-cols-12">
-        <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[#2447FF] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
+        <article className="relative flex min-h-[34rem] flex-col overflow-hidden rounded-[4px] bg-[var(--pitch-accent)] p-6 text-[var(--versant-white)] sm:p-8 lg:col-span-12 lg:min-h-[min(43rem,calc(100svh-2rem))] lg:p-9">
           <div aria-hidden="true" className={SURFACE_GRAIN} />
           <div
             className={`relative z-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-white/50 ${HERO_MICRO_LABEL}`}

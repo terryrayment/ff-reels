@@ -98,7 +98,7 @@ export default async function BrandPitchPage({ params }: PageProps) {
   return (
     <main
       className="versant-pitch min-h-screen bg-[var(--versant-bg)] font-sans text-[var(--versant-ink)] antialiased selection:bg-[var(--versant-orange)]/30"
-      style={PITCH_THEME}
+      style={{ ...PITCH_THEME, "--pitch-accent": config.accent } as CSSProperties}
     >
       <div
         aria-hidden="true"

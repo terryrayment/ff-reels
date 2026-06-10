@@ -62,7 +62,7 @@ export function VersantFit() {
               title={
                 <>
                   <span className="font-light">Start with Golf Channel.</span>{" "}
-                  <span className="text-[#2447FF]">Build for USA Sports.</span>
+                  <span className="text-[var(--pitch-accent)]">Build for USA Sports.</span>
                 </>
               }
               intro="We would start where Versant already has momentum. Golf gives the first assignment a clear shape. The same F&amp;F path can cover Premier League, NASCAR, WWE, WNBA, LOVB, and college."

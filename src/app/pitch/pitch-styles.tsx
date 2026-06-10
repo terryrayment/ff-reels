@@ -63,7 +63,7 @@ export function PitchStyles() {
               left: 1px;
               right: 1px;
               border-radius: 999px;
-              background: #2447ff;
+              background: var(--pitch-accent);
             }
             @keyframes versant-rise-in {
               from {
@@ -212,7 +212,7 @@ export function PitchStyles() {
                 border-color: var(--versant-rule);
               }
               .versant-sport-row:hover .versant-sport-lane {
-                color: #2447ff;
+                color: var(--pitch-accent);
               }
               .versant-sport-row:hover .versant-sport-read {
                 color: rgba(20, 19, 15, 0.68);

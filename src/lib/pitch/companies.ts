@@ -78,6 +78,11 @@ export type PitchCompanyConfig = {
   ticker: string;
   /** "What F&F does" studio panel, tuned to their world. */
   studio: { headline: string; subline: string };
+  /**
+   * The company's master brand color (hex). Used for the hero, partner
+   * bench, and CTA surfaces via --pitch-accent. Must hold white text.
+   */
+  accent: string;
   /** Editorial section: proof we did the homework. */
   noticed: {
     title: string;
@@ -97,6 +102,7 @@ export type PitchCompanyConfig = {
 export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
   hadrian: {
     slug: "hadrian",
+    accent: "#002548",
     company: "Hadrian",
     recipientName: "Chris Power",
     recipientFirst: "Chris",
@@ -158,6 +164,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   "shield-ai": {
     slug: "shield-ai",
+    accent: "#050506",
     company: "Shield AI",
     recipientName: "Brandon Tseng",
     recipientFirst: "Brandon",
@@ -219,6 +226,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   impulse: {
     slug: "impulse",
+    accent: "#000000",
     company: "Impulse Space",
     recipientName: "Tom Mueller",
     recipientFirst: "Tom",
@@ -280,6 +288,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   joby: {
     slug: "joby",
+    accent: "#1C3F99",
     company: "Joby Aviation",
     recipientName: "JoeBen Bevirt",
     recipientFirst: "JoeBen",
@@ -341,6 +350,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   athletic: {
     slug: "athletic",
+    accent: "#003A5D",
     company: "Athletic Brewing",
     recipientName: "Bill Shufelt",
     recipientFirst: "Bill",
@@ -402,6 +412,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   olipop: {
     slug: "olipop",
+    accent: "#034638",
     company: "Olipop",
     recipientName: "Ben Goodwin",
     recipientFirst: "Ben",
@@ -463,6 +474,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   "magic-spoon": {
     slug: "magic-spoon",
+    accent: "#3F0791",
     company: "Magic Spoon",
     recipientName: "Gabi Lewis",
     recipientFirst: "Gabi",
@@ -524,6 +536,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   graza: {
     slug: "graza",
+    accent: "#3C422E",
     company: "Graza",
     recipientName: "Andrew Benin",
     recipientFirst: "Andrew",
@@ -585,6 +598,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   "our-place": {
     slug: "our-place",
+    accent: "#D37657",
     company: "Our Place",
     recipientName: "Shiza Shahid",
     recipientFirst: "Shiza",
@@ -646,6 +660,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
 
   tracksmith: {
     slug: "tracksmith",
+    accent: "#0A1E32",
     company: "Tracksmith",
     recipientName: "Matt Taylor",
     recipientFirst: "Matt",

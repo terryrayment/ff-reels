@@ -72,6 +72,7 @@ const CLEAN_PROJECT_TITLES: Record<(typeof DIRECTOR_SLUGS)[number], string | nul
 
 const VERSANT_THEME = {
   "--versant-bg": "#DDE0D8",
+  "--pitch-accent": "#2447FF",
   "--versant-black": "#09271F",
   "--versant-ink": "#14130F",
   "--versant-paper": "#F3EEE2",

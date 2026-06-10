@@ -329,7 +329,7 @@ function CaddieCard({
             href={`${FF_DIRECTOR_URL}/${card.slug}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#2447FF] transition-colors duration-180 hover:text-[#6B8CFF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
+            className="text-[var(--pitch-accent)] transition duration-180 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--versant-orange)]"
           >
             {card.name}
           </a>
