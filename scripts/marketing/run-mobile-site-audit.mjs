@@ -195,7 +195,17 @@ async function testMobileNav(page, baseUrl, viewport, clickLog, failures) {
   }
 
   const openLabel = await page.getAttribute(menuBtnSel, "aria-label");
+  // Hydration guard: at domcontentloaded React may not have attached handlers
+  // yet (common on dev servers), so a force-click can be a no-op. Retry once.
   await page.click(menuBtnSel, { force: true });
+  try {
+    await page.waitForSelector("#marketing-mobile-menu.is-open", { timeout: 4000 });
+  } catch {
+    await page.click(menuBtnSel, { force: true });
+    await page
+      .waitForSelector("#marketing-mobile-menu.is-open", { timeout: 8000 })
+      .catch(() => {});
+  }
   clickLog.push({ action: "menu-open", viewport: viewport.id, ts: Date.now() });
 
   const expanded = await page.getAttribute(menuBtnSel, "aria-expanded");
@@ -458,6 +468,109 @@ async function testDirectors(page, baseUrl, directors, clickLog, failures, media
     }
     mediaChecks.push({ slug, url: page.url() });
   }
+}
+
+// NOTE: running the audit with --reduced-motion will trip the medium-severity
+// "no preview reached playing" check by design — the hook disables previews
+// under prefers-reduced-motion.
+async function testTouchPreviews(page, baseUrl, failures, clickLog) {
+  // Count CARDS with playing media (not raw elements — mux-player can nest a
+  // video). A breach is only real if it survives a 300ms recheck; a single
+  // snapshot can catch the one-commit unmount/mount handoff between cards.
+  const countPlayingPreviews = () =>
+    page.evaluate(() => {
+      const frames = Array.from(
+        document.querySelectorAll("[data-marketing-media-frame]"),
+      );
+      return frames.filter((frame) =>
+        Array.from(frame.querySelectorAll("mux-player, video")).some(
+          (el) => el.paused === false && el.ended !== true,
+        ),
+      ).length;
+    });
+
+  const countPlayingPreviewsStable = async () => {
+    const first = await countPlayingPreviews();
+    if (first <= 2) return first;
+    await page.waitForTimeout(300);
+    return countPlayingPreviews();
+  };
+
+  await page.goto(`${baseUrl}/site/directors`, { waitUntil: PAGE_LOAD, timeout: PAGE_TIMEOUT });
+  await page.waitForTimeout(2500);
+
+  const samples = [];
+  for (let i = 0; i < 6; i += 1) {
+    const playing = await countPlayingPreviewsStable();
+    samples.push(playing);
+    if (playing > 2) {
+      failures.push({
+        severity: "high",
+        category: "media",
+        route: "/site/directors",
+        failure: `Touch preview concurrency exceeded: ${playing} playing simultaneously`,
+      });
+      break;
+    }
+    await page.evaluate(() => window.scrollBy(0, Math.round(window.innerHeight * 0.8)));
+    await page.waitForTimeout(1800);
+  }
+  clickLog.push({ action: "touch-preview-scan", samples });
+
+  if (!samples.some((count) => count > 0)) {
+    failures.push({
+      severity: "medium",
+      category: "media",
+      route: "/site/directors",
+      failure: "No director card preview reached playing state during scroll scan",
+    });
+  }
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(2000);
+  const firstCard = page.locator("a.ff-fluid-card").first();
+  if ((await firstCard.count()) > 0) {
+    await firstCard.click({ timeout: 15000 });
+    await page.waitForTimeout(3000);
+    clickLog.push({ action: "touch-preview-tap-through", url: page.url() });
+    if (!/\/site\/directors\/[^/?]+/.test(page.url())) {
+      failures.push({
+        severity: "high",
+        category: "interaction",
+        route: "/site/directors",
+        failure: `Tap on director card did not navigate (landed on ${page.url()})`,
+      });
+    }
+    const strandedOverlays = await page
+      .locator(".marketing-media-transition")
+      .count();
+    if (strandedOverlays > 0) {
+      failures.push({
+        severity: "high",
+        category: "interaction",
+        route: "/site/directors",
+        failure: `Morph overlay left in DOM after tap-through (${strandedOverlays})`,
+      });
+    }
+  }
+
+  // Tablet portrait (2-column grid) — the cap exists for this case.
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await page.goto(`${baseUrl}/site/directors`, { waitUntil: PAGE_LOAD, timeout: PAGE_TIMEOUT });
+  await page.waitForTimeout(2500);
+  const tabletPlaying = await countPlayingPreviewsStable();
+  clickLog.push({ action: "touch-preview-tablet-scan", playing: tabletPlaying });
+  if (tabletPlaying > 2) {
+    failures.push({
+      severity: "high",
+      category: "media",
+      route: "/site/directors",
+      failure: `Tablet touch preview concurrency exceeded: ${tabletPlaying} playing`,
+    });
+  }
+
+  // Restore phone viewport for the checks that run after this one.
+  await page.setViewportSize({ width: 390, height: 844 });
 }
 
 async function testDirectorPlayCases(page, baseUrl, failures, clickLog) {
@@ -734,6 +847,7 @@ async function main() {
 
   await testWorkFilters(page, baseUrl, clickLog, failures, mediaChecks);
   await testDirectors(page, baseUrl, directors, clickLog, failures, mediaChecks);
+  await testTouchPreviews(page, baseUrl, failures, clickLog);
   await testDirectorPlayCases(page, baseUrl, failures, clickLog);
   await testContactLinks(page, baseUrl, failures);
 
