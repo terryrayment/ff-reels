@@ -18,7 +18,7 @@ Findings that shaped scope:
 
 1. Director-card video previews work on touch devices via autoplay-in-view.
 2. The mobile nav drawer dismisses on backdrop tap.
-3. The Work-page filter hover-shift is verified inert under `(hover: none)`.
+3. The Work-page filter is verified touch-clean: no sticky `:hover` color after tap.
 
 ## Non-goals
 
@@ -47,15 +47,15 @@ useTouchCardPreview(frameRef: RefObject<HTMLElement>, hasVideo: boolean): boolea
 - Untouched: `handleClick`, `prepareMarketingCardSourceForTransition` usage, poster resolution (`imageRef.currentSrc`), all `data-marketing-*` attributes, `prefetch`, desktop hover handlers.
 - Deactivation unmounts the player — identical lifecycle to mouse-leave today.
 
-**Autoplay-blocked handling (touch path only):** the video layer stays at opacity 0 until the player fires its first `playing` event. If autoplay is rejected (e.g., iOS Low Power Mode), the user keeps seeing the still image — never a frozen or black frame. The desktop fade-in (CSS animation on mount) is unchanged.
+**Autoplay-blocked handling (touch path only):** the video layer stays at opacity 0 until the player fires its first `playing` event. If autoplay is rejected (e.g., iOS Low Power Mode), the user keeps seeing the still image — never a frozen or black frame. The desktop fade-in is unchanged. Note for planning: the Mux path fades in via a mount animation, but the source-`<video>` path reveals via `group-hover:opacity-100` / `group-focus-visible:opacity-100` classes (line 155) — the touch branch needs its own opacity state on that element since `group-hover` never fires on touch.
 
 ### 2. Nav drawer backdrop dismiss
 
-In `src/components/marketing/nav.tsx`: when the mobile menu is open, render an invisible backdrop element behind the panel; tapping it closes the menu. Escape, the X button, body scroll lock, and `aria-expanded` behavior are unchanged.
+In `src/components/marketing/nav.tsx`: when the mobile menu is open, render an invisible backdrop element behind the panel; tapping it closes the menu. Escape, the "Close" toggle button, body scroll lock, and `aria-expanded` behavior are unchanged.
 
 ### 3. Work-filter touch verification
 
-Verification task, not a planned change: confirm the `.ff-filter-link` hover-shift in `src/app/globals.css` does not trigger on tap under `(hover: none)` (the existing `@media (hover: none)` block appears to cover it). Fix only if a real defect is observed in mobile emulation.
+Verification task, not a planned change: `.ff-filter-link:hover` (globals.css:1441, 1929) is a color change, and no `@media (hover: none)` rule covers it (the block at globals.css:1694 covers `.ff-fluid-card` only). Confirm in mobile emulation that tapping a filter does not leave a sticky hover color; if it does, wrap the hover styles in `@media (hover: hover)`. Fix only if the defect is real.
 
 ## Error handling & edge cases
 
