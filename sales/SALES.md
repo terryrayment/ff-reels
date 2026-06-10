@@ -238,6 +238,7 @@ This sales/ directory in the repo is the **working tracker**. Research files are
 
 ## Changelog
 
+- **2026-06-10** — Wave 2: built 10 more SoCal pitch pages (mach, castelion, k2-space, varda, fly-by-jing, fishwife, ghia, topicals, cymbiotika, rabbit) with per-brand colors, cued 10 wind-up-format drafts in Gmail. Wave 1 marked Contacted on the board with pitch links. Research: [`pitch-research/2026-06-10-wave2-research.md`](./pitch-research/2026-06-10-wave2-research.md).
 - **2026-06-10** — Built 10 custom founder pitch pages at `reels.friendsandfamily.tv/<slug>` (hadrian, shield-ai, impulse, joby, athletic, olipop, magic-spoon, graza, our-place, tracksmith) on the Versant template via `/pitch/[slug]` + `src/lib/pitch/companies.ts`. Deep research per company in [`pitch-research/`](./pitch-research/). 10 fresh intro emails in [`INTROS.md`](./INTROS.md) under "Custom Pitch Page Intros" — these supersede the v1 intros for those 10 names.
 - **2026-05-27** — Added 18 West Coast marketing-lead second contacts. Apollo verified 9 (5 confirmed exact, 3 corrected email pattern, 1 replaced wrong person → Shane Karp at Epirus). 9 remain ⚠️ pattern-guesses for retry. Board reordered so founder + marketing rows are adjacent at every company. See [`MARKETING-LEADS.md`](./MARKETING-LEADS.md).
 - **2026-05-27** — Added 18 West Coast marketing-lead second contacts (initial). Apollo verification pending.

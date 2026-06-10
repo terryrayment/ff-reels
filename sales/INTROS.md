@@ -1232,3 +1232,63 @@ Fifteen minutes whenever. Boston or Zoom.
 
 Terry
 Friends & Family
+
+---
+
+## Wave 2 — SoCal Pitch Page Intros (June 2026)
+
+Final wind-up format (locked 2026-06-10). All drafts cued in terry@friendsandfamily.tv. Sign-off is "Terry" only; Gmail signature carries the rest.
+
+### W2-1. Ethan Thornton, Mach Industries — reels.friendsandfamily.tv/mach
+Subject: a page we made for Mach
+Geography line: Huntington Beach is an easy drive for me, so any day works.
+
+### W2-2. Bryon Hargis, Castelion — reels.friendsandfamily.tv/castelion
+Subject: a page we made for Castelion
+Geography line: You're in Torrance and I'm up the road, so any day works.
+
+### W2-3. Karan Kunjur, K2 Space — reels.friendsandfamily.tv/k2-space
+Subject: a page we made for K2 Space
+Geography line: You're in Torrance and I'm up the road, so any day works.
+
+### W2-4. Delian Asparouhov, Varda Space — reels.friendsandfamily.tv/varda
+Subject: a page we made for Varda
+Geography line: El Segundo is twenty minutes from us, so any day works.
+
+### W2-5. Jing Gao, Fly By Jing — reels.friendsandfamily.tv/fly-by-jing
+Subject: a page we made for Fly By Jing
+Geography line: We're both in LA, so any day works.
+
+### W2-6. Becca Millstein, Fishwife — reels.friendsandfamily.tv/fishwife
+Subject: a page we made for Fishwife
+Geography line: We're both in LA, so any day works.
+
+### W2-7. Mélanie Masarin, Ghia — reels.friendsandfamily.tv/ghia
+Subject: a page we made for Ghia
+Geography line: We're both in LA, so any day works.
+
+### W2-8. Olamide Olowe, Topicals — reels.friendsandfamily.tv/topicals
+Subject: a page we made for Topicals
+Geography line: We're both in LA, so any day works.
+
+### W2-9. Shahab Elmi, Cymbiotika — reels.friendsandfamily.tv/cymbiotika
+Subject: a page we made for Cymbiotika
+Geography line: San Diego is an easy drive for me, so any day works.
+
+### W2-10. Jesse Lyu, Rabbit — reels.friendsandfamily.tv/rabbit
+Subject: a page we made for Rabbit
+Geography line: Santa Monica is right around the corner from us, so any day works.
+
+Body template (identical for all ten):
+
+> {First},
+>
+> I'll save you the wind-up, my team spent two days on {Company} and built you a page, and I'd rather you see it than not.
+>
+> We're a top film production company in LA. We make films for Callaway, ESPN, Nike, Apple, Ford, Netflix, and beyond. My team made this for you and I'd love for you to take a look:
+>
+> http://reels.friendsandfamily.tv/{slug}
+>
+> I would really love to come in for a meeting. {Geography line} We'll also be at Cannes later this month if anyone from your team is there.
+>
+> Terry

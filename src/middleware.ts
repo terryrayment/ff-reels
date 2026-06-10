@@ -70,6 +70,17 @@ export async function middleware(req: NextRequest) {
     "/graza": "/pitch/graza",
     "/our-place": "/pitch/our-place",
     "/tracksmith": "/pitch/tracksmith",
+    // Wave 2 (SoCal)
+    "/mach": "/pitch/mach",
+    "/castelion": "/pitch/castelion",
+    "/k2-space": "/pitch/k2-space",
+    "/varda": "/pitch/varda",
+    "/fly-by-jing": "/pitch/fly-by-jing",
+    "/fishwife": "/pitch/fishwife",
+    "/ghia": "/pitch/ghia",
+    "/topicals": "/pitch/topicals",
+    "/cymbiotika": "/pitch/cymbiotika",
+    "/rabbit": "/pitch/rabbit",
   };
   const vanityTarget = VANITY_PATH_REWRITES[req.nextUrl.pathname];
   if (vanityTarget) {

@@ -719,6 +719,626 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       ],
     },
   },
+
+  mach: {
+    slug: "mach",
+    accent: "#000000",
+    company: "Mach Industries",
+    recipientName: "Ethan Thornton",
+    recipientFirst: "Ethan",
+    recipientEmail: "ethan@machindustries.com",
+    metaTitle: "Friends & Family for Mach Industries",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Mach Industries.",
+    heroFor: "Mach",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Mach because the Forge expansion is a visual story most defense companies never get to tell, and it's happening in Huntington Beach right now.",
+    ticker:
+      "$300M Series C at $1.8B, June 2026 · Sequoia's first defense tech investment · Founded by an MIT dropout at 19 · Forge 1: 115,000 sq ft, Huntington Beach · Acquired Exquadrum for $50M · ~350 employees, up from a dozen · Army Strategic Strike flew Feb 2025",
+    studio: {
+      headline: "A production company built for the people rearming America",
+      subline: "Factory floors under ITAR, flight tests with one take, a founder story the whole industry is watching, the list goes on.",
+    },
+    noticed: {
+      title: "Forge 1, then four more.",
+      intro:
+        "We read the Series C coverage and everything Ethan has said on the record. Three things stuck.",
+      cards: [
+        {
+          label: "The scale-up",
+          body: "Your Huntington Beach plant is built to push out a thousand Vipers and three thousand Glides a month, with four more facilities coming by the end of 2026. That ramp is a once-in-a-company filmmaking moment and it's happening now.",
+        },
+        {
+          label: "You talk about the hard parts",
+          body: "Ethan addressed the 2023 hydrogen explosion publicly instead of burying it. A company that honest about failure deserves film that doesn't sand the edges off. We'd shoot it the same way you tell it.",
+        },
+        {
+          label: "It actually flew",
+          body: "Strategic Strike went from Army contract to successful flight tests in early 2025. Real flight footage beats renders every time, and you have the real thing sitting in your archive.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start at Forge 1.",
+      titleAccent: "Shoot the work as it happens.",
+      intro:
+        "Small crew, one day on the floor, founder on camera, no agency layer. The expansion needs recruiting film and the Series C watchers need to see the machines, and both come from the same shoot.",
+      gives: [
+        ["Brief", "Recruiting and credibility film for the Forge expansion"],
+        ["Production", "Security-aware crews, factory floor, flight test units"],
+        ["Deliverables", "Hero film, recruiting cutdowns, stills"],
+        ["Audience", "Engineers, Army customers, the industry watching"],
+      ],
+      tags: [
+        "Founder story",
+        "Factory floor",
+        "Flight test",
+        "Recruiting film",
+        "Brand film",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  castelion: {
+    slug: "castelion",
+    accent: "#1F3B64",
+    company: "Castelion",
+    recipientName: "Bryon Hargis",
+    recipientFirst: "Bryon",
+    recipientEmail: "bryon@castelion.com",
+    metaTitle: "Friends & Family for Castelion",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Castelion.",
+    heroFor: "Castelion",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Castelion because you flew twenty test articles last year while the primes flew one, and that cadence is a story that deserves footage shot at the same tempo.",
+    ticker:
+      "$350M Series B, Dec 2025 · Blackbeard on F/A-18 by 2027 · 20+ flight tests in 2025 · Pentagon framework: 500 missiles a year minimum · Project Ranger: 1,000 acres in New Mexico · Founded 2022 by SpaceX veterans · Five sites: CA, NM, TX, DC",
+    studio: {
+      headline: "A production company built for the people rebuilding American deterrence",
+      subline: "Test-range shoots, factory-floor crews, ITAR-aware sets, recruiting films that outrun the news cycle, the list goes on.",
+    },
+    noticed: {
+      title: "Twenty flights, one year.",
+      intro:
+        "We read the Series B coverage and the Pentagon framework news. Here's what stuck.",
+      cards: [
+        {
+          label: "The cadence is the story",
+          body: "Most primes fly a test article every few years. Castelion flew more than twenty in 2025 alone, on motors and seekers and flight computers you build in-house. That tempo is the brand, and it mostly lives in press releases right now.",
+        },
+        {
+          label: "Project Ranger is a place",
+          body: "A thousand-acre solid rocket motor campus rising in New Mexico, built to turn out thousands of Blackbeards a year. Ground-up factory builds are once-in-a-company filmmaking moments. This one is pouring concrete now.",
+        },
+        {
+          label: "Hiring against the clock",
+          body: "Forty-plus open roles across five sites in three states plus DC. Every one of those candidates Googles Castelion first. Film is what they'll find, or what they won't.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You build the hardware.",
+      titleAccent: "We build how the world sees it.",
+      intro:
+        "We'd start with a discovery day in Torrance: walk the floor, meet the team, map what can be shown and what can't. From there, one anthem film and a modular library cut for recruiting and the milestones already on your 2026 calendar.",
+      gives: [
+        ["Brief", "Anthem film plus recruiting and milestone library"],
+        ["Production", "ITAR-aware crews, test-range and factory units"],
+        ["Deliverables", "Hero film, cutdowns, social verticals, stills"],
+        ["Audience", "Engineers you're hiring and services you're fielding with"],
+      ],
+      tags: [
+        "Anthem film",
+        "Recruiting film",
+        "Factory build doc",
+        "Test-day coverage",
+        "Founder on camera",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "k2-space": {
+    slug: "k2-space",
+    accent: "#141414",
+    company: "K2 Space",
+    recipientName: "Karan Kunjur",
+    recipientFirst: "Karan",
+    recipientEmail: "karan@k2space.com",
+    metaTitle: "Friends & Family for K2 Space",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for K2 Space.",
+    heroFor: "K2 Space",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with K2 because you bet on big satellites while the whole industry went small, the bet paid off, and that arc deserves to be told on film instead of in press releases.",
+    ticker:
+      "$250M Series C at $3B valuation · 20 kW Mega Class bus · 3,000 kg payload capacity · GRAVITAS: 40m solar wingspan · 80% built in-house · Founded 2022, Torrance CA · Two brothers, BCG and SpaceX Dragon",
+    studio: {
+      headline: "A production company built for the launch-abundance era",
+      subline: "Facility films in Torrance, mission-countdown content, recruiting reels that have to out-pull SpaceX, the list goes on.",
+    },
+    noticed: {
+      title: "Contrarian by design.",
+      intro:
+        "We read the Series C coverage and watched what footage exists of GRAVITAS. Here's what stuck.",
+      cards: [
+        {
+          label: "The bet paid off",
+          body: "While the industry raced toward smallsats, K2 bet on mega-class platforms. Now there's a $3B valuation and a launch manifest through 2027. That story arc is rare and it's still mostly untold on film.",
+        },
+        {
+          label: "Hardware you can point a lens at",
+          body: "A 40-meter solar wingspan. Eighty percent of the vehicle built in-house. A Torrance factory scaling to serial production. Most startups have a slide deck. You have cinema-grade subject matter sitting on the floor.",
+        },
+        {
+          label: "Two brothers, one company",
+          body: "A BCG dealmaker and a SpaceX Dragon engineer building their first venture together is the kind of founder dynamic audiences actually remember. Build Bigger is a tagline. The brothers are the story.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You build bigger.",
+      titleAccent: "We shoot bigger.",
+      intro:
+        "K2 is entering its most visible year: first production launches, new customers, aggressive hiring. The footage you capture now becomes the brand archive for the next decade, and it should be shot like it.",
+      gives: [
+        ["Brief", "Founder story plus factory anthem film"],
+        ["Production", "Torrance facility shoots, doc crews, launch coverage"],
+        ["Deliverables", "Hero film, cutdowns, recruiting verticals, stills"],
+        ["Audience", "Customers, DoD stakeholders, candidates, investors"],
+      ],
+      tags: [
+        "Founder doc",
+        "Factory anthem",
+        "Launch coverage",
+        "Recruiting film",
+        "Social cutdowns",
+        "Photography",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  varda: {
+    slug: "varda",
+    accent: "#0A3065",
+    company: "Varda Space",
+    recipientName: "Delian Asparouhov",
+    recipientFirst: "Delian",
+    recipientEmail: "delian@foundersfund.com",
+    metaTitle: "Friends & Family for Varda Space",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Varda Space.",
+    heroFor: "Varda",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Varda because your raw reentry camera went to the top of Hacker News on its own, and we keep imagining what a crafted edit of that material could do.",
+    ticker:
+      "Founded 2020 in El Segundo · $329M raised · First drug crystallized in orbit · First commercial capsule recovered on US soil · Reentry at Mach 25 · Six missions flown · AFRL Prometheus hypersonic partner · W-6 landed at Koonibba, May 2026",
+    studio: {
+      headline: "A production company built for orbital manufacturing",
+      subline: "Capsules in clean rooms, recoveries in the outback, plasma at Mach 25, a factory floor in El Segundo, the list goes on.",
+    },
+    noticed: {
+      title: "The footage already went viral.",
+      intro:
+        "We watched the W-2 reentry video the day it dropped, like everyone else. Here's what stuck.",
+      cards: [
+        {
+          label: "The raw camera did that",
+          body: "Plasma, sound and all, LEO to Earth in five minutes, top of Hacker News. That was an unedited onboard camera. The crafted version of Varda's missions doesn't exist yet, and it's sitting in your archive waiting.",
+        },
+        {
+          label: "Milestones as press releases",
+          body: "First drug crystallized in orbit. First commercial capsule recovered on US soil. Two reentries already in 2026. Each one is a film waiting to happen, and right now they mostly live as PDFs.",
+        },
+        {
+          label: "Delian is the distribution",
+          body: "One of the most-watched founder accounts on X, posting constantly about Varda and El Segundo. Film made for that feed, cut for that voice, travels further than anything a brand account posts.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You make medicine in orbit.",
+      titleAccent: "We make the films on Earth.",
+      intro:
+        "Varda's missions already produce the most cinematic raw material in aerospace. We'd turn the milestone calendar into a film system built for recruiting, pharma partners, and the feed.",
+      gives: [
+        ["Brief", "Mission films, recruiting, brand"],
+        ["Production", "El Segundo shoots plus mission footage edit"],
+        ["Deliverables", "Hero film, cutdowns, social verticals"],
+        ["Audience", "Pharma partners, DoD, hard-tech talent"],
+      ],
+      tags: [
+        "Mission films",
+        "Founder content",
+        "Recruiting film",
+        "Launch recaps",
+        "Facility tours",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "fly-by-jing": {
+    slug: "fly-by-jing",
+    accent: "#F9423A",
+    company: "Fly By Jing",
+    recipientName: "Jing Gao",
+    recipientFirst: "Jing",
+    recipientEmail: "jing@flybyjing.com",
+    metaTitle: "Friends & Family for Fly By Jing",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Fly By Jing.",
+    heroFor: "Fly By Jing",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Fly By Jing because the move from cult condiment to 12,000 doors changes what your film has to do, and shelf awareness is a different job than conversion ads.",
+    ticker:
+      "Founded 2018 · Highest-funded craft food Kickstarter of 2018 · Made in Chengdu · 12,000 retail doors · $12M Series B · B Corp certified · Author of The Book of Sichuan Chili Crisp · Chili Crisp Ketchup with Frankie Gaw",
+    studio: {
+      headline: "A production company built for brands that put flavor first",
+      subline: "Tabletop that makes chili oil glisten, founder-led storytelling, retail-ready cutdowns, recipe content that actually gets cooked, the list goes on.",
+    },
+    noticed: {
+      title: "Fly restaurants, literally.",
+      intro:
+        "We did the homework on the brand and the founder. Three things stuck.",
+      cards: [
+        {
+          label: "The name is a film",
+          body: "Fly By Jing honors Chengdu's hole-in-the-wall spots so good they draw people like flies. That origin story is built into every jar, and it deserves film treatment instead of a label paragraph.",
+        },
+        {
+          label: "The pivot changes the job",
+          body: "In 2025 you moved hard into retail: 12,000 stores, new packaging, sharper prices for the Walmart expansion. Shelf awareness is a different assignment than the DTC content that built the cult. That gap is exactly our lane.",
+        },
+        {
+          label: "Jing is the brand",
+          body: "The name reclamation, the chef credentials, the cookbook. Few founders carry this much narrative weight on camera, and most brand films underuse a founder this good.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "We make food look the way it tastes.",
+      titleAccent: "Tingly, glossy, alive.",
+      intro:
+        "Founder story and retail awareness can live in one campaign. We'd shoot the documentary layer and the tabletop layer in the same week, in LA, and cut both for the shelf and the feed.",
+      gives: [
+        ["Brief", "Founder story plus retail awareness in one campaign"],
+        ["Production", "Tabletop, macro food, documentary founder shoot in LA"],
+        ["Deliverables", "Hero film plus 15s and 6s retail and social cutdowns"],
+        ["Audience", "Grocery shoppers meeting chili crisp for the first time"],
+      ],
+      tags: [
+        "Tabletop",
+        "Food macro",
+        "Founder doc",
+        "Brand film",
+        "Retail cutdowns",
+        "Recipe content",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  fishwife: {
+    slug: "fishwife",
+    accent: "#387CC0",
+    company: "Fishwife",
+    recipientName: "Becca Millstein",
+    recipientFirst: "Becca",
+    recipientEmail: "becca@eatfishwife.com",
+    metaTitle: "Friends & Family for Fishwife",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Fishwife.",
+    heroFor: "Fishwife",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Fishwife because you largely created the American tinned fish wave, and the audience is now mainstream grocery, which means the content has to scale from foodie in-joke to aisle five.",
+    ticker:
+      "Founded 2020 in Los Angeles · 5,000+ retail doors · Target, Whole Foods, Sprouts, Costco · Shark Tank deal with Lori Greiner · 800k+ customers · The Fishwife Cookbook, 2025 · Fly By Jing collab best seller",
+    studio: {
+      headline: "A production company built for the modern pantry brand",
+      subline: "Tabletop and macro food, retail-ready cutdowns, founder-led storytelling, social-first verticals, the list goes on.",
+    },
+    noticed: {
+      title: "The cans do the talking.",
+      intro:
+        "We did the homework on the brand, the cookbook, and the collabs. Here's what stuck.",
+      cards: [
+        {
+          label: "The illustrated world",
+          body: "Danny Miller's packaging made Fishwife instantly recognizable on shelf and screen. That visual world deserves motion built around it, not pasted on top. Few CPG brands hand a director this much to start with.",
+        },
+        {
+          label: "Collabs as campaign beats",
+          body: "The Fly By Jing chili crisp salmon became a best seller because two beloved brands shared an audience. Each collab is a ready-made campaign moment, and the video should move at that same drop cadence.",
+        },
+        {
+          label: "You built the wave",
+          body: "Fishwife didn't join the tinned fish trend. It largely created the American version of it. Costco, Target, and a cookbook mean the next audience has never seen the in-jokes, and the film has to carry them in.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You built the category.",
+      titleAccent: "Now own the screen.",
+      intro:
+        "Fishwife grew from a pandemic idea to 5,000 stores on brand alone. The next chapter is film that matches that shelf presence, shot in LA where you and we both live.",
+      gives: [
+        ["Brief", "Hero brand film plus retail and social cutdowns"],
+        ["Production", "Tabletop plus lifestyle, director-led, LA-based"],
+        ["Deliverables", "30s, 15s, 6s, vertical-first social, retail screens"],
+        ["Audience", "Grocery shoppers, foodies, gift buyers, Costco families"],
+      ],
+      tags: [
+        "Brand film",
+        "Tabletop food",
+        "Founder story",
+        "Social verticals",
+        "Retail media",
+        "Collab drops",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  ghia: {
+    slug: "ghia",
+    accent: "#651C32",
+    company: "Ghia",
+    recipientName: "Mélanie Masarin",
+    recipientFirst: "Mélanie",
+    recipientEmail: "melanie@drinkghia.com",
+    metaTitle: "Friends & Family for Ghia",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Ghia.",
+    heroFor: "Ghia",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Ghia because the distribution problem is solved, 2,800 doors and counting, and what's left is awareness, which is a moving-image problem.",
+    ticker:
+      "Founded 2020 · Lyon-born, Mediterranean-raised founder · Ex-Glossier head of retail · 2,800+ retailers incl. Target and Erewhon · 700+ bars and restaurants · Shark Tank, no deal, ~$10M raised anyway · Le Fizz launched 2024 · 0% alcohol, no added sugar",
+    studio: {
+      headline: "A production company built for aperitivo hour",
+      subline: "Golden-hour tabletop, pours that actually look bittersweet, social films that feel like a dinner party, cutdowns in every ratio, the list goes on.",
+    },
+    noticed: {
+      title: "No deal, no problem.",
+      intro:
+        "We did the homework on the brand and the founder. Three things stuck.",
+      cards: [
+        {
+          label: "The Shark Tank walk",
+          body: "You asked for $250K at 5%, walked away without a deal, and raised about $10M anyway while keeping 57% of the company. That's a founder who knows exactly what the brand is worth, and we make work for people like that.",
+        },
+        {
+          label: "Design before category",
+          body: "The bottle, the pink-and-burgundy world, the it's-not-a-mocktail positioning. It reads like an object from a Riviera summer, not a wellness brand. Film for Ghia has to clear the bar the packaging already set.",
+        },
+        {
+          label: "Awareness is what's left",
+          body: "From 750 doors at the Shark Tank pitch to 2,800 plus 700 bars. Distribution is no longer the constraint. The next layer of growth is people knowing what aperitivo hour is, and that's a film job.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Aperitivo hour deserves film",
+      titleAccent: "made with the same taste as the liquid.",
+      intro:
+        "We produce director-driven work for brands that care how things look as much as how they sell. We'd start with golden hour, a table, and the spritz as the main character.",
+      gives: [
+        ["Brief", "Make the spritz the main character of golden hour"],
+        ["Production", "LA crews, tabletop plus lifestyle, fast turnarounds"],
+        ["Deliverables", "Hero film, social cutdowns, retail and OOH assets"],
+        ["Audience", "Sober-curious 25 to 45, design-literate, hosting-obsessed"],
+      ],
+      tags: [
+        "Tabletop",
+        "Liquid pours",
+        "Lifestyle",
+        "Social-first",
+        "Color-led grade",
+        "Food styling",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  topicals: {
+    slug: "topicals",
+    accent: "#FF454E",
+    company: "Topicals",
+    recipientName: "Olamide Olowe",
+    recipientFirst: "Olamide",
+    recipientEmail: "olamide@mytopicals.com",
+    metaTitle: "Friends & Family for Topicals",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Topicals.",
+    heroFor: "Topicals",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Topicals because your whole premise is showing real skin honestly, and most beauty production is built to do the opposite.",
+    ticker:
+      "Founded 2020 in LA · Youngest Black woman to raise $10M+ in VC · Sephora's fastest-growing skincare brand · 6M+ Faded Eye Masks sold · #1 eye product at Sephora for 18 months · Angel Reese and Rema invested Jan 2026 · Acquired Bread Beauty Supply 2025",
+    studio: {
+      headline: "A production company built for skin you can actually see",
+      subline: "Real texture in close-up, casting across every shade and condition, lighting that doesn't erase, the list goes on.",
+    },
+    noticed: {
+      title: "Texture is the story.",
+      intro:
+        "We did the homework on the brand and the platform play. Here's what stuck.",
+      cards: [
+        {
+          label: "Against the retouch",
+          body: "Most beauty production retouches skin into plastic. Topicals' whole premise is showing eczema, hyperpigmentation, and ingrowns honestly. That demands crews who light and grade real texture instead of hiding it, which is a craft choice most beauty shoots never make.",
+        },
+        {
+          label: "Culture trip energy",
+          body: "The Ghana creator trip drove a sales surge by treating community like content. That format wants documentary coverage with commercial polish, shot fast and cut for feeds. It's a real production discipline and we run it often.",
+        },
+        {
+          label: "A platform, not a product",
+          body: "Cost of Doing Business is acquiring brands now, starting with Bread. That means the next production partner has to scale one visual standard across multiple labels without flattening them into each other.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You built skincare for people the industry overlooked.",
+      titleAccent: "We shoot the skin the industry retouches out.",
+      intro:
+        "Topicals turned chronic skin conditions into culture, and that deserves film craft equal to the formulas. We'd start with one campaign shot the way the brand actually talks.",
+      gives: [
+        ["Brief", "Condition-first beauty, zero erasure"],
+        ["Production", "LA crews, macro skin work, location-ready"],
+        ["Deliverables", "Hero film plus social cutdowns and stills"],
+        ["Audience", "Gen Z, melanin-rich, community-led"],
+      ],
+      tags: [
+        "Beauty macro",
+        "Skin-true grading",
+        "Casting all shades",
+        "Docu brand trips",
+        "Social cutdowns",
+        "Founder story",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  cymbiotika: {
+    slug: "cymbiotika",
+    accent: "#163F35",
+    company: "Cymbiotika",
+    recipientName: "Shahab Elmi",
+    recipientFirst: "Shahab",
+    recipientEmail: "shahab@cymbiotika.com",
+    metaTitle: "Friends & Family for Cymbiotika",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Cymbiotika.",
+    heroFor: "Cymbiotika",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Cymbiotika because you bootstrapped to $150M on product and community, and the first big brand campaign is a different muscle. It sets the visual bar for everything after.",
+    ticker:
+      "Founded 2018, San Diego · ~$150M revenue 2025 · $25M seed led by David Grutman · 50+ celebrity investors · ~2,000 Target stores · Ulta rollout March 2026 · 100M+ packets sold",
+    studio: {
+      headline: "A production company built for the wellness shelf wars",
+      subline: "A first big brand campaign, Target endcaps that have to stop a cart, Ulta launch content, founder-led storytelling, the list goes on.",
+    },
+    noticed: {
+      title: "The first real campaign.",
+      intro:
+        "We read the raise coverage and the retail expansion plan. Here's what stuck.",
+      cards: [
+        {
+          label: "A different muscle",
+          body: "You raised $25M partly to fund your first large-scale brand campaign. Organic and creator content got you to $150M. The first big swing is a different discipline, and it decides how the brand looks for years.",
+        },
+        {
+          label: "Shelf shoppers haven't seen the TikToks",
+          body: "Target's only liposomal brand, plus a thousand Ulta doors in March. The aisle audience needs fifteen seconds that explain rip and sip before the cart moves on. That's a precision filmmaking problem.",
+        },
+        {
+          label: "The proof is the story",
+          body: "Clinical trials on finished formulas. Numbers most supplement brands can't say on camera. You can, and it should look as premium as the packet does.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You've outgrown content.",
+      titleAccent: "Time for film.",
+      intro:
+        "Cymbiotika went from bootstrapped to Target shelves on product and community. The next phase is brand film that earns the premium price in three seconds, and we'd build the retail cutdowns from the same shoot.",
+      gives: [
+        ["Brief", "Launch campaign plus retail cutdowns"],
+        ["Production", "Director-led, LA to San Diego"],
+        ["Deliverables", "Hero film, 15s and 6s retail, social verticals"],
+        ["Audience", "Wellness-curious shoppers, Target and Ulta foot traffic"],
+      ],
+      tags: [
+        "Brand film",
+        "Retail cutdowns",
+        "Founder story",
+        "Product tabletop",
+        "Social verticals",
+        "Campaign stills",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  rabbit: {
+    slug: "rabbit",
+    accent: "#D63C00",
+    company: "Rabbit",
+    recipientName: "Jesse Lyu",
+    recipientFirst: "Jesse",
+    recipientEmail: "j@rabbit.tech",
+    metaTitle: "Friends & Family for Rabbit",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Rabbit.",
+    heroFor: "Rabbit",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Rabbit because the second act is more cinematic than the first, and the next launch will be judged against 2024's promises. Honest, well-crafted film is the only register that works for that crowd.",
+    ticker:
+      "Founded by Jesse Lyu, Raven Tech to Baidu alum · HQ Santa Monica · r1 co-designed with Teenage Engineering · $10M in preorders after CES 2024 · 100,000+ units sold · $199, no subscription · rabbitOS 2 shipped Sept 2025 · Next-gen device teased for 2026",
+    studio: {
+      headline: "A production company built for the comeback story",
+      subline: "Launch films that have to land twice as hard the second time, product cinematography worthy of Teenage Engineering hardware, demo content shot for skeptics, the list goes on.",
+    },
+    noticed: {
+      title: "The keynote, twice.",
+      intro:
+        "We watched the CES keynote, the rough reviews, and the rabbitOS 2 reversal. Here's what stuck.",
+      cards: [
+        {
+          label: "The orange object",
+          body: "The r1 is one of the few AI gadgets people kept on their desks even when they stopped using it. Teenage Engineering gave it real object-hood, and that design did $10M of preorders before anyone touched one. The film should be as tactile as the thing.",
+        },
+        {
+          label: "Most founders disappear",
+          body: "The launch reviews were rough and Jesse shipped rabbitOS 2 instead of vanishing. Reviewers publicly changed their minds. That second act is more cinematic than the first, and it hasn't been filmed.",
+        },
+        {
+          label: "Earned, not bought",
+          body: "Rabbit's audience came from demos, community, and a founder who answers critics directly, not media spend. The 2026 device will be judged against 2024's promises, and that audience can smell a hype edit from a mile away.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You're building the second device while everyone remembers the first.",
+      titleAccent: "We make films that change the memory.",
+      intro:
+        "We're twenty minutes from Santa Monica and we build launch films, product cinematography, and director-led campaigns for brands at exactly this kind of inflection point.",
+      gives: [
+        ["Brief", "Next-gen device launch film plus the rabbitOS story"],
+        ["Production", "LA-based, director-led, fast"],
+        ["Deliverables", "Hero film, keynote content, product tabletop, cutdowns"],
+        ["Audience", "Tech press, early adopters, the skeptics from round one"],
+      ],
+      tags: [
+        "Launch film",
+        "Product tabletop",
+        "Keynote content",
+        "Brand anthem",
+        "Demo capture",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
 };
 
 export const PITCH_SLUGS = Object.keys(PITCH_COMPANIES);
