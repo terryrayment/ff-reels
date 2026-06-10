@@ -164,11 +164,31 @@ const CADDIES = [
   },
 ];
 
+export type RosterFitOverride = {
+  signature?: string;
+  match?: string;
+  tags?: string[];
+};
+
 export function RosterModes({
   directors,
+  fits,
 }: {
   directors: VersantDirectorMedia[];
+  /** Per-director copy overrides for non-Versant pitch pages. */
+  fits?: Record<string, RosterFitOverride>;
 }) {
+  const cards = CADDIES.map((card) => {
+    const override = fits?.[card.slug];
+    if (!override) return card;
+    return {
+      ...card,
+      signature: override.signature ?? card.signature,
+      match: override.match ?? card.match,
+      tags: override.tags ?? card.tags,
+    };
+  });
+
   return (
     <section className={SECTION}>
       <div className={CONTAINER}>
@@ -179,7 +199,7 @@ export function RosterModes({
         />
 
         <div className="grid gap-x-4 gap-y-7 md:grid-cols-2 lg:grid-cols-3">
-          {CADDIES.map((card, index) => (
+          {cards.map((card, index) => (
             <CaddieCard
               key={card.slug}
               card={card}

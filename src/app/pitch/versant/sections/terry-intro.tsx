@@ -11,9 +11,17 @@ const CALLAWAY_BACKGROUND_POSTER = `https://image.mux.com/${CALLAWAY_BACKGROUND_
 interface Props {
   videoPlaybackId?: string | null;
   fallbackImageUrl?: string | null;
+  /** Override the studio headline (defaults to the Versant sports copy). */
+  headline?: string;
+  subline?: string;
 }
 
-export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
+export function TerryIntro({
+  videoPlaybackId,
+  fallbackImageUrl,
+  headline = "A production company built for live sports work",
+  subline = "Talent windows, schedule changes, geographic versioning, the list goes on.",
+}: Props) {
   const hasFounderMedia = Boolean(videoPlaybackId || fallbackImageUrl);
 
   return (
@@ -46,13 +54,8 @@ export function TerryIntro({ videoPlaybackId, fallbackImageUrl }: Props) {
                 <h2
                   className={`${TITLE} flex max-w-3xl flex-col gap-[0.15em] leading-[1.115] text-black`}
                 >
-                  <span className="font-semibold">
-                    A production company built for live sports work
-                  </span>
-                  <span className="font-light text-black/76">
-                    Talent windows, schedule changes, geographic versioning, the
-                    list goes on.
-                  </span>
+                  <span className="font-semibold">{headline}</span>
+                  <span className="font-light text-black/76">{subline}</span>
                 </h2>
               </div>
 

@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { PITCH_COMPANIES, PITCH_SLUGS } from "@/lib/pitch/companies";
+import {
+  BRAND_ROSTER_FITS,
+  PITCH_COMPANIES,
+  PITCH_SLUGS,
+} from "@/lib/pitch/companies";
 import { loadPitchDirectors, type PitchDirector } from "@/lib/pitch/directors";
 import { BrandSplash } from "./sections/brand-splash";
 import { BrandNoticed } from "./sections/brand-noticed";
@@ -140,9 +144,13 @@ export default async function BrandPitchPage({ params, searchParams }: PageProps
         recipientFirstName={recipientFirstName}
         directors={directors}
       />
-      <TerryIntro videoPlaybackId={TERRY_INTRO_PLAYBACK_ID} />
+      <TerryIntro
+        videoPlaybackId={TERRY_INTRO_PLAYBACK_ID}
+        headline={config.studio.headline}
+        subline={config.studio.subline}
+      />
       <BrandNoticed noticed={config.noticed} />
-      <RosterModes directors={directors} />
+      <RosterModes directors={directors} fits={BRAND_ROSTER_FITS} />
       <PartnerBench />
       <BrandFit fit={config.fit} />
       <ContactCta recipientFirstName={recipientFirstName} />

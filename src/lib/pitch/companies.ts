@@ -9,6 +9,58 @@
  * lists. Facts in tickers must be real (sourced in research docs).
  */
 
+/**
+ * Brand-neutral director card copy for non-Versant pitch pages.
+ * Overrides the golf/Versant assignment fits in RosterModes.
+ */
+export const BRAND_ROSTER_FITS: Record<
+  string,
+  { signature?: string; match?: string; tags?: string[] }
+> = {
+  "jack-turits": {
+    signature: "Comedy performance, real-people casting, creator-led formats.",
+    match: "Comedy spots and real-people casting",
+    tags: ["Comedy", "Casting", "Creator-led"],
+  },
+  "kelsey-larkin": {
+    match: "Identity films and athlete portraits",
+    tags: ["Portrait", "Identity", "Brand film"],
+  },
+  "matt-dilmore": {
+    signature: "Comedy, format, archive-driven storytelling.",
+    match: "Format-driven comedy and archive storytelling",
+    tags: ["Comedy", "Format", "Talent"],
+  },
+  "boma-iluma": {
+    match: "Culture and talent-led films",
+    tags: ["Talent", "Culture", "Youth"],
+  },
+  "le-ged": {
+    match: "Social motion and camera-first spots",
+    tags: ["Motion", "Camera", "Social"],
+  },
+  "caleb-slain": {
+    match: "Anthem films and broadcast promos",
+    tags: ["Promo", "Anthem", "Delivery"],
+  },
+  bueno: {
+    match: "Mixed-media campaigns and fan energy",
+    tags: ["Mixed media", "Fans", "Social"],
+  },
+  "brother-willis": {
+    signature: "Local stories, real places, field production.",
+    match: "Local heroes and field production",
+    tags: ["Local stories", "Casting", "Field production"],
+  },
+  "cody-cloud": {
+    match: "Talent portrait package",
+  },
+  "terry-rayment": {
+    match: "Founder and talent documentary films",
+    tags: ["Documentary", "Talent", "Founder story"],
+  },
+};
+
 export type PitchCompanyConfig = {
   slug: string;
   company: string;
@@ -24,6 +76,8 @@ export type PitchCompanyConfig = {
   heroWhy: string;
   /** Marquee ticker, " · " separated, real facts about THEM. */
   ticker: string;
+  /** "What F&F does" studio panel, tuned to their world. */
+  studio: { headline: string; subline: string };
   /** Editorial section: proof we did the homework. */
   noticed: {
     title: string;
@@ -55,6 +109,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Hadrian because you're reindustrializing America, and someone should film it like it matters.",
     ticker:
       "Founded 2020 · $260M Series C, Founders Fund + Lux · 4 facilities, ~2.85M sq ft · ~10K unique parts a month from Torrance · Factory 3: 270,000 sq ft, Mesa AZ · $2.4B Navy maritime partnership · Technicians trained in 30 days",
+    studio: {
+      headline: "A production company built for factory floors and first hires",
+      subline: "Shop access, safety windows, real technicians on camera, the list goes on.",
+    },
     noticed: {
       title: "We did our homework.",
       intro:
@@ -112,6 +170,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Shield AI because 'Earth is our runway' is already a director's logline, and the films should match it.",
     ticker:
       "Founded by a Navy SEAL · $12.7B valuation · Hivemind has flown 26 aircraft classes · V-BAT: 130+ sorties in Ukraine · X-BAT: no runway required · Featured on Netflix · San Diego, CA · Fielding 2028",
+    studio: {
+      headline: "A production company built for hardware in motion",
+      subline: "Flight windows, range access, machines in real landscapes, the list goes on.",
+    },
     noticed: {
       title: "The runway is everywhere. So is the story.",
       intro:
@@ -169,6 +231,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Impulse because the company's story, and Tom's, is far better than any footage that exists of it. We're twenty minutes up the freeway and we'd like to fix that.",
     ticker:
       "Founded 2021 · SpaceX employee #1 · Merlin engine designer · 3 Mira spacecraft on orbit · LEO to GEO in under a day · $500M Series D · $4.26B valuation · 144 open roles",
+    studio: {
+      headline: "A production company built for hardware in motion",
+      subline: "Clean rooms, factory floors, launch windows, the list goes on.",
+    },
     noticed: {
       title: "The hardest part isn't getting to space.",
       intro:
@@ -226,6 +292,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Joby because the hard part was physics, and the next part is feeling. That's a directing problem, not an aerospace one.",
     ticker:
       "Founded 2009 · 200 mph, zero operating emissions · Stage 4 FAA certification · First NYC eVTOL flight, April 2026 · Dubai passenger service targeted 2026 · $894M from Toyota · Delta + Uber partners · Built in Marina, CA",
+    studio: {
+      headline: "A production company built for first flights",
+      subline: "Flight windows, city permits, rider trust, the list goes on.",
+    },
     noticed: {
       title: "The hard part was physics.",
       intro:
@@ -283,6 +353,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Athletic because beer for people in motion deserves film made the same way, and because the post-round Run Wild on the 19th hole is genuinely part of our lives already.",
     ticker:
       "Founded 2017 · #6 U.S. craft brewer · ~19% of NA beer · ~$800M valuation · 50,000+ retail doors · Certified B Corp · Up to $2M a year to trails · Brewed in Milford, CT and San Diego",
+    studio: {
+      headline: "A production company built for athletes and the hours they keep",
+      subline: "Dawn call times, race calendars, weather windows, the list goes on.",
+    },
     noticed: {
       title: "Beer for people in motion.",
       intro:
@@ -340,6 +414,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Olipop because feel-good soda deserves feel-good film, and you're about to make more of it in 18 months than in your first eight years.",
     ticker:
       "Founded 2018 · Oakland, CA · $400M+ 2024 sales · $1.85B valuation · 50,000+ stores · The feel good soda · Profitable and independent · 6g of fiber per can",
+    studio: {
+      headline: "A production company built for food and feeling",
+      subline: "Talent windows, food styling, national versioning, the list goes on.",
+    },
     noticed: {
       title: "Feel-good soda deserves feel-good film.",
       intro:
@@ -397,6 +475,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Magic Spoon because Saturday morning deserves to be shot like it deserves, and your world is rich enough for real filmmaking.",
     ticker:
       "Founded 2019 · 30,000+ stores · +35% YoY retail growth · $100M+ raised · 12 to 14g protein, 0 to 3g sugar · Protein Pastries, Jan 2026 · Marshmallow, most-requested flavor ever · Brooklyn-born, Brown-dorm origins",
+    studio: {
+      headline: "A production company built for pop spectacle",
+      subline: "Talent windows, set builds, national versioning, the list goes on.",
+    },
     noticed: {
       title: "Saturday morning, shot like it deserves.",
       intro:
@@ -454,6 +536,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Graza because the next chapter is mayo, NASCAR, and mass retail, and that needs film made by directors, not decks.",
     ticker:
       "Jaén, Spain Picual olives · Drizzle, Sizzle, Frizzle · 13,000+ retailers · ~$48M gross sales 2024 · Mayo launched Jan 2026 · Official Olive Oil and Mayo of NASCAR · 35,444 apology emails, 78% opened",
+    studio: {
+      headline: "A production company built for brands with personality",
+      subline: "Food styling, live sport, talent windows, the list goes on.",
+    },
     noticed: {
       title: "Big-screen craft for a squeeze-bottle brand.",
       intro:
@@ -511,6 +597,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Our Place because you turned a pan into a place, and the film that carries that idea at cinematic scale hasn't been made yet.",
     ticker:
       "Founded in LA, 2019 · Always Pan sold out 30+ times · Selena Gomez collections · Crocs x Molly Baz collab · In Target, Amazon, Nordstrom and Walmart · Flagships on Melrose and Abbot Kinney · Co-founder of the Malala Fund · US, Canada, UK and Australia",
+    studio: {
+      headline: "A production company built for stories about people",
+      subline: "Real homes, real cooks, founders on camera, the list goes on.",
+    },
     noticed: {
       title: "Films for the table everyone gathers around.",
       intro:
@@ -568,6 +658,10 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Tracksmith because you already know exactly what good looks like, and what a CCO-led growth chapter needs is more of it than a small team can make alone.",
     ticker:
       "Founded Boston, 2014 · Trackhouse on Newbury St · Stores in Boston, Brooklyn and London · ~50 wholesale doors and climbing · Amateur Support Program since 2019 · METER, in print · No Days Off, annually · Founder now full-time CCO",
+    studio: {
+      headline: "A production company built for the amateur hours",
+      subline: "Dawn miles, race weekends, weather windows, the list goes on.",
+    },
     noticed: {
       title: "Films for the serious amateur's next chapter.",
       intro:
