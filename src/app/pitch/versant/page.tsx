@@ -12,6 +12,7 @@ import { ContactCta } from "./sections/contact-cta";
 import { VersantMotion } from "./sections/versant-motion";
 import { VersantPitchChrome } from "./sections/versant-pitch-chrome";
 import { PitchStyles } from "../pitch-styles";
+import { PitchViewBeacon } from "../pitch-view-beacon";
 
 /**
  * Branded pitch landing for Versant Media / USA Sports (Friends & Family).
@@ -250,6 +251,7 @@ export default async function VersantPitchPage({ searchParams }: PageProps) {
       <VersantMotion />
       <VersantPitchChrome />
       <PitchStyles />
+      <PitchViewBeacon slug="versant" />
 
       <WelcomeSplash
         recipientFirstName={recipientFirstName}

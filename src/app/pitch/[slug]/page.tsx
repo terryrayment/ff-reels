@@ -17,6 +17,7 @@ import { ContactCta } from "../versant/sections/contact-cta";
 import { VersantMotion } from "../versant/sections/versant-motion";
 import { VersantPitchChrome } from "../versant/sections/versant-pitch-chrome";
 import { PitchStyles } from "../pitch-styles";
+import { PitchViewBeacon } from "../pitch-view-beacon";
 
 /**
  * Generic branded pitch landing for founder outreach targets.
@@ -108,6 +109,7 @@ export default async function BrandPitchPage({ params }: PageProps) {
       <VersantMotion />
       <VersantPitchChrome />
       <PitchStyles />
+      <PitchViewBeacon slug={config.slug} />
 
       <BrandSplash
         company={config.company}

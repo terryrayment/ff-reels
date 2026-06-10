@@ -506,3 +506,19 @@ model DirectorGalleryImage {
 
   @@index([directorId])
 }
+
+// ─── Pitch Page Views (founder outreach open tracking) ──
+
+model PitchPageView {
+  id        String   @id @default(cuid())
+  slug      String   // pitch page slug, e.g. "hadrian", "versant"
+  viewerIp  String?
+  city      String?
+  country   String?
+  userAgent String?
+  device    String?  // "desktop" | "mobile" | "tablet"
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([slug, createdAt])
+}
