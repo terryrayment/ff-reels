@@ -45,6 +45,17 @@ interface UploadManagerProps {
   directors: Director[];
 }
 
+/** One file in the upload queue (Wiredrive-style: each file is a row with its own progress) */
+interface QueueItem {
+  id: string;
+  file: File;
+  directorId: string;
+  title: string;
+  status: "queued" | "uploading" | "done" | "error";
+  progress: number;
+  error?: string;
+}
+
 /* ─── Director Dropdown ─────────────────────────── */
 
 function DirectorDropdown({
@@ -285,14 +296,14 @@ function SpotCard({
 
 export function UploadManager({ directors }: UploadManagerProps) {
   const [selectedDirectorId, setSelectedDirectorId] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
+  const [queue, setQueue] = useState<QueueItem[]>([]);
   const [brand, setBrand] = useState("");
   const [agency, setAgency] = useState("");
   const [year, setYear] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [processing, setProcessing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const queueRef = useRef<QueueItem[]>([]);
+  const processingRef = useRef(false);
   const router = useRouter();
 
   const selectedDirector = directors.find((d) => d.id === selectedDirectorId);
@@ -307,27 +318,60 @@ export function UploadManager({ directors }: UploadManagerProps) {
     [selectedDirector]
   );
 
-  /* ─ File selection ─ */
-  const handleFileSelect = (f: File) => {
-    setFile(f);
-    if (!title) setTitle(f.name.replace(/\.[^/.]+$/, ""));
+  /* ─ Queue management ─ */
+
+  const setQueueSynced = (
+    updater: (prev: QueueItem[]) => QueueItem[]
+  ) => {
+    setQueue((prev) => {
+      const next = updater(prev);
+      queueRef.current = next;
+      return next;
+    });
   };
 
-  /* ─ Upload flow ─ */
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!file || !title || !selectedDirectorId) return;
+  const updateItem = (id: string, patch: Partial<QueueItem>) => {
+    setQueueSynced((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...patch } : item))
+    );
+  };
 
-    setUploading(true);
-    setProgress(0);
+  const addFiles = (files: FileList | File[]) => {
+    if (!selectedDirectorId) return;
+    const videos = Array.from(files).filter((f) => f.type.startsWith("video/"));
+    if (videos.length === 0) return;
+    const items: QueueItem[] = videos.map((file) => ({
+      id: crypto.randomUUID(),
+      file,
+      directorId: selectedDirectorId,
+      title: file.name.replace(/\.[^/.]+$/, ""),
+      status: "queued",
+      progress: 0,
+    }));
+    setQueueSynced((prev) => [...prev, ...items]);
+  };
+
+  const removeItem = (id: string) => {
+    setQueueSynced((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const clearCompleted = () => {
+    setQueueSynced((prev) => prev.filter((item) => item.status !== "done"));
+  };
+
+  /* ─ Upload flow — files process one at a time, top to bottom ─ */
+
+  const uploadOne = async (item: QueueItem) => {
+    updateItem(item.id, { status: "uploading", progress: 3, error: undefined });
+    const { file } = item;
 
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          directorId: selectedDirectorId,
-          title: title || file.name,
+          directorId: item.directorId,
+          title: item.title.trim() || file.name,
           filename: file.name,
           contentType: file.type,
           fileSizeMb: Math.round((file.size / 1048576) * 100) / 100,
@@ -340,14 +384,16 @@ export function UploadManager({ directors }: UploadManagerProps) {
       if (!res.ok) throw new Error("Failed to create upload");
       const { muxUploadUrl, r2UploadUrl } = await res.json();
 
-      setProgress(10);
+      updateItem(item.id, { progress: 10 });
 
       // Upload to Mux
       const muxUpload = new XMLHttpRequest();
       muxUpload.open("PUT", muxUploadUrl);
       muxUpload.upload.addEventListener("progress", (ev) => {
         if (ev.lengthComputable) {
-          setProgress(10 + Math.round((ev.loaded / ev.total) * 70));
+          updateItem(item.id, {
+            progress: 10 + Math.round((ev.loaded / ev.total) * 70),
+          });
         }
       });
 
@@ -357,7 +403,7 @@ export function UploadManager({ directors }: UploadManagerProps) {
         muxUpload.send(file);
       });
 
-      setProgress(85);
+      updateItem(item.id, { progress: 85 });
 
       // Archive to R2
       try {
@@ -370,23 +416,38 @@ export function UploadManager({ directors }: UploadManagerProps) {
         console.warn("R2 archival upload failed");
       }
 
-      setProgress(100);
-
-      setTimeout(() => {
-        setFile(null);
-        setTitle("");
-        setBrand("");
-        setAgency("");
-        setYear("");
-        setProgress(0);
-        setUploading(false);
-        router.refresh();
-      }, 600);
+      updateItem(item.id, { status: "done", progress: 100 });
     } catch (err) {
       console.error(err);
-      setUploading(false);
-      setProgress(0);
+      updateItem(item.id, {
+        status: "error",
+        progress: 0,
+        error: err instanceof Error ? err.message : "Upload failed",
+      });
     }
+  };
+
+  const processQueue = async () => {
+    if (processingRef.current) return;
+    processingRef.current = true;
+    setProcessing(true);
+    try {
+      // Re-read the ref each pass so files added mid-batch also upload
+      for (;;) {
+        const next = queueRef.current.find((i) => i.status === "queued");
+        if (!next) break;
+        await uploadOne(next);
+      }
+    } finally {
+      processingRef.current = false;
+      setProcessing(false);
+      router.refresh();
+    }
+  };
+
+  const retryItem = (id: string) => {
+    updateItem(id, { status: "queued", progress: 0, error: undefined });
+    processQueue();
   };
 
   /* ─ Thumbnail change ─ */
@@ -442,8 +503,7 @@ export function UploadManager({ directors }: UploadManagerProps) {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith("video/")) handleFileSelect(f);
+    addFiles(e.dataTransfer.files);
   };
 
   return (
@@ -454,11 +514,13 @@ export function UploadManager({ directors }: UploadManagerProps) {
         selectedId={selectedDirectorId}
         onSelect={(id) => {
           setSelectedDirectorId(id);
-          setFile(null);
-          setTitle("");
-          setBrand("");
-          setAgency("");
-          setYear("");
+          // Queued rows remember their director, so switching is safe mid-batch.
+          // Only reset the batch defaults when nothing is in flight.
+          if (!processingRef.current && queueRef.current.length === 0) {
+            setBrand("");
+            setAgency("");
+            setYear("");
+          }
         }}
       />
 
@@ -467,85 +529,50 @@ export function UploadManager({ directors }: UploadManagerProps) {
           {/* Upload zone */}
           <div className="rounded-xl bg-white/60 backdrop-blur-md border border-[#E8E7E3]/50 shadow-[0_1px_3px_rgba(0,0,0,0.04)] ring-1 ring-inset ring-white/50 p-5">
             <h3 className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-medium mb-4">
-              Upload New Spot
+              Upload Spots
             </h3>
 
-            <form onSubmit={handleUpload}>
-              {/* Drop zone */}
+            {/* Drop zone — accepts multiple files */}
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className="relative mb-4"
+            >
+              <input
+                type="file"
+                accept="video/*"
+                multiple
+                onChange={(e) => {
+                  if (e.target.files) addFiles(e.target.files);
+                  e.target.value = "";
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
               <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className="relative mb-4"
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                  isDragging
+                    ? "border-[#1A1A1A]/30 bg-[#1A1A1A]/[0.02]"
+                    : "border-[#E8E7E3] hover:border-[#ccc]"
+                }`}
               >
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleFileSelect(f);
-                  }}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  disabled={uploading}
-                />
-                <div
-                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                    isDragging
-                      ? "border-[#1A1A1A]/30 bg-[#1A1A1A]/[0.02]"
-                      : file
-                        ? "border-[#1A1A1A]/20 bg-[#F7F6F3]/50"
-                        : "border-[#E8E7E3] hover:border-[#ccc]"
-                  }`}
-                >
-                  {file ? (
-                    <div className="flex items-center justify-center gap-3">
-                      <Film size={16} className="text-[#999]" />
-                      <div className="text-left">
-                        <p className="text-[13px] font-medium text-[#1A1A1A]">
-                          {file.name}
-                        </p>
-                        <p className="text-[11px] text-[#999]">
-                          {(file.size / 1048576).toFixed(1)} MB
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFile(null);
-                          setTitle("");
-                        }}
-                        className="text-[#ccc] hover:text-[#999] transition-colors ml-2"
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  ) : (
-                    <div>
-                      <Upload size={18} className="mx-auto text-[#ccc] mb-2" />
-                      <p className="text-[13px] text-[#666]">
-                        Drop a video or click to browse
-                      </p>
-                      <p className="text-[10px] text-[#bbb] mt-1">
-                        MP4, MOV, MKV — up to 5GB
-                      </p>
-                    </div>
-                  )}
-                </div>
+                <Upload size={18} className="mx-auto text-[#ccc] mb-2" />
+                <p className="text-[13px] text-[#666]">
+                  Drop videos or click to browse — add as many as you like
+                </p>
+                <p className="text-[10px] text-[#bbb] mt-1">
+                  MP4, MOV, MKV — up to 5GB each
+                </p>
               </div>
+            </div>
 
-              {/* Metadata fields */}
-              {file && (
-                <div className="space-y-3 mb-4">
-                  <Input
-                    id="spot-title"
-                    label="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Spot title"
-                    required
-                    disabled={uploading}
-                  />
+            {queue.length > 0 && (
+              <>
+                {/* Batch defaults — apply to every file in this batch */}
+                <div className="mb-4">
+                  <p className="text-[10px] uppercase tracking-[0.12em] text-[#bbb] mb-2">
+                    Applies to all files in this batch
+                  </p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <Input
                       id="spot-brand"
@@ -553,7 +580,6 @@ export function UploadManager({ directors }: UploadManagerProps) {
                       value={brand}
                       onChange={(e) => setBrand(e.target.value)}
                       placeholder="Nike"
-                      disabled={uploading}
                     />
                     <Input
                       id="spot-agency"
@@ -561,7 +587,6 @@ export function UploadManager({ directors }: UploadManagerProps) {
                       value={agency}
                       onChange={(e) => setAgency(e.target.value)}
                       placeholder="Wieden"
-                      disabled={uploading}
                     />
                     <Input
                       id="spot-year"
@@ -570,45 +595,113 @@ export function UploadManager({ directors }: UploadManagerProps) {
                       onChange={(e) => setYear(e.target.value)}
                       placeholder="2026"
                       type="number"
-                      disabled={uploading}
                     />
                   </div>
                 </div>
-              )}
 
-              {/* Progress bar */}
-              {uploading && (
-                <div className="space-y-1.5 mb-4">
-                  <div className="h-1.5 bg-[#F0F0EC] rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#1A1A1A] rounded-full transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  <p className="text-[11px] text-[#999] text-center">
-                    {progress < 80
-                      ? "Uploading to Mux..."
-                      : progress < 100
-                        ? "Archiving original..."
-                        : "Done!"}
-                  </p>
+                {/* Queue rows */}
+                <div className="mb-4 rounded-lg border border-[#E8E7E3] divide-y divide-[#F0F0EC] overflow-hidden">
+                  {queue.map((item) => (
+                    <div key={item.id} className="px-3 py-2.5 bg-white/50">
+                      <div className="flex items-center gap-3">
+                        <Film size={14} className="text-[#bbb] flex-shrink-0" />
+
+                        {/* Title — editable until the row starts uploading */}
+                        {item.status === "queued" ? (
+                          <input
+                            type="text"
+                            value={item.title}
+                            onChange={(e) =>
+                              updateItem(item.id, { title: e.target.value })
+                            }
+                            className="flex-1 min-w-0 text-[13px] text-[#1A1A1A] bg-transparent border-b border-transparent hover:border-[#ddd] focus:border-[#999] outline-none transition-colors"
+                          />
+                        ) : (
+                          <p className="flex-1 min-w-0 text-[13px] text-[#1A1A1A] truncate">
+                            {item.title}
+                          </p>
+                        )}
+
+                        <span className="text-[11px] text-[#bbb] tabular-nums flex-shrink-0">
+                          {(item.file.size / 1048576).toFixed(0)} MB
+                        </span>
+
+                        {/* Status */}
+                        <span className="w-[88px] text-right flex-shrink-0">
+                          {item.status === "queued" && (
+                            <span className="text-[11px] text-[#999]">Queued</span>
+                          )}
+                          {item.status === "uploading" && (
+                            <span className="text-[11px] font-medium text-[#1A1A1A] tabular-nums">
+                              {item.progress < 85 ? `${item.progress}%` : "Archiving…"}
+                            </span>
+                          )}
+                          {item.status === "done" && (
+                            <span className="text-[11px] text-emerald-600">Uploaded ✓</span>
+                          )}
+                          {item.status === "error" && (
+                            <button
+                              onClick={() => retryItem(item.id)}
+                              className="text-[11px] text-red-500 hover:text-red-700 transition-colors"
+                              title={item.error}
+                            >
+                              Failed — retry
+                            </button>
+                          )}
+                        </span>
+
+                        {item.status === "queued" ? (
+                          <button
+                            onClick={() => removeItem(item.id)}
+                            className="p-1 text-[#ccc] hover:text-[#999] transition-colors flex-shrink-0"
+                            aria-label={`Remove ${item.title}`}
+                          >
+                            <X size={13} />
+                          </button>
+                        ) : (
+                          <span className="w-[21px] flex-shrink-0" />
+                        )}
+                      </div>
+
+                      {/* Per-row progress bar */}
+                      {item.status === "uploading" && (
+                        <div className="mt-2 h-1 bg-[#F0F0EC] rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#1A1A1A] rounded-full transition-all duration-300"
+                            style={{ width: `${item.progress}%` }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              )}
 
-              {/* Upload button */}
-              {file && (
-                <Button
-                  type="submit"
-                  loading={uploading}
-                  disabled={!file || !title}
-                  className="w-full"
-                >
-                  {uploading
-                    ? `Uploading ${progress}%`
-                    : `Upload to ${selectedDirector.name}`}
-                </Button>
-              )}
-            </form>
+                {/* Queue actions */}
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    onClick={processQueue}
+                    loading={processing}
+                    disabled={!queue.some((i) => i.status === "queued")}
+                    className="flex-1"
+                  >
+                    {processing
+                      ? `Uploading ${queue.filter((i) => i.status === "done").length}/${queue.length}…`
+                      : `Upload ${queue.filter((i) => i.status === "queued").length} spot${
+                          queue.filter((i) => i.status === "queued").length !== 1 ? "s" : ""
+                        } to ${selectedDirector.name}`}
+                  </Button>
+                  {queue.some((i) => i.status === "done") && !processing && (
+                    <button
+                      onClick={clearCompleted}
+                      className="text-[11px] text-[#999] hover:text-[#666] transition-colors flex-shrink-0"
+                    >
+                      Clear completed
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Existing spots grid */}

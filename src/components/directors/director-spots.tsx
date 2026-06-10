@@ -43,8 +43,11 @@ interface DirectorSpotsProps {
   canEditNames?: boolean;
 }
 
+type StatusFilter = "all" | "hidden" | "processing";
+
 export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, canEditNames }: DirectorSpotsProps) {
   const [sortBy, setSortBy] = useState<SortKey>("brand");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [settingHero, setSettingHero] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{ projectId: string; x: number; y: number } | null>(null);
   const [thumbnailPickerProject, setThumbnailPickerProject] = useState<ProjectWithStats | null>(null);
@@ -199,8 +202,22 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
     };
   }, [contextMenu]);
 
+  const hiddenCount = useMemo(
+    () => projects.filter((p) => !p.isPublished && p.muxStatus === "ready").length,
+    [projects]
+  );
+  const processingCount = useMemo(
+    () => projects.filter((p) => p.muxStatus === "preparing" || p.muxStatus === "waiting").length,
+    [projects]
+  );
+
   const sorted = useMemo(() => {
-    const arr = [...projects];
+    let arr = [...projects];
+    if (statusFilter === "hidden") {
+      arr = arr.filter((p) => !p.isPublished && p.muxStatus === "ready");
+    } else if (statusFilter === "processing") {
+      arr = arr.filter((p) => p.muxStatus === "preparing" || p.muxStatus === "waiting");
+    }
     switch (sortBy) {
       case "brand":
         return arr.sort((a, b) => (a.brand || "zzz").localeCompare(b.brand || "zzz"));
@@ -215,7 +232,7 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
       default:
         return arr;
     }
-  }, [projects, sortBy]);
+  }, [projects, sortBy, statusFilter]);
 
   if (projects.length === 0) {
     return (
@@ -253,21 +270,68 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
           ))}
         </div>
 
-        {/* Bulk select toggle */}
-        {!readOnly && (
-          <button
-            onClick={() => (selectMode ? exitSelectMode() : setSelectMode(true))}
-            className={`flex items-center gap-1.5 text-[12px] transition-colors ${
-              selectMode
-                ? "text-[#1A1A1A] font-medium"
-                : "text-[#999] hover:text-[#666]"
-            }`}
-          >
-            <CheckSquare size={13} />
-            {selectMode ? "Done" : "Select"}
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Status filter chips — only shown when there's something to filter */}
+          {!readOnly && hiddenCount > 0 && (
+            <button
+              onClick={() =>
+                setStatusFilter(statusFilter === "hidden" ? "all" : "hidden")
+              }
+              className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+                statusFilter === "hidden"
+                  ? "border-amber-400 bg-amber-50 text-amber-700"
+                  : "border-[#E5E4DF] text-[#999] hover:border-amber-300 hover:text-amber-600"
+              }`}
+            >
+              <EyeOff size={10} /> Hidden ({hiddenCount})
+            </button>
+          )}
+          {!readOnly && processingCount > 0 && (
+            <button
+              onClick={() =>
+                setStatusFilter(statusFilter === "processing" ? "all" : "processing")
+              }
+              className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+                statusFilter === "processing"
+                  ? "border-[#999] bg-[#F2F1EC] text-[#333]"
+                  : "border-[#E5E4DF] text-[#999] hover:border-[#bbb] hover:text-[#666]"
+              }`}
+            >
+              <Clock size={10} /> Processing ({processingCount})
+            </button>
+          )}
+
+          {/* Bulk select toggle */}
+          {!readOnly && (
+            <button
+              onClick={() => (selectMode ? exitSelectMode() : setSelectMode(true))}
+              className={`flex items-center gap-1.5 text-[12px] transition-colors ${
+                selectMode
+                  ? "text-[#1A1A1A] font-medium"
+                  : "text-[#999] hover:text-[#666]"
+              }`}
+            >
+              <CheckSquare size={13} />
+              {selectMode ? "Done" : "Select"}
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* Filtered-empty state — distinct from "no spots at all" */}
+      {sorted.length === 0 && statusFilter !== "all" && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <p className="text-[13px] text-[#666]">
+            No {statusFilter === "hidden" ? "hidden" : "processing"} spots.
+          </p>
+          <button
+            onClick={() => setStatusFilter("all")}
+            className="mt-2 text-[12px] text-[#999] underline hover:text-[#666] transition-colors"
+          >
+            Show all spots
+          </button>
+        </div>
+      )}
 
       {/* Spots grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

@@ -136,16 +136,32 @@ export function ReelsList({
         />
       </div>
 
-      {/* Count */}
-      <p className="section-header mb-4">
-        {filtered.length} reel{filtered.length !== 1 ? "s" : ""} found
-        {search.trim() && filtered.length !== reels.length && (
-          <span>
-            {" "}
-            of {reels.length} total
+      {/* Count + activity legend */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="section-header">
+          {filtered.length} reel{filtered.length !== 1 ? "s" : ""} found
+          {search.trim() && filtered.length !== reels.length && (
+            <span>
+              {" "}
+              of {reels.length} total
+            </span>
+          )}
+        </p>
+        <div className="hidden lg:flex items-center gap-3 text-[10px] text-[#aaa]">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-flex rounded-full h-2 w-2 bg-emerald-500" /> today
           </span>
-        )}
-      </p>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-flex rounded-full h-2 w-2 bg-amber-400" /> this week
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-flex rounded-full h-2 w-2 bg-[#ddd]" /> stale
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-flex rounded-full h-2 w-2 bg-red-300" /> never viewed
+          </span>
+        </div>
+      </div>
 
       {filtered.length > 0 ? (
         <div className="space-y-2">
@@ -158,18 +174,18 @@ export function ReelsList({
                 {/* Activity indicator dot */}
                 <div className="flex-shrink-0 hidden md:block">
                   {reel.activity === "hot" ? (
-                    <span className="relative flex h-2.5 w-2.5">
+                    <span className="relative flex h-2.5 w-2.5" title="Viewed in the last 24 hours">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
                     </span>
                   ) : reel.activity === "recent" ? (
-                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-amber-400" />
+                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-amber-400" title="Viewed this week" />
                   ) : reel.activity === "stale" ? (
-                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#ddd]" />
+                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#ddd]" title="No views in over a week" />
                   ) : reel.activity === "dead" ? (
-                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-red-300" />
+                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-red-300" title="Sent but never viewed" />
                   ) : (
-                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#eee]" />
+                    <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#eee]" title="No links sent yet" />
                   )}
                 </div>
 

@@ -987,6 +987,12 @@ export function ScreeningCarousel({
                           </span>
                         </div>
                       )}
+                      {/* Duration badge */}
+                      {item.project.duration && (
+                        <span className="absolute top-1 right-1 text-[8px] bg-black/60 px-1 py-0.5 rounded text-white/80 tabular-nums">
+                          {formatDuration(item.project.duration)}
+                        </span>
+                      )}
                       {/* Client + title overlay */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 pb-1.5 pt-4">
                         {item.project.brand && (
