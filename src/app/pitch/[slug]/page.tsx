@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/db";
 import {
   BRAND_ROSTER_FITS,
   PITCH_COMPANIES,
@@ -26,12 +25,12 @@ import { PitchStyles } from "../pitch-styles";
  *   - https://reels.friendsandfamily.tv/pitch/<slug> (direct)
  *
  * Same design system as /pitch/versant; per-company copy from config.
- * Personalization: ?t=<token> pulls recipient name from a ScreeningLink.
+ * Deliberately no per-person greeting: pages address the company so they
+ * can be forwarded freely inside the org.
  */
 
 interface PageProps {
   params: { slug: string };
-  searchParams: { t?: string };
 }
 
 export function generateStaticParams() {
@@ -79,39 +78,13 @@ function handlePitchDbError(error: unknown, fallback: string) {
   console.warn(`[pitch-page] ${fallback}`, error);
 }
 
-function firstNameOf(full: string | null | undefined): string | null {
-  if (!full) return null;
-  const [first] = full.trim().split(/\s+/);
-  return first || null;
-}
 
-export default async function BrandPitchPage({ params, searchParams }: PageProps) {
+export default async function BrandPitchPage({ params }: PageProps) {
   const config = PITCH_COMPANIES[params.slug];
   if (!config) notFound();
 
-  const token = typeof searchParams?.t === "string" ? searchParams.t : null;
-
-  let link: { isActive: boolean; recipientName: string | null } | null = null;
-  if (token) {
-    try {
-      link = await prisma.screeningLink.findUnique({
-        where: { token },
-        select: { isActive: true, recipientName: true },
-      });
-    } catch (error) {
-      handlePitchDbError(
-        error,
-        "Screening link lookup failed; rendering default local preview.",
-      );
-    }
-  }
-
-  // Default the greeting to the configured recipient so the page reads
-  // personal even without a token; a token overrides it.
-  const recipientFirstName = link?.isActive
-    ? firstNameOf(link.recipientName)
-    : config.recipientFirst;
-
+  // No per-person greeting on brand pages: the page addresses the company,
+  // not an individual, so it can be forwarded freely inside the org.
   let directors: PitchDirector[] = [];
   try {
     directors = await loadPitchDirectors();
@@ -141,7 +114,6 @@ export default async function BrandPitchPage({ params, searchParams }: PageProps
         heroFor={config.heroFor}
         heroWhy={config.heroWhy}
         ticker={config.ticker}
-        recipientFirstName={recipientFirstName}
         directors={directors}
       />
       <TerryIntro
@@ -153,7 +125,7 @@ export default async function BrandPitchPage({ params, searchParams }: PageProps
       <RosterModes directors={directors} fits={BRAND_ROSTER_FITS} />
       <PartnerBench />
       <BrandFit fit={config.fit} />
-      <ContactCta recipientFirstName={recipientFirstName} />
+      <ContactCta />
     </main>
   );
 }
