@@ -47,12 +47,15 @@ export function DirectorCard({
   const imageRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const [mediaRef, mediaVisible] = useRevealOnce<HTMLDivElement>();
-  const touchPreview = useTouchCardPreview(
+  const { active: touchPreview, isTouchPrimary } = useTouchCardPreview(
     mediaRef,
     Boolean(muxPlaybackId || sourceVideoUrl),
   );
   const [previewPlaying, setPreviewPlaying] = useState(false);
-  const showPreview = hovering || touchPreview;
+  // On touch-primary devices hover events still exist (iPad trackpad,
+  // synthetic mouseenter under a stationary cursor) but must not bypass
+  // the preview concurrency cap — the visibility manager is authoritative.
+  const showPreview = isTouchPrimary ? touchPreview : hovering;
 
   useEffect(() => {
     if (!showPreview) setPreviewPlaying(false);
@@ -144,7 +147,7 @@ export function DirectorCard({
         {muxPlaybackId && showPreview && (
           <div
             className={`ff-media-fill [&_mux-player]:h-full [&_mux-player]:w-full ${
-              hovering
+              !isTouchPrimary
                 ? "opacity-0 animate-[fadeIn_300ms_ease-out_forwards]"
                 : `transition-opacity duration-300 ease-out ${
                     previewPlaying ? "opacity-100" : "opacity-0"

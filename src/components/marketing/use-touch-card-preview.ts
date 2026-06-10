@@ -28,20 +28,29 @@ function syncActivePreviews() {
 
 /**
  * Autoplay-in-view preview gate for touch-primary devices.
- * Returns true while this card should play its muted preview loop.
- * Always returns false on hover-capable devices, under
- * prefers-reduced-motion, when Save-Data is on, or when the card
- * has no video source.
+ * `active` is true while this card should play its muted preview loop;
+ * it is always false on hover-capable devices, under prefers-reduced-motion,
+ * when Save-Data is on, or when the card has no video source.
+ *
+ * `isTouchPrimary` tells the card to IGNORE mouse-hover for previews on
+ * touch-primary devices: pointers can still exist there (iPad trackpad,
+ * synthetic mouseenter when content scrolls under a stationary cursor) and
+ * hover-driven playback would bypass the concurrency cap.
  */
 export function useTouchCardPreview(
   frameRef: React.RefObject<HTMLElement>,
   hasVideo: boolean,
 ) {
   const [active, setActive] = useState(false);
+  const [isTouchPrimary, setIsTouchPrimary] = useState(false);
   const keyRef = useRef<symbol | null>(null);
   if (keyRef.current === null) {
     keyRef.current = Symbol("touch-card-preview");
   }
+
+  useEffect(() => {
+    setIsTouchPrimary(window.matchMedia("(hover: none)").matches);
+  }, []);
 
   useEffect(() => {
     const element = frameRef.current;
@@ -75,5 +84,5 @@ export function useTouchCardPreview(
     };
   }, [frameRef, hasVideo]);
 
-  return active;
+  return { active, isTouchPrimary };
 }
