@@ -32,9 +32,18 @@ type ReelWithStats = {
   lastViewed: string | Date | null;
   activity: "hot" | "recent" | "stale" | "dead" | "none";
   isHotLead: boolean;
+  createdBy: { id: string; name: string } | null;
 };
 
-export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
+export function ReelsList({
+  reels,
+  currentUserId,
+  canManageAll,
+}: {
+  reels: ReelWithStats[];
+  currentUserId?: string;
+  canManageAll?: boolean;
+}) {
   const [search, setSearch] = useState("");
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ReelWithStats | null>(null);
@@ -48,10 +57,15 @@ export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
         return (
           r.title.toLowerCase().includes(q) ||
           r.director.name.toLowerCase().includes(q) ||
+          (r.createdBy && r.createdBy.name.toLowerCase().includes(q)) ||
           (r.curatorialNote && r.curatorialNote.toLowerCase().includes(q))
         );
       })
     : reels;
+
+  // REPs can only delete reels they created (legacy unowned reels stay open)
+  const canDelete = (reel: ReelWithStats) =>
+    canManageAll || !reel.createdBy || reel.createdBy.id === currentUserId;
 
   async function handleDuplicate(e: React.MouseEvent, reelId: string) {
     e.preventDefault();
@@ -62,7 +76,10 @@ export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
         method: "POST",
       });
       if (res.ok) {
-        router.refresh();
+        const copy = await res.json();
+        // Land in the copy, ready to rename and edit
+        router.push(`/reels/${copy.id}`);
+        return;
       }
     } finally {
       setDuplicatingId(null);
@@ -203,6 +220,15 @@ export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
                   <p className="text-[11px] md:text-[12px] text-[#777] mt-0.5">
                     {reel.director.name} · {reel._count.items} spot
                     {reel._count.items !== 1 ? "s" : ""}
+                    {reel.createdBy && (
+                      <span className="text-[#aaa]">
+                        {" "}
+                        · by{" "}
+                        {reel.createdBy.id === currentUserId
+                          ? "you"
+                          : reel.createdBy.name}
+                      </span>
+                    )}
                     <span className="md:hidden">
                       {" "}
                       · {timeAgo(reel.updatedAt)}
@@ -285,19 +311,21 @@ export function ReelsList({ reels }: { reels: ReelWithStats[] }) {
                     <Copy size={12} className="text-[#999]" />
                   )}
                 </button>
-                <button
-                  onClick={(e) => handleDeletePrompt(e, reel)}
-                  disabled={deletingId === reel.id}
-                  title="Delete reel"
-                  aria-label={`Delete ${reel.title}`}
-                  className="w-8 h-8 rounded-md bg-white border border-red-100 hover:border-red-300 hover:bg-red-50 flex items-center justify-center disabled:opacity-60"
-                >
-                  {deletingId === reel.id ? (
-                    <span className="w-3 h-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Trash2 size={12} className="text-red-500" />
-                  )}
-                </button>
+                {canDelete(reel) && (
+                  <button
+                    onClick={(e) => handleDeletePrompt(e, reel)}
+                    disabled={deletingId === reel.id}
+                    title="Delete reel"
+                    aria-label={`Delete ${reel.title}`}
+                    className="w-8 h-8 rounded-md bg-white border border-red-100 hover:border-red-300 hover:bg-red-50 flex items-center justify-center disabled:opacity-60"
+                  >
+                    {deletingId === reel.id ? (
+                      <span className="w-3 h-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Trash2 size={12} className="text-red-500" />
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           ))}

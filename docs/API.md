@@ -209,7 +209,7 @@ Create a reel with projects. Auto-creates a screening link (30-day expiry) and `
 Get reel with director, items (with projects), and screening links (with view counts).
 
 ### `PATCH /api/reels/[id]`
-**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
+**Auth:** `ADMIN`/`PRODUCER` edit any reel. `REP` edits only reels they created (legacy reels with no creator stay editable); otherwise `403`.
 
 | Field | Type |
 |-------|------|
@@ -219,9 +219,16 @@ Get reel with director, items (with projects), and screening links (with view co
 | reelType | enum |
 
 ### `DELETE /api/reels/[id]`
-**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
+**Auth:** `ADMIN`/`PRODUCER` delete any reel. `REP` deletes only reels they created (legacy reels with no creator stay deletable); otherwise `403`.
 
 Cascades: deletes items, screening links, views, spot views, gallery images.
+
+### `POST /api/reels/[id]/duplicate`
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
+
+Clone any reel in the library — spots, metadata, and a fresh never-expiring screening link. The copy is owned by the caller (`createdById`), so REPs can use any reel as a starting point and then edit/send their copy.
+
+**Response:** `201` — Cloned reel with `screeningUrl`
 
 ### `PUT /api/reels/[id]/items`
 **Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)

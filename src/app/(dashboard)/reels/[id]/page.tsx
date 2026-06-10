@@ -6,6 +6,7 @@ import { ScreeningLinksPanel } from "@/components/reels/screening-links-panel";
 import { ReelSpotList } from "@/components/reels/reel-spot-list";
 import { EditableReelTitle } from "@/components/reels/editable-reel-title";
 import { EditableReelMeta } from "@/components/reels/editable-reel-meta";
+import { DuplicateReelButton } from "@/components/reels/duplicate-reel-button";
 
 export default async function ReelDetailPage({
   params,
@@ -45,7 +46,7 @@ export default async function ReelDetailPage({
       </Link>
 
       {/* Header */}
-      <div>
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex items-baseline gap-2 md:gap-3 flex-wrap">
             <EditableReelTitle reelId={reel.id} initialTitle={reel.title} />
@@ -74,6 +75,9 @@ export default async function ReelDetailPage({
               &ldquo;{reel.curatorialNote}&rdquo;
             </p>
           )}
+        </div>
+        <div className="flex-shrink-0">
+          <DuplicateReelButton reelId={reel.id} />
         </div>
       </div>
 

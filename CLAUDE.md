@@ -119,8 +119,8 @@ Every route handler follows this flow:
 - **Guards** in `src/lib/auth/guards.ts`:
   - `isTeamRole(role)` — true for ADMIN, PRODUCER, REP
   - `canViewDirector(session, directorId)` — team sees all; DIRECTOR sees own
-  - `canViewReel(session, reel)` — ADMIN/PRODUCER see all; REP sees own (by `createdById`); DIRECTOR sees own
-  - `canManageReel(session, reel)` — ADMIN/PRODUCER manage all; REP manages own; DIRECTOR cannot manage
+  - Reel viewing — all team roles (ADMIN/PRODUCER/REP) see the full shared reel library; DIRECTOR sees own
+  - Reel managing — ADMIN/PRODUCER manage all; REP edits/deletes only reels they created (by `createdById`; legacy reels with no creator stay open); any team role can duplicate any reel (copy is owned by the duplicator) — `canManageReel()` in `src/app/api/reels/[id]/route.ts`
   - `canAccessProject(session, projectDirectorId)` — team sees all; DIRECTOR sees own
 - **`lastActiveAt`** on User is updated at most once per 5 minutes (throttled in JWT callback)
 
@@ -231,7 +231,7 @@ Do not merge changes that violate these:
 
 - `POST /api/reels/preview` must require authenticated team role.
 - Reel/project download endpoints must require either a valid scoped screening token or an authorized session with resource access.
-- `REP` users cannot read/manage reels they do not own.
+- `REP` users can read and duplicate any reel in the shared library, but cannot edit/delete reels they do not own (duplicated copies belong to the duplicator).
 - `DIRECTOR` users can only access resources tied to `session.user.directorId`.
 - Public tracking endpoints remain unauthenticated (`/api/tracking/*`) for screening playback.
 - `POST /api/mux/webhook` must verify `MUX_WEBHOOK_SECRET`.

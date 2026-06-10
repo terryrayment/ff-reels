@@ -13,9 +13,10 @@ export default async function ReelsPage() {
 
   const reels = await prisma.reel.findMany({
     orderBy: { updatedAt: "desc" },
-    take: 100,
+    take: 400,
     include: {
       director: { select: { id: true, name: true } },
+      createdBy: { select: { id: true, name: true } },
       items: {
         include: {
           project: {
@@ -48,7 +49,7 @@ export default async function ReelsPage() {
       where: { screeningLinkId: { in: screeningLinkIds } },
       orderBy: { startedAt: "desc" },
       select: { startedAt: true, screeningLinkId: true },
-      take: 500,
+      take: 1500,
     });
 
     const linkToReel: Record<string, string> = {};
@@ -107,8 +108,13 @@ export default async function ReelsPage() {
       lastViewed: lastViewed ? lastViewed.toISOString() : null,
       activity,
       isHotLead,
+      createdBy: reel.createdBy
+        ? { id: reel.createdBy.id, name: reel.createdBy.name ?? "Unknown" }
+        : null,
     };
   });
+
+  const canManageAll = ["ADMIN", "PRODUCER"].includes(session.user.role);
 
   return (
     <div>
@@ -135,7 +141,11 @@ export default async function ReelsPage() {
         </div>
       </div>
 
-      <ReelsList reels={reelsWithStats} />
+      <ReelsList
+        reels={reelsWithStats}
+        currentUserId={session.user.id}
+        canManageAll={canManageAll}
+      />
     </div>
   );
 }

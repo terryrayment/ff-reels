@@ -214,7 +214,8 @@ This runs the industry scraper at **8:00 AM UTC (3:00 AM EST)** daily.
 - [ ] Cron job visible in Vercel Dashboard → Cron Jobs
 - [ ] Test a screening link from production URL
 - [ ] Verify `POST /api/reels/preview` returns 401 when logged out
-- [ ] Verify a REP can view, edit, add spots to, and delete reels created by another team member
+- [ ] Verify a REP can view and duplicate reels created by another team member (copy is owned by the REP)
+- [ ] Verify a REP gets `403` when editing or deleting a reel created by another team member
 - [ ] Verify gallery/video/project download endpoints work with valid screening token and deny invalid token
 - [ ] Verify `https://reels.friendsandfamily.tv/robots.txt` disallows private/auth/tokenized routes
 - [ ] Verify `https://reels.friendsandfamily.tv/sitemap.xml` only lists approved indexable public routes

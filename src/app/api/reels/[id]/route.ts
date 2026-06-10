@@ -6,6 +6,19 @@ import { prisma } from "@/lib/db";
 const TEAM_ROLES = ["ADMIN", "PRODUCER", "REP"];
 
 /**
+ * ADMIN/PRODUCER manage all reels. REP manages only reels they created
+ * (legacy reels with no creator stay manageable by everyone).
+ * All team roles can view and duplicate any reel.
+ */
+function canManageReel(
+  user: { id: string; role: string },
+  reel: { createdById: string | null }
+) {
+  if (user.role === "ADMIN" || user.role === "PRODUCER") return true;
+  return reel.createdById === null || reel.createdById === user.id;
+}
+
+/**
  * GET /api/reels/[id]
  * Get a single reel with all items and screening links.
  */
@@ -55,6 +68,20 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const existing = await prisma.reel.findUnique({
+    where: { id: params.id },
+    select: { createdById: true },
+  });
+  if (!existing) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  if (!canManageReel(session.user, existing)) {
+    return NextResponse.json(
+      { error: "You can only edit reels you created. Duplicate it to make your own copy." },
+      { status: 403 }
+    );
+  }
+
   const body = await req.json();
   const { title, description, curatorialNote, reelType, brand, agencyName, campaignName, producer } = body;
 
@@ -92,11 +119,18 @@ export async function DELETE(
 
   const reel = await prisma.reel.findUnique({
     where: { id: params.id },
-    select: { id: true },
+    select: { id: true, createdById: true },
   });
 
   if (!reel) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  if (!canManageReel(session.user, reel)) {
+    return NextResponse.json(
+      { error: "You can only delete reels you created." },
+      { status: 403 }
+    );
   }
 
   await prisma.reel.delete({ where: { id: params.id } });
