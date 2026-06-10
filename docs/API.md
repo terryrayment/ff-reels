@@ -122,6 +122,20 @@ List all projects for a director, ordered by `sortOrder`.
 
 ---
 
+## Search
+
+### `GET /api/search?q=<query>`
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
+
+Global library search powering the Cmd+K palette. Returns grouped matches (queries under 2 characters return empty groups):
+
+- `spots` — projects matching title/brand/agency/category (max 12, includes director + publish state)
+- `directors` — name matches (max 6)
+- `reels` — title/brand/director-name matches (max 8)
+- `contacts` — name/email/company matches (max 6)
+
+---
+
 ## Projects
 
 ### `GET /api/projects/[id]`
@@ -146,6 +160,22 @@ Get project with director and frame grabs.
 | thumbnailUrl | string |
 
 `DIRECTOR` users can only update `title`, and only on their own spots.
+
+### `PATCH /api/projects/bulk`
+**Auth:** Team role (`ADMIN`, `PRODUCER`, `REP`)
+
+Update metadata or publish state on up to 200 spots at once (powers bulk select in the spot library).
+
+| Field | Type | Notes |
+|-------|------|-------|
+| projectIds | string[] | Required, non-empty |
+| data.isPublished | boolean | |
+| data.brand | string | Empty string clears the field |
+| data.agency | string | Empty string clears the field |
+| data.category | string | Empty string clears the field |
+| data.year | number | Invalid values clear the field |
+
+**Response:** `{ updated: <count> }`
 
 ### `GET /api/projects/[id]/download`
 **Auth:** Authorized session for project scope OR valid screening token (`?token=...`)

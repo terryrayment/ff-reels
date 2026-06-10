@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/options";
 import { Sidebar } from "@/components/layout/sidebar";
+import { CommandPalette } from "@/components/search/command-palette";
 import { canAccessLeads } from "@/lib/leads-access";
 
 export const metadata: Metadata = {
@@ -34,9 +35,11 @@ export default async function DashboardLayout({
   }
 
   const leadsEnabled = canAccessLeads(session.user);
+  const isTeam = ["ADMIN", "PRODUCER", "REP"].includes(session.user.role);
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+      {isTeam && <CommandPalette />}
       <Suspense>
         <Sidebar
           user={{

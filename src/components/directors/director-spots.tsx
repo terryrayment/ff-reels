@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Clock, AlertCircle, Upload, Image as ImageIcon, Pencil, Camera } from "lucide-react";
+import { Film, Clock, AlertCircle, Upload, Image as ImageIcon, Pencil, Camera, Check, CheckSquare, Eye, EyeOff, X } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
 import { ThumbnailPickerModal } from "@/components/spots/thumbnail-picker-modal";
@@ -53,6 +53,15 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
+  // Bulk selection
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkSaving, setBulkSaving] = useState(false);
+  const [bulkEditOpen, setBulkEditOpen] = useState(false);
+  const [bulkBrand, setBulkBrand] = useState("");
+  const [bulkAgency, setBulkAgency] = useState("");
+  const [bulkCategory, setBulkCategory] = useState("");
+  const [bulkYear, setBulkYear] = useState("");
   const editInputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -130,6 +139,53 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
     setContextMenu({ projectId, x: e.clientX, y: e.clientY });
   }, []);
 
+  // ── Bulk selection ──────────────────────────────────────
+
+  const exitSelectMode = () => {
+    setSelectMode(false);
+    setSelectedIds(new Set());
+    setBulkEditOpen(false);
+  };
+
+  const toggleSelected = (projectId: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(projectId)) next.delete(projectId);
+      else next.add(projectId);
+      return next;
+    });
+  };
+
+  const bulkUpdate = async (data: Record<string, unknown>) => {
+    setBulkSaving(true);
+    try {
+      const res = await fetch("/api/projects/bulk", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectIds: Array.from(selectedIds), data }),
+      });
+      if (res.ok) {
+        router.refresh();
+        exitSelectMode();
+      }
+    } finally {
+      setBulkSaving(false);
+    }
+  };
+
+  const handleBulkEditSave = () => {
+    const data: Record<string, unknown> = {};
+    if (bulkBrand.trim()) data.brand = bulkBrand.trim();
+    if (bulkAgency.trim()) data.agency = bulkAgency.trim();
+    if (bulkCategory.trim()) data.category = bulkCategory.trim();
+    if (bulkYear.trim()) data.year = parseInt(bulkYear);
+    if (Object.keys(data).length === 0) {
+      setBulkEditOpen(false);
+      return;
+    }
+    bulkUpdate(data);
+  };
+
   // Close context menu on click-away or Escape
   useEffect(() => {
     if (!contextMenu) return;
@@ -176,24 +232,41 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
   return (
     <div>
       {/* Sort bar */}
-      <div className="flex items-center gap-4 mb-6">
-        {sortOptions.map((opt, i) => (
-          <span key={opt.key} className="flex items-center gap-4">
-            <button
-              onClick={() => setSortBy(opt.key)}
-              className={`text-[12px] transition-colors ${
-                sortBy === opt.key
-                  ? "text-[#1A1A1A] font-medium"
-                  : "text-[#999] hover:text-[#666]"
-              }`}
-            >
-              {opt.label}
-            </button>
-            {i < sortOptions.length - 1 && (
-              <span className="text-[#E0E0E0] text-[11px] select-none">|</span>
-            )}
-          </span>
-        ))}
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-4">
+          {sortOptions.map((opt, i) => (
+            <span key={opt.key} className="flex items-center gap-4">
+              <button
+                onClick={() => setSortBy(opt.key)}
+                className={`text-[12px] transition-colors ${
+                  sortBy === opt.key
+                    ? "text-[#1A1A1A] font-medium"
+                    : "text-[#999] hover:text-[#666]"
+                }`}
+              >
+                {opt.label}
+              </button>
+              {i < sortOptions.length - 1 && (
+                <span className="text-[#E0E0E0] text-[11px] select-none">|</span>
+              )}
+            </span>
+          ))}
+        </div>
+
+        {/* Bulk select toggle */}
+        {!readOnly && (
+          <button
+            onClick={() => (selectMode ? exitSelectMode() : setSelectMode(true))}
+            className={`flex items-center gap-1.5 text-[12px] transition-colors ${
+              selectMode
+                ? "text-[#1A1A1A] font-medium"
+                : "text-[#999] hover:text-[#666]"
+            }`}
+          >
+            <CheckSquare size={13} />
+            {selectMode ? "Done" : "Select"}
+          </button>
+        )}
       </div>
 
       {/* Spots grid */}
@@ -201,9 +274,33 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
         {sorted.map((project) => (
           <div key={project.id} className="group">
             <div
-              className="relative aspect-video bg-[#EEEDEA] overflow-hidden rounded-[3px]"
-              {...(!readOnly && directorId ? { onContextMenu: (e: React.MouseEvent) => handleContextMenu(e, project.id) } : {})}
+              className={`relative aspect-video bg-[#EEEDEA] overflow-hidden rounded-[3px] ${
+                selectMode ? "cursor-pointer" : ""
+              } ${
+                selectMode && selectedIds.has(project.id)
+                  ? "ring-2 ring-[#1A1A1A] ring-offset-2"
+                  : ""
+              }`}
+              {...(selectMode
+                ? { onClick: () => toggleSelected(project.id) }
+                : !readOnly && directorId
+                  ? { onContextMenu: (e: React.MouseEvent) => handleContextMenu(e, project.id) }
+                  : {})}
             >
+              {/* Selection checkbox */}
+              {selectMode && (
+                <div
+                  className={`absolute top-2 right-2 z-10 w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                    selectedIds.has(project.id)
+                      ? "bg-[#1A1A1A] border-[#1A1A1A]"
+                      : "bg-white/90 border-[#ccc]"
+                  }`}
+                >
+                  {selectedIds.has(project.id) && (
+                    <Check size={13} className="text-white" strokeWidth={3} />
+                  )}
+                </div>
+              )}
               {project.muxPlaybackId ? (
                 <HoverScrubThumbnail
                   muxPlaybackId={project.muxPlaybackId}
@@ -240,6 +337,11 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
                   <AlertCircle size={9} /> Error
                 </div>
               )}
+              {!readOnly && !project.isPublished && project.muxStatus === "ready" && (
+                <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-amber-500/90 px-1.5 py-0.5 rounded text-[10px] text-white">
+                  <EyeOff size={9} /> Hidden
+                </div>
+              )}
 
               {project.duration && (
                 <span className="absolute bottom-2 right-2 text-[10px] bg-black/60 px-1.5 py-0.5 text-white/90">
@@ -254,7 +356,7 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
               )}
 
               {/* Thumbnail picker button — shown on hover when editable */}
-              {!readOnly && directorId && project.muxPlaybackId && (
+              {!readOnly && !selectMode && directorId && project.muxPlaybackId && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -333,6 +435,139 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
           </div>
         ))}
       </div>
+
+      {/* Bulk actions bar — sticky at bottom in select mode */}
+      {selectMode && (
+        <div className="fixed bottom-4 left-4 right-4 md:left-[calc(220px+2rem)] md:right-8 z-40">
+          <div className="mx-auto max-w-3xl flex flex-wrap items-center gap-2 md:gap-3 rounded-xl bg-[#1A1A1A] px-4 py-3 shadow-2xl">
+            <span className="text-[12px] text-white/90 font-medium tabular-nums">
+              {selectedIds.size} selected
+            </span>
+            <button
+              onClick={() =>
+                setSelectedIds(
+                  selectedIds.size === sorted.length
+                    ? new Set()
+                    : new Set(sorted.map((p) => p.id))
+                )
+              }
+              className="text-[11px] text-white/50 hover:text-white/90 transition-colors"
+            >
+              {selectedIds.size === sorted.length ? "Clear" : "Select all"}
+            </button>
+
+            <div className="flex-1" />
+
+            <button
+              onClick={() => bulkUpdate({ isPublished: true })}
+              disabled={bulkSaving || selectedIds.size === 0}
+              className="flex items-center gap-1.5 rounded-md bg-white/10 hover:bg-white/20 px-3 py-1.5 text-[11px] text-white transition-colors disabled:opacity-40"
+            >
+              <Eye size={11} /> Publish
+            </button>
+            <button
+              onClick={() => bulkUpdate({ isPublished: false })}
+              disabled={bulkSaving || selectedIds.size === 0}
+              className="flex items-center gap-1.5 rounded-md bg-white/10 hover:bg-white/20 px-3 py-1.5 text-[11px] text-white transition-colors disabled:opacity-40"
+            >
+              <EyeOff size={11} /> Hide
+            </button>
+            <button
+              onClick={() => {
+                setBulkBrand("");
+                setBulkAgency("");
+                setBulkCategory("");
+                setBulkYear("");
+                setBulkEditOpen(true);
+              }}
+              disabled={bulkSaving || selectedIds.size === 0}
+              className="flex items-center gap-1.5 rounded-md bg-white px-3 py-1.5 text-[11px] font-medium text-[#1A1A1A] hover:bg-white/90 transition-colors disabled:opacity-40"
+            >
+              <Pencil size={11} /> Edit details
+            </button>
+            <button
+              onClick={exitSelectMode}
+              disabled={bulkSaving}
+              className="p-1.5 text-white/50 hover:text-white transition-colors"
+              aria-label="Exit select mode"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk edit modal */}
+      {bulkEditOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !bulkSaving) setBulkEditOpen(false);
+          }}
+        >
+          <div className="w-full max-w-sm rounded-xl bg-white p-5 shadow-2xl">
+            <h3 className="text-[14px] font-semibold text-[#111]">
+              Edit {selectedIds.size} spot{selectedIds.size !== 1 ? "s" : ""}
+            </h3>
+            <p className="mt-1 text-[11px] text-[#999]">
+              Filled fields apply to every selected spot. Blank fields are left unchanged.
+            </p>
+
+            <div className="mt-4 space-y-3">
+              <input
+                type="text"
+                value={bulkBrand}
+                onChange={(e) => setBulkBrand(e.target.value)}
+                placeholder="Brand (e.g. Nike)"
+                className="w-full rounded-md border border-[#D9D8D2] px-3 py-2 text-[13px] text-[#111] placeholder:text-[#AAA9A2] outline-none focus:border-[#111] transition-colors"
+              />
+              <input
+                type="text"
+                value={bulkAgency}
+                onChange={(e) => setBulkAgency(e.target.value)}
+                placeholder="Agency"
+                className="w-full rounded-md border border-[#D9D8D2] px-3 py-2 text-[13px] text-[#111] placeholder:text-[#AAA9A2] outline-none focus:border-[#111] transition-colors"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  value={bulkCategory}
+                  onChange={(e) => setBulkCategory(e.target.value)}
+                  placeholder="Category"
+                  className="w-full rounded-md border border-[#D9D8D2] px-3 py-2 text-[13px] text-[#111] placeholder:text-[#AAA9A2] outline-none focus:border-[#111] transition-colors"
+                />
+                <input
+                  type="number"
+                  value={bulkYear}
+                  onChange={(e) => setBulkYear(e.target.value)}
+                  placeholder="Year"
+                  className="w-full rounded-md border border-[#D9D8D2] px-3 py-2 text-[13px] text-[#111] placeholder:text-[#AAA9A2] outline-none focus:border-[#111] transition-colors"
+                />
+              </div>
+            </div>
+
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                onClick={() => setBulkEditOpen(false)}
+                disabled={bulkSaving}
+                className="px-3 py-2 text-[12px] text-[#999] hover:text-[#111] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkEditSave}
+                disabled={bulkSaving}
+                className="flex items-center gap-1.5 rounded-md bg-[#111] px-4 py-2 text-[12px] font-medium text-white hover:bg-black transition-colors disabled:opacity-50"
+              >
+                {bulkSaving && (
+                  <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                )}
+                Apply to {selectedIds.size}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Thumbnail picker modal */}
       {thumbnailPickerProject && (

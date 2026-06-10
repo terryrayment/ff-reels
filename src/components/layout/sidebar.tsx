@@ -159,6 +159,21 @@ export function Sidebar({ user, leadsEnabled = false }: SidebarProps) {
         </div>
       )}
 
+      {/* Global search — opens the Cmd+K palette */}
+      {!isPreview && ["ADMIN", "PRODUCER", "REP"].includes(role) && (
+        <div className="px-4 pb-3">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
+            className="flex w-full items-center gap-2.5 rounded-lg border border-[#DEDDD7] bg-white px-3 py-2 text-[13px] text-[#8C8C86] hover:text-[#111] hover:border-[#bbb] transition-colors duration-200"
+          >
+            <Search size={15} strokeWidth={1.9} className="shrink-0" />
+            <span className="flex-1 truncate text-left leading-none">Search</span>
+            <kbd className="text-[10px] text-[#bbb] leading-none">⌘K</kbd>
+          </button>
+        </div>
+      )}
+
       {/* Nav */}
       <nav className="flex-1 px-4 space-y-1">
         {visibleNav.map((item) => {
