@@ -341,12 +341,22 @@ waitUntil: PAGE_LOAD,
       await cards.click({ timeout: 15000 });
       clickLog.push({ action: "work-card-tap", filter: filter.label });
       await page.waitForTimeout(2000);
-      const stuck = await page.evaluate(() => ({
-        overlay: document.querySelectorAll(".marketing-media-transition").length,
-        active: document.documentElement.classList.contains(
-          "marketing-media-transition-active",
-        ),
-      }));
+      // The morph legitimately holds an overlay during its fade-out (active
+      // class drops first, overlay self-removes when the fade finishes), so
+      // poll for clearance instead of failing on a single mid-fade sample.
+      // A genuinely stuck overlay never clears.
+      let stuck = { overlay: 0, active: false };
+      const stuckDeadline = Date.now() + 8000;
+      do {
+        stuck = await page.evaluate(() => ({
+          overlay: document.querySelectorAll(".marketing-media-transition").length,
+          active: document.documentElement.classList.contains(
+            "marketing-media-transition-active",
+          ),
+        }));
+        if (!stuck.overlay && !stuck.active) break;
+        await page.waitForTimeout(250);
+      } while (Date.now() < stuckDeadline);
       if (stuck.overlay > 0 || stuck.active) {
         failures.push({
           severity: "high",
