@@ -1881,7 +1881,10 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* ─── TREATMENT EXAMPLES PANEL ─────────────────── */}
+        {/* ─── TREATMENT EXAMPLES PANEL ───────────────────
+            Only mounted when treatments exist — public screening links
+            pass none, so nothing treatment-related reaches that HTML. */}
+        {activeTreatmentSamples.length > 0 && (
         <div
           className={`absolute bottom-0 left-0 right-0 bg-[#0e0e0e] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
             activePanel === "treatments" ? "translate-y-0" : "translate-y-full"
@@ -1986,13 +1989,9 @@ export function ScreeningCarousel({
               ))}
             </div>
 
-            {activeTreatmentSamples.length === 0 && (
-              <p className="text-[13px] text-white/20 text-center py-12">
-                No treatment examples available for this director yet.
-              </p>
-            )}
           </div>
         </div>
+        )}
 
         {/* ─── FRAME GRABS PANEL ─────────────────────────── */}
         <div

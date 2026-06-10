@@ -305,11 +305,14 @@ export default async function ScreeningPage({
 
   const directorsData: Record<string, DirectorSecondaryData> = {};
 
-  // Primary director data is already loaded
+  // Primary director data is already loaded.
+  // Treatments are intentionally excluded from the public screening view —
+  // the carousel falls back to directorsData[id].treatmentSamples, so they
+  // must be empty here, not just omitted from the top-level prop.
   directorsData[directorId] = {
     portfolioStills,
     clientBrands,
-    treatmentSamples,
+    treatmentSamples: [],
     lookbookItems,
     caseStudies,
     shortFilms,
@@ -318,7 +321,7 @@ export default async function ScreeningPage({
   if (isMultiDirector) {
     const secondaryResults = await Promise.all(
       secondaryDirectorIds.map(async (dId) => {
-        const [stills, brands, treatments, looks, cases, shorts] = await Promise.all([
+        const [stills, brands, looks, cases, shorts] = await Promise.all([
           prisma.project.findMany({
             where: { directorId: dId, isPublished: true, id: { notIn: reelProjectIds }, thumbnailUrl: { not: null } },
             select: { id: true, title: true, brand: true, thumbnailUrl: true },
@@ -330,12 +333,6 @@ export default async function ScreeningPage({
             select: { brand: true },
             distinct: ["brand"],
             orderBy: { brand: "asc" },
-          }),
-          prisma.treatmentSample.findMany({
-            where: { directorId: dId },
-            select: { id: true, title: true, brand: true, previewUrl: true, pageCount: true, isRedacted: true },
-            orderBy: { createdAt: "desc" },
-            take: 6,
           }),
           prisma.lookbookItem.findMany({
             where: { directorId: dId },
@@ -365,7 +362,8 @@ export default async function ScreeningPage({
           data: {
             portfolioStills: stills,
             clientBrands: brands.map((b) => b.brand).filter((b): b is string => b !== null),
-            treatmentSamples: treatments,
+            // Treatments stay off the public screening view (see primary note)
+            treatmentSamples: [],
             lookbookItems: looks,
             caseStudies: cases,
             shortFilms: shorts,
