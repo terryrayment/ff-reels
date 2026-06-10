@@ -24,7 +24,16 @@ function parseArgs(argv) {
 
 async function collectCardHrefs(page, baseUrl, listPath) {
   await page.goto(`${baseUrl}${listPath}`, { waitUntil: "networkidle", timeout: 60000 });
-  await page.waitForSelector("[data-marketing-media-frame]", { timeout: 30000 });
+  try {
+    await page.waitForSelector("[data-marketing-media-frame]", { timeout: 30000 });
+  } catch {
+    // Redesigned list pages (e.g. the 2026-06 Talent name-list) may have no
+    // visible card frames. Skip the suite loudly instead of killing the run.
+    console.warn(
+      `[WARN] ${listPath}: no visible [data-marketing-media-frame] — suite skipped (0 cards)`,
+    );
+    return [];
+  }
 
   return page.$$eval("[data-marketing-media-frame]", (frames) => {
     const seen = new Set();

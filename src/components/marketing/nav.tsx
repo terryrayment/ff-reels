@@ -130,7 +130,9 @@ export function MarketingNav() {
               : "bg-transparent border-b border-transparent",
       )}
     >
-      <nav className="mx-auto max-w-ff px-ff-x h-ff-nav flex items-center justify-between">
+      {/* relative z-50 keeps the nav row (incl. the Close button) hit-testable
+          above the full-screen ff-mobile-menu panel (fixed, z-40). */}
+      <nav className="relative z-50 mx-auto max-w-ff px-ff-x h-ff-nav flex items-center justify-between">
         <div className="relative flex min-w-0 items-center">
           <Link
             href="/site"
