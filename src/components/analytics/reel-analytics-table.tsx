@@ -414,13 +414,6 @@ export function ReelAnalyticsTable({ rows }: Props) {
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[11px] text-[#999] mt-0.5">
-                                {row.directorName}
-                                <span className="text-[#ccc]">
-                                  {" "}
-                                  &middot; {row.reelType.toLowerCase()}
-                                </span>
-                              </p>
                               {/* Mobile-only summary of hidden columns */}
                               <p className="text-[10px] text-[#bbb] mt-0.5 md:hidden">
                                 {row.recipient && <>{row.recipient} · </>}
