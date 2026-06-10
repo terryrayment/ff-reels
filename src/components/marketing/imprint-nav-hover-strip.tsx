@@ -9,11 +9,11 @@ export type ImprintNavHoverItem = {
 /** Capability-strip items for imprint nav hover preview (idea #2). */
 export const IMPRINT_NAV_HOVER_ITEMS: Record<PartnerId, ImprintNavHoverItem[]> = {
   youth: [
-    { label: "DIRECTORS", href: "/site/youth" },
-    { label: "PRODUCTION", href: "/site/youth" },
-    { label: "BRAZIL", href: "/site/youth" },
+    { label: "Directors", href: "/site/youth" },
+    { label: "Production", href: "/site/youth" },
+    { label: "Brazil", href: "/site/youth" },
   ],
-  colossal: [{ label: "ANIMATION", href: "/site/colossal" }],
+  colossal: [{ label: "Animation", href: "/site/colossal" }],
 };
 
 type ImprintNavHoverStripProps = {

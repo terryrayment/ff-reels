@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export const MARKETING_PARTNERS = {
   colossal: {
-    label: "COLOSSAL",
+    label: "Colossal",
     location: "Curitiba",
     href: "https://colossal.film/",
     cityCode: "CWB",
@@ -45,7 +45,7 @@ export const MARKETING_PARTNERS = {
     ],
   },
   youth: {
-    label: "THE YOUTH COMPANY",
+    label: "The Youth Company",
     location: "São Paulo",
     href: "https://theyouth.com.br/",
     cityCode: "SP",
@@ -147,7 +147,7 @@ function PartnerSitePortal({
   onClose,
   onPartnerChange,
 }: PartnerSitePortalProps) {
-  const isColossal = partner.label === "COLOSSAL";
+  const isColossal = partnerId === "colossal";
   const isPage = mode === "page";
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeTimedOut, setIframeTimedOut] = useState(false);

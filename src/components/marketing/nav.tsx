@@ -123,9 +123,11 @@ export function MarketingNav() {
         "fixed top-0 left-0 right-0 z-50 transition-colors duration-300",
         partnerRoute
           ? "bg-black border-b border-white/15"
-          : scrolled
-          ? "bg-[rgb(var(--ff-rgb-paper)_/_0.85)] backdrop-blur-md border-b border-[rgb(var(--ff-rgb-ink)_/_0.06)]"
-          : "bg-transparent border-b border-transparent",
+          : open
+            ? "bg-[var(--ff-site-accent)] border-b border-[rgb(var(--ff-rgb-ink)_/_0.08)]"
+            : scrolled
+              ? "bg-[rgb(var(--ff-rgb-paper)_/_0.85)] backdrop-blur-md border-b border-[rgb(var(--ff-rgb-ink)_/_0.06)]"
+              : "bg-transparent border-b border-transparent",
       )}
     >
       <nav className="mx-auto max-w-ff px-ff-x h-ff-nav flex items-center justify-between">
@@ -204,7 +206,11 @@ export function MarketingNav() {
           onClick={() => setOpen((v) => !v)}
           className={cn(
             "inline-flex min-h-11 min-w-11 items-center justify-center font-helveticaText text-ff-micro font-medium uppercase tracking-ff-micro min-[1180px]:hidden",
-            partnerRoute ? "text-white" : "text-ff-ink",
+            partnerRoute
+              ? "text-white"
+              : open
+                ? "text-[var(--ff-site-accent-ink)]"
+                : "text-ff-ink",
           )}
         >
           {open ? "Close" : "Menu"}
@@ -215,23 +221,24 @@ export function MarketingNav() {
         id={MOBILE_MENU_ID}
         aria-hidden={!open}
         className={cn(
-          "ff-mobile-menu min-[1180px]:hidden border-t border-ff-line-soft bg-ff-paper",
+          "ff-mobile-menu min-[1180px]:hidden",
           open && "is-open",
+          partnerRoute && "ff-mobile-menu--partner-route",
         )}
       >
-        <div className="px-6 py-5">
-          <ul className="space-y-3">
+        <div className="ff-mobile-menu__inner">
+          <ul className="ff-mobile-menu__list">
             {NAV_ITEMS.map((item) => {
               if (item.type === "partner") {
                 const partner = MARKETING_PARTNERS[item.partnerId];
                 return (
-                  <li key={item.partnerId}>
+                  <li key={item.partnerId} className="ff-mobile-menu__item">
                     <Link
                       href={item.href}
                       prefetch={false}
                       tabIndex={open ? 0 : -1}
                       onClick={() => setOpen(false)}
-                      className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
+                      className="ff-mobile-menu__link ff-focusable"
                     >
                       {partner.label}
                     </Link>
@@ -245,12 +252,13 @@ export function MarketingNav() {
               }
 
               return (
-                <li key={item.href}>
+                <li key={item.href} className="ff-mobile-menu__item">
                   <Link
                     href={item.href}
                     prefetch={false}
                     tabIndex={open ? 0 : -1}
-                    className="ff-font-display block text-left text-ff-nav-drawer font-medium text-ff-ink"
+                    onClick={() => setOpen(false)}
+                    className="ff-mobile-menu__link ff-focusable"
                   >
                     {item.label}
                   </Link>

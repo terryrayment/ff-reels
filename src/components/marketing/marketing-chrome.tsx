@@ -8,9 +8,25 @@ function isHomeSplash(pathname: string | null) {
   return pathname === "/site";
 }
 
+function isPreviewBrowser(pathname: string | null) {
+  return pathname === "/site/preview";
+}
+
 export function MarketingChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const splash = isHomeSplash(pathname);
+  const previewBrowser = isPreviewBrowser(pathname);
+
+  if (previewBrowser) {
+    return (
+      <div
+        className="ff-site-theme min-h-screen bg-ff-paper text-ff-ink font-helveticaText"
+        data-ff-colorway="portfolio-olive"
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div
