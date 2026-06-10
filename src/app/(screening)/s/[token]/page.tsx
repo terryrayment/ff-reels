@@ -151,7 +151,6 @@ export default async function ScreeningPage({
     portfolioStills,
     rosterHighlights,
     allDirectorProjects,
-    treatmentSamples,
     frameGrabsByProject,
     lookbookItems,
     caseStudies,
@@ -189,21 +188,6 @@ export default async function ScreeningPage({
       select: { brand: true },
       distinct: ["brand"],
       orderBy: { brand: "asc" },
-    }),
-
-    // Treatment samples for the director
-    prisma.treatmentSample.findMany({
-      where: { directorId },
-      select: {
-        id: true,
-        title: true,
-        brand: true,
-        previewUrl: true,
-        pageCount: true,
-        isRedacted: true,
-      },
-      orderBy: { createdAt: "desc" },
-      take: 6,
     }),
 
     // Frame grabs per project in this reel
@@ -297,7 +281,8 @@ export default async function ScreeningPage({
   type DirectorSecondaryData = {
     portfolioStills: typeof portfolioStills;
     clientBrands: string[];
-    treatmentSamples: typeof treatmentSamples;
+    // Always empty on the public screening view — treatments are team-only
+    treatmentSamples: never[];
     lookbookItems: typeof lookbookItems;
     caseStudies: typeof caseStudies;
     shortFilms: typeof shortFilms;
