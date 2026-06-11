@@ -2152,7 +2152,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "CHAOS Industries",
     recipientName: "John Tenet",
     recipientFirst: "John",
-    recipientEmail: "john.tenet@chaosinc.com",
+    recipientEmail: "john@chaosinc.com",
     metaTitle: "Friends & Family for CHAOS Industries",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for CHAOS Industries.",
@@ -2276,7 +2276,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "Vuori",
     recipientName: "Joe Kudla",
     recipientFirst: "Joe",
-    recipientEmail: "jkudla@vuoriclothing.com",
+    recipientEmail: "joe.kudla@vuori.com",
     metaTitle: "Friends & Family for Vuori",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for Vuori.",
@@ -2338,7 +2338,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "Kalshi",
     recipientName: "Tarek Mansour",
     recipientFirst: "Tarek",
-    recipientEmail: "tmansour@kalshi.com",
+    recipientEmail: "tarekm@kalshi.com",
     metaTitle: "Friends & Family for Kalshi",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for Kalshi.",
@@ -2524,7 +2524,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "Unrivaled",
     recipientName: "Alex Bazzell",
     recipientFirst: "Alex",
-    recipientEmail: "bazzell@unrivaled.basketball",
+    recipientEmail: "alex@unrivaled.basketball",
     metaTitle: "Friends & Family for Unrivaled",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for Unrivaled.",
@@ -2648,7 +2648,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "Coco Robotics",
     recipientName: "Zach Rash",
     recipientFirst: "Zach",
-    recipientEmail: "zach.rash@cocodelivery.com",
+    recipientEmail: "zach@cocodelivery.com",
     metaTitle: "Friends & Family for Coco Robotics",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for Coco Robotics.",
@@ -3144,7 +3144,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "WHOOP",
     recipientName: "Will Ahmed",
     recipientFirst: "Will",
-    recipientEmail: "will.ahmed@whoop.com",
+    recipientEmail: "will@whoop.com",
     metaTitle: "Friends & Family for WHOOP",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for WHOOP.",
@@ -3206,7 +3206,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "Vast",
     recipientName: "Max Haot",
     recipientFirst: "Max",
-    recipientEmail: "max.haot@vastspace.com",
+    recipientEmail: "max@vastspace.com",
     metaTitle: "Friends & Family for Vast",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for Vast.",
@@ -3516,7 +3516,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "The Farmer's Dog",
     recipientName: "Jonathan Regev",
     recipientFirst: "Jonathan",
-    recipientEmail: "jregev@thefarmersdog.com",
+    recipientEmail: "jonathan@thefarmersdog.com",
     metaTitle: "Friends & Family for The Farmer's Dog",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for The Farmer's Dog.",
@@ -3640,7 +3640,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "Polymarket",
     recipientName: "Shayne Coplan",
     recipientFirst: "Shayne",
-    recipientEmail: "shayne@polymarket.com",
+    recipientEmail: "shaynecoplan@polymarket.com",
     metaTitle: "Friends & Family for Polymarket",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for Polymarket.",
@@ -3764,7 +3764,7 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
     company: "Wonder",
     recipientName: "Marc Lore",
     recipientFirst: "Marc",
-    recipientEmail: "mlore@wonder.com",
+    recipientEmail: "marc@wonder.com",
     metaTitle: "Friends & Family for Wonder",
     metaDescription:
       "Friends & Family directors, production, edit, motion, and delivery for Wonder.",

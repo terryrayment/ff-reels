@@ -144,15 +144,15 @@ Funded + hiring + trending sectors, sourced 2026-06-10. ALL emails are pattern g
 | # | Person | Company | Status | Email | Page | Note |
 |---|--------|---------|--------|-------|------|------|
 | 61 | Grant LaFontaine | Whatnot | ⬜ | grant@whatnot.com ⚠️ | /whatnot | $11.5B live shopping, hiring Director of Brand, Marina del Rey |
-| 62 | Doug Bernauer | Radiant | ⬜ | doug@radiantnuclear.com ⚠️ | /radiant | Nuclear microreactors, DOME test summer 2026, El Segundo |
-| 63 | Isaiah Taylor | Valar Atomics | ⬜ | isaiah@valaratomics.com ⚠️ | /valar | $2B nuclear-for-AI, Ward250 power July 4, El Segundo |
-| 64 | John Tenet | CHAOS Industries | ⬜ | john.tenet@chaosinc.com ⚠️ | /chaos | $4.5B defense radar, Brand Designer req open, Hawthorne |
-| 65 | Mitch Lee | Arc Boat | ⬜ | mitch@arcboats.com ⚠️ | /arc | Electric boats→defense, $50M Series C, LA |
-| 66 | Joe Kudla | Vuori | ⬜ | jkudla@vuoriclothing.com ⚠️ | /vuori | $5.5B athleisure, athlete pivot, Carlsbad |
-| 67 | Tarek Mansour | Kalshi | ⬜ | tmansour@kalshi.com ⚠️ | /kalshi | $22B prediction markets, MSG concourse, NYC |
+| 62 | Doug Bernauer | Radiant | ⬜ | doug@radiantnuclear.com ✅ | /radiant | Nuclear microreactors, DOME test summer 2026, El Segundo |
+| 63 | Isaiah Taylor | Valar Atomics | ⬜ | isaiah@valaratomics.com ✅ | /valar | $2B nuclear-for-AI, Ward250 power July 4, El Segundo |
+| 64 | John Tenet | CHAOS Industries | ⬜ | john@chaosinc.com ✅ | /chaos | $4.5B defense radar, Brand Designer req open, Hawthorne |
+| 65 | Mitch Lee | Arc Boat | ⬜ | mitch@arcboats.com ✅ | /arc | Electric boats→defense, $50M Series C, LA |
+| 66 | Joe Kudla | Vuori | ⬜ | joe.kudla@vuori.com ✅ | /vuori | $5.5B athleisure, athlete pivot, Carlsbad |
+| 67 | Tarek Mansour | Kalshi | ⬜ | tarekm@kalshi.com ✅ | /kalshi | $22B prediction markets, MSG concourse, NYC |
 | 68 | Mikey Shulman | Suno | ⬜ | mikey@suno.com ⚠️ | /suno | $5.4B AI music, Venice LA office, Cambridge MA |
-| 69 | Peter Rahal | David | ⬜ | peter@davidprotein.com ⚠️ | /david | RXBAR founder, $100M first-year pace, NYC |
-| 70 | Alex Bazzell | Unrivaled | ⬜ | bazzell@unrivaled.basketball ⚠️ | /unrivaled | Player-owned women's hoops league, Miami |
+| 69 | Peter Rahal | David | ⬜ | peter@davidprotein.com ✅ | /david | RXBAR founder, $100M first-year pace, NYC |
+| 70 | Alex Bazzell | Unrivaled | ⬜ | alex@unrivaled.basketball ✅ | /unrivaled | Player-owned women's hoops league, Miami |
 
 ---
 
@@ -163,26 +163,26 @@ SoCal + NE corridor, sourced 2026-06-10. ALL emails are pattern guesses ⚠️ �
 
 | # | Person | Company | Status | Email | Page | Note |
 |---|--------|---------|--------|-------|------|------|
-| 71 | Max Haot | Vast | ⬜ | max.haot@vastspace.com ⚠️ | /vast | Haven-1 station, NASA decision July, Long Beach |
-| 72 | Tom O'Leary | JetZero | ⬜ | tom@jetzero.aero ⚠️ | /jetzero | Blended-wing airliner, Long Beach |
-| 73 | Lukas Czinger | Divergent | ⬜ | lczinger@divergent3d.com ⚠️ | /divergent | $2.3B printed hypercars + defense, Torrance |
+| 71 | Max Haot | Vast | ⬜ | max@vastspace.com ✅ | /vast | Haven-1 station, NASA decision July, Long Beach |
+| 72 | Tom O'Leary | JetZero | ⬜ | tom@jetzero.aero ✅ | /jetzero | Blended-wing airliner, Long Beach |
+| 73 | Lukas Czinger | Divergent | ⬜ | lczinger@divergent3d.com ✅ | /divergent | $2.3B printed hypercars + defense, Torrance |
 | 74 | Danny Harris | Alo | ⬜ | danny.harris@aloyoga.com ⚠️ | /alo | $10B wellness, founder-owned, Beverly Hills |
-| 75 | Zach Rash | Coco Robotics | ⬜ | zach.rash@cocodelivery.com ⚠️ | /coco | Altman-backed sidewalk bots, Venice |
-| 76 | Matt Soule | Parallel Systems | ⬜ | matt@moveparallel.com ⚠️ | /parallel | Autonomous electric rail, LA |
+| 75 | Zach Rash | Coco Robotics | ⬜ | zach@cocodelivery.com ✅ | /coco | Altman-backed sidewalk bots, Venice |
+| 76 | Matt Soule | Parallel Systems | ⬜ | matt@moveparallel.com ✅ | /parallel | Autonomous electric rail, LA |
 | 77 | Ara Mahdessian | ServiceTitan | ⬜ | amahdessian@servicetitan.com ⚠️ | /servicetitan | $9B trades software, Glendale |
-| 78 | Dan Magy | Firestorm Labs | ⬜ | dan@launchfirestorm.com ⚠️ | /firestorm | Drone factory-in-a-box, San Diego |
-| 79 | Ben Nowack | Reflect Orbital | ⬜ | ben@reflectorbital.com ⚠️ | /reflect-orbital | Sunlight-on-demand satellites, Hawthorne |
-| 80 | Justin Fiaschetti | Inversion Space | ⬜ | justin@inversionspace.com ⚠️ | /inversion | Reentry cargo, first flight 2026, Playa Vista |
-| 81 | Will Ahmed | WHOOP | ⬜ | will.ahmed@whoop.com ⚠️ | /whoop | $10.1B wearable, Boston |
-| 82 | Hamdi Ulukaya | Chobani | ⬜ | hamdi.ulukaya@chobani.com ⚠️ | /chobani | $20B, Rome NY plant, NYC |
-| 83 | Marc Lore | Wonder | ⬜ | mlore@wonder.com ⚠️ | /wonder | Mealtime super app, IPO 2027, NYC |
-| 84 | Cristóbal Valenzuela | Runway | ⬜ | cristobal@runwayml.com ⚠️ | /runway | AI video at $5.3B, hybrid-craft pitch, NYC |
-| 85 | Hiroki Koga | Oishii | ⬜ | hiroki@oishii.com ⚠️ | /oishii | Vertical strawberry farm, NJ |
-| 86 | Jonathan Regev | The Farmer's Dog | ⬜ | jregev@thefarmersdog.com ⚠️ | /farmers-dog | $1B+ fresh dog food, NYC |
+| 78 | Dan Magy | Firestorm Labs | ⬜ | dan@launchfirestorm.com ✅ | /firestorm | Drone factory-in-a-box, San Diego |
+| 79 | Ben Nowack | Reflect Orbital | ⬜ | ben@reflectorbital.com ✅ | /reflect-orbital | Sunlight-on-demand satellites, Hawthorne |
+| 80 | Justin Fiaschetti | Inversion Space | ⬜ | justin@inversionspace.com ✅ | /inversion | Reentry cargo, first flight 2026, Playa Vista |
+| 81 | Will Ahmed | WHOOP | ⬜ | will@whoop.com ✅ | /whoop | $10.1B wearable, Boston |
+| 82 | Hamdi Ulukaya | Chobani | ⬜ | hamdi.ulukaya@chobani.com ✅ | /chobani | $20B, Rome NY plant, NYC |
+| 83 | Marc Lore | Wonder | ⬜ | marc@wonder.com ✅ | /wonder | Mealtime super app, IPO 2027, NYC |
+| 84 | Cristóbal Valenzuela | Runway | ⬜ | cristobal@runwayml.com ✅ | /runway | AI video at $5.3B, hybrid-craft pitch, NYC |
+| 85 | Hiroki Koga | Oishii | ⬜ | hiroki@oishii.com ✅ | /oishii | Vertical strawberry farm, NJ |
+| 86 | Jonathan Regev | The Farmer's Dog | ⬜ | jonathan@thefarmersdog.com ✅ | /farmers-dog | $1B+ fresh dog food, NYC |
 | 87 | David Gutstadt | Ballers | ⬜ | david.gutstadt@ballers-us.com ⚠️ | /ballers | Social sport clubs, Philly + DTLA 2026 |
 | 88 | Rylan Hamilton | Blue Water Autonomy | ⬜ | rylan@blw.ai ⚠️ | /blue-water | Unmanned Navy ships, Boston |
-| 89 | Shayne Coplan | Polymarket | ⬜ | shayne@polymarket.com ⚠️ | /polymarket | NYSE-backed prediction markets, NYC |
-| 90 | Jeremy Levine | Underdog | ⬜ | jeremy.levine@underdogfantasy.com ⚠️ | /underdog | Challenger sports gaming, Brooklyn |
+| 89 | Shayne Coplan | Polymarket | ⬜ | shaynecoplan@polymarket.com ✅ | /polymarket | NYSE-backed prediction markets, NYC |
+| 90 | Jeremy Levine | Underdog | ⬜ | jeremy.levine@underdogfantasy.com ✅ | /underdog | Challenger sports gaming, Brooklyn |
 
 ---
 
@@ -288,7 +288,9 @@ This sales/ directory in the repo is the **working tracker**. Research files are
 
 ## Changelog
 
-- **2026-06-10** — Wave 5: 20 NET-NEW prospects (71-90), SoCal + NYC/Boston/Philly corridor, pages live + drafts cued. All emails pattern guesses pending Apollo. Research: pitch-research/2026-06-10-wave5-research.md. Ledger updated with the full pitch-system writeup.\n- **2026-06-10** — Wave 4: 10 NET-NEW prospects (61-70) discovered via funded+hiring+trending screen, pages live, drafts cued. ALL wave-4 emails are pattern guesses pending Apollo. Research: pitch-research/2026-06-10-wave4-research.md.
+- **2026-06-11** — Apollo-verified all 30 wave 4-5 emails: 14 confirmed ✅, 10 corrected ✏️ (CHAOS john@, Vuori joe.kudla@vuori.com, Kalshi tarekm@, Unrivaled alex@, Vast max@, Coco zach@, WHOOP will@, Wonder marc@ — catch-all domain, Farmer's Dog jonathan@, Polymarket shaynecoplan@), 6 not findable ⚠️ guesses kept (Whatnot, Suno, Alo, ServiceTitan, Ballers — profile but no email, Blue Water). DB + pitch configs + board synced; 10 corrected Gmail drafts re-cued — delete the old ones.
+- **2026-06-10** — Wave 5: 20 NET-NEW prospects (71-90), SoCal + NYC/Boston/Philly corridor, pages live + drafts cued. All emails pattern guesses pending Apollo. Research: pitch-research/2026-06-10-wave5-research.md. Ledger updated with the full pitch-system writeup.
+- **2026-06-10** — Wave 4: 10 NET-NEW prospects (61-70) discovered via funded+hiring+trending screen, pages live, drafts cued. ALL wave-4 emails are pattern guesses pending Apollo. Research: pitch-research/2026-06-10-wave4-research.md.
 - **2026-06-10** — Wave 3: 10 more SoCal pitch pages (apex, epirus, slingshot, aptera, ntwrk, karat, patrick-ta, harbinger, merit, seed) + drafts. MERIT + Seed founder emails are ⚠️ unverified — verify before send. Katherine Power is Chairperson not CEO; Tim Solms is CEO not founder. Research: pitch-research/2026-06-10-wave3-research.md.
 - **2026-06-10** — Wave 2: built 10 more SoCal pitch pages (mach, castelion, k2-space, varda, fly-by-jing, fishwife, ghia, topicals, cymbiotika, rabbit) with per-brand colors, cued 10 wind-up-format drafts in Gmail. Wave 1 marked Contacted on the board with pitch links. Research: [`pitch-research/2026-06-10-wave2-research.md`](./pitch-research/2026-06-10-wave2-research.md).
 - **2026-06-10** — Built 10 custom founder pitch pages at `reels.friendsandfamily.tv/<slug>` (hadrian, shield-ai, impulse, joby, athletic, olipop, magic-spoon, graza, our-place, tracksmith) on the Versant template via `/pitch/[slug]` + `src/lib/pitch/companies.ts`. Deep research per company in [`pitch-research/`](./pitch-research/). 10 fresh intro emails in [`INTROS.md`](./INTROS.md) under "Custom Pitch Page Intros" — these supersede the v1 intros for those 10 names.
