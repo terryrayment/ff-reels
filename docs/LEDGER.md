@@ -351,6 +351,30 @@ Marketing routes (`/site`, `/site/work`, `/site/directors`, `/site/directors/[sl
 
 ---
 
+## June 2026: Founder-Direct Pitch System
+
+**Decision (2026-06-10):** Build the founder-direct outreach channel as a product, not a mail merge. One custom pitch page per prospect at `reels.friendsandfamily.tv/<slug>`, deep-researched copy, the target company's own master brand color on every surface, and open tracking.
+
+### What shipped
+- **`/pitch/[slug]` template** (generalized from the Versant pitch): per-company config in `src/lib/pitch/companies.ts` carries hero copy, fact ticker, "What we noticed" research cards, studio panel, fit section, and brand accent. Adding a company is ~80 lines of config + one middleware vanity path.
+- **40 live pitch pages** across four waves: wave 1 (10 priority founders, emailed 6/10), wave 2 (10 SoCal), wave 3 (10 SoCal, exhausting the verified founders on the original 60-prospect board), wave 4 (10 net-new prospects #61-70 screened for funded + hiring + trending sectors).
+- **Open tracking:** `PitchPageView` table + client-side beacon (filters email link-scanner bots) + team-only dashboard at `/pitch-opens` showing per-page opens, last-open time, city, device.
+- **Email voice locked** after many iterations: the "wind-up" format. Disarming cold-email honesty, two days of homework as the proof, one meeting ask, Cannes line. All 40 drafts cued in terry@friendsandfamily.tv.
+- **Research archive** in `sales/pitch-research/` (one condensed file per wave) for reply prep.
+
+### Decisions of record
+- Pitch pages address the **company, not a person** (no "For Chris" greeting) so links forward freely inside an org.
+- Pages are **request-rendered** (`force-dynamic`): static prerendering 30+ DB-backed pages overwhelmed the Neon pooler at build time.
+- Pitch pages stay **noindexed** (existing `/pitch/:path*` header) and out of robots/sitemap, per SEO invariants.
+- Brand accents are pulled from each target's **live site CSS**, never guessed; too-light primaries get the brand's own darkest token.
+- Wave-4 emails are **pattern guesses** (marked ⚠️ on the board) — Apollo verification required before send.
+
+### Tracking
+- GitHub Project 3 ("FF Sales - Direct to Brand") is the operational board: founder + marketing-lead rows adjacent per company, Status/Contact Date/Email Verified fields, pitch link in each item body.
+- `sales/SALES.md` is the master tracker; `sales/MARKETING-LEADS.md` holds the 18 second contacts (9 Apollo-verified).
+
+---
+
 ## Milestone Summary
 
 | Date | Milestone | Commits |
@@ -361,4 +385,5 @@ Marketing routes (`/site`, `/site/work`, `/site/directors`, `/site/directors/[sl
 | Mar 5, 2026 | **Hardening** — Security fixes, performance (Neon timeouts), webhook verification, 4 new scrapers | 8 commits |
 | Mar 6, 2026 | **CRM + Team** — Contact management, user invites, multi-director reels, email config | 9 commits |
 | Jun 2026 | **Marketing site** — Next.js `/site`, olive colorway, carousel → splash pivot, directors list, imprint nav | see [June 2026 section](#june-2026-marketing-site-in-nextjs) |
+| Jun 10, 2026 | **Founder-direct pitch system** — 40 custom pitch pages, open tracking, 40 drafts, prospects 61-70 added | see [June 2026 section](#june-2026-founder-direct-pitch-system) |
 | **Total (Day 1–5)** | | **72 commits in 4 days** |
