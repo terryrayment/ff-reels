@@ -108,12 +108,16 @@ function DirectorDropdown({
   directors,
   selectedId,
   onSelect,
+  autoOpen = false,
 }: {
   directors: Director[];
   selectedId: string;
   onSelect: (id: string) => void;
+  autoOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  // Start open when the page lands with no director picked — saves the
+  // dead click on an empty build page. Type-ahead is focused immediately.
+  const [open, setOpen] = useState(autoOpen);
   const [search, setSearch] = useState("");
   const [showOffRoster, setShowOffRoster] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -181,6 +185,18 @@ function DirectorDropdown({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  // Select the first visible match: type "kel" → Enter
+                  const first = filteredRoster[0] ?? filteredOffRoster[0];
+                  if (first) {
+                    onSelect(first.id);
+                    setOpen(false);
+                  }
+                } else if (e.key === "Escape") {
+                  setOpen(false);
+                }
+              }}
               placeholder="Search directors…"
               className="w-full px-3 py-1.5 text-[13px] bg-[#F7F6F3]/80 rounded-lg border border-[#E8E7E3]/50 focus:outline-none focus:border-[#ccc] placeholder:text-[#bbb]"
             />
@@ -648,6 +664,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
           directors={directors}
           selectedId={selectedDirectorId}
           onSelect={handleSelectDirector}
+          autoOpen={!selectedDirectorId}
         />
 
         {selectedDirector && (
