@@ -5,14 +5,16 @@ import { useEffect } from "react";
 /**
  * The Martini Shot — type "MARTINI" anywhere on the marketing site and the
  * last setup of the day wraps: every visible element falls, tumbles, and
- * piles up at the bottom of the viewport. Refresh to strike the set.
+ * piles up at the bottom of the viewport under a clapperboard slate.
+ * Escape or refresh strikes the set.
  *
  * Film slang: the "martini shot" is the final shot before wrap.
  *
  * Implementation notes: the falling pieces are clones in a fixed overlay;
  * the real DOM is only hidden (visibility), so nothing here can interfere
  * with the card-to-viewer morph or any other locked transition behavior.
- * The egg refuses to arm while a morph is in flight.
+ * The egg refuses to arm while a morph is in flight. Live <video> frames
+ * are frozen onto canvases so playing previews fall as stills.
  */
 
 const MAGIC_WORD = "martini";
@@ -23,6 +25,8 @@ const SETTLE_SPEED = 90; // px/s — below this on floor contact, the piece rest
 const PILE_COLUMNS = 16;
 const MAX_PILE_RATIO = 0.45;
 const STACK_FACTOR = 0.45; // settled pieces overlap; the pile compresses
+const INK = "#141414";
+const PAPER = "#F7F6F3";
 
 type Piece = {
   el: HTMLElement;
@@ -93,11 +97,44 @@ function collectTargets(): HTMLElement[] {
   return chosen;
 }
 
+/** Replace live videos in the clone with a frozen frame of the original. */
+function freezeVideos(original: HTMLElement, clone: HTMLElement) {
+  const sourceVideos = original.querySelectorAll("video");
+  const cloneVideos = clone.querySelectorAll("video");
+  cloneVideos.forEach((cloneVideo, i) => {
+    const source = sourceVideos[i];
+    const fillStyle =
+      "width:100%;height:100%;object-fit:cover;display:block;";
+    let replacement: HTMLElement | null = null;
+    if (source && source.readyState >= 2 && source.videoWidth > 0) {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = source.videoWidth;
+        canvas.height = source.videoHeight;
+        canvas.getContext("2d")?.drawImage(source, 0, 0);
+        canvas.style.cssText = fillStyle;
+        replacement = canvas;
+      } catch {
+        replacement = null;
+      }
+    }
+    if (!replacement && source?.poster) {
+      const img = document.createElement("img");
+      img.src = source.poster;
+      img.style.cssText = fillStyle;
+      replacement = img;
+    }
+    if (replacement) cloneVideo.replaceWith(replacement);
+    else cloneVideo.remove();
+  });
+}
+
 function makeClone(el: HTMLElement, rect: DOMRect): HTMLElement {
   const clone = el.cloneNode(true) as HTMLElement;
-  // Live media never survives cloning cleanly; the chrome around it falls instead.
+  freezeVideos(el, clone);
+  // Embedded documents and players never survive cloning; drop what's left.
   clone
-    .querySelectorAll("video, iframe, mux-player, audio")
+    .querySelectorAll("iframe, mux-player, audio")
     .forEach((node) => node.remove());
   clone.style.position = "fixed";
   clone.style.left = "0";
@@ -108,6 +145,8 @@ function makeClone(el: HTMLElement, rect: DOMRect): HTMLElement {
   clone.style.boxSizing = "border-box";
   clone.style.pointerEvents = "none";
   clone.style.willChange = "transform";
+  // Park the clone exactly over the original before its drop cue arrives.
+  clone.style.transform = `translate(${rect.left}px, ${rect.top}px)`;
   return clone;
 }
 
@@ -134,38 +173,88 @@ function spawnDust(overlay: HTMLElement, x: number, y: number, width: number) {
   window.setTimeout(() => dust.remove(), 600);
 }
 
-function showWrapCard(overlay: HTMLElement) {
+function nextTake(): string {
+  let take = 1;
+  try {
+    take = (parseInt(window.localStorage.getItem("ff-martini-take") ?? "0", 10) || 0) + 1;
+    window.localStorage.setItem("ff-martini-take", String(take));
+  } catch {
+    // private mode — every take is the first take
+  }
+  return String(Math.min(take, 99)).padStart(2, "0");
+}
+
+const STRIPES = `repeating-linear-gradient(-45deg, ${PAPER} 0 14px, ${INK} 14px 28px)`;
+
+function slateField(label: string, value: string, grow = "1") {
+  return [
+    `<span style="display:flex;flex-direction:column;gap:0.3rem;flex:${grow};padding:0.7rem 0.9rem;border-right:1px solid rgba(247,246,243,0.14);min-width:0;">`,
+    `<span style="font-size:0.5rem;letter-spacing:0.22em;opacity:0.45;">${label}</span>`,
+    `<span style="font-size:0.78rem;font-weight:600;letter-spacing:0.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${value}</span>`,
+    "</span>",
+  ].join("");
+}
+
+function showWrapCard(overlay: HTMLElement, animateClap: boolean) {
+  const scene = (window.location.pathname.replace(/^\/site\/?/, "") || "one")
+    .slice(0, 14)
+    .toUpperCase();
+
   const card = document.createElement("button");
   card.type = "button";
   card.setAttribute("aria-label", "That's a wrap — refresh to strike the set");
   card.style.cssText = [
     "position:fixed",
     "left:50%",
-    "top:42%",
+    "top:40%",
     "transform:translate(-50%,-50%) rotate(-2deg) scale(0.96)",
-    "background:#111",
-    "color:#F7F6F3",
-    "padding:2.2rem 2.8rem",
-    "text-align:center",
+    "width:min(34rem, 88vw)",
+    `background:${INK}`,
+    `color:${PAPER}`,
+    "padding:0",
+    "text-align:left",
     "text-transform:uppercase",
     "cursor:pointer",
-    "border:1px solid rgba(247,246,243,0.25)",
-    "box-shadow:0 24px 80px rgba(0,0,0,0.45)",
+    "border:1px solid rgba(247,246,243,0.22)",
+    "border-radius:3px",
+    "overflow:hidden",
+    "box-shadow:0 32px 90px rgba(0,0,0,0.5)",
     "opacity:0",
-    "transition:opacity 700ms ease, transform 700ms ease",
-    "font-family:var(--ff-font-display, inherit)",
+    "transition:opacity 600ms ease, transform 600ms ease",
+    "font-family:inherit",
     "z-index:1",
   ].join(";");
+
   card.innerHTML = [
-    '<span style="display:block;font-size:clamp(2rem,6vw,4.5rem);font-weight:650;line-height:0.9;letter-spacing:0;">That&rsquo;s a wrap.</span>',
-    '<span style="display:block;margin-top:1.1rem;font-size:clamp(0.7rem,1.6vw,0.9rem);letter-spacing:0.18em;opacity:0.75;">Call time tomorrow &mdash; 6:00 AM</span>',
-    '<span style="display:block;margin-top:0.5rem;font-size:clamp(0.55rem,1.2vw,0.7rem);letter-spacing:0.18em;opacity:0.45;">refresh to strike the set</span>',
+    // Swinging clapper arm + fixed jaw
+    `<span data-ff-clap style="display:block;height:1.5rem;background:${STRIPES};transform-origin:0% 100%;transform:rotate(${animateClap ? -22 : 0}deg);transition:transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1) 350ms;"></span>`,
+    `<span style="display:block;height:1.5rem;background:${STRIPES};border-top:2px solid ${INK};"></span>`,
+    // Slate fields
+    '<span style="display:flex;border-bottom:1px solid rgba(247,246,243,0.14);">',
+    slateField("Prod.", "Friends &amp; Family", "1.6"),
+    slateField("Roll", "Martini"),
+    "</span>",
+    '<span style="display:flex;border-bottom:1px solid rgba(247,246,243,0.14);">',
+    slateField("Scene", scene, "1.6"),
+    slateField("Take", nextTake()),
+    "</span>",
+    // The wrap
+    '<span style="display:block;padding:1.6rem 0.9rem 1.5rem;text-align:center;">',
+    '<span style="display:block;font-family:var(--ff-font-display, inherit);font-size:clamp(1.9rem,5.2vw,3.4rem);font-weight:650;line-height:0.92;">That&rsquo;s a wrap.</span>',
+    '<span style="display:block;margin-top:0.95rem;font-size:clamp(0.62rem,1.4vw,0.78rem);letter-spacing:0.2em;opacity:0.7;">Call time tomorrow &mdash; 6:00 AM</span>',
+    '<span style="display:block;margin-top:0.45rem;font-size:clamp(0.5rem,1.1vw,0.62rem);letter-spacing:0.2em;opacity:0.4;">refresh to strike the set</span>',
+    "</span>",
   ].join("");
+
   card.addEventListener("click", () => window.location.reload());
   overlay.appendChild(card);
   requestAnimationFrame(() => {
     card.style.opacity = "1";
     card.style.transform = "translate(-50%,-50%) rotate(-2deg) scale(1)";
+    if (animateClap) {
+      const clap = card.querySelector<HTMLElement>("[data-ff-clap]");
+      if (clap) clap.style.transform = "rotate(0deg)";
+    }
   });
 }
 
@@ -186,7 +275,7 @@ function runMartiniShot() {
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     overlay.style.pointerEvents = "auto";
-    showWrapCard(overlay);
+    showWrapCard(overlay, false);
     return;
   }
 
@@ -206,8 +295,8 @@ function runMartiniShot() {
       y: rect.top,
       w: rect.width,
       h: rect.height,
-      vx: (Math.random() - 0.5) * 160,
-      vy: 0,
+      vx: (Math.random() - 0.5) * 220,
+      vy: -Math.random() * 240, // a little knock upward as the set lets go
       angle: 0,
       va: (Math.random() - 0.5) * 360,
       delay: Math.random() * 0.9,
@@ -219,11 +308,13 @@ function runMartiniShot() {
 
   document.documentElement.style.overflow = "hidden";
 
+  // Floor sampled under the middle of the piece so it can't perch on a
+  // neighbor's pile column it barely overlaps.
   const floorFor = (piece: Piece) => {
-    const first = Math.max(0, Math.floor(piece.x / colWidth));
+    const first = Math.max(0, Math.floor((piece.x + piece.w * 0.25) / colWidth));
     const last = Math.min(
       PILE_COLUMNS - 1,
-      Math.floor((piece.x + piece.w) / colWidth),
+      Math.floor((piece.x + piece.w * 0.75) / colWidth),
     );
     let pile = 0;
     for (let col = first; col <= last; col++) pile = Math.max(pile, heights[col]);
@@ -257,11 +348,19 @@ function runMartiniShot() {
       if (piece.x > vw - piece.w * 0.6) piece.x = vw - piece.w * 0.6;
 
       const { floor, first, last: lastCol } = floorFor(piece);
-      if (piece.y + piece.h >= floor) {
-        piece.y = floor - piece.h;
+      if (piece.vy > 0 && piece.y + piece.h >= floor) {
+        // Snap small overshoots back to the pile surface; if the pile has
+        // already risen well past this piece, rest where it is instead of
+        // teleporting up onto the heap.
+        const restY = floor - piece.h;
+        const overshoot = piece.y - restY;
+        piece.y =
+          overshoot > Math.max(48, piece.h * 0.5)
+            ? Math.min(piece.y, vh - piece.h)
+            : restY;
         if (!piece.bounced) {
           piece.bounced = true;
-          spawnDust(overlay, piece.x + piece.w / 2, floor, piece.w);
+          spawnDust(overlay, piece.x + piece.w / 2, piece.y + piece.h, piece.w);
         }
         if (Math.abs(piece.vy) > SETTLE_SPEED) {
           piece.vy = -piece.vy * BOUNCE;
@@ -282,7 +381,7 @@ function runMartiniShot() {
       if (!wrapped) {
         wrapped = true;
         overlay.style.pointerEvents = "auto";
-        showWrapCard(overlay);
+        showWrapCard(overlay, true);
       }
       return;
     }
