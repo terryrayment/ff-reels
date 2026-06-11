@@ -22,24 +22,30 @@ function parseArgs(argv) {
   return { baseUrl, headed };
 }
 
-async function collectCardHrefs(page, baseUrl, listPath) {
-  await page.goto(`${baseUrl}${listPath}`, { waitUntil: "networkidle", timeout: 60000 });
-  try {
-    await page.waitForSelector("[data-marketing-media-frame]", { timeout: 30000 });
-  } catch {
-    // Redesigned list pages (e.g. the 2026-06 Talent name-list) may have no
-    // visible card frames. Skip the suite loudly instead of killing the run.
-    console.warn(
-      `[WARN] ${listPath}: no visible [data-marketing-media-frame] — suite skipped (0 cards)`,
-    );
-    return [];
-  }
+// Talent is a name list (frames only mount on hover); Work is a card grid.
+// Collect from both shapes: anchors with a director slug, and visible media-frame cards.
+const CARD_SOURCE_SELECTOR =
+  "a[data-director-slug], [data-marketing-media-frame]";
 
-  return page.$$eval("[data-marketing-media-frame]", (frames) => {
+// networkidle never settles when streaming media or analytics keep connections
+// open; the document is loaded by then, so fall through to the selector waits.
+async function gotoSettled(page, url) {
+  await page
+    .goto(url, { waitUntil: "networkidle", timeout: 60000 })
+    .catch((error) => {
+      if (error.name !== "TimeoutError") throw error;
+    });
+}
+
+async function collectCardHrefs(page, baseUrl, listPath) {
+  await gotoSettled(page, `${baseUrl}${listPath}`);
+  await page.waitForSelector(CARD_SOURCE_SELECTOR, { timeout: 30000 });
+
+  return page.$$eval(CARD_SOURCE_SELECTOR, (nodes) => {
     const seen = new Set();
     const out = [];
-    for (const frame of frames) {
-      const link = frame.closest("a");
+    for (const node of nodes) {
+      const link = node.closest("a");
       if (!link?.href) continue;
       const url = new URL(link.href);
       if (!url.pathname.startsWith("/site/directors/")) continue;
@@ -155,10 +161,7 @@ function evaluateResult({ expectedPath, mid, final }) {
 }
 
 async function testCard(page, baseUrl, listPath, card, index) {
-  await page.goto(`${baseUrl}${listPath}`, {
-    waitUntil: "networkidle",
-    timeout: 60000,
-  });
+  await gotoSettled(page, `${baseUrl}${listPath}`);
   await page.waitForSelector(`a[href="${card.href}"]`, { timeout: 30000 });
 
   const link = page.locator(`a[href="${card.href}"]`).first();
@@ -207,7 +210,19 @@ async function main() {
   for (const suite of suites) {
     const cards = await collectCardHrefs(page, baseUrl, suite.path);
     for (let i = 0; i < cards.length; i++) {
-      const result = await testCard(page, baseUrl, suite.path, cards[i], i + 1);
+      let result;
+      try {
+        result = await testCard(page, baseUrl, suite.path, cards[i], i + 1);
+      } catch (error) {
+        result = {
+          index: i + 1,
+          page: suite.path,
+          label: cards[i].label,
+          href: cards[i].href,
+          pass: false,
+          reasons: [`harness-error:${error.message?.split("\n")[0] ?? error}`],
+        };
+      }
       results.push({ suite: suite.name, ...result });
       const mark = result.pass ? "PASS" : "FAIL";
       console.log(`[${mark}] ${suite.name} ${i + 1}/${cards.length} ${result.label}`);
