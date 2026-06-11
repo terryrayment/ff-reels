@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import {
   BRAND_ROSTER_FITS,
   PITCH_COMPANIES,
-  PITCH_SLUGS,
 } from "@/lib/pitch/companies";
 import { loadPitchDirectors, type PitchDirector } from "@/lib/pitch/directors";
 import { BrandSplash } from "./sections/brand-splash";
@@ -34,9 +33,9 @@ interface PageProps {
   params: { slug: string };
 }
 
-export function generateStaticParams() {
-  return PITCH_SLUGS.map((slug) => ({ slug }));
-}
+// Render at request time: static prerendering 30+ pages hammers the Neon
+// pooler with parallel director queries at build time and fails transiently.
+export const dynamic = "force-dynamic";
 
 export function generateMetadata({ params }: PageProps): Metadata {
   const config = PITCH_COMPANIES[params.slug];

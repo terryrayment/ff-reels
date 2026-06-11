@@ -136,6 +136,26 @@ Senior marketing/brand leaders to pair with the founders above. ✅ = Apollo-ver
 
 ---
 
+
+### Batch 3 — Wave 4 New Prospects (61–70)
+
+Funded + hiring + trending sectors, sourced 2026-06-10. ALL emails are pattern guesses ⚠️ — Apollo-verify before send. Pitch pages live at reels.friendsandfamily.tv/<slug>.
+
+| # | Person | Company | Status | Email | Page | Note |
+|---|--------|---------|--------|-------|------|------|
+| 61 | Grant LaFontaine | Whatnot | ⬜ | grant@whatnot.com ⚠️ | /whatnot | $11.5B live shopping, hiring Director of Brand, Marina del Rey |
+| 62 | Doug Bernauer | Radiant | ⬜ | doug@radiantnuclear.com ⚠️ | /radiant | Nuclear microreactors, DOME test summer 2026, El Segundo |
+| 63 | Isaiah Taylor | Valar Atomics | ⬜ | isaiah@valaratomics.com ⚠️ | /valar | $2B nuclear-for-AI, Ward250 power July 4, El Segundo |
+| 64 | John Tenet | CHAOS Industries | ⬜ | john.tenet@chaosinc.com ⚠️ | /chaos | $4.5B defense radar, Brand Designer req open, Hawthorne |
+| 65 | Mitch Lee | Arc Boat | ⬜ | mitch@arcboats.com ⚠️ | /arc | Electric boats→defense, $50M Series C, LA |
+| 66 | Joe Kudla | Vuori | ⬜ | jkudla@vuoriclothing.com ⚠️ | /vuori | $5.5B athleisure, athlete pivot, Carlsbad |
+| 67 | Tarek Mansour | Kalshi | ⬜ | tmansour@kalshi.com ⚠️ | /kalshi | $22B prediction markets, MSG concourse, NYC |
+| 68 | Mikey Shulman | Suno | ⬜ | mikey@suno.com ⚠️ | /suno | $5.4B AI music, Venice LA office, Cambridge MA |
+| 69 | Peter Rahal | David | ⬜ | peter@davidprotein.com ⚠️ | /david | RXBAR founder, $100M first-year pace, NYC |
+| 70 | Alex Bazzell | Unrivaled | ⬜ | bazzell@unrivaled.basketball ⚠️ | /unrivaled | Player-owned women's hoops league, Miami |
+
+---
+
 ## Weekly Send Plan
 
 Pace: ~6 prospects/week over 10 weeks.
@@ -238,6 +258,7 @@ This sales/ directory in the repo is the **working tracker**. Research files are
 
 ## Changelog
 
+- **2026-06-10** — Wave 4: 10 NET-NEW prospects (61-70) discovered via funded+hiring+trending screen, pages live, drafts cued. ALL wave-4 emails are pattern guesses pending Apollo. Research: pitch-research/2026-06-10-wave4-research.md.
 - **2026-06-10** — Wave 3: 10 more SoCal pitch pages (apex, epirus, slingshot, aptera, ntwrk, karat, patrick-ta, harbinger, merit, seed) + drafts. MERIT + Seed founder emails are ⚠️ unverified — verify before send. Katherine Power is Chairperson not CEO; Tim Solms is CEO not founder. Research: pitch-research/2026-06-10-wave3-research.md.
 - **2026-06-10** — Wave 2: built 10 more SoCal pitch pages (mach, castelion, k2-space, varda, fly-by-jing, fishwife, ghia, topicals, cymbiotika, rabbit) with per-brand colors, cued 10 wind-up-format drafts in Gmail. Wave 1 marked Contacted on the board with pitch links. Research: [`pitch-research/2026-06-10-wave2-research.md`](./pitch-research/2026-06-10-wave2-research.md).
 - **2026-06-10** — Built 10 custom founder pitch pages at `reels.friendsandfamily.tv/<slug>` (hadrian, shield-ai, impulse, joby, athletic, olipop, magic-spoon, graza, our-place, tracksmith) on the Versant template via `/pitch/[slug]` + `src/lib/pitch/companies.ts`. Deep research per company in [`pitch-research/`](./pitch-research/). 10 fresh intro emails in [`INTROS.md`](./INTROS.md) under "Custom Pitch Page Intros" — these supersede the v1 intros for those 10 names.

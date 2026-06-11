@@ -92,6 +92,17 @@ export async function middleware(req: NextRequest) {
     "/harbinger": "/pitch/harbinger",
     "/merit": "/pitch/merit",
     "/seed": "/pitch/seed",
+    // Wave 4 (new prospects: funded + hiring + trending)
+    "/whatnot": "/pitch/whatnot",
+    "/radiant": "/pitch/radiant",
+    "/valar": "/pitch/valar",
+    "/chaos": "/pitch/chaos",
+    "/arc": "/pitch/arc",
+    "/vuori": "/pitch/vuori",
+    "/kalshi": "/pitch/kalshi",
+    "/suno": "/pitch/suno",
+    "/david": "/pitch/david",
+    "/unrivaled": "/pitch/unrivaled",
   };
   const vanityTarget = VANITY_PATH_REWRITES[req.nextUrl.pathname];
   if (vanityTarget) {

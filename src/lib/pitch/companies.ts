@@ -1959,6 +1959,626 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       ],
     },
   },
+
+  whatnot: {
+    slug: "whatnot",
+    accent: "#A59200",
+    company: "Whatnot",
+    recipientName: "Grant LaFontaine",
+    recipientFirst: "Grant",
+    recipientEmail: "grant@whatnot.com",
+    metaTitle: "Friends & Family for Whatnot",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Whatnot.",
+    heroFor: "Whatnot",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Whatnot because brand film for a live marketplace can't feel like polished retail advertising. It has to carry the energy of a stream, and that's a specific craft.",
+    ticker:
+      "Founded 2019, Los Angeles · Y Combinator W20 · $225M Series F, Oct 2025 · $11.5B valuation · $6B+ GMV in 2025 · Buyers average 80 min a day · Beauty up 791% YoY · ~900 employees and hiring",
+    studio: {
+      headline: "A production company built for the live shopping era",
+      subline: "Seller stories shot in a day, brand spots that feel like a stream, campaign cutdowns for every channel, the list goes on.",
+    },
+    noticed: {
+      title: "Brand team, forming now.",
+      intro:
+        "We read the Series F coverage and your open roles. Here's what stuck.",
+      cards: [
+        {
+          label: "The Director of Brand req",
+          body: "You posted a Director of Brand and Integrated Marketing role in May, owning multi-channel campaigns with serious budgets across digital, TV, OOH, and creators. That person will need production partners who can keep up from day one. We'd like to be on the bench before they arrive.",
+        },
+        {
+          label: "Way past trading cards",
+          body: "Beauty grew 791 percent year over year, Electronics 444, Women's Fashion 223. The brand now has to speak to people who have never opened a card break, and the work has to stretch with it.",
+        },
+        {
+          label: "Live is the whole product",
+          body: "Your buyers spend 80 minutes a day watching sellers perform. Brand film for Whatnot can't feel like polished retail advertising. It has to carry the energy of a stream, and that's a craft we practice.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You're building the brand layer on a marketplace that already works.",
+      titleAccent: "We make the film side easy.",
+      intro:
+        "You're in Marina del Rey and we can be in a seller's living room or on a stage within the week. Brand campaigns, doc-style seller stories, and fast social cutdowns from the same team.",
+      gives: [
+        ["Brief", "Brand campaigns, seller stories, category launches"],
+        ["Production", "LA-based, fast-turn crews built for real people on camera"],
+        ["Deliverables", "Hero films, TV and OOH cutdowns, vertical social"],
+        ["Audience", "Collectors, resellers, and the new beauty and fashion wave"],
+      ],
+      tags: [
+        "Brand film",
+        "Seller docs",
+        "TV cutdowns",
+        "Vertical social",
+        "Creator collabs",
+        "Category launches",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  radiant: {
+    slug: "radiant",
+    accent: "#03242B",
+    company: "Radiant",
+    recipientName: "Doug Bernauer",
+    recipientFirst: "Doug",
+    recipientEmail: "doug@radiantnuclear.com",
+    metaTitle: "Friends & Family for Radiant",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Radiant.",
+    heroFor: "Radiant",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Radiant because the DOME test this summer is the first fueled test of a new US reactor design in fifty years, and that moment only happens once.",
+    ticker:
+      "Founded 2020 in El Segundo by SpaceX veterans · Kaleidos: 1MW microreactor replacing diesel generators · Fueled test at INL's DOME, summer 2026 · First new US reactor design tested in ~50 years · $165M Series C, then $300M+ led by Draper · R-50 factory on the Oak Ridge Manhattan Project site · Target: 50 reactors a year",
+    studio: {
+      headline: "A production company built for the people putting reactors in shipping containers",
+      subline: "First fueled tests, factory floors at Oak Ridge, recruiting films that have to out-pull SpaceX, the list goes on.",
+    },
+    noticed: {
+      title: "The DOME moment.",
+      intro:
+        "We read the founder blog and the test timeline. Here's what stuck.",
+      cards: [
+        {
+          label: "Radical transparency",
+          body: "Most nuclear startups hide the ball. You publish design details, milestone predictions, and a founder blog that reads like engineering notes. That voice deserves film made the same way: straight, specific, no gloss.",
+        },
+        {
+          label: "Fifty years of waiting",
+          body: "Summer 2026 at INL's DOME facility is the first fueled test of a new US reactor design in roughly fifty years. That's a once-in-a-generation documentary beat, and it only happens once. The cameras should already be planned.",
+        },
+        {
+          label: "A product you can film",
+          body: "Kaleidos fits in a shipping container and R-50 will stamp out fifty a year on a Manhattan Project site. Unlike most energy companies, your product is physical, photogenic, and moving.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You're making nuclear portable.",
+      titleAccent: "We make it visible.",
+      intro:
+        "The next year holds the DOME test, the Oak Ridge buildout, and a hiring push against SpaceX gravity. One documentary-style production system covers all three.",
+      gives: [
+        ["Brief", "Brand and recruiting films around DOME and R-50"],
+        ["Production", "Doc-style shoots at El Segundo, INL, and Oak Ridge"],
+        ["Deliverables", "Hero film, cutdowns, social verticals, stills"],
+        ["Audience", "Engineers, investors, DOD and data center buyers"],
+      ],
+      tags: [
+        "Brand film",
+        "Recruiting film",
+        "Founder story",
+        "Facility doc",
+        "Milestone films",
+        "Social verticals",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  valar: {
+    slug: "valar",
+    accent: "#141414",
+    company: "Valar Atomics",
+    recipientName: "Isaiah Taylor",
+    recipientFirst: "Isaiah",
+    recipientEmail: "isaiah@valaratomics.com",
+    metaTitle: "Friends & Family for Valar Atomics",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Valar Atomics.",
+    heroFor: "Valar Atomics",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Valar because a company that ships to symbolic deadlines needs films cut to those same moments, ready before the milestone, not after.",
+    ticker:
+      "Founded July 4, 2023, El Segundo · First criticality Nov 17, 2025 at Los Alamos · First startup critical under the DOE Reactor Pilot Program · $450M raised at a $2B valuation · Backed by Palmer Luckey and Shyam Sankar · Ward250 targets power operations July 4, 2026 · Reactors named for a Manhattan Project physicist",
+    studio: {
+      headline: "A production company built for the new atomic age",
+      subline: "Crew protocols for DOE sites, founder films shot between criticality tests, launch dates that land on the Fourth of July, the list goes on.",
+    },
+    noticed: {
+      title: "Dates are the brand.",
+      intro:
+        "We listened to the Shawn Ryan episode and read the criticality coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "Founder as broadcaster",
+          body: "Isaiah already carries the story himself: a two-hour podcast sit-down, constant posts from the shop floor. The raw material is there. It deserves cinematography that matches the hardware.",
+        },
+        {
+          label: "July 4, twice",
+          body: "Founded July 4, 2023. Ward250 aims for power on July 4, 2026. A company that ships to symbolic deadlines needs films ready before the milestone, not commissioned after. The next one is weeks away.",
+        },
+        {
+          label: "A family heirloom in steel",
+          body: "The reactors are named Ward, after a great-grandfather who worked on the Manhattan Project. That's a generational story most startups would invent if they could, and it has barely been told on film.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You're building the new atomic age.",
+      titleAccent: "We shoot it like it matters.",
+      intro:
+        "We make films for companies whose product is the story: founders, hardware, and milestones too big for a phone camera. Valar's next twelve months are the most filmable in nuclear.",
+      gives: [
+        ["Brief", "Founder story and milestone films around Ward250 first power"],
+        ["Production", "Doc-style crews for reactor floors and DOE sites"],
+        ["Deliverables", "Hero film, social cutdowns, recruiting and investor edits"],
+        ["Audience", "Hyperscalers, DOE partners, engineers, the energy-curious public"],
+      ],
+      tags: [
+        "Founder film",
+        "Milestone launch",
+        "Facility doc",
+        "Recruiting film",
+        "Investor edit",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  chaos: {
+    slug: "chaos",
+    accent: "#8F052F",
+    company: "CHAOS Industries",
+    recipientName: "John Tenet",
+    recipientFirst: "John",
+    recipientEmail: "john.tenet@chaosinc.com",
+    metaTitle: "Friends & Family for CHAOS Industries",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for CHAOS Industries.",
+    heroFor: "CHAOS",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with CHAOS because a Series D at $4.5B means the world starts watching, and the footage should match the engineering.",
+    ticker:
+      "Founded 2022 · $510M Series D led by Valor Equity Partners · $4.5B valuation · $1B+ raised · HQ in Hawthorne, CA · Tracks threats up to 250 km · George J. Tenet, Executive Chairman · On the U.S. Army acquisition marketplace",
+    studio: {
+      headline: "A production company built for redefining modern defense",
+      subline: "Secure facilities, hardware that can't leave the building, ITAR-aware crews, the list goes on.",
+    },
+    noticed: {
+      title: "Brand Designer, open now.",
+      intro:
+        "We read the Series D coverage and your open roles. Here's what stuck.",
+      cards: [
+        {
+          label: "The hire is a signal",
+          body: "You're hiring a Brand Designer in Hawthorne right now. That role will need a film and motion partner from day one, and we'd rather be in the room before the brand system locks than retrofit after.",
+        },
+        {
+          label: "Tan on black",
+          body: "Your site runs warm tan and deep crimson over near-black, closer to editorial than mil-spec. That restraint is rare in defense tech, and it translates beautifully to cinematography if someone protects it on set.",
+        },
+        {
+          label: "Hawthorne neighbors",
+          body: "Your facility sits in the same hardware corridor we shoot in constantly. We know how to film real machines in real facilities without slowing the floor down.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You build the sensors.",
+      titleAccent: "We make people feel what they do.",
+      intro:
+        "We build films for companies whose product is hard to see and harder to fake. One anthem plus a modular library covers recruiting, customers, and the press cycle the Series D just started.",
+      gives: [
+        ["Brief", "Anthem film plus recruiting and product cutdowns"],
+        ["Production", "Facility-safe crews, real hardware, no stock"],
+        ["Deliverables", "Hero film, social verticals, careers content"],
+        ["Audience", "DoD customers, engineers you're hiring, press"],
+      ],
+      tags: [
+        "Anthem film",
+        "Recruiting film",
+        "Facility shoot",
+        "Product demo",
+        "Founder story",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  arc: {
+    slug: "arc",
+    accent: "#031E25",
+    company: "Arc Boat Company",
+    recipientName: "Mitch Lee",
+    recipientFirst: "Mitch",
+    recipientEmail: "mitch@arcboats.com",
+    metaTitle: "Friends & Family for Arc",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Arc Boat Company.",
+    heroFor: "Arc",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Arc because 570 horsepower with no engine roar changes what a boat film sounds like, and we want to be the ones who use the silence.",
+    ticker:
+      "Founded 2021 by ex-Boeing engineers · $50M Series C, March 2026 · Backed by Eclipse, a16z, Menlo Ventures · Arc Sport: 570 hp, 226 kWh · $160M Curtin Maritime tug deal · Built in Los Angeles · Expanding into defense propulsion",
+    studio: {
+      headline: "A production company built for the electric waterfront",
+      subline: "On-water camera boats, factory floors in LA, launch films for hardware that did not exist last year, the list goes on.",
+    },
+    noticed: {
+      title: "The quiet is the product.",
+      intro:
+        "We read the founders' story and the Series C coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "Boeing to boat ramp",
+          body: "You and Ryan met in mechanical engineering at Northwestern, then prototyped startups in your downtime at Boeing. That origin reads on camera better than any brand manifesto, and it hasn't been filmed properly.",
+        },
+        {
+          label: "Tesla playbook, on water",
+          body: "Premium first with the Arc Sport, then tugs with Curtin Maritime, now propulsion for defense. Each chapter needs its own film language, and the through line is the drivetrain.",
+        },
+        {
+          label: "Use the silence",
+          body: "570 horsepower with no engine roar changes what a boat film sounds like. Most marine content hides the noise. Yours can use the quiet, and that's a sound design idea as much as a picture idea.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You build boats people have to see moving.",
+      titleAccent: "We make the films that move them.",
+      intro:
+        "We're a short drive from your floor and we shoot hardware, founders, and water, sometimes all three at once. Launch films across consumer, commercial, and defense from one production system.",
+      gives: [
+        ["Brief", "Launch and brand films across all three lines"],
+        ["Production", "LA crews, on-water units, factory and dockside shoots"],
+        ["Deliverables", "Hero film, cutdowns, social verticals, stills"],
+        ["Audience", "Buyers, port operators, defense partners, recruits"],
+      ],
+      tags: [
+        "Hero film",
+        "On-water unit",
+        "Factory doc",
+        "Founder story",
+        "Product launch",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  vuori: {
+    slug: "vuori",
+    accent: "#37526B",
+    company: "Vuori",
+    recipientName: "Joe Kudla",
+    recipientFirst: "Joe",
+    recipientEmail: "jkudla@vuoriclothing.com",
+    metaTitle: "Friends & Family for Vuori",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Vuori.",
+    heroFor: "Vuori",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Vuori because we grew up shooting the same coastline you built the brand on, and the performance pivot needs athlete-credible film, not lifestyle b-roll.",
+    ticker:
+      "Founded 2015 in an Encinitas garage · $825M raise at $5.5B valuation · 100+ stores globally · Seoul and Beijing opened 2025 · Jack Draper signature line debuted at the US Open · Kaia Gerber fronts SS26 women's campaign · Ships to 18 countries",
+    studio: {
+      headline: "A production company built for coastal California brands going global",
+      subline: "Athlete shoots wedged between training blocks, retail openings on three continents, product drops every season, the list goes on.",
+    },
+    noticed: {
+      title: "The performance pivot.",
+      intro:
+        "We've watched the athlete roster grow and the campaigns ship. Here's what stuck.",
+      cards: [
+        {
+          label: "Athletes change the bar",
+          body: "Jared Goff, Jack Draper, Kaia Gerber. A roster like that needs performance-credible film, not lifestyle b-roll, and athlete schedules make production logistics the whole game. That's the part we're unusually good at.",
+        },
+        {
+          label: "Global, still Carlsbad",
+          body: "Seoul, Beijing, London, Shanghai inside a year. Every market needs campaign assets that travel without diluting the coastal DNA the brand was built on. That's a shooting discipline, not a localization step.",
+        },
+        {
+          label: "The cadence is climbing",
+          body: "Draper in February, Kaia in April. That's a seasonal film pipeline now, and it rewards a production partner on a retainer rhythm instead of one-off bids.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "We grew up on the same coastline.",
+      titleAccent: "Let's shoot like it.",
+      intro:
+        "We're an LA production company with directors who live in the world Vuori sells. We build campaign film systems for brands scaling fast without losing the thread.",
+      gives: [
+        ["Brief", "Performance campaigns with coastal soul"],
+        ["Production", "SoCal-native crews, athlete-schedule-proof logistics"],
+        ["Deliverables", "Hero film plus social cutdowns per market"],
+        ["Audience", "Active 25 to 45, US plus new Europe and Asia retail"],
+      ],
+      tags: [
+        "Athlete docs",
+        "Product film",
+        "Retail launch",
+        "Campaign spots",
+        "Social cutdowns",
+        "Global toolkits",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  kalshi: {
+    slug: "kalshi",
+    accent: "#030712",
+    company: "Kalshi",
+    recipientName: "Tarek Mansour",
+    recipientFirst: "Tarek",
+    recipientEmail: "tmansour@kalshi.com",
+    metaTitle: "Friends & Family for Kalshi",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Kalshi.",
+    heroFor: "Kalshi",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Kalshi because you sued your regulator, won, and now there's a concourse at Madison Square Garden with your name on it. Most brands have to invent a story. Yours is sitting there.",
+    ticker:
+      "$1B Series F at $22B valuation, March 2026 · Annualized volume tripled to $178B · 90%+ of US prediction market activity · $871M traded on Super Bowl Sunday · Official Prediction Market Partner of Madison Square Garden · First CFTC-regulated event exchange · Sued the CFTC and won",
+    studio: {
+      headline: "A production company built for the speed of the market",
+      subline: "Launch films that ship before the contract settles, courtside activations at the Garden, creator spots that don't feel like ads, the list goes on.",
+    },
+    noticed: {
+      title: "Staffing a brand machine.",
+      intro:
+        "We read the Series F coverage and your open roles. Here's what stuck.",
+      cards: [
+        {
+          label: "The hires say it first",
+          body: "Creator Partnerships and Marketing Activations roles are open in New York right now. That's not a media buy, that's building an in-house engine for culture, and the engine needs a production partner that moves at its pace.",
+        },
+        {
+          label: "The Garden",
+          body: "A concourse at Madison Square Garden is becoming the Kalshi Concourse. Physical brand moments at that scale deserve film crews who shoot live environments well, and that's where we live with ESPN.",
+        },
+        {
+          label: "Courtroom to CNN",
+          body: "You sued your regulator, won, and now you're piped into Robinhood, CNN, and CNBC. The story is cinematic on its own. It just hasn't been told at the craft level the valuation deserves.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You're moving faster than any brand in finance.",
+      titleAccent: "We shoot at that speed.",
+      intro:
+        "Kalshi is at the biggest inflection in fintech and the work should look like it. Brand films, creator spots, and activation coverage for a category you invented.",
+      gives: [
+        ["Brief", "Brand films, creator spots, activation coverage"],
+        ["Production", "Director-led, fast turnarounds, live environments"],
+        ["Deliverables", "Hero film, cutdowns, social verticals, event capture"],
+        ["Audience", "Retail traders, institutions, sports fans, the press"],
+      ],
+      tags: [
+        "Brand film",
+        "Creator content",
+        "Sports activations",
+        "Event capture",
+        "Broadcast spots",
+        "Social verticals",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  suno: {
+    slug: "suno",
+    accent: "#101012",
+    company: "Suno",
+    recipientName: "Mikey Shulman",
+    recipientFirst: "Mikey",
+    recipientEmail: "mikey@suno.com",
+    metaTitle: "Friends & Family for Suno",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Suno.",
+    heroFor: "Suno",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Suno because the legitimacy chapter is a filmmaking problem: settled with Warner, backed by Timbaland, and $400M to spend becoming a music company instead of a tech demo.",
+    ticker:
+      "Founded 2022 in Cambridge by four Kensho alumni · $400M Series D at $5.4B led by Bond Capital · ~$300M ARR, 2M+ paying subscribers · Warner settlement and licensing partnership · Acquired Songkick · Timbaland on board as strategic advisor · Offices in Harvard Square, Chelsea NYC, and Venice LA",
+    studio: {
+      headline: "A production company built for the soundtrack era",
+      subline: "Launch films, artist partnership spots, brand campaigns that have to win over skeptical musicians, the list goes on.",
+    },
+    noticed: {
+      title: "Neighbors in Venice.",
+      intro:
+        "We read the Series D coverage and the Songkick news. Here's what stuck.",
+      cards: [
+        {
+          label: "Rooms matter to you",
+          body: "Three offices deep into Cambridge, Chelsea, and Venice, you clearly believe in being in the room. Your Venice office is around the corner from our world, and we like companies that show up in person.",
+        },
+        {
+          label: "Timbaland said yes",
+          body: "Getting a producer of that stature to publicly back an AI music company, mid-lawsuit, says the product converts skeptics. The next wave of that story is told on film, not in a press release.",
+        },
+        {
+          label: "Songkick is a sleeper",
+          body: "Acquiring a live music discovery brand while everyone debates training data is a quiet tell. You're building toward culture, not just generation, and live music is the most filmable thing you own.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You changed who gets to make music.",
+      titleAccent: "Now show the world what that looks like.",
+      intro:
+        "Anthem and product films that make AI music feel human, artist-story docs that win over skeptics, and a production partner with a foot in your Venice neighborhood.",
+      gives: [
+        ["Brief", "Anthem and product films that make AI music feel human"],
+        ["Production", "Director-led shoots from Venice to Cambridge"],
+        ["Deliverables", "Hero film, cutdowns, social verticals, artist docs"],
+        ["Audience", "Musicians, creators, and 100M+ people already making songs"],
+      ],
+      tags: [
+        "Brand anthem",
+        "Artist docs",
+        "Product launch",
+        "Founder story",
+        "Social cutdowns",
+        "Campaign craft",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  david: {
+    slug: "david",
+    accent: "#B58745",
+    company: "David",
+    recipientName: "Peter Rahal",
+    recipientFirst: "Peter",
+    recipientEmail: "peter@davidprotein.com",
+    metaTitle: "Friends & Family for David",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for David.",
+    heroFor: "David",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with David because you followed a protein bar with canned cod, which is a brand confident enough to be strange, and film made for you should take the same swings.",
+    ticker:
+      "28g protein, 150 calories, 0g sugar · $75M Series A led by Greenoaks, May 2025 · $725M post-money valuation · $100M+ first-year revenue pace · Acquired Epogee, maker of EPG · 3,000+ retail doors · Founder Peter Rahal sold RXBAR to Kellogg for $600M",
+    studio: {
+      headline: "A production company built for the protein economy",
+      subline: "Founder-led approvals, retail launch windows, product macro that has to look as clean as the label, the list goes on.",
+    },
+    noticed: {
+      title: "Black, white, serif.",
+      intro:
+        "We did the homework on the brand and the Epogee play. Here's what stuck.",
+      cards: [
+        {
+          label: "The restraint is the brand",
+          body: "Stark black and white, a serif, and gold as the only color. That's a film language too. Most food brands can't carry that restraint. Yours demands it, and we'd protect it on set.",
+        },
+        {
+          label: "Canned cod, seriously",
+          body: "You followed a protein bar with wild-caught cod and protein pints. That's a brand confident enough to be strange, and the film should take the same swings instead of sanding them off.",
+        },
+        {
+          label: "Science is the casting",
+          body: "Huberman and Attia aren't endorsements, they're the architecture. Built on science, backed by experts needs production that treats data and appetite in the same frame.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You moved fast without breaking the brand.",
+      titleAccent: "We shoot the same way.",
+      intro:
+        "David went from launch to a $100M pace in a year and the work stayed sharp, minimal, confident. We build commercial film for brands at exactly this inflection, founder-direct, zero committee drag.",
+      gives: [
+        ["Brief", "Founder-direct, fast cycles, zero committee drag"],
+        ["Production", "Director-led tabletop, talent, docu founder film"],
+        ["Deliverables", "Broadcast master plus retail, social, DTC cutdowns"],
+        ["Audience", "Protein-literate consumers, retail buyers, the Huberman crowd"],
+      ],
+      tags: [
+        "Tabletop",
+        "Product macro",
+        "Founder story",
+        "Retail launch",
+        "Athlete talent",
+        "Anthem spot",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  unrivaled: {
+    slug: "unrivaled",
+    accent: "#591A7E",
+    company: "Unrivaled",
+    recipientName: "Alex Bazzell",
+    recipientFirst: "Alex",
+    recipientEmail: "bazzell@unrivaled.basketball",
+    metaTitle: "Friends & Family for Unrivaled",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Unrivaled.",
+    heroFor: "Unrivaled",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Unrivaled because your whole season lives in eight weeks, and that favors crews who move at sports speed without looking like sports TV.",
+    ticker:
+      "$340M valuation Series B, Sept 2025 · Founded 2023 by Collier and Stewart · ~$220K average player salary · Players hold ~15% equity · 8 clubs in 2026 · Four nights a week on TNT, truTV, HBO Max · Rose BC, first champions",
+    studio: {
+      headline: "A production company built for the league players actually own",
+      subline: "Eight clubs, a January-to-March window, four broadcast nights a week, athlete stories that have to land between games, the list goes on.",
+    },
+    noticed: {
+      title: "The window is brutal.",
+      intro:
+        "We watched season two and read the Series B coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "Eight weeks, all of it",
+          body: "The whole season lives January to March. Every piece of content has to be shot, cut, and out while the league is live. That favors crews who move at sports speed without looking like sports TV, and the off-season is when that system gets built.",
+        },
+        {
+          label: "Players are the product",
+          body: "Your athletes are owners, not talent for hire, and the best Unrivaled content treats them that way. Collier and Stewart built this on athlete voice. The film work should sound like it too.",
+        },
+        {
+          label: "TNT raised the bar",
+          body: "Four nights a week on TNT, truTV, and HBO Max means your brand sits next to network-grade production every game night. The off-court content has to hold its own on that shelf.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You built a league in two years.",
+      titleAccent: "We shoot like the clock matters.",
+      intro:
+        "The smartest time to build next season's film system is now, in the off-season: player-led brand films, sponsor content, and hype reels banked before the eight-week sprint starts.",
+      gives: [
+        ["Brief", "Player-led brand films and sponsor content for next season"],
+        ["Production", "LA and Miami capable crews, fast-turn editorial"],
+        ["Deliverables", "Broadcast spots, social cutdowns, partner content, hype films"],
+        ["Audience", "Young, female-skewing, basketball-native fans"],
+      ],
+      tags: [
+        "Brand films",
+        "Athlete docs",
+        "Sponsor content",
+        "Game-night promos",
+        "Hype reels",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
 };
 
 export const PITCH_SLUGS = Object.keys(PITCH_COMPANIES);
