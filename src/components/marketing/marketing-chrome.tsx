@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { MarketingFooter } from "@/components/marketing/footer";
 import { MarketingNav } from "@/components/marketing/nav";
+import { MartiniShot } from "@/components/marketing/martini-shot";
 
 function isHomeSplash(pathname: string | null) {
   return pathname === "/site";
@@ -37,6 +38,7 @@ export function MarketingChrome({ children }: { children: React.ReactNode }) {
       <MarketingNav />
       <main className={splash ? "flex-1 min-h-0" : "flex-1"}>{children}</main>
       {!splash && <MarketingFooter />}
+      <MartiniShot />
     </div>
   );
 }

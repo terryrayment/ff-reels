@@ -281,6 +281,10 @@ Marketing routes (`/site`, `/site/work`, `/site/directors`, `/site/directors/[sl
 
 Partner imprint routes (`/site/youth`, `/site/colossal`) are `noindex, nofollow` via page-level `robots` metadata (June 11, 2026). They had been silently inheriting the marketing layout's `index, follow` default — excluded from the sitemap but indexable if crawled — which violated the documented policy. Both pages also emit `preconnect`/`dns-prefetch` hints for their embedded partner origins (`theyouth.com.br`, `colossal.film`) to shave connection setup off the iframe load.
 
+### Easter eggs
+
+Type `MARTINI` anywhere on `/site/*` (June 11, 2026): the Martini Shot — gravity drops every visible element into a pile, dust puffs on impact, slate card reads "THAT'S A WRAP. CALL TIME TOMORROW — 6:00 AM." Escape or refresh strikes the set. Implementation is overlay clones only (`martini-shot.tsx`); the real DOM is hidden, never moved, and the egg refuses to arm mid-morph — transition invariants untouched. Respects `prefers-reduced-motion` (card only, no physics).
+
 ### Marketing invariants (do not break casually)
 
 1. Viewer deep links use portfolio `?play=` ids from canonical source — not bare director landing URLs.
