@@ -255,7 +255,7 @@ Run all checks from repo root:
 npm run lint
 npx tsc --noEmit
 npm run build
-npm run seo:audit -- --url=https://www.friendsandfamily.tv
+npm run seo:audit -- --url=https://reels.friendsandfamily.tv
 ```
 
 If any check is skipped, call it out in PR notes.

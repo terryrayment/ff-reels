@@ -219,7 +219,8 @@ This runs the industry scraper at **8:00 AM UTC (3:00 AM EST)** daily.
 - [ ] Verify gallery/video/project download endpoints work with valid screening token and deny invalid token
 - [ ] Verify `https://reels.friendsandfamily.tv/robots.txt` disallows private/auth/tokenized routes
 - [ ] Verify `https://reels.friendsandfamily.tv/sitemap.xml` only lists approved indexable public routes
-- [ ] Run `npm run seo:audit -- --url=https://www.friendsandfamily.tv`
+- [ ] Verify `/site/youth` and `/site/colossal` serve `<meta name="robots" content="noindex, nofollow">` (imprint pages stay out of the index)
+- [ ] Run `npm run seo:audit -- --url=https://reels.friendsandfamily.tv`
 
 ---
 
