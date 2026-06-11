@@ -149,6 +149,7 @@ function PartnerSitePortal({
 }: PartnerSitePortalProps) {
   const isColossal = partnerId === "colossal";
   const isPage = mode === "page";
+  const partnerOrigin = new URL(partner.href).origin;
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeTimedOut, setIframeTimedOut] = useState(false);
 
@@ -173,6 +174,8 @@ function PartnerSitePortal({
   if (isPage) {
     return (
       <div className="ff-partner-site-embed">
+        <link rel="preconnect" href={partnerOrigin} />
+        <link rel="dns-prefetch" href={partnerOrigin} />
         <span id={titleId} className="sr-only">
           {partner.label}
         </span>
@@ -202,6 +205,8 @@ function PartnerSitePortal({
       role={isPage ? undefined : "dialog"}
       aria-labelledby={titleId}
     >
+      <link rel="preconnect" href={partnerOrigin} />
+      <link rel="dns-prefetch" href={partnerOrigin} />
       <span id={titleId} className="sr-only">
         {partner.label}
       </span>

@@ -279,6 +279,8 @@ Public marketing pages now live in this repo under `(marketing)/site/*`, served 
 
 Marketing routes (`/site`, `/site/work`, `/site/directors`, `/site/directors/[slug]`, `/site/about`, `/site/contact`, plus the LA landing page) are allowlisted in `src/app/robots.ts` and `src/app/sitemap.ts`. Preview routes under `/site/home/preview*` and `/site/preview/*` stay `noindex`. Private app routes remain disallowed.
 
+Partner imprint routes (`/site/youth`, `/site/colossal`) are `noindex, nofollow` via page-level `robots` metadata (June 11, 2026). They had been silently inheriting the marketing layout's `index, follow` default — excluded from the sitemap but indexable if crawled — which violated the documented policy. Both pages also emit `preconnect`/`dns-prefetch` hints for their embedded partner origins (`theyouth.com.br`, `colossal.film`) to shave connection setup off the iframe load.
+
 ### Marketing invariants (do not break casually)
 
 1. Viewer deep links use portfolio `?play=` ids from canonical source — not bare director landing URLs.

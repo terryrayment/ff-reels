@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "THE YOUTH COMPANY",
   description:
     "THE YOUTH COMPANY extends Friends & Family through São Paulo directors, casting, production, and culture work across the Americas.",
+  robots: { index: false, follow: false },
 };
 
 export default function YouthPage() {
