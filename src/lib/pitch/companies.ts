@@ -2579,6 +2579,1246 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       ],
     },
   },
+
+  jetzero: {
+    slug: "jetzero",
+    accent: "#01011F",
+    company: "JetZero",
+    recipientName: "Tom O'Leary",
+    recipientFirst: "Tom",
+    recipientEmail: "tom@jetzero.aero",
+    metaTitle: "Friends & Family for JetZero",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for JetZero.",
+    heroFor: "JetZero",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with JetZero because the next two years are one long launch moment, and some companies need ads while yours needs witnesses.",
+    ticker:
+      "Z4 seats 250 passengers · Up to 50% less fuel per passenger mile · $175M Series B led by B Capital, Jan 2026 · $1B+ total funding · $235M U.S. Air Force demonstrator contract · First flight targeted 2027 · United path to 100 aircraft plus 100 options · HQ on Donald Douglas Drive, Long Beach",
+    studio: {
+      headline: "A production company built for the next shape in the sky",
+      subline: "Demonstrator rollouts in Long Beach hangars, flight-test mornings where the light will not wait, recruiting films for a factory that does not exist yet, the list goes on.",
+    },
+    noticed: {
+      title: "Everything gates on 2027.",
+      intro:
+        "We read the Series B coverage and walked your site. Here's what stuck.",
+      cards: [
+        {
+          label: "Donald Douglas Drive",
+          body: "Your HQ sits on the old Douglas Aircraft ground in Long Beach. A new airframe shape being built where the DC series was born is a story asset most startups would invent if they could, and it's just your address.",
+        },
+        {
+          label: "One date, maximum stakes",
+          body: "The Series B, the $235M Air Force contract, and United's conditional hundred-plus-hundred order all converge on one event: first flight of the demonstrator. The footage between now and then becomes the brand archive forever.",
+        },
+        {
+          label: "One color, one tagline",
+          body: "The site runs a single orange against black and navy under the line The future takes shape. The brand already behaves like a film title sequence, and the film should keep that discipline.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built for",
+      titleAccent: "first flight.",
+      intro:
+        "We've made launch-moment work for Apple, Ford, Nike, ESPN, Callaway, and Netflix. JetZero's road to 2027 is one long launch moment, and it deserves an embedded documentary system, not one-off shoots.",
+      gives: [
+        ["Brief", "Document the demonstrator's road to 2027"],
+        ["Production", "Embedded doc crews, hangar and flight-line ready, Long Beach local"],
+        ["Deliverables", "Hero film, investor and airline cutdowns, recruiting verticals"],
+        ["Audience", "United, USAF, future Greensboro hires, the flying public"],
+      ],
+      tags: [
+        "Milestone doc",
+        "First flight",
+        "Founder story",
+        "Recruiting film",
+        "Investor cuts",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  coco: {
+    slug: "coco",
+    accent: "#EC27C3",
+    company: "Coco Robotics",
+    recipientName: "Zach Rash",
+    recipientFirst: "Zach",
+    recipientEmail: "zach.rash@cocodelivery.com",
+    metaTitle: "Friends & Family for Coco Robotics",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Coco Robotics.",
+    heroFor: "Coco",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Coco because your densest market is the exact sidewalks we already shoot on, and a thousand friendly robots deserve film that treats them as characters, not gadgets.",
+    ticker:
+      "$80M Series B, June 2025 · Backed by Sam and Max Altman · ~1,000 bots across LA, Miami, Dallas, Helsinki · 500,000+ deliveries since 2020 · 1,000,000 sidewalk miles · 3,000 merchant partners · OpenAI data partnership · UCLA physical AI lab",
+    studio: {
+      headline: "A production company built for the autonomous sidewalk",
+      subline: "City launch films, merchant spotlights, bot's-eye footage, recruiting spots, the list goes on.",
+    },
+    noticed: {
+      title: "The bot is the billboard.",
+      intro:
+        "We read the Series B coverage and the UCLA lab news. Here's what stuck.",
+      cards: [
+        {
+          label: "A street-level media surface",
+          body: "You already sell advertising on robot exteriors, which means the fleet is a rolling media network. Film extends that surface: the bots can carry a story through a city the way no billboard can.",
+        },
+        {
+          label: "The story moved upstream",
+          body: "The OpenAI data partnership and the Bolei Zhou physical-AI lab make Coco an AI infrastructure company that happens to deliver burritos. That's a much bigger film than food delivery, and nobody has made it yet.",
+        },
+        {
+          label: "Same streets",
+          body: "You're headquartered in Venice and your densest market is LA. We shoot these sidewalks constantly, and a city launch film system built here travels to Miami, Dallas, and Helsinki with the fleet.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "A thousand bots on the street.",
+      titleAccent: "One film system to carry them.",
+      intro:
+        "Coco's next chapter is physical AI at street level, and that needs film with real craft behind it: hardware that reads as a character, merchants as people, cities as places.",
+      gives: [
+        ["Brief", "City launch films, merchant stories, the physical-AI chapter"],
+        ["Production", "LA-native crews, bot POV rigs, fast rollout timelines"],
+        ["Deliverables", "Hero film, launch cutdowns, social verticals"],
+        ["Audience", "Merchants, city partners, recruits, the Altman-curious press"],
+      ],
+      tags: [
+        "City launch films",
+        "Bot POV",
+        "Merchant stories",
+        "Founder profile",
+        "Recruiting film",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  alo: {
+    slug: "alo",
+    accent: "#242424",
+    company: "Alo",
+    recipientName: "Danny Harris",
+    recipientFirst: "Danny",
+    recipientEmail: "danny.harris@aloyoga.com",
+    metaTitle: "Friends & Family for Alo",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Alo.",
+    heroFor: "Alo",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Alo because your in-house engine owns the daily, and what we make is the layer above it: long-form film and documentary, same standard, different altitude.",
+    ticker:
+      "Founded Los Angeles 2007 · Alo stands for air, land, ocean · 50/50 founder owned, zero outside capital · $10B valuation talks, all offers declined · 169 stores worldwide · Champs-Élysées flagship opens 2026 · Six-story Seoul wellness flagship",
+    studio: {
+      headline: "A production company built for air, land, and ocean",
+      subline: "Campaign films, flagship opening films, founder documentaries, retail cinema for Paris and Seoul, the list goes on.",
+    },
+    noticed: {
+      title: "Still 50/50.",
+      intro:
+        "We did the homework on the company and the expansion. Here's what stuck, written as peers, not as a rescue pitch.",
+      cards: [
+        {
+          label: "You said no to everyone",
+          body: "Two childhood friends ran a $10B process, declined every offer, and kept every share. Decisions move at founder speed. We're founder-run too, and built to match that cadence.",
+        },
+        {
+          label: "The engine is not the gap",
+          body: "Your in-house creative ships daily and the campaign muscle is real. The layer above the daily, long-form film and documentary, is a different discipline. It's the only one we sell.",
+        },
+        {
+          label: "Openings as events",
+          body: "A former Zara on the Champs-Élysées. Six stories in Seoul with a rooftop retreat. Each opening is a film-sized story, not a content beat, and the footage should outlive the ribbon cutting.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Where we sit:",
+      titleAccent: "above the feed.",
+      intro:
+        "Your team owns the daily. We make what sits above it, and we hand back open masters and stems so your in-house engine can cut it a hundred ways.",
+      gives: [
+        ["Brief", "Brand films, founder documentary, flagship opening films"],
+        ["Production", "Director-led, founder-speed approvals, LA-based"],
+        ["Deliverables", "Cinema masters plus stems for your in-house engine"],
+        ["Audience", "Global retail customers from Paris to Seoul"],
+      ],
+      tags: [
+        "Brand film",
+        "Founder documentary",
+        "Flagship openings",
+        "Campaign craft",
+        "Open masters",
+        "Retail cinema",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  parallel: {
+    slug: "parallel",
+    accent: "#151515",
+    company: "Parallel Systems",
+    recipientName: "Matt Soule",
+    recipientFirst: "Matt",
+    recipientEmail: "matt@moveparallel.com",
+    metaTitle: "Friends & Family for Parallel Systems",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Parallel Systems.",
+    heroFor: "Parallel",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Parallel because driverless electric railcars moving real containers through Georgia pine country is pure cinema, and nobody has filmed it yet.",
+    ticker:
+      "FRA approval April 2025 · $38M Series B led by Anthos Capital · ~$100M raised · 160 miles of Georgia rail with Genesee and Wyoming · Port of Savannah to inland distribution · 300+ vehicle backlog · Founded 2020 by SpaceX veterans · Commercial launch 2026",
+    studio: {
+      headline: "A production company built for the future of freight",
+      subline: "Pilot launch films, vehicle reveals, port-to-railyard documentary footage, recruiting spots, the list goes on.",
+    },
+    noticed: {
+      title: "The pilot is live.",
+      intro:
+        "We read the FRA approval news and the Series B coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "A working route",
+          body: "Your first commercial pilot runs 160 miles of Genesee and Wyoming track out of the Port of Savannah. A real route with real containers is the strongest film asset a freight company can have, and it's running right now.",
+        },
+        {
+          label: "One red on black",
+          body: "moveparallel.com is a dark theme with a single coral accent and the hardware carrying all the imagery. Film for this brand should live inside that same restraint instead of fighting it.",
+        },
+        {
+          label: "Milestone cadence",
+          body: "You communicate in milestones: FRA approval, Series B, a 300-vehicle backlog, 2026 launch. Each one deserves footage ready the day it lands, which means a standing film system, not scrambled shoots.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "A studio fluent in",
+      titleAccent: "hardware that moves.",
+      intro:
+        "We build films around engineering milestones, not ad concepts, and your railcars are twenty minutes from our directors. The Georgia pilot should be shot like the milestone it is.",
+      gives: [
+        ["Brief", "Pilot launch film plus a repeatable milestone format"],
+        ["Production", "Port and railyard crews, LA Arts District to Savannah"],
+        ["Deliverables", "Launch film, milestone cuts, recruiting and brand content"],
+        ["Audience", "Railroads, shippers, regulators, engineers you're hiring"],
+      ],
+      tags: [
+        "Launch film",
+        "Milestone system",
+        "Founder story",
+        "Recruiting film",
+        "Port and rail",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "reflect-orbital": {
+    slug: "reflect-orbital",
+    accent: "#F44200",
+    company: "Reflect Orbital",
+    recipientName: "Ben Nowack",
+    recipientFirst: "Ben",
+    recipientEmail: "ben@reflectorbital.com",
+    metaTitle: "Friends & Family for Reflect Orbital",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Reflect Orbital.",
+    heroFor: "Reflect Orbital",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Reflect because film already raised your rounds and filled your waitlist, and the World Tour is ten one-take live events that each need a crew in place before the light arrives.",
+    ticker:
+      "$20M Series A led by Lux Capital, May 2025 · Sequoia's first space investment since SpaceX · 260,000+ applications from 157 countries · EARENDIL-1 targets mid-2026 launch · 18m x 18m mylar mirror, 16 kg · 10-location World Tour · HQ in Hawthorne, CA",
+    studio: {
+      headline: "A production company built for sunlight after dark",
+      subline: "Launch films, hardware verité, mission countdowns, World Tour coverage, the list goes on.",
+    },
+    noticed: {
+      title: "The film already converts.",
+      intro:
+        "We watched the demo video like two million other people. Here's what stuck.",
+      cards: [
+        {
+          label: "Video is your channel",
+          body: "Your demo pulled two million views and 182,000 sunlight applications, and Sequoia led the seed after their partner watched it on the way to a Starship test. Film is this company's proven acquisition channel. We make film.",
+        },
+        {
+          label: "Skeptics watch every frame",
+          body: "The early demo took criticism and astronomers contest the constellation publicly. The answer to skeptics is real hardware on camera, shot straight, with nothing to walk back. That's the only register we work in.",
+        },
+        {
+          label: "The World Tour is a shoot schedule",
+          body: "EARENDIL-1 lights ten locations, each pass minutes long at near full-moon brightness. Ten one-take live events around the world, each needing a crew in place first. That's a production plan, and it should exist before launch.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built for",
+      titleAccent: "first light.",
+      intro:
+        "We're minutes from Hawthorne and built for hardware, founders, and one-take live moments. The mission window won't wait for a second take, so the planning is the craft.",
+      gives: [
+        ["Brief", "Launch film plus World Tour capture plan"],
+        ["Production", "Night-capable crews and glass that holds an image at 0.1 lux"],
+        ["Deliverables", "Mission film, live coverage, social cutdowns, stills"],
+        ["Audience", "Customers, skeptics, the 260,000 who already applied"],
+      ],
+      tags: [
+        "Launch films",
+        "Hardware verité",
+        "Night capture",
+        "Live coverage",
+        "Founder docs",
+        "Mission countdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  firestorm: {
+    slug: "firestorm",
+    accent: "#050505",
+    company: "Firestorm Labs",
+    recipientName: "Dan Magy",
+    recipientFirst: "Dan",
+    recipientEmail: "dan@launchfirestorm.com",
+    metaTitle: "Friends & Family for Firestorm Labs",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Firestorm Labs.",
+    heroFor: "Firestorm",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Firestorm because the factory is the story: a container that prints a drone system in under 24 hours is the most filmable idea in defense manufacturing.",
+    ticker:
+      "Founded 2022 in San Diego · $47M Series A led by NEA, July 2025 · $82M Series B, April 2026 · $153M total raised · USAF IDIQ worth up to $100M · 60,000 sq ft Miramar HQ · xCell prints a drone system in under 24 hours · Backed by Lockheed Martin Ventures",
+    studio: {
+      headline: "A production company built for expeditionary manufacturing",
+      subline: "Anthem films, capability demos, contract-win announcements, recruiting stories, the list goes on.",
+    },
+    noticed: {
+      title: "The factory is the story.",
+      intro:
+        "We read the Series A and B coverage and your site. Here's what stuck.",
+      cards: [
+        {
+          label: "xCell leads the coverage",
+          body: "Press about the raises and the Air Force deal leads with the factory in a box before the airframes. The process is the headline, and a process is something a camera can follow start to finish in one day.",
+        },
+        {
+          label: "Four imperatives",
+          body: "Print. Build. Fly. Dominate. Your copy favors short commands over spec sheets, and one near-pure red on black backs it up. Film for Firestorm should cut at that same tempo.",
+        },
+        {
+          label: "Third time around",
+          body: "Dan sold Citadel Defense and came back for a third defense company. Founders who've exited and returned tell the story differently on camera: less pitch, more conviction. That's the founder film worth making.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "A crew that moves at",
+      titleAccent: "contract speed.",
+      intro:
+        "We shoot hardware, factories, and the people who run them, with small senior crews that work around a live production floor. One shoot day yields the anthem, the recruiting cut, and the verticals.",
+      gives: [
+        ["Brief", "Anthem film plus capability and recruiting cuts"],
+        ["Production", "Small senior crews, live-floor safe, San Diego is an easy drive"],
+        ["Deliverables", "Anthem film, recruiting cut, verticals, stills from one day"],
+        ["Audience", "USAF program offices, primes, engineers you're hiring"],
+      ],
+      tags: [
+        "Anthem film",
+        "Capability demo",
+        "Recruiting film",
+        "Facility tour",
+        "Founder story",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  divergent: {
+    slug: "divergent",
+    accent: "#0D223F",
+    company: "Divergent",
+    recipientName: "Lukas Czinger",
+    recipientFirst: "Lukas",
+    recipientEmail: "lczinger@divergent3d.com",
+    metaTitle: "Friends & Family for Divergent",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Divergent Technologies.",
+    heroFor: "Divergent",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Divergent because a hypercar built as proof of a factory is a brief that writes itself, and the same footage has to flex between consumers and primes.",
+    ticker:
+      "$290M Series E at $2.3B, Sept 2025 · 5x YoY revenue growth · 600+ aerospace and defense part numbers · Lockheed Martin, RTX, General Dynamics customers · Czinger 21C: 1,350 hp, 0 to 60 in 1.9s · Laguna Seca lap record 1:24.75 · Oklahoma factory groundbreaking 2026",
+    studio: {
+      headline: "A production company built for the people reinventing how things get made",
+      subline: "Hypercar reveals, factory floor films, record-run recaps, defense program stories, the list goes on.",
+    },
+    noticed: {
+      title: "The car is the demo.",
+      intro:
+        "We read the Series E coverage and the record-run press. Here's what stuck.",
+      cards: [
+        {
+          label: "One factory, any product",
+          body: "The same Torrance cells that print Czinger 21C structures ship parts for Lockheed Martin, RTX, and General Dynamics. The platform is the story across every sector, and the factory floor is where it's visible.",
+        },
+        {
+          label: "Records as receipts",
+          body: "The 21C holds the Laguna Seca production car lap record and broke Goodwood's hillclimb record. A hypercar built to prove a factory is the rare brief where the beauty shots and the business case are the same footage.",
+        },
+        {
+          label: "Two brands, one system",
+          body: "Czinger speaks to consumers, Divergent to primes and investors. The same shoot has to serve both, which is a production design problem we'd genuinely enjoy solving.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built to keep pace with",
+      titleAccent: "an adaptive factory.",
+      intro:
+        "We're twenty minutes from Torrance, equally at home on factory floors and racetracks. One production system covers the reveals, the records, and the program stories.",
+      gives: [
+        ["Brief", "Launch films, DAPS floor stories, the father-son narrative"],
+        ["Production", "Factory and track crews, LA-based"],
+        ["Deliverables", "Hero films plus modular cutdowns for both brands"],
+        ["Audience", "Collectors, primes, investors, Oklahoma recruits"],
+      ],
+      tags: [
+        "Hypercar reveals",
+        "Factory floor",
+        "Record runs",
+        "Founder story",
+        "Defense programs",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  servicetitan: {
+    slug: "servicetitan",
+    accent: "#103672",
+    company: "ServiceTitan",
+    recipientName: "Ara Mahdessian",
+    recipientFirst: "Ara",
+    recipientEmail: "amahdessian@servicetitan.com",
+    metaTitle: "Friends & Family for ServiceTitan",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for ServiceTitan.",
+    heroFor: "ServiceTitan",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with ServiceTitan because the scale is invisible: $21.7B in jobs moved through the platform last quarter, and furnaces and panel swaps are filmable while dashboards are not.",
+    ticker:
+      "NASDAQ: TTAN · IPO Dec 12, 2024 at $71 · ~$9B day-one market cap · FY2026 revenue $961M, up 24% · $21.7B quarterly gross transaction volume · HQ Glendale, CA · Acquired Aspire, FieldRoutes, Convex",
+    studio: {
+      headline: "A production company built for the trades",
+      subline: "For the people who answer the call: HVAC techs, plumbers, electricians, roofers, the list goes on.",
+    },
+    noticed: {
+      title: "The story is the dads.",
+      intro:
+        "We read the founding story and watched the Pantheon coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "Two fathers, one company",
+          body: "ServiceTitan's own telling starts with a contractor and a plumber raising two sons who built the company as a thank-you. A film that doesn't open in a work truck ignores the founding logic.",
+        },
+        {
+          label: "Customers are the heroes",
+          body: "The homepage leads with contractors and Pantheon put two thousand tradespeople in the LA Coliseum. Real technicians are already the house visual language, and documentary craft is how that language gets richer.",
+        },
+        {
+          label: "The scale is invisible",
+          body: "$21.7B in jobs moved through the platform in a single quarter, and almost none of it photographs as software. The work itself, in driveways and crawlspaces, is where the brand lives on camera.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Real work deserves",
+      titleAccent: "real filmmaking.",
+      intro:
+        "We're a short drive from Glendale and we shoot people for a living. The founder story, the customer portraits, and the Pantheon stage can all come from one director-led system.",
+      gives: [
+        ["Brief", "Founder film, customer portraits, anthem spot"],
+        ["Production", "Documentary crews in real shops and trucks"],
+        ["Deliverables", "Broadcast :60 scaling to :15, event films, stills"],
+        ["Audience", "Contractors, investors, the trades workforce"],
+      ],
+      tags: [
+        "Anthem film",
+        "Founder story",
+        "Customer docs",
+        "Event capture",
+        "Recruiting film",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "blue-water": {
+    slug: "blue-water",
+    accent: "#151719",
+    company: "Blue Water Autonomy",
+    recipientName: "Rylan Hamilton",
+    recipientFirst: "Rylan",
+    recipientEmail: "rylan@blw.ai",
+    metaTitle: "Friends & Family for Blue Water Autonomy",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Blue Water Autonomy.",
+    heroFor: "Blue Water",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Blue Water because when the product is a 190-foot unmanned ship hitting open water next year, the story deserves cameras on the pier, not stock footage.",
+    ticker:
+      "Founded 2024 in Boston · $50M Series A led by GV · $64M raised · Conrad Shipyard production partner · Liberty class: 190 feet · First ships in open water 2026 · Team quadrupled since seed · Founder sold 6 River Systems to Shopify for $450M",
+    studio: {
+      headline: "A production company built for the open ocean",
+      subline: "Sea trial capture, shipyard documentaries, founder films, milestone launches, the list goes on.",
+    },
+    noticed: {
+      title: "Steel, not slideware.",
+      intro:
+        "We read the Series A coverage and the Conrad deal. Here's what stuck.",
+      cards: [
+        {
+          label: "The shipyard deal",
+          body: "Weeks after the Series A closed you signed Conrad Shipyard to build the first class. Most autonomy companies show renders for years. You'll have full-size hulls in Louisiana, and hulls photograph.",
+        },
+        {
+          label: "Waymo of the open ocean",
+          body: "That's your own framing: Navy first, then allied fleets worldwide. A thesis that big needs a film that program offices and allies can watch in four minutes and believe.",
+        },
+        {
+          label: "Quadrupled, four cities",
+          body: "Boston, DC, Morgan City, San Diego, with shipbuilders who've delivered thirty Navy ships and DARPA NOMARS veterans. A team scaling that fast needs recruiting film that keeps pace.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "A film partner for",
+      titleAccent: "the hard-tech era.",
+      intro:
+        "We shoot the real thing: shipyards, sea trials, and the people who build them. The first Liberty-class splash is a once-only event, and the cameras should be planned now.",
+      gives: [
+        ["Brief", "Founder film, sea trial capture, capability films"],
+        ["Production", "Shipyard and on-water crews, Boston to Morgan City"],
+        ["Deliverables", "Hero film, capability cuts, recruiting stories, stills"],
+        ["Audience", "Navy program offices, allies, engineers you're hiring"],
+      ],
+      tags: [
+        "Sea trials",
+        "Shipyard doc",
+        "Founder story",
+        "Capability films",
+        "Recruiting film",
+        "Launch film",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  whoop: {
+    slug: "whoop",
+    accent: "#191919",
+    company: "WHOOP",
+    recipientName: "Will Ahmed",
+    recipientFirst: "Will",
+    recipientEmail: "will.ahmed@whoop.com",
+    metaTitle: "Friends & Family for WHOOP",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for WHOOP.",
+    heroFor: "WHOOP",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with WHOOP because the strap has no screen, which puts the entire storytelling load on the film, and that's the kind of problem we like best.",
+    ticker:
+      "$575M Series G at $10.1B · 2025 bookings $1.1B, up 103% · 2.5M+ members, 56 countries · Cash flow positive in 2025 · Hiring 600+ roles in 2026 · 14-day battery, no screen · Backed by Ronaldo, LeBron, McIlroy · 24B+ hours of physiological data",
+    studio: {
+      headline: "A production company built for the recovery obsessed",
+      subline: "Athlete windows measured in minutes, real 5 AM training instead of gym choreography, app UI that has to read in broadcast and vertical, the list goes on.",
+    },
+    noticed: {
+      title: "No screen, all story.",
+      intro:
+        "We read the Series G coverage and we already shoot the worlds WHOOP lives in. Here's what stuck.",
+      cards: [
+        {
+          label: "The product can't demo itself",
+          body: "WHOOP 5.0 ships without a display, so the proof lives in the app and on the body. That puts the entire storytelling load on the film, which is exactly where director-led craft earns its keep.",
+        },
+        {
+          label: "Golf runs deep",
+          body: "Rory McIlroy and Shane Lowry invested in the Series G and the strap is a fixture on tour wrists. We shoot for Callaway, so this is a world we film every season, not a category we'd be learning.",
+        },
+        {
+          label: "Brand is now a budget line",
+          body: "You've said Series G capital goes to marketing and brand awareness alongside 600 hires. A company that hit cash-flow positive and then chose to spend on awareness usually means more film, not less.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Performance culture,",
+      titleAccent: "produced properly.",
+      intro:
+        "We already shoot where WHOOP lives: Callaway on the course, ESPN and Nike in training culture, Apple in product craft. The overlap is the work, not the pitch.",
+      gives: [
+        ["Brief", "Launch films, athlete stories, awareness work"],
+        ["Production", "Sports-fluent crews built for short athlete windows"],
+        ["Deliverables", "Broadcast spots, social verticals, product macro, stills"],
+        ["Audience", "2.5M members plus the golfers, lifters, and sleepers you're reaching"],
+      ],
+      tags: [
+        "Athlete films",
+        "Launch film",
+        "Product macro",
+        "App UI capture",
+        "Golf",
+        "Social verticals",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  vast: {
+    slug: "vast",
+    accent: "#2A2C2F",
+    company: "Vast",
+    recipientName: "Max Haot",
+    recipientFirst: "Max",
+    recipientEmail: "max.haot@vastspace.com",
+    metaTitle: "Friends & Family for Vast",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Vast.",
+    heroFor: "Vast",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Vast because you may be the only space station company run by someone who shipped video for a decade, which means you already know exactly what good film costs and what it's worth.",
+    ticker:
+      "Haven-1 targets 2027 on Falcon 9 · $500M raised March 2026, $1B+ total · NASA CLD decision July 2026 · 189,690 sq ft Long Beach HQ · 1,000+ employees · Haven Demo flew November 2025 · First US-built station structure in 20+ years · Gigabit Starlink onboard",
+    studio: {
+      headline: "A production company built for the first commercial space station",
+      subline: "Clean room protocols, hardware you cannot reshoot, launch windows that do not move, the list goes on.",
+    },
+    noticed: {
+      title: "Built by a broadcaster.",
+      intro:
+        "We read the funding news and the Haven-1 hardware updates. Here's what stuck.",
+      cards: [
+        {
+          label: "You speak production",
+          body: "Before rockets, you built Livestream and Mevo. A station company run by someone who shipped video for a decade doesn't need convincing about craft. It needs a crew that can keep up with the hardware schedule.",
+        },
+        {
+          label: "The documentary is happening",
+          body: "Primary structure pressure-tested in October, life support in test since January, Haven Demo flown and deorbited on schedule. The road to Haven-1 is already a film. The only question is whether cameras are there for it.",
+        },
+        {
+          label: "The window comes first",
+          body: "Haven-1 leads with a 1.1 meter domed window, crew quarters, a communal table. Designing a station around the human view of Earth is a filmmaking instinct, and the brand should be shot with the same one.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "You build real hardware in public.",
+      titleAccent: "We film it that way.",
+      intro:
+        "We're twenty minutes up the 710 and we make director-led films about builders. The road from factory floor to first crew deserves an embedded film system, planned before the CLD decision lands.",
+      gives: [
+        ["Brief", "Road to Haven-1, factory floor to first crew"],
+        ["Production", "Director-led crews, clean room ready, Long Beach local"],
+        ["Deliverables", "Hero film plus launch, CLD, and recruiting cutdowns"],
+        ["Audience", "NASA, customers, investors, the next thousand hires"],
+      ],
+      tags: [
+        "Brand film",
+        "Documentary",
+        "Founder story",
+        "Recruiting film",
+        "Launch coverage",
+        "Mission content",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  inversion: {
+    slug: "inversion",
+    accent: "#D44D36",
+    company: "Inversion Space",
+    recipientName: "Justin Fiaschetti",
+    recipientFirst: "Justin",
+    recipientEmail: "justin@inversionspace.com",
+    metaTitle: "Friends & Family for Inversion Space",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Inversion Space.",
+    heroFor: "Inversion",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Inversion because 2026 is the year Arc flies, and the build, the tests, and the people deserve footage that holds up longer than the launch window.",
+    ticker:
+      "Founded 2021 by Fiaschetti and Briggs · Y Combinator, $10M seed Nov 2021 · $44M Series A co-led by Spark Capital and Adjacent · Lockheed Martin Ventures participated · Ray flew on Transporter-12, Jan 2025 · Arc targets first flight 2026 · 41 open roles, all in Playa Vista",
+    studio: {
+      headline: "A production company built for the one-hour-from-orbit era",
+      subline: "A Mojave test site, a capsule built by 25 people, a 2026 first flight, the list goes on.",
+    },
+    noticed: {
+      title: "Ray flew. Reentry didn't.",
+      intro:
+        "We read the Transporter-12 coverage and your hiring board. Here's what stuck.",
+      cards: [
+        {
+          label: "You said so publicly",
+          body: "When the propulsion malfunction scrubbed Ray's splashdown, you said it plainly and pointed the team at Arc. That's a real story beat, not a press release, and it's exactly the kind of honesty that makes a film worth watching.",
+        },
+        {
+          label: "41 roles, one building",
+          body: "Every opening on your board is in-person in Playa Vista. Hiring forty people into one room is a recruiting-film problem as much as a sourcing problem: candidates need to feel the floor before they apply.",
+        },
+        {
+          label: "The site already whispers",
+          body: "Beige page, black type, four small accents, one line about making Earth radically more accessible. The restraint sets the tone any film about Inversion has to match, and we'd protect it.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "A film crew for",
+      titleAccent: "first flight year.",
+      intro:
+        "Arc flies this year and the cameras should be planned now. One system covers the build documentation, the recruiting films, and the milestone cuts your next rooms will watch.",
+      gives: [
+        ["Brief", "Milestone documentation plus recruiting films"],
+        ["Production", "Playa Vista is our neighborhood, Mojave in reach"],
+        ["Deliverables", "First-flight film, recruiting cuts, investor edits"],
+        ["Audience", "Candidates, partners, the rooms after Lockheed"],
+      ],
+      tags: [
+        "Milestone doc",
+        "First flight",
+        "Recruiting film",
+        "Founder story",
+        "Test footage",
+        "Investor cuts",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  oishii: {
+    slug: "oishii",
+    accent: "#431112",
+    company: "Oishii",
+    recipientName: "Hiroki Koga",
+    recipientFirst: "Hiroki",
+    recipientEmail: "hiroki@oishii.com",
+    metaTitle: "Friends & Family for Oishii",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Oishii.",
+    heroFor: "Oishii",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Oishii because the farm of the future exists mostly as news b-roll right now, and a world with bee colonies, fifty robots, and strawberries with first names deserves crafted cinema.",
+    ticker:
+      "$150M Series C first close, May 2026 · $370M raised since 2016 · 237,000 sq ft Amatelas Farm, Phillipsburg NJ · Powered by a 50-acre solar field · Nearly 50 harvest robots · Bee colonies pollinate indoors · Sold in 18 states plus Toronto",
+    studio: {
+      headline: "A production company built for the farm of the future",
+      subline: "Bees working beside fifty robots, racks that drift from day to night, tasting menus and Whole Foods shelves, the list goes on.",
+    },
+    noticed: {
+      title: "The berries have personas.",
+      intro:
+        "We read the Series C coverage and toured the brand. Here's what stuck.",
+      cards: [
+        {
+          label: "Already cast",
+          body: "Omakase is a chef's favorite, Koyo a childhood favorite, Nikko a family favorite. The line is cast like characters, and each varietal can carry its own film the way a fashion house gives each fragrance its own world.",
+        },
+        {
+          label: "The palette is the produce",
+          body: "Your red on parchment, with sage and ruby tokens, is built directly from the fruit. The grade of any film should come from the same place, and macro work on a single berry can hold a whole frame.",
+        },
+        {
+          label: "Press b-roll isn't cinema",
+          body: "Sixty billion data points, robots, bee colonies, moving racks. That world exists mostly as news footage shot in a hurry. The survivor of vertical farming deserves the considered version.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Precision farming deserves",
+      titleAccent: "precision filmmaking.",
+      intro:
+        "A farm this controlled deserves images made the same way, deliberately, at every scale from macro berry to 237,000 square feet. We'd shoot the craft and the science as one story.",
+      gives: [
+        ["Brief", "Brand film plus varietal films and retail cutdowns"],
+        ["Production", "Tabletop macro plus docu-tech farm crews"],
+        ["Deliverables", "Hero film, retail and social cutdowns, stills"],
+        ["Audience", "Chefs, Whole Foods shoppers, 18 states plus Toronto"],
+      ],
+      tags: [
+        "Tabletop",
+        "Food macro",
+        "Docu-tech",
+        "Brand film",
+        "Founder story",
+        "Retail cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  underdog: {
+    slug: "underdog",
+    accent: "#040404",
+    company: "Underdog",
+    recipientName: "Jeremy Levine",
+    recipientFirst: "Jeremy",
+    recipientEmail: "jeremy.levine@underdogfantasy.com",
+    metaTitle: "Friends & Family for Underdog",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Underdog.",
+    heroFor: "Underdog",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Underdog because you can't outspend DraftKings and FanDuel, and out-crafting them is literally our business model too.",
+    ticker:
+      "$70M Series C led by Spark Capital · Valued at $1.23B, March 2025 · Backed by BlackRock funds, Mark Cuban, Kevin Durant · Founded 2020 in Brooklyn · 2.4M+ active users · Best Ball Mania VI: $15M in prizes, 670,000+ entries · Sportsbook on proprietary tech",
+    studio: {
+      headline: "A production company built for the challenger in sports gaming",
+      subline: "Season launches, athlete spots, draft week sprints, social cutdowns, the list goes on.",
+    },
+    noticed: {
+      title: "Built, not bought.",
+      intro:
+        "We read the Series C coverage and Jeremy's product-velocity thesis. Here's what stuck.",
+      cards: [
+        {
+          label: "Product over media weight",
+          body: "2.4 million active users, with most growth in states without legal betting. That came from shipping better product, not bigger media buys. The film strategy should run the same play: out-craft, don't outspend.",
+        },
+        {
+          label: "Mania is a tentpole",
+          body: "Best Ball Mania VI: fifteen million in prizes, six hundred seventy thousand entries. The flagship contest is effectively an annual season of content, and it deserves a launch film system instead of scrambled promos.",
+        },
+        {
+          label: "The sportsbook is yours",
+          body: "You built the book in-house while most challengers white-label. A company that makes product decisions like that will recognize the difference between director-led film and performance-ad wallpaper instantly.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Out-craft,",
+      titleAccent: "don't outspend.",
+      intro:
+        "You win by shipping better product faster than bigger rivals. Same model here: director-led film at sports-calendar speed, built around tight athlete windows.",
+      gives: [
+        ["Brief", "Season launches, Mania tentpole, athlete spots"],
+        ["Production", "Sports-calendar speed, talent-window fluent"],
+        ["Deliverables", "Brand film, pick'em promos, vertical social"],
+        ["Audience", "2.4M users plus every fantasy player they talk to"],
+      ],
+      tags: [
+        "Season launches",
+        "Athlete spots",
+        "Comedy",
+        "Brand film",
+        "Social-first",
+        "Draft week",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  runway: {
+    slug: "runway",
+    accent: "#0C0C0C",
+    company: "Runway",
+    recipientName: "Cristóbal Valenzuela",
+    recipientFirst: "Cristóbal",
+    recipientEmail: "cristobal@runwayml.com",
+    metaTitle: "Friends & Family for Runway",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Runway.",
+    heroFor: "Runway",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Runway because hybrid pipelines still begin with plates, performances, and production design somebody has to shoot, and we'd rather be on the same side of the camera than pretend the camera isn't changing.",
+    ticker:
+      "Founded 2018 at NYU ITP · $315M Series E at $5.3B, Feb 2026 · Backed by General Atlantic, Nvidia, Fidelity, Adobe · ~$860M raised · Gen-4.5 video model · Lionsgate, first major studio AI deal · AIFF: 300 submissions year one, 6,000 in 2025",
+    studio: {
+      headline: "A production company built for the world Runway is simulating",
+      subline: "Live-action plates for Gen-4.5 pipelines, directors who treat new models like new cameras, hybrid VFX, the list goes on.",
+    },
+    noticed: {
+      title: "The roadmap is hybrid.",
+      intro:
+        "We use the tools, we watched the AIFF winners, and we read the Lionsgate coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "Plates still come first",
+          body: "Lionsgate uses Runway for storyboards, backgrounds, and effects augmentation. Those pipelines still begin with plates, performances, and production design someone has to shoot well. That's the half we bring.",
+        },
+        {
+          label: "Craft is the filter now",
+          body: "AIFF went from 300 submissions to 6,000 in three years, with winners at Lincoln Center and in IMAX. At that scale the model is table stakes and craft is the filter, which is an argument for working with filmmakers, not around them.",
+        },
+        {
+          label: "Studios staffs like us",
+          body: "Runway Studios recruits creative producers and business affairs people, which is production company muscle. Partners who already have that muscle shorten the path, and we've been building it for fifteen years.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Same side of",
+      titleAccent: "the camera.",
+      intro:
+        "Runway builds the models. We shoot the world they learn from and the plates they build on. Hybrid live-action plus AI work needs both, made by peers.",
+      gives: [
+        ["Brief", "Hybrid brand films, AIFF-grade shorts, enterprise proof"],
+        ["Production", "Directors and DPs for plates, shoots planned around model passes"],
+        ["Deliverables", "Broadcast-grade films plus hybrid pipeline assets"],
+        ["Audience", "Studios, agencies, the enterprise buyers you're courting"],
+      ],
+      tags: [
+        "Hybrid production",
+        "Live-action plates",
+        "AI VFX",
+        "Brand films",
+        "Commercial craft",
+        "Music videos",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "farmers-dog": {
+    slug: "farmers-dog",
+    accent: "#173B33",
+    company: "The Farmer's Dog",
+    recipientName: "Jonathan Regev",
+    recipientFirst: "Jonathan",
+    recipientEmail: "jregev@thefarmersdog.com",
+    metaTitle: "Friends & Family for The Farmer's Dog",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for The Farmer's Dog.",
+    heroFor: "The Farmer's Dog",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with The Farmer's Dog because you already make the most loved work in the category, and we'd come in as the kind of partner that work deserves: execution without ego, behind your creative leads.",
+    ticker:
+      "Founded 2015 in NYC · $1B+ annualized revenue · $10M+ monthly profits · 1 billion+ meals delivered · Forever was #1 on USA Today's Ad Meter · Emmy nominee, Outstanding Commercial · Revenue up 50% YoY",
+    studio: {
+      headline: "A production company built for the dog people",
+      subline: "Casting real dogs, animal-safe sets, tabletop recipe launches, social cutdowns, the list goes on.",
+    },
+    noticed: {
+      title: "You already buy craft.",
+      intro:
+        "We've watched Forever more times than we'd admit in a meeting. Here's what stuck, written as peers.",
+      cards: [
+        {
+          label: "The bar is set",
+          body: "Forever came from your in-house team with a director and won the Ad Meter in your Super Bowl debut, then got an Emmy nomination. You don't need convincing about production value. You need partners who clear the bar you already set.",
+        },
+        {
+          label: "The org is scaling",
+          body: "33 open roles including a Director of Art and Design. An in-house creative org that size needs production partners who plug in behind creative leads without slowing them down. That's a posture, and we hold it well.",
+        },
+        {
+          label: "Story is the moat",
+          body: "The company exists because of one sick Rottweiler, and the work still leads with that honesty: real dogs, long emotional arcs, patience. The next big swing should come from the same place.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built for",
+      titleAccent: "dog people.",
+      intro:
+        "You make the most loved work in the category and we'd come in as the partner that work deserves: big-swing films with the patience of Forever, and always-on assets shot to the same standard.",
+      gives: [
+        ["Brief", "Big-swing brand films plus always-on craft"],
+        ["Production", "Dog casting and wrangling owned end to end, animal-safe sets"],
+        ["Deliverables", "Broadcast films, social cutdowns, tabletop, stills"],
+        ["Audience", "Dog people, which is to say most people"],
+      ],
+      tags: [
+        "Brand films",
+        "Dog casting",
+        "Tabletop food",
+        "Docu-style",
+        "In-house friendly",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  ballers: {
+    slug: "ballers",
+    accent: "#303030",
+    company: "Ballers",
+    recipientName: "David Gutstadt",
+    recipientFirst: "David",
+    recipientEmail: "david.gutstadt@ballers-us.com",
+    metaTitle: "Friends & Family for Ballers",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Ballers.",
+    heroFor: "Ballers",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Ballers because you land in DTLA this year, minutes from us, and a national rollout needs one visual language instead of a new vendor per city.",
+    ticker:
+      "$20M Series A led by Sharp Alpha and RHC Group · Backed by Andre Agassi, David Blitzer, Tyrese Maxey, Sloane Stephens · 55,000 sq ft flagship in a converted Fishtown power plant · Boston Seaport's first padel courts · 100,000+ sq ft DTLA venue slated for 2026 · 50+ locations planned",
+    studio: {
+      headline: "A production company built for social sport",
+      subline: "Opening films, venue anthems, padel rallies, league promos, menu close-ups, the list goes on.",
+    },
+    noticed: {
+      title: "Every venue is a different film.",
+      intro:
+        "We read the Series A coverage and the expansion plan. Here's what stuck.",
+      cards: [
+        {
+          label: "Three buildings, one brand",
+          body: "Philadelphia is a converted 1920s power plant, Boston is outdoor courts that become an ice rink each winter, DTLA fills a former Macy's. One launch-film system has to carry three completely different rooms, and that's a fun problem.",
+        },
+        {
+          label: "One volt accent",
+          body: "The site is black, white, and gray with a single highlight green. That restraint is rare in sports hospitality, and the films should hold it instead of drowning it in highlight-reel clichés.",
+        },
+        {
+          label: "Public, not private",
+          body: "Despite the Fitler Club lineage, Ballers sells walk-up play and tiers from $120 a month. Come one, come ball recruits walk-ins, not just members, and the content has to feel like an open door.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built for",
+      titleAccent: "the next 47 openings.",
+      intro:
+        "DTLA lands first, minutes from us, and we'd document The Bloc from build-out to opening night. The result is a repeatable launch kit: one anthem plus cutdowns per city.",
+      gives: [
+        ["Brief", "DTLA opening film plus a repeatable city launch kit"],
+        ["Production", "Sport plus hospitality in one crew, athlete-comfortable sets"],
+        ["Deliverables", "Venue anthem, opening films, social cutdowns, stills"],
+        ["Audience", "Walk-ins, members, and the next 47 cities"],
+      ],
+      tags: [
+        "Venue openings",
+        "Padel",
+        "Athlete talent",
+        "Hospitality",
+        "Anthem films",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  polymarket: {
+    slug: "polymarket",
+    accent: "#1A1F23",
+    company: "Polymarket",
+    recipientName: "Shayne Coplan",
+    recipientFirst: "Shayne",
+    recipientEmail: "shayne@polymarket.com",
+    metaTitle: "Friends & Family for Polymarket",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Polymarket.",
+    heroFor: "Polymarket",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Polymarket because the footage that told the crypto story will not tell the NYSE story, and a brand org is being built right now with no production arm attached.",
+    ticker:
+      "$2B from ICE at a $9B valuation, Oct 2025 · ~$600M more from ICE, Mar 2026 · $3.3B+ traded on the 2024 election · Official prediction market of X · Relaunched in the US Dec 2025 · Founded June 2020 in a Lower East Side apartment · 47 open roles, 9 in marketing",
+    studio: {
+      headline: "A production company built for the world's largest prediction market",
+      subline: "Markets on elections, rate cuts, championships, award shows, box office, the list goes on.",
+    },
+    noticed: {
+      title: "Nine marketing roles open.",
+      intro:
+        "We read the ICE coverage and your job board. Here's what stuck.",
+      cards: [
+        {
+          label: "A brand org, no production arm",
+          body: "Head of Partnership Marketing, sports and creator partnership managers, a Creative Performance Strategist. You're building the engine and every one of those hires will need film the week they start.",
+        },
+        {
+          label: "The institution pivot",
+          body: "ICE's $2B made Polymarket data an NYSE-distributed institutional product. The story has to grow up without losing the energy that built it, and that's a directing problem more than a messaging one.",
+        },
+        {
+          label: "Sports is the volume",
+          body: "Roughly 63 percent of trades involve sports and you're hiring sports partnership marketing specifically. Those audiences are trained on broadcast-grade creative, and we've shot for ESPN for years.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built for",
+      titleAccent: "market speed.",
+      intro:
+        "We make brand films and performance creative for companies at this exact inflection: product proven, story growing up. One system covers the flagship film and the sports-speed cutdowns.",
+      gives: [
+        ["Brief", "Institution-era brand film plus sports-speed cutdowns"],
+        ["Production", "Fast-turn crews timed to game calendars and market spikes"],
+        ["Deliverables", "Flagship film, social packages, creator kits, ad variants"],
+        ["Audience", "Traders, institutions, sports fans, the press"],
+      ],
+      tags: [
+        "Brand film",
+        "Sports promos",
+        "Creator kits",
+        "Performance ads",
+        "Event spots",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  chobani: {
+    slug: "chobani",
+    accent: "#1A3C34",
+    company: "Chobani",
+    recipientName: "Hamdi Ulukaya",
+    recipientFirst: "Hamdi",
+    recipientEmail: "hamdi.ulukaya@chobani.com",
+    metaTitle: "Friends & Family for Chobani",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Chobani.",
+    heroFor: "Chobani",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Chobani because a $1.2B plant rising on a former Air Force base, staffed by a workforce nobody else would hire first, is documentary material, not ad copy.",
+    ticker:
+      "$20B valuation Oct 2025 · $650M raised · $3.8B expected 2025 sales, up 28% · $1.2B Rome NY plant, 1,000+ jobs · $500M Twin Falls expansion · La Colombe acquired 2023 · Daily Harvest acquired 2025 · Founded 2005 in a shuttered Kraft plant",
+    studio: {
+      headline: "A production company built for food with a founder's story behind it",
+      subline: "Plant-floor documentary, tabletop with real appetite, culture films, retail spots, the list goes on.",
+    },
+    noticed: {
+      title: "The Rome build.",
+      intro:
+        "We read the raise coverage and the plant announcements. Here's what stuck.",
+      cards: [
+        {
+          label: "A multi-year story",
+          body: "A $1.2B, 1.4 million square foot plant on the former Griffiss Air Force Base: 28 lines, a billion pounds of dairy a year, a thousand jobs. From groundbreaking to first cup is a multi-year documentary, and it should have cameras from day one.",
+        },
+        {
+          label: "A workforce worth filming",
+          body: "Your plants employ refugees from across the world and Tent now counts 350-plus member companies. That's documentary material told with restraint, not ad copy, and it's the most human story in American food.",
+        },
+        {
+          label: "A house of brands now",
+          body: "La Colombe, Daily Harvest, oat milk, creamers. Each needs its own look from tabletop to founder film, which argues for one production partner who can hold the family together without flattening it.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built for",
+      titleAccent: "the way Chobani tells it.",
+      intro:
+        "You make food the right way and tell stories the plain way. We shoot both, from the shepherd-to-$20B founder arc to the Rome plant floor to the tabletop.",
+      gives: [
+        ["Brief", "Founder film, plant-floor doc, multi-brand system"],
+        ["Production", "Documentary crews, upstate NY to Idaho, tabletop craft"],
+        ["Deliverables", "Brand films, retail spots, culture films, stills"],
+        ["Audience", "Grocery America, plus the people you hire and feed"],
+      ],
+      tags: [
+        "Founder story",
+        "Plant-floor doc",
+        "Tabletop",
+        "Multi-brand",
+        "Culture films",
+        "Retail spots",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  wonder: {
+    slug: "wonder",
+    accent: "#044123",
+    company: "Wonder",
+    recipientName: "Marc Lore",
+    recipientFirst: "Marc",
+    recipientEmail: "mlore@wonder.com",
+    metaTitle: "Friends & Family for Wonder",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Wonder.",
+    heroFor: "Wonder",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Wonder because you're opening a location a week while building toward a March 2027 IPO date that's written on the office whiteboards, and that pace needs a film system, not one-off shoots.",
+    ticker:
+      "$600M raised at $7B+, May 2025 · Acquired Grubhub for $650M · ~110 locations, 200+ targeted by end of 2026 · Roughly one opening a week · ~30 chef-driven concepts per kitchen · José Andrés on the board · Acquired Tastemade · IPO-ready target March 31, 2027",
+    studio: {
+      headline: "A production company built for the mealtime super app",
+      subline: "Market-by-market launch films, chef partner spots, Grubhub tie-ins, IPO-era brand anthems, the list goes on.",
+    },
+    noticed: {
+      title: "A location a week.",
+      intro:
+        "We read the funding coverage and the IPO interview. Here's what stuck.",
+      cards: [
+        {
+          label: "The drumbeat",
+          body: "Doubling from 110 to 200-plus locations by the end of 2026 means a constant stream of new neighborhoods, and each opening is a moment that needs content. That cadence rewards a repeatable launch-film kit, not scrambled coverage.",
+        },
+        {
+          label: "Video is already strategy",
+          body: "You bought Tastemade so viewers can watch a chef make a dish and then order it. The content-to-commerce loop is core to the model, not decoration, which makes the production partner a strategic seat.",
+        },
+        {
+          label: "Talent on the menu",
+          body: "Bobby Flay, Marcus Samuelsson, Nancy Silverton, José Andrés on the board. Name-brand chefs at the center demands talent-comfortable, craft-level sets, and that's the room we work in every week.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Built for the pace of",
+      titleAccent: "one opening a week.",
+      intro:
+        "Wonder is scaling food, logistics, media, and chef talent at once, with an IPO date on the whiteboard. We make the films that keep up, from market openers to the anthem an IPO-bound company leads with.",
+      gives: [
+        ["Brief", "Launch-film kit, chef spots, the IPO-era anthem"],
+        ["Production", "Talent-comfortable sets, market-by-market crews"],
+        ["Deliverables", "Openers per market, brand anthem, social cutdowns"],
+        ["Audience", "New neighborhoods, app users, the Street in 2027"],
+      ],
+      tags: [
+        "Launch films",
+        "Chef talent",
+        "Brand anthem",
+        "Food craft",
+        "App promos",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
 };
 
 export const PITCH_SLUGS = Object.keys(PITCH_COMPANIES);

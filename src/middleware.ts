@@ -103,6 +103,27 @@ export async function middleware(req: NextRequest) {
     "/suno": "/pitch/suno",
     "/david": "/pitch/david",
     "/unrivaled": "/pitch/unrivaled",
+    // Wave 5 (SoCal + NE corridor)
+    "/jetzero": "/pitch/jetzero",
+    "/coco": "/pitch/coco",
+    "/alo": "/pitch/alo",
+    "/parallel": "/pitch/parallel",
+    "/reflect-orbital": "/pitch/reflect-orbital",
+    "/firestorm": "/pitch/firestorm",
+    "/divergent": "/pitch/divergent",
+    "/servicetitan": "/pitch/servicetitan",
+    "/blue-water": "/pitch/blue-water",
+    "/whoop": "/pitch/whoop",
+    "/vast": "/pitch/vast",
+    "/inversion": "/pitch/inversion",
+    "/oishii": "/pitch/oishii",
+    "/underdog": "/pitch/underdog",
+    "/runway": "/pitch/runway",
+    "/farmers-dog": "/pitch/farmers-dog",
+    "/ballers": "/pitch/ballers",
+    "/polymarket": "/pitch/polymarket",
+    "/chobani": "/pitch/chobani",
+    "/wonder": "/pitch/wonder",
   };
   const vanityTarget = VANITY_PATH_REWRITES[req.nextUrl.pathname];
   if (vanityTarget) {
