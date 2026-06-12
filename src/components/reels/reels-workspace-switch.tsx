@@ -15,7 +15,7 @@ export function ReelsWorkspaceSwitch({
     },
     {
       key: "intelligence",
-      label: "Intelligence",
+      label: "Analytics",
       href: "/analytics",
       icon: BarChart3,
     },
