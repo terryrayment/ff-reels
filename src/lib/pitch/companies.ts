@@ -3819,6 +3819,936 @@ export const PITCH_COMPANIES: Record<string, PitchCompanyConfig> = {
       ],
     },
   },
+
+  anduril: {
+    slug: "anduril",
+    accent: "#010101",
+    company: "Anduril",
+    recipientName: "Brian Schimpf",
+    recipientFirst: "Brian",
+    recipientEmail: "bschimpf@anduril.com",
+    metaTitle: "Friends & Family for Anduril",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Anduril.",
+    heroFor: "Anduril",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Anduril because Arsenal-1 turns defense production into a visible American manufacturing story, and Costa Mesa is close enough for us to start with a walk-through.",
+    ticker:
+      "Founded 2017 · $5B Series H, May 2026 · $61B valuation · Thrive and a16z led the round · Arsenal-1: 5M+ sq ft · 4,000+ jobs in Ohio · Tens of thousands of autonomous systems a year · Costa Mesa, CA",
+    studio: {
+      headline: "A production company built for defense hardware at factory scale",
+      subline: "Autonomy, factories, operators, founder voice, manufacturing lines, the list goes on.",
+    },
+    noticed: {
+      title: "The story moved from demo to production.",
+      intro:
+        "We read the Series H announcement, the Arsenal-1 plan, and the leadership material. Here's what stuck.",
+      cards: [
+        {
+          label: "Arsenal is the film",
+          body: "Five million-plus square feet, four thousand jobs, and a stated plan to produce tens of thousands of autonomous systems a year. That is not a product video. That is a manufacturing film with national stakes.",
+        },
+        {
+          label: "Lattice gives it a spine",
+          body: "The hardware is visible, but Lattice is the connective tissue. The film problem is showing how sensors, operators, and machines become one system without turning the story into a software explainer.",
+        },
+        {
+          label: "Costa Mesa matters",
+          body: "Anduril did not become a defense prime from a DC office park. The Orange County origin is part of the break with old defense, and it is right down the road from us.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the production story.",
+      intro:
+        "Anduril already has the announcements. The missing layer is the film language for a company moving from insurgent defense startup to production-scale prime.",
+      gives: [
+        ["Brief", "Arsenal-1, recruiting, Lattice, and production milestones"],
+        ["Production", "Factory crews, operators, hardware days, leadership films"],
+        ["Deliverables", "Manufacturing anthem, recruiting cutdowns, capability films"],
+        ["Audience", "Talent, customers, policymakers, and the country watching"],
+      ],
+      tags: [
+        "Manufacturing film",
+        "Defense hardware",
+        "Recruiting",
+        "Founder story",
+        "Capability films",
+        "Edit",
+        "Motion",
+        "Delivery",
+      ],
+    },
+  },
+
+  "liquid-death": {
+    slug: "liquid-death",
+    accent: "#151515",
+    company: "Liquid Death",
+    recipientName: "Mike Cessario",
+    recipientFirst: "Mike",
+    recipientEmail: "mike@liquiddeath.com",
+    metaTitle: "Friends & Family for Liquid Death",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Liquid Death.",
+    heroFor: "Liquid Death",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Liquid Death because you already treat brand as entertainment, so the right pitch is not saving the work. It is keeping up with it.",
+    ticker:
+      "Founded by Mike Cessario · $67M financing, Mar 2024 · $1.4B valuation · $263M 2023 retail scanned sales · 113,000 US and UK doors · Sparkling Energy: 100mg caffeine, 5 calories · 7M+ social audience · Los Angeles",
+    studio: {
+      headline: "A production company built for brands that behave like studios",
+      subline: "Comedy, talent, stunts, product films, music-world shoots, the list goes on.",
+    },
+    noticed: {
+      title: "You already know the bit.",
+      intro:
+        "We watched the campaigns, the product launches, and the way the site talks. Here's what stuck.",
+      cards: [
+        {
+          label: "Water was never the category",
+          body: "Liquid Death sells water, iced tea, soda-flavored sparkling, and now energy, but the real category is entertainment. That changes the production bar. The films have to be funny enough to earn the can.",
+        },
+        {
+          label: "Death Dust is a line",
+          body: "Ozzy telling people not to snort hydration powder is the kind of campaign only works when the tone is exactly right. Too polished and it dies. Too loose and it feels cheap. That's a director problem.",
+        },
+        {
+          label: "The scale caught up",
+          body: "A $1.4B valuation and 113,000 doors means Liquid Death is no longer a cult beverage with a good joke. It is a national brand that still has to feel like trouble.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Pitch as",
+      titleAccent: "peers, not saviors.",
+      intro:
+        "The in-house taste is the point, so we would plug in where outside direction actually helps: bigger talent days, campaign films, and shoots where the gag needs production muscle without losing its teeth.",
+      gives: [
+        ["Brief", "Campaign concept, talent, product line, channel plan"],
+        ["Production", "Comedy directors, celebrity sets, stunts, tabletop"],
+        ["Deliverables", "Hero films, cutdowns, product spots, social variants"],
+        ["Audience", "Fans, retail buyers, and everyone tired of polite water"],
+      ],
+      tags: [
+        "Comedy",
+        "Talent",
+        "Product films",
+        "Stunts",
+        "Tabletop",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  sweetgreen: {
+    slug: "sweetgreen",
+    accent: "#00473C",
+    company: "Sweetgreen",
+    recipientName: "Jonathan Neman",
+    recipientFirst: "Jonathan",
+    recipientEmail: "jonathan.neman@sweetgreen.com",
+    metaTitle: "Friends & Family for Sweetgreen",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Sweetgreen.",
+    heroFor: "Sweetgreen",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Sweetgreen because the company is trying to make healthy food feel fast, warm, and modern again, and that is a film problem as much as a menu problem.",
+    ticker:
+      "Founded 2007 in Georgetown · Co-founder-led from Los Angeles · 285+ locations · Q1 2026 revenue: $161.5M · Digital revenue: 67.2% · Wraps launched nationwide May 2026 · Most wraps: 40g+ protein · Infinite Kitchen and Sweetlane in the mix",
+    studio: {
+      headline: "A production company built for food, pace, and daily habit",
+      subline: "Tabletop, restaurants, farmers, teams, app films, launch cutdowns, the list goes on.",
+    },
+    noticed: {
+      title: "The next chapter is not just bowls.",
+      intro:
+        "We read the Q1 results, the wraps launch, and the company story. Here's what stuck.",
+      cards: [
+        {
+          label: "The wrap is a signal",
+          body: "A nationwide wraps launch under $15, most with 40-plus grams of protein, says Sweetgreen is trying to meet people where lunch actually happens. That needs appetite, speed, and no health-food scolding.",
+        },
+        {
+          label: "The kitchen is changing",
+          body: "Infinite Kitchen and Sweetlane are operational stories, but they are also trust stories. People still want to see real food, real hands, and a restaurant that feels alive.",
+        },
+        {
+          label: "LA is the base now",
+          body: "The company started three months after college in Georgetown, but the center of gravity is Los Angeles. That founder-led, food-meets-culture story is sitting here.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the lunch habit.",
+      intro:
+        "We would make the food feel close again: the farmers, the line, the digital order, the new wrap, the reason someone comes back twice a week.",
+      gives: [
+        ["Brief", "Wraps, new formats, digital behavior, California store moments"],
+        ["Production", "Tabletop craft, restaurant crews, real team casting"],
+        ["Deliverables", "Launch film, menu spots, store films, social cutdowns"],
+        ["Audience", "Lunch regulars, new guests, and lapsed believers"],
+      ],
+      tags: [
+        "Food craft",
+        "Restaurant film",
+        "Menu launch",
+        "Founder story",
+        "App spots",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  doen: {
+    slug: "doen",
+    accent: "#323232",
+    company: "DÔEN",
+    recipientName: "Margaret Kleveland",
+    recipientFirst: "Margaret",
+    recipientEmail: "margaretkleveland@shopdoen.com",
+    metaTitle: "Friends & Family for DÔEN",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for DÔEN.",
+    heroFor: "DÔEN",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with DÔEN because the brand has grown without sanding off the California intimacy, and the next chapter should be filmed with that same restraint.",
+    ticker:
+      "Founded 2016 by Margaret and Katherine Kleveland · Santa Barbara-born sisters · Women-led collective · Series A led by Silas Capital, Jun 2025 · $100M+ revenue business · Brentwood, Montecito, New York, Sag Harbor, Wilmette coming soon · Hand Me DÔEN resale",
+    studio: {
+      headline: "A production company built for fashion that still feels personal",
+      subline: "Founder films, collection films, retail openings, quiet portraiture, the list goes on.",
+    },
+    noticed: {
+      title: "The brand knows how to whisper.",
+      intro:
+        "We read the funding announcement, the Collective page, and the store list. Here's what stuck.",
+      cards: [
+        {
+          label: "Growth without glare",
+          body: "The Series A came after years of building with about $1M of outside capital and a $100M-plus revenue business. That is a rare fashion story: scale without the usual volume.",
+        },
+        {
+          label: "The collective is real copy",
+          body: "The founding story names the sisters and the women around them. That matters because DÔEN has always sold more than dresses. It sells a way of making work feel less extracted.",
+        },
+        {
+          label: "California is still visible",
+          body: "Brentwood Country Mart and Montecito are not just store locations. They are the visual language: light, restraint, family, fabric, and places that feel lived in.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the quiet parts.",
+      intro:
+        "DÔEN does not need bigger noise. It needs films that hold the texture of the clothes, the founders, the community, and the rooms without turning them into fashion wallpaper.",
+      gives: [
+        ["Brief", "Collection story, founder arc, retail openings, resale"],
+        ["Production", "Small crews, natural light, talent-comfortable direction"],
+        ["Deliverables", "Collection films, founder film, store openers, cutdowns"],
+        ["Audience", "The community that already knows when something feels off"],
+      ],
+      tags: [
+        "Fashion film",
+        "Founder story",
+        "Retail openings",
+        "Portraiture",
+        "Collection films",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "buck-mason": {
+    slug: "buck-mason",
+    accent: "#333333",
+    company: "Buck Mason",
+    recipientName: "Erik Allen Ford",
+    recipientFirst: "Erik",
+    recipientEmail: "erik.allenford@buckmason.com",
+    metaTitle: "Friends & Family for Buck Mason",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Buck Mason.",
+    heroFor: "Buck Mason",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Buck Mason because a 350-square-foot Venice garage becoming a national American classics brand is a filmable story, and it is still an LA story.",
+    ticker:
+      "Founded 2013 in Venice · Sasha Koehn + Erik Allen Ford · Started in a 350 sq ft garage · 50+ stores · $100M+ annual sales · Abbot Kinney, Silver Lake, Hancock Park, Century City, Studio City · Buck Mason Knitting Mills in Pennsylvania",
+    studio: {
+      headline: "A production company built for American clothing with a place behind it",
+      subline: "Factory films, retail openings, founder story, wardrobe texture, the list goes on.",
+    },
+    noticed: {
+      title: "The clothes are plain in the best way.",
+      intro:
+        "We read the story page, the store list, and the mill material. Here's what stuck.",
+      cards: [
+        {
+          label: "The garage still matters",
+          body: "Starting in a 350-square-foot Venice garage is not startup trivia. It is the whole brand argument: simple clothes, made with care, sold without pretending to be louder than they are.",
+        },
+        {
+          label: "The mill is a turn",
+          body: "Buying and restarting a Pennsylvania knitting mill gives Buck Mason a manufacturing story most apparel brands only cosplay. That is a beautiful, unforced film.",
+        },
+        {
+          label: "LA is all over the map",
+          body: "Abbot Kinney, Silver Lake, Hancock Park, Century City, Studio City. The local footprint is dense enough to film the whole city without leaving the brand's own rooms.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the fabric and the founders.",
+      intro:
+        "We would not overcomplicate it. The strongest Buck Mason film is hands, rooms, cloth, founders, and the quiet confidence of a brand that does not need to shout.",
+      gives: [
+        ["Brief", "Founder story, mill story, LA retail spine, women's expansion"],
+        ["Production", "Factory crew, retail days, wardrobe detail, natural casting"],
+        ["Deliverables", "Brand film, mill film, store cutdowns, social assets"],
+        ["Audience", "People who know the difference between simple and generic"],
+      ],
+      tags: [
+        "Apparel film",
+        "Founder story",
+        "Factory doc",
+        "Retail openings",
+        "Wardrobe",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  perelel: {
+    slug: "perelel",
+    accent: "#272D45",
+    company: "Perelel",
+    recipientName: "Victoria Thain Gioia",
+    recipientFirst: "Victoria",
+    recipientEmail: "victoria@perelelhealth.com",
+    metaTitle: "Friends & Family for Perelel",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Perelel.",
+    heroFor: "Perelel",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Perelel because the company is moving from prenatal into the full hormonal lifecycle, and that story needs trust before it needs polish.",
+    ticker:
+      "Founded by Victoria Thain Gioia, Alex Taylor, and Dr. Banafsheh Bayati · $27M growth investment, Nov 2025 · Profitable after five years · Revenue doubled year over year · Expanding from prenatal to full hormonal lifecycle · Clinical trials and safety testing in front nav · Los Angeles",
+    studio: {
+      headline: "A production company built for women's health with real care around it",
+      subline: "Founder films, doctor-led explainers, product films, community stories, the list goes on.",
+    },
+    noticed: {
+      title: "The stage system is the story.",
+      intro:
+        "We read the growth investment announcement, the story page, and the product navigation. Here's what stuck.",
+      cards: [
+        {
+          label: "Not one-size-fits-all",
+          body: "Trying to conceive, each trimester, postpartum, perimenopause, cycle, egg freeze and IVF. The whole brand rejects the lazy version of women's health where every body gets the same bottle.",
+        },
+        {
+          label: "Clinical is front-facing",
+          body: "Clinical trials, safety, testing, and an OB/GYN co-founder are not buried. That means the films have to carry medical seriousness without feeling like a waiting room video.",
+        },
+        {
+          label: "The funding changed the scope",
+          body: "A $27M growth investment moves Perelel from prenatal leader to full lifecycle women's health company. That is a bigger story, but it still has to feel close and human.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "trust, not wellness gloss.",
+      intro:
+        "We would build a film system around real women, real doctors, and founders who know why the old category failed them.",
+      gives: [
+        ["Brief", "Lifecycle expansion, clinical trust, founder story, product stages"],
+        ["Production", "Sensitive casting, doctor interviews, tabletop, home scenes"],
+        ["Deliverables", "Brand film, stage explainers, product spots, cutdowns"],
+        ["Audience", "Women who can tell when health marketing is guessing"],
+      ],
+      tags: [
+        "Women's health",
+        "Founder story",
+        "Doctor-led",
+        "Product films",
+        "Trust",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  hexclad: {
+    slug: "hexclad",
+    accent: "#0E0E0E",
+    company: "HexClad",
+    recipientName: "Danny Winer",
+    recipientFirst: "Danny",
+    recipientEmail: "danny@hexclad.com",
+    metaTitle: "Friends & Family for HexClad",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for HexClad.",
+    heroFor: "HexClad",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with HexClad because cookware this demo-friendly should feel like appetite, engineering, and personality in the same frame.",
+    ticker:
+      "Co-founded by Danny Winer · Hybrid stainless and nonstick hex design · Gordon Ramsay partnership started July 2021 · Inc. 5000 No. 775 in 2025 · 541% three-year growth · 100+ SKUs · 165 employees · $1B+ valuation · Los Angeles",
+    studio: {
+      headline: "A production company built for food, product, and talent in one day",
+      subline: "Tabletop, demos, chef talent, creator cutdowns, product launches, the list goes on.",
+    },
+    noticed: {
+      title: "The pan already performs.",
+      intro:
+        "We read the growth coverage, the Ramsay announcement, and the product story. Here's what stuck.",
+      cards: [
+        {
+          label: "The demo is the drama",
+          body: "A hybrid pan that can sear, release, and survive daily use has a built-in visual test. The trick is making the engineering appetizing instead of turning it into cookware infomercial.",
+        },
+        {
+          label: "Ramsay was a real unlock",
+          body: "The Gordon Ramsay partnership works because it feels like use, not endorsement. That is the right tone for chef talent: let the product earn the reaction.",
+        },
+        {
+          label: "The catalog got big",
+          body: "Cookware, knives, woks, mills, and more than 100 SKUs means the brand now needs a visual system, not just one perfect pan demo.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "heat, hands, and proof.",
+      intro:
+        "We would build a product-film system that can cover launches, chef talent, DTC ads, and retail without losing the simple proof: this thing cooks.",
+      gives: [
+        ["Brief", "Product line, chef talent, DTC needs, launch calendar"],
+        ["Production", "Tabletop, food styling, chef sets, demo rigs"],
+        ["Deliverables", "Hero spots, product demos, creator cutdowns, stills"],
+        ["Audience", "Home cooks, chefs, and people who buy after one good demo"],
+      ],
+      tags: [
+        "Tabletop",
+        "Chef talent",
+        "Product demo",
+        "Food craft",
+        "Performance ads",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  ramp: {
+    slug: "ramp",
+    accent: "#1C1B17",
+    company: "Ramp",
+    recipientName: "Eric Glyman",
+    recipientFirst: "Eric",
+    recipientEmail: "eric@ramp.com",
+    metaTitle: "Friends & Family for Ramp",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Ramp.",
+    heroFor: "Ramp",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Ramp because a $44B finance company talking about AI agents and token spend needs film that makes the future feel operational, not abstract.",
+    ticker:
+      "Founded 2019 · Eric Glyman, Karim Atiyeh, Gene Lee · $750M Series F, Jun 2026 · $44B valuation · $3B+ total equity raised · 70,000+ businesses · Stack by Ramp for accounting firms · AI and token spend now part of the story · New York",
+    studio: {
+      headline: "A production company built for finance software that has to feel human",
+      subline: "Founder films, customer stories, product moments, launch films, the list goes on.",
+    },
+    noticed: {
+      title: "The category got stranger.",
+      intro:
+        "We read the $44B post, the funding announcement, and the current site. Here's what stuck.",
+      cards: [
+        {
+          label: "AI is in the books now",
+          body: "Ramp's own announcement frames token spend as a new finance category. That is a hard idea to make visual, and it is exactly where film can make the operational stakes feel plain.",
+        },
+        {
+          label: "Stack changes the buyer",
+          body: "Leading with Stack by Ramp means the story is not just cards and expenses anymore. It is the operating system for accounting firms, which needs a different human proof than product screenshots.",
+        },
+        {
+          label: "The line is still savings",
+          body: "Ramp has always been more interesting than points. The founder idea is still time and money saved, and that can be told through people doing work differently.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the finance team, not the dashboard.",
+      intro:
+        "We would make Ramp feel like what changes in a real company: fewer late nights, cleaner books, faster decisions, and a finance team that finally gets time back.",
+      gives: [
+        ["Brief", "AI agents, Stack, customer proof, Series F narrative"],
+        ["Production", "Customer doc, founder interview, product-led motion"],
+        ["Deliverables", "Brand film, customer stories, launch spots, cutdowns"],
+        ["Audience", "Finance leaders, accounting firms, employees, investors"],
+      ],
+      tags: [
+        "B2B film",
+        "Customer stories",
+        "Founder story",
+        "Product motion",
+        "Launch film",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  clay: {
+    slug: "clay",
+    accent: "#3859F9",
+    company: "Clay",
+    recipientName: "Kareem Amin",
+    recipientFirst: "Kareem",
+    recipientEmail: "kareem.amin@clay.com",
+    metaTitle: "Friends & Family for Clay",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Clay.",
+    heroFor: "Clay",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Clay because the company made growth feel like a creative tool again, and that is a rare thing in go-to-market software.",
+    ticker:
+      "Founded 2017 · Kareem Amin, Nicolae Rusan, Varun Anand · $100M ARR in Dec 2025 · $1M to $100M ARR in two years · Up to $55M employee tender at $5B valuation, Jan 2026 · 150+ data providers · Customers include OpenAI, Anthropic, Cursor, Canva, Intercom, Rippling · Sculpt SF Oct 2026",
+    studio: {
+      headline: "A production company built for creative tools hiding inside B2B software",
+      subline: "Founder films, customer stories, conference films, product-led motion, the list goes on.",
+    },
+    noticed: {
+      title: "GTM got a creative tool.",
+      intro:
+        "We read the ARR post, the tender announcement, and the About page. Here's what stuck.",
+      cards: [
+        {
+          label: "The long wander matters",
+          body: "Clay did not arrive fully formed. Years of wandering before the GTM engineering focus is the honest founder story, and it makes the current momentum more believable.",
+        },
+        {
+          label: "One person, a full motion",
+          body: "The site says one person can run campaigns that used to require a whole GTM team. That is not just automation. It is a new kind of creative operator.",
+        },
+        {
+          label: "The customer list has taste",
+          body: "OpenAI, Anthropic, Cursor, Canva, Intercom, Rippling. Clay is already used by companies that care how tools feel, which raises the bar for the films around it.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the GTM engineer.",
+      intro:
+        "We would make the new role visible: the person building, testing, researching, launching, and learning in Clay while the old spreadsheet world falls away.",
+      gives: [
+        ["Brief", "GTM engineering, ARR story, Sculpt, customer proof"],
+        ["Production", "Founder interview, product capture, customer doc"],
+        ["Deliverables", "Brand film, conference opener, customer stories, cutdowns"],
+        ["Audience", "GTM teams, operators, founders, and the software world watching"],
+      ],
+      tags: [
+        "B2B film",
+        "Creative tools",
+        "Founder story",
+        "Conference film",
+        "Customer stories",
+        "Motion",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  studs: {
+    slug: "studs",
+    accent: "#000000",
+    company: "Studs",
+    recipientName: "Anna Harman",
+    recipientFirst: "Anna",
+    recipientEmail: "anna@studs.com",
+    metaTitle: "Friends & Family for Studs",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Studs.",
+    heroFor: "Studs",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Studs because piercing is intimate, retail is expanding fast, and the brand has to make both feel easy on camera.",
+    ticker:
+      "Founded 2019 by Anna Harman and Lisa Bubbers · 40 studios visible in current location data · 30+ studios cited in 2025 · 40% repeat business · Earscape language trademarked · Abbot Kinney, Century City, Topanga, San Diego · $200+ online order free-piercing promo live",
+    studio: {
+      headline: "A production company built for retail that sits close to the body",
+      subline: "Studio films, customer stories, jewelry detail, retail openings, the list goes on.",
+    },
+    noticed: {
+      title: "Piercing is a tiny trust fall.",
+      intro:
+        "We read the founder story, the expansion coverage, and the live locations. Here's what stuck.",
+      cards: [
+        {
+          label: "The gap was emotional",
+          body: "The founder story starts with a piercing experience that felt wrong: too clinical, too premium, or not jewelry-forward enough. Studs wins by making the moment feel normal and considered.",
+        },
+        {
+          label: "Earscape is useful language",
+          body: "It gives customers permission to think in looks, not just holes. That is a visual system waiting to be filmed across studio, jewelry, mirror, and friend group.",
+        },
+        {
+          label: "California is no side note",
+          body: "Abbot Kinney, Century City, Topanga, San Diego. The LA and California footprint is strong enough to make a West Coast retail film with real stores, not rented spaces.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the mirror moment.",
+      intro:
+        "We would build films around the small beats that make Studs work: choosing the piece, trusting the piercer, seeing the look, and texting the friend after.",
+      gives: [
+        ["Brief", "Studio expansion, Earscape education, jewelry drops, LA stores"],
+        ["Production", "Real customers, macro jewelry, store crews, soft direction"],
+        ["Deliverables", "Retail film, education cutdowns, product spots, stills"],
+        ["Audience", "First piercings, repeat customers, and people building a look"],
+      ],
+      tags: [
+        "Retail film",
+        "Jewelry",
+        "Customer stories",
+        "Education",
+        "Store openings",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  astranis: {
+    slug: "astranis",
+    accent: "#0A1219",
+    company: "Astranis",
+    recipientName: "John Gedmark",
+    recipientFirst: "John",
+    recipientEmail: "john@astranis.com",
+    metaTitle: "Friends & Family for Astranis",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Astranis.",
+    heroFor: "Astranis",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Astranis because five satellites on orbit and a billion-dollar backlog is the moment a space company needs films built for customers, recruits, and the government at once.",
+    ticker:
+      "Founded 2015 · John Gedmark + Ryan McLinko · $450M raised May 2026 · $1.2B+ total raised · Five satellites on orbit · $1B+ commercial backlog · 153,000 sq ft Northern California HQ · 2027 LEO-to-GEO mission with Impulse Space",
+    studio: {
+      headline: "A production company built for spacecraft that have to feel understandable",
+      subline: "Clean rooms, factory floors, launch windows, customer stories, the list goes on.",
+    },
+    noticed: {
+      title: "Small satellites, high orbit, big proof.",
+      intro:
+        "We read the Series E announcement, the spacecraft material, and the Arcturus story. Here's what stuck.",
+      cards: [
+        {
+          label: "Five on orbit",
+          body: "The company is past promise. Five satellites on orbit, a billion-dollar commercial backlog, and a headquarters scaled for production gives Astranis the footage most space companies still wish they had.",
+        },
+        {
+          label: "Alaska is the human proof",
+          body: "Arcturus connecting a Utah gateway to Alaska terminals is the kind of technical story that becomes clear when you show the place and the people at the end of the link.",
+        },
+        {
+          label: "The 24-hour route",
+          body: "The Impulse Space agreement targets LEO-to-GEO delivery in under a day in 2027. That is a clean, cinematic promise: a satellite going where it needs to go without waiting months.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "orbit as a service story.",
+      intro:
+        "We would make the high-orbit work feel concrete: the spacecraft, the customer, the factory, the first signal, the reason fewer satellites can still reach farther.",
+      gives: [
+        ["Brief", "Series E, backlog, spacecraft production, customer proof"],
+        ["Production", "Clean-room crews, founder interviews, ground stations"],
+        ["Deliverables", "Brand film, customer stories, recruiting cutdowns"],
+        ["Audience", "Customers, recruits, government buyers, and space watchers"],
+      ],
+      tags: [
+        "Spacecraft",
+        "Factory film",
+        "Customer story",
+        "Recruiting",
+        "Founder story",
+        "Motion",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  zipline: {
+    slug: "zipline",
+    accent: "#000000",
+    company: "Zipline",
+    recipientName: "Keller Rinaudo Cliffton",
+    recipientFirst: "Keller",
+    recipientEmail: "keller@flyzipline.com",
+    metaTitle: "Friends & Family for Zipline",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Zipline.",
+    heroFor: "Zipline",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Zipline because two million deliveries changes the story from drone novelty to daily infrastructure, and people still need to see it land.",
+    ticker:
+      "Founded 2011 · Rwanda blood delivery began 2016 · 2M+ commercial deliveries · $600M+ raised Jan 2026 · $7.6B valuation · Houston and Phoenix expansion · Deliveries in as little as 10 minutes · South San Francisco",
+    studio: {
+      headline: "A production company built for hardware entering daily life",
+      subline: "Drone launches, neighborhoods, operators, customers, retail partners, the list goes on.",
+    },
+    noticed: {
+      title: "The story is landing now.",
+      intro:
+        "We read the funding announcement, the Walmart expansion note, and the company story. Here's what stuck.",
+      cards: [
+        {
+          label: "Two million deliveries",
+          body: "That number changes the camera language. Zipline is not a prototype anymore. It is an operating system for delivery that has to feel safe, ordinary, and a little miraculous.",
+        },
+        {
+          label: "Ten minutes is visual",
+          body: "A drone leaving, flying, lowering a package, and disappearing is a real-time film. The promise is simple enough for a single shot if the production is planned well.",
+        },
+        {
+          label: "From blood to groceries",
+          body: "The Rwanda blood-delivery origin gives the company a moral spine. The US expansion into retail and healthcare works better when that origin stays visible.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the everyday landing.",
+      intro:
+        "We would film Zipline where the abstraction disappears: a person, a place, a package, and a machine arriving quietly on time.",
+      gives: [
+        ["Brief", "US city launches, healthcare history, retail partners"],
+        ["Production", "Flight windows, neighborhood crews, customer casting"],
+        ["Deliverables", "Launch films, partner spots, trust films, cutdowns"],
+        ["Audience", "New cities, retail partners, regulators, and first users"],
+      ],
+      tags: [
+        "Drone delivery",
+        "Launch films",
+        "Customer stories",
+        "Trust",
+        "Hardware",
+        "Social cutdowns",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  redwood: {
+    slug: "redwood",
+    accent: "#145A32",
+    company: "Redwood Materials",
+    recipientName: "JB Straubel",
+    recipientFirst: "JB",
+    recipientEmail: "jb@redwoodmaterials.com",
+    metaTitle: "Friends & Family for Redwood Materials",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for Redwood Materials.",
+    heroFor: "Redwood Materials",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with Redwood because the battery recycling story just turned into an AI power story, and that pivot deserves cameras on the actual materials.",
+    ticker:
+      "Founded 2017 by JB Straubel · $425M Series E final close, Jan 2026 · Google joined the round · GM full battery lifecycle partnership, Jun 2026 · 20+ GWh batteries received annually · 90% of North American Li-ion batteries and materials recycled · 12 MW / 63 MWh Crusoe project · Sparks + San Francisco",
+    studio: {
+      headline: "A production company built for energy infrastructure people can see",
+      subline: "Industrial sites, battery packs, founders, data centers, auto partners, the list goes on.",
+    },
+    noticed: {
+      title: "The waste story became a power story.",
+      intro:
+        "We read the Series E close, Redwood Energy material, and the GM partnership. Here's what stuck.",
+      cards: [
+        {
+          label: "The pile is enormous",
+          body: "More than 20 GWh of batteries a year, roughly 250,000 EVs worth, is not an abstract recycling claim. It is a mountain of material that can be filmed.",
+        },
+        {
+          label: "Crusoe makes it current",
+          body: "A 12 MW, 63 MWh second-life battery system powering AI compute with 99.2 percent microgrid uptime brings Redwood directly into the data-center power problem everyone is trying to understand.",
+        },
+        {
+          label: "GM completes the loop",
+          body: "Becoming GM's first full battery lifecycle partner turns the circular story into a practical industrial system: recover, reuse, recycle, and put the materials back to work.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "the second life.",
+      intro:
+        "We would make the loop visible: dead packs arriving, diagnostics, storage deployment, critical materials, and the people building the domestic battery chain.",
+      gives: [
+        ["Brief", "Redwood Energy, GM, Crusoe, Series E, battery flow"],
+        ["Production", "Industrial crews, founder interview, plant safety"],
+        ["Deliverables", "Brand film, partner films, recruiting cutdowns"],
+        ["Audience", "Automakers, energy buyers, AI infrastructure, recruits"],
+      ],
+      tags: [
+        "Energy film",
+        "Industrial doc",
+        "Founder story",
+        "Partner films",
+        "Recruiting",
+        "Motion",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  kobold: {
+    slug: "kobold",
+    accent: "#174579",
+    company: "KoBold Metals",
+    recipientName: "Kurt House",
+    recipientFirst: "Kurt",
+    recipientEmail: "kurt.house@koboldmetals.com",
+    metaTitle: "Friends & Family for KoBold Metals",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for KoBold Metals.",
+    heroFor: "KoBold Metals",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with KoBold because an AI mineral company breaking ground on one of the world's best copper deposits is a story people can finally see.",
+    ticker:
+      "Founded 2018 · Kurt House, Josh Goldman, Jeff Jurinak · $537M Series C, Jan 2025 · $2.96B valuation · Mingomba shaft groundbreaking Apr 29, 2026 · $2B+ investment plan · 300,000 metric tonnes annual copper target · 200+ Zambia employees and contractors · Berkeley HQ",
+    studio: {
+      headline: "A production company built for field science and industrial stakes",
+      subline: "Geologists, data rooms, mine sites, local teams, founder story, the list goes on.",
+    },
+    noticed: {
+      title: "The algorithm found a place.",
+      intro:
+        "We read the Mingomba material, the team page, and the funding coverage. Here's what stuck.",
+      cards: [
+        {
+          label: "Mingomba makes it visible",
+          body: "AI mineral exploration can sound like a slide deck until a shaft breaks ground in Zambia. Mingomba gives the story earth, workers, ceremony, weather, and scale.",
+        },
+        {
+          label: "Copper has an audience now",
+          body: "A 300,000 metric tonne annual target connects directly to electrification, data centers, and national supply chains. The metal is no longer background infrastructure.",
+        },
+        {
+          label: "Local proof matters",
+          body: "More than 200 employees and contractors in Zambia, plus local supplier programs, gives KoBold a story that has to be filmed with care and specificity.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "field science.",
+      intro:
+        "We would connect the data to the dirt: geologists, models, cores, local teams, and the first visible chapter of a mine that could matter for decades.",
+      gives: [
+        ["Brief", "Mingomba, critical minerals, AI exploration, Zambia team"],
+        ["Production", "Field crews, scientist interviews, site logistics"],
+        ["Deliverables", "Brand film, mine chapter films, recruiting cutdowns"],
+        ["Audience", "Talent, governments, partners, and the energy world"],
+      ],
+      tags: [
+        "Field production",
+        "Critical minerals",
+        "Founder story",
+        "Science",
+        "Industrial doc",
+        "Motion",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
+
+  "world-labs": {
+    slug: "world-labs",
+    accent: "#2A679C",
+    company: "World Labs",
+    recipientName: "Fei-Fei Li",
+    recipientFirst: "Fei-Fei",
+    recipientEmail: "feifei@worldlabs.ai",
+    metaTitle: "Friends & Family for World Labs",
+    metaDescription:
+      "Friends & Family directors, production, edit, motion, and delivery for World Labs.",
+    heroFor: "World Labs",
+    heroWhy:
+      "Our clients are Callaway, ESPN, Nike, Apple, Ford, Netflix, and Gillette. We'd love to work with World Labs because spatial intelligence is pointed straight at the future of images, and the right film partner should understand the camera, not fear it.",
+    ticker:
+      "Founded by Fei-Fei Li, Justin Johnson, Christoph Lassner, Ben Mildenhall · $1B raised Feb 2026 · Investors include AMD, Autodesk, Emerson Collective, Fidelity, NVIDIA, Sea · Marble generally available Nov 2025 · World API launched Jan 2026 · Generates persistent 3D worlds · San Francisco",
+    studio: {
+      headline: "A production company built for the same side of the camera",
+      subline: "Hybrid craft, live-action plates, product films, demo worlds, the list goes on.",
+    },
+    noticed: {
+      title: "This is not another text box.",
+      intro:
+        "We read the funding announcement, the Marble post, and the World API launch. Here's what stuck.",
+      cards: [
+        {
+          label: "Persistent worlds",
+          body: "Marble turning text, images, video, or 3D layouts into persistent worlds is closer to production design than prompt novelty. The cinematic language is already in the product.",
+        },
+        {
+          label: "Exports matter",
+          body: "Gaussian splats, meshes, and video exports mean World Labs is speaking to people who make things, not just people who demo models. That is our side of the room.",
+        },
+        {
+          label: "The API has real users",
+          body: "Gaming, robotics, simulation, architecture, and design are all different audiences. The films need to show a world model as usable infrastructure, not magic dust.",
+        },
+      ],
+    },
+    fit: {
+      titlePlain: "Start with",
+      titleAccent: "hybrid craft.",
+      intro:
+        "We would build demos with real production thinking: plates, camera moves, environments, practical references, and a clear line between what was captured and what the model made possible.",
+      gives: [
+        ["Brief", "Marble, World API, creator workflows, funding story"],
+        ["Production", "Live-action plates, product capture, director-led demos"],
+        ["Deliverables", "Launch films, workflow demos, founder film, cutdowns"],
+        ["Audience", "Creators, developers, investors, and the camera people watching"],
+      ],
+      tags: [
+        "AI video",
+        "Hybrid craft",
+        "Product demos",
+        "Founder story",
+        "Live action",
+        "Motion",
+        "Edit",
+        "Delivery",
+      ],
+    },
+  },
 };
 
 export const PITCH_SLUGS = Object.keys(PITCH_COMPANIES);

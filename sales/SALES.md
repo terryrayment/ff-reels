@@ -11,25 +11,25 @@
 
 | Metric | Count |
 |--------|-------|
-| Total prospects | 60 |
-| ⬜ Not Sent | 60 |
+| Total prospects | 105 |
+| ⬜ Not Sent | 105 |
 | 📤 Sent | 0 |
 | 💬 Replied | 0 |
 | 📞 Calls Booked | 0 |
 | 🏆 Won | 0 |
 | ❌ Pass | 0 |
 
-**Apollo-verified emails:** 39 of 60 · **Educated guesses (verify before send):** 19 · **TBD (need person):** 2
+**Apollo-verified emails:** see batch tables · **Wave 6:** 15 pattern guesses pending Apollo verification
 
 ---
 
 ## Strategy in one paragraph
 
-F&F is a director-led commercial production company. The market is shifting toward project-based bidding, in-house agency production growth, and AI-augmented craft. We win on **director authorship × talent access × integrated craft × founder presence**, not on horizontal coverage. Reps (Talk Shop NYC, CCCo. Midwest + West Coast pending) handle the funnel; Terry owns the relationship. This tracker is the parallel founder-direct channel — 60 brand-side founder-reachable companies where we email founders directly, bypassing agencies. Reps and founder-direct run in parallel. Detail: [`STRATEGY.md`](./STRATEGY.md).
+F&F is a director-led commercial production company. The market is shifting toward project-based bidding, in-house agency production growth, and AI-augmented craft. We win on **director authorship × talent access × integrated craft × founder presence**, not on horizontal coverage. Reps (Talk Shop NYC, CCCo. Midwest + West Coast pending) handle the funnel; Terry owns the relationship. This tracker is the parallel founder-direct channel: 105 brand-side founder-reachable companies where we email founders directly, bypassing agencies. Reps and founder-direct run in parallel. Detail: [`STRATEGY.md`](./STRATEGY.md).
 
 ---
 
-## The 60 — Master Tracker
+## The 105 - Master Tracker
 
 Click any name to jump to the intro email in [`INTROS.md`](./INTROS.md).
 
@@ -186,6 +186,30 @@ SoCal + NE corridor, sourced 2026-06-10. ALL emails are pattern guesses ⚠️ �
 
 ---
 
+### Batch 5 - Wave 6 New Prospects (91-105)
+
+SoCal first, then NYC and frontier infrastructure, sourced 2026-06-12. ALL emails are pattern guesses ⚠️ - Apollo-verify before send. Pages at reels.friendsandfamily.tv/<slug>.
+
+| # | Person | Company | Status | Email | Page | Note |
+|---|--------|---------|--------|-------|------|------|
+| 91 | Brian Schimpf | Anduril | ⬜ | bschimpf@anduril.com ⚠️ | /anduril | $61B defense prime, Arsenal-1 production story, Costa Mesa |
+| 92 | Mike Cessario | Liquid Death | ⬜ | mike@liquiddeath.com ⚠️ | /liquid-death | $1.4B entertainment-led beverage brand, LA |
+| 93 | Jonathan Neman | Sweetgreen | ⬜ | jonathan.neman@sweetgreen.com ⚠️ | /sweetgreen | LA HQ, wraps launch, Infinite Kitchen and lifestyle reset |
+| 94 | Margaret Kleveland | DÔEN | ⬜ | margaretkleveland@shopdoen.com ⚠️ | /doen | $100M+ California womenswear, Series A, LA/Santa Barbara |
+| 95 | Erik Allen Ford | Buck Mason | ⬜ | erik.allenford@buckmason.com ⚠️ | /buck-mason | Venice garage to 50+ stores, American classics |
+| 96 | Victoria Thain Gioia | Perelel | ⬜ | victoria@perelelhealth.com ⚠️ | /perelel | $27M growth investment, women’s health lifecycle, LA |
+| 97 | Danny Winer | HexClad | ⬜ | danny@hexclad.com ⚠️ | /hexclad | $1B+ cookware, Gordon Ramsay, food/product film fit |
+| 98 | Eric Glyman | Ramp | ⬜ | eric@ramp.com ⚠️ | /ramp | $44B fintech, AI/token spend, NYC |
+| 99 | Kareem Amin | Clay | ⬜ | kareem.amin@clay.com ⚠️ | /clay | $100M ARR, GTM engineering category, NYC |
+| 100 | Anna Harman | Studs | ⬜ | anna@studs.com ⚠️ | /studs | 40 studio footprint, Earscape retail, NYC/LA |
+| 101 | John Gedmark | Astranis | ⬜ | john@astranis.com ⚠️ | /astranis | $450M Series E, five satellites on orbit, SF |
+| 102 | Keller Rinaudo Cliffton | Zipline | ⬜ | keller@flyzipline.com ⚠️ | /zipline | 2M+ deliveries, $7.6B drone logistics, South SF |
+| 103 | JB Straubel | Redwood Materials | ⬜ | jb@redwoodmaterials.com ⚠️ | /redwood | $425M Series E, second-life batteries for AI power |
+| 104 | Kurt House | KoBold Metals | ⬜ | kurt.house@koboldmetals.com ⚠️ | /kobold | Mingomba copper groundbreaking, AI mineral exploration |
+| 105 | Fei-Fei Li | World Labs | ⬜ | feifei@worldlabs.ai ⚠️ | /world-labs | $1B spatial intelligence, same-side-of-camera pitch |
+
+---
+
 ## Weekly Send Plan
 
 Pace: ~6 prospects/week over 10 weeks.
@@ -288,6 +312,7 @@ This sales/ directory in the repo is the **working tracker**. Research files are
 
 ## Changelog
 
+- **2026-06-12** - Wave 6: 15 NET-NEW prospects (91-105), SoCal + NYC + frontier infrastructure, pages built. All emails pattern guesses pending Apollo. Research: pitch-research/2026-06-12-wave6-research.md.
 - **2026-06-11** — Apollo-verified all 30 wave 4-5 emails: 14 confirmed ✅, 10 corrected ✏️ (CHAOS john@, Vuori joe.kudla@vuori.com, Kalshi tarekm@, Unrivaled alex@, Vast max@, Coco zach@, WHOOP will@, Wonder marc@ — catch-all domain, Farmer's Dog jonathan@, Polymarket shaynecoplan@), 6 not findable ⚠️ guesses kept (Whatnot, Suno, Alo, ServiceTitan, Ballers — profile but no email, Blue Water). DB + pitch configs + board synced; 10 corrected Gmail drafts re-cued — delete the old ones.
 - **2026-06-10** — Wave 5: 20 NET-NEW prospects (71-90), SoCal + NYC/Boston/Philly corridor, pages live + drafts cued. All emails pattern guesses pending Apollo. Research: pitch-research/2026-06-10-wave5-research.md. Ledger updated with the full pitch-system writeup.
 - **2026-06-10** — Wave 4: 10 NET-NEW prospects (61-70) discovered via funded+hiring+trending screen, pages live, drafts cued. ALL wave-4 emails are pattern guesses pending Apollo. Research: pitch-research/2026-06-10-wave4-research.md.

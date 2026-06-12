@@ -379,6 +379,9 @@ Type `MARTINI` anywhere on `/site/*` (June 11, 2026): the Martini Shot — gravi
 - GitHub Project 3 ("FF Sales - Direct to Brand") is the operational board: founder + marketing-lead rows adjacent per company, Status/Contact Date/Email Verified fields, pitch link in each item body.
 - `sales/SALES.md` is the master tracker; `sales/MARKETING-LEADS.md` holds the 18 second contacts (9 Apollo-verified).
 
+### Follow-on wave log
+- **2026-06-12:** Wave 6 added 15 more founder-direct pitch pages, prospects 91-105, covering SoCal consumer brands, NYC software/retail, and frontier infrastructure. Research archive: `sales/pitch-research/2026-06-12-wave6-research.md`. Emails remain pattern guesses until Apollo verification.
+
 ---
 
 ## Milestone Summary

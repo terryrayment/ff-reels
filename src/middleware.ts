@@ -124,6 +124,22 @@ export async function middleware(req: NextRequest) {
     "/polymarket": "/pitch/polymarket",
     "/chobani": "/pitch/chobani",
     "/wonder": "/pitch/wonder",
+    // Wave 6 (SoCal + NYC + frontier infrastructure)
+    "/anduril": "/pitch/anduril",
+    "/liquid-death": "/pitch/liquid-death",
+    "/sweetgreen": "/pitch/sweetgreen",
+    "/doen": "/pitch/doen",
+    "/buck-mason": "/pitch/buck-mason",
+    "/perelel": "/pitch/perelel",
+    "/hexclad": "/pitch/hexclad",
+    "/ramp": "/pitch/ramp",
+    "/clay": "/pitch/clay",
+    "/studs": "/pitch/studs",
+    "/astranis": "/pitch/astranis",
+    "/zipline": "/pitch/zipline",
+    "/redwood": "/pitch/redwood",
+    "/kobold": "/pitch/kobold",
+    "/world-labs": "/pitch/world-labs",
   };
   const vanityTarget = VANITY_PATH_REWRITES[req.nextUrl.pathname];
   if (vanityTarget) {
