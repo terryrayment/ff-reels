@@ -143,7 +143,7 @@ function DeviceIcon({ device }: { device: string }) {
 
 export function ReelAnalyticsTable({ rows }: Props) {
   const [search, setSearch] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("lastViewed");
+  const [sortKey, setSortKey] = useState<SortKey>("lastSent");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
