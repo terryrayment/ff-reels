@@ -593,6 +593,23 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
     0
   );
 
+  useEffect(() => {
+    if (!previewProject) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewProject(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [previewProject]);
+
   // Lightbox after reel creation
   if (createdUrl) {
     return (
@@ -657,6 +674,7 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
   }
 
   return (
+    <>
     <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_380px] gap-6">
       {/* Left — director select + video preview + spot grid */}
       <div>
@@ -740,45 +758,6 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
                 )}
               </div>
             </div>
-
-            {previewProject && previewProject.muxPlaybackId && (
-              <div className="mb-5 overflow-hidden rounded-lg bg-[#111] shadow-sm">
-                <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2">
-                  <div className="min-w-0">
-                    <p className="truncate text-[12px] font-medium text-white">
-                      {previewProject.title}
-                      <span className="ml-1.5 font-normal text-white/45">
-                        {previewProject.brand || "\u2014"}
-                        {previewProject.duration ? ` · ${formatDuration(previewProject.duration)}` : ""}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => toggleProject(previewProject.id)}
-                      className="rounded-md bg-white/10 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-white hover:bg-white/20 transition-colors"
-                    >
-                      {selectedProjectIds.includes(previewProject.id) ? "Remove" : "Add to Reel"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPreviewProject(null)}
-                      className="flex h-8 w-8 items-center justify-center rounded-md bg-white/10 text-white hover:bg-white/20 transition-colors"
-                      aria-label="Close preview"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                </div>
-                <MuxPlayer
-                  playbackId={previewProject.muxPlaybackId}
-                  autoPlay
-                  streamType="on-demand"
-                  style={{ aspectRatio: "16/9", width: "100%" }}
-                />
-              </div>
-            )}
 
             {filteredProjects.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -1013,5 +992,56 @@ export function ReelBuilder({ directors }: ReelBuilderProps) {
         </div>
       </div>
     </div>
+    {/* Preview lightbox */}
+    {previewProject && previewProject.muxPlaybackId && (
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Preview ${previewProject.title}`}
+        className="fixed inset-0 z-[80] flex items-center justify-center bg-black/85 p-3 backdrop-blur-sm sm:p-6"
+        onClick={() => setPreviewProject(null)}
+      >
+        <div
+          className="w-full max-w-5xl overflow-hidden rounded-lg bg-[#0A0A0A] shadow-2xl ring-1 ring-white/15"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2.5 sm:px-4">
+            <div className="min-w-0">
+              <p className="truncate text-[13px] font-semibold text-white">
+                {previewProject.title}
+              </p>
+              <p className="mt-0.5 truncate text-[11px] text-white/45">
+                {previewProject.brand || "No brand"}
+                {previewProject.duration ? ` · ${formatDuration(previewProject.duration)}` : ""}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => toggleProject(previewProject.id)}
+                className="rounded-md bg-white px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#111] hover:bg-white/90 transition-colors"
+              >
+                {selectedProjectIds.includes(previewProject.id) ? "Remove" : "Add to Reel"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewProject(null)}
+                className="flex h-9 w-9 items-center justify-center rounded-md bg-white/10 text-white hover:bg-white/20 transition-colors"
+                aria-label="Close preview"
+              >
+                <X size={17} />
+              </button>
+            </div>
+          </div>
+          <MuxPlayer
+            playbackId={previewProject.muxPlaybackId}
+            autoPlay
+            streamType="on-demand"
+            style={{ aspectRatio: "16/9", width: "100%" }}
+          />
+        </div>
+      </div>
+    )}
+    </>
   );
 }
