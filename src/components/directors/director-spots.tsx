@@ -2,10 +2,12 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Clock, AlertCircle, Upload, Image as ImageIcon, Pencil, Camera, Check, CheckSquare, Eye, EyeOff, X } from "lucide-react";
+import { Film, Clock, AlertCircle, Upload, Image as ImageIcon, Pencil, Camera, Check, CheckSquare, Eye, EyeOff, X, FileUp } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 import { HoverScrubThumbnail } from "@/components/ui/hover-scrub-thumbnail";
 import { ThumbnailPickerModal } from "@/components/spots/thumbnail-picker-modal";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
 
 interface ProjectWithStats {
   id: string;
@@ -44,6 +46,13 @@ interface DirectorSpotsProps {
 }
 
 type StatusFilter = "all" | "hidden" | "processing";
+type ReplaceStatus = "idle" | "archiving" | "uploading" | "done";
+
+interface ReplaceStartResponse {
+  muxUploadUrl: string;
+  r2UploadUrl: string;
+  r2Key: string;
+}
 
 export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, canEditNames }: DirectorSpotsProps) {
   const [sortBy, setSortBy] = useState<SortKey>("brand");
@@ -56,6 +65,12 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [replaceTarget, setReplaceTarget] = useState<ProjectWithStats | null>(null);
+  const [replacementFile, setReplacementFile] = useState<File | null>(null);
+  const [replacementProgress, setReplacementProgress] = useState(0);
+  const [replacementStatus, setReplacementStatus] = useState<ReplaceStatus>("idle");
+  const [replacementError, setReplacementError] = useState<string | null>(null);
+  const [replacing, setReplacing] = useState(false);
   // Bulk selection
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -68,6 +83,117 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
   const editInputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const resetReplaceModal = () => {
+    setReplaceTarget(null);
+    setReplacementFile(null);
+    setReplacementProgress(0);
+    setReplacementStatus("idle");
+    setReplacementError(null);
+  };
+
+  const closeReplaceModal = () => {
+    if (replacing) return;
+    resetReplaceModal();
+  };
+
+  const openReplaceModal = (project: ProjectWithStats) => {
+    setReplacementFile(null);
+    setReplacementProgress(0);
+    setReplacementStatus("idle");
+    setReplacementError(null);
+    setReplaceTarget(project);
+  };
+
+  const handleReplaceSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!replaceTarget || !replacementFile) return;
+
+    setReplacing(true);
+    setReplacementError(null);
+    setReplacementProgress(3);
+    setReplacementStatus("archiving");
+
+    const contentType = replacementFile.type || "application/octet-stream";
+    const fileSizeMb = Math.round((replacementFile.size / 1048576) * 100) / 100;
+
+    try {
+      const startRes = await fetch(`/api/projects/${replaceTarget.id}/replace`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: replacementFile.name,
+          contentType,
+          fileSizeMb,
+        }),
+      });
+
+      if (!startRes.ok) {
+        throw new Error("Could not start replacement upload.");
+      }
+
+      const { muxUploadUrl, r2UploadUrl, r2Key } = (await startRes.json()) as ReplaceStartResponse;
+
+      const archiveRes = await fetch(r2UploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": contentType },
+        body: replacementFile,
+      });
+
+      if (!archiveRes.ok) {
+        throw new Error("Original archive upload failed.");
+      }
+
+      setReplacementProgress(42);
+
+      const confirmRes = await fetch(`/api/projects/${replaceTarget.id}/replace/complete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: replacementFile.name,
+          fileSizeMb,
+          r2Key,
+        }),
+      });
+
+      if (!confirmRes.ok) {
+        throw new Error("Original archive could not be confirmed.");
+      }
+
+      setReplacementStatus("uploading");
+      setReplacementProgress(50);
+
+      const muxUpload = new XMLHttpRequest();
+      muxUpload.open("PUT", muxUploadUrl);
+      muxUpload.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          setReplacementProgress(50 + Math.round((event.loaded / event.total) * 45));
+        }
+      });
+
+      await new Promise<void>((resolve, reject) => {
+        muxUpload.onload = () => {
+          if (muxUpload.status >= 200 && muxUpload.status < 300) resolve();
+          else reject(new Error("Mux upload failed."));
+        };
+        muxUpload.onerror = () => reject(new Error("Mux upload failed."));
+        muxUpload.send(replacementFile);
+      });
+
+      setReplacementStatus("done");
+      setReplacementProgress(100);
+      router.refresh();
+
+      setTimeout(() => {
+        setReplacing(false);
+        resetReplaceModal();
+      }, 500);
+    } catch (err) {
+      console.error(err);
+      setReplacementError(err instanceof Error ? err.message : "Replacement failed.");
+      setReplacing(false);
+    }
+  };
 
   // Focus the input when editing starts
   useEffect(() => {
@@ -433,6 +559,21 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
                   Thumbnail
                 </button>
               )}
+
+              {/* Replace file button - keeps the same project attached to existing reels */}
+              {!readOnly && !selectMode && directorId && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openReplaceModal(project);
+                  }}
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity flex items-center gap-1 bg-black/60 hover:bg-black/80 px-2 py-1 rounded text-white text-[10px] backdrop-blur-sm"
+                  title="Replace file"
+                >
+                  <FileUp size={10} />
+                  Replace
+                </button>
+              )}
             </div>
 
             <div className="mt-2">
@@ -633,6 +774,104 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
         </div>
       )}
 
+      {/* Replace file modal */}
+      {replaceTarget && (
+        <Modal
+          open={!!replaceTarget}
+          onClose={closeReplaceModal}
+          title="Replace file"
+          description={`${replaceTarget.brand ? `${replaceTarget.brand} - ` : ""}${replaceTarget.title}`}
+        >
+          <form onSubmit={handleReplaceSubmit} className="space-y-4">
+            <div className="rounded-lg border border-[#E8E7E3] bg-[#FAFAF8] px-3 py-2">
+              <p className="text-[12px] text-[#666]">
+                Existing reel uses: {replaceTarget.reelUsageCount}. Current playback stays live until the replacement finishes processing.
+              </p>
+            </div>
+
+            <div className="relative">
+              <input
+                type="file"
+                accept="video/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  setReplacementFile(file);
+                  setReplacementError(null);
+                }}
+                className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                disabled={replacing}
+              />
+              <div className="rounded-lg border-2 border-dashed border-[#E8E8E3] p-7 text-center transition-colors hover:border-[#ccc]">
+                {replacementFile ? (
+                  <div>
+                    <p className="text-[13px] font-medium text-[#1A1A1A]">
+                      {replacementFile.name}
+                    </p>
+                    <p className="mt-1 text-[11px] text-[#999]">
+                      {(replacementFile.size / 1048576).toFixed(1)} MB
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <Upload size={20} className="mx-auto mb-2 text-[#ccc]" />
+                    <p className="text-[13px] text-[#666]">
+                      Drop a video file or click to browse
+                    </p>
+                    <p className="mt-1 text-[11px] text-[#999]">
+                      The spot ID and outbound reel links stay the same.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {replacing && (
+              <div className="space-y-1.5">
+                <div className="h-1.5 overflow-hidden rounded-sm bg-[#F0F0EC]">
+                  <div
+                    className="h-full rounded-sm bg-[#1A1A1A] transition-all duration-300"
+                    style={{ width: `${replacementProgress}%` }}
+                  />
+                </div>
+                <p className="text-center text-[11px] text-[#999]">
+                  {replacementStatus === "archiving"
+                    ? "Archiving original..."
+                    : replacementStatus === "uploading"
+                      ? "Uploading replacement..."
+                      : replacementStatus === "done"
+                        ? "Replacement queued"
+                        : "Preparing..."}
+                </p>
+              </div>
+            )}
+
+            {replacementError && (
+              <p className="rounded-md border border-red-100 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+                {replacementError}
+              </p>
+            )}
+
+            <div className="flex justify-end gap-3 pt-1">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={closeReplaceModal}
+                disabled={replacing}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                loading={replacing}
+                disabled={!replacementFile}
+              >
+                {replacing ? `Replacing ${replacementProgress}%` : "Replace file"}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
       {/* Thumbnail picker modal */}
       {thumbnailPickerProject && (
         <ThumbnailPickerModal
@@ -672,6 +911,17 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
               Set thumbnail
             </button>
           )}
+          <button
+            onClick={() => {
+              const p = sorted.find((proj) => proj.id === contextMenu.projectId);
+              if (p) openReplaceModal(p);
+              setContextMenu(null);
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-[12px] text-[#333] hover:bg-[#F5F4F0] transition-colors"
+          >
+            <FileUp size={13} className="text-[#999]" />
+            Replace file
+          </button>
         </div>
       )}
     </div>

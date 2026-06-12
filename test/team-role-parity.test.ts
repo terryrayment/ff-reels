@@ -70,6 +70,13 @@ test("producer surfaces are available to reps too", () => {
   const thumbnailApi = read("src/app/api/projects/[id]/thumbnail/route.ts");
   assert.match(thumbnailApi, teamRoles);
 
+  for (const file of [
+    "src/app/api/projects/[id]/replace/route.ts",
+    "src/app/api/projects/[id]/replace/complete/route.ts",
+  ]) {
+    assert.match(read(file), teamRoles, file);
+  }
+
   const quickReelPage = read("src/app/(dashboard)/reels/quick/page.tsx");
   assert.match(quickReelPage, teamRoles);
 
