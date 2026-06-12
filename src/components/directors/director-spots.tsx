@@ -134,30 +134,35 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
 
       const { muxUploadUrl, r2UploadUrl, r2Key } = (await startRes.json()) as ReplaceStartResponse;
 
-      const archiveRes = await fetch(r2UploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": contentType },
-        body: replacementFile,
-      });
-
-      if (!archiveRes.ok) {
-        throw new Error("Original archive upload failed.");
+      let archivedOriginal = false;
+      try {
+        const archiveRes = await fetch(r2UploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": contentType },
+          body: replacementFile,
+        });
+        archivedOriginal = archiveRes.ok;
+        if (!archivedOriginal) {
+          console.warn("R2 replacement archive failed", archiveRes.status);
+        }
+      } catch (archiveError) {
+        console.warn("R2 replacement archive failed", archiveError);
       }
 
-      setReplacementProgress(42);
+      if (archivedOriginal) {
+        const confirmRes = await fetch(`/api/projects/${replaceTarget.id}/replace/complete`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: replacementFile.name,
+            fileSizeMb,
+            r2Key,
+          }),
+        });
 
-      const confirmRes = await fetch(`/api/projects/${replaceTarget.id}/replace/complete`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          filename: replacementFile.name,
-          fileSizeMb,
-          r2Key,
-        }),
-      });
-
-      if (!confirmRes.ok) {
-        throw new Error("Original archive could not be confirmed.");
+        if (!confirmRes.ok) {
+          console.warn("R2 replacement archive confirm failed");
+        }
       }
 
       setReplacementStatus("uploading");

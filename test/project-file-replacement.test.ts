@@ -41,3 +41,13 @@ test("director portfolio exposes a replace-file action without creating a new sp
   assert.match(source, /router\.refresh\(\)/);
   assert.doesNotMatch(source, /fetch\("\/api\/upload"/);
 });
+
+test("director replacement keeps going when the optional R2 archive upload fails", () => {
+  const source = read("src/components/directors/director-spots.tsx");
+
+  assert.match(source, /let archivedOriginal = false/);
+  assert.match(source, /R2 replacement archive failed/);
+  assert.match(source, /if \(archivedOriginal\)/);
+  assert.doesNotMatch(source, /throw new Error\("Original archive upload failed\."\)/);
+  assert.doesNotMatch(source, /throw new Error\("Original archive could not be confirmed\."\)/);
+});
