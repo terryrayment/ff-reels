@@ -605,23 +605,36 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
                   />
                 </div>
               ) : (
-                <div className={`flex items-center gap-1.5 group/title ${project.brand ? "mt-0.5" : ""}`}>
-                  <p className={`text-[12px] truncate ${savingId === project.id ? "text-[#aaa]" : "text-[#777]"}`}>
+                canEditNames && savingId !== project.id ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startEditing(project.id, project.title);
+                    }}
+                    className={`group/title -ml-0.5 flex max-w-full items-center gap-1.5 rounded-sm px-0.5 py-0.5 text-left transition-colors hover:bg-[#F5F4F0] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#999] ${
+                      project.brand ? "mt-0.5" : ""
+                    }`}
+                    aria-label={`Edit title for ${project.title}`}
+                    title="Edit spot title"
+                  >
+                    <span className="min-w-0 truncate text-[12px] text-[#777] transition-colors group-hover/title:text-[#333]">
+                      {project.title}
+                    </span>
+                    <Pencil
+                      size={10}
+                      className="flex-shrink-0 text-[#aaa] opacity-60 transition-opacity group-hover/title:opacity-100"
+                    />
+                  </button>
+                ) : (
+                  <p
+                    className={`text-[12px] truncate ${project.brand ? "mt-0.5" : ""} ${
+                      savingId === project.id ? "text-[#aaa]" : "text-[#777]"
+                    }`}
+                  >
                     {savingId === project.id ? "Saving..." : project.title}
                   </p>
-                  {canEditNames && savingId !== project.id && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        startEditing(project.id, project.title);
-                      }}
-                      className="opacity-0 group-hover/title:opacity-100 transition-opacity flex-shrink-0 p-0.5 hover:bg-[#F0EFE9] rounded"
-                      title="Rename spot"
-                    >
-                      <Pencil size={10} className="text-[#999]" />
-                    </button>
-                  )}
-                </div>
+                )
               )}
 
               {(project.agency || project.year) && (

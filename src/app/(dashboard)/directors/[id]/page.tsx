@@ -88,6 +88,7 @@ export default async function DirectorDetailPage({
           projects={projectsWithStats}
           directorId={director.id}
           heroProjectId={director.heroProjectId}
+          canEditNames
         />
       </div>
 
