@@ -47,6 +47,7 @@ interface DirectorSpotsProps {
 
 type StatusFilter = "all" | "hidden" | "processing";
 type ReplaceStatus = "idle" | "archiving" | "uploading" | "done";
+type EditableSpotField = "brand" | "title";
 
 interface ReplaceStartResponse {
   muxUploadUrl: string;
@@ -63,8 +64,10 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
   const [savingThumbnail, setSavingThumbnail] = useState(false);
   const [localThumbnailUrls, setLocalThumbnailUrls] = useState<Record<string, string | null>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingField, setEditingField] = useState<EditableSpotField | null>(null);
   const [editValue, setEditValue] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [savingField, setSavingField] = useState<EditableSpotField | null>(null);
   const [replaceTarget, setReplaceTarget] = useState<ProjectWithStats | null>(null);
   const [replacementFile, setReplacementFile] = useState<File | null>(null);
   const [replacementProgress, setReplacementProgress] = useState(0);
@@ -208,34 +211,48 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
     }
   }, [editingId]);
 
-  const startEditing = (projectId: string, currentTitle: string) => {
+  const startEditing = (projectId: string, field: EditableSpotField, currentValue: string) => {
     setEditingId(projectId);
-    setEditValue(currentTitle);
+    setEditingField(field);
+    setEditValue(currentValue);
   };
 
   const cancelEditing = () => {
     setEditingId(null);
+    setEditingField(null);
     setEditValue("");
   };
 
-  const saveTitle = async (projectId: string) => {
+  const saveSpotField = async (projectId: string) => {
+    if (!editingField) return;
+
     const trimmed = editValue.trim();
-    const original = projects.find((p) => p.id === projectId)?.title;
-    if (!trimmed || trimmed === original) {
+    const project = projects.find((p) => p.id === projectId);
+    const original = editingField === "brand" ? project?.brand ?? "" : project?.title ?? "";
+
+    if ((editingField === "title" && !trimmed) || trimmed === original) {
       cancelEditing();
       return;
     }
+
+    const payload = editingField === "brand"
+      ? { brand: trimmed || null }
+      : { title: trimmed };
+
     setSavingId(projectId);
+    setSavingField(editingField);
     setEditingId(null);
+    setEditingField(null);
     try {
       await fetch(`/api/projects/${projectId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: trimmed }),
+        body: JSON.stringify(payload),
       });
       router.refresh();
     } finally {
       setSavingId(null);
+      setSavingField(null);
     }
   };
 
@@ -582,26 +599,65 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
             </div>
 
             <div className="mt-2">
-              {project.brand && (
-                <p className="text-[13px] font-medium text-[#1A1A1A] truncate">
-                  {project.brand}
-                </p>
-              )}
-
-              {/* Inline title editing for directors */}
-              {editingId === project.id ? (
-                <div className="flex items-center gap-1 mt-0.5">
+              {editingId === project.id && editingField === "brand" ? (
+                <div className="flex items-center gap-1">
                   <input
                     ref={editInputRef}
                     type="text"
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") saveTitle(project.id);
+                      if (e.key === "Enter") saveSpotField(project.id);
                       if (e.key === "Escape") cancelEditing();
                     }}
-                    onBlur={() => saveTitle(project.id)}
-                    className="flex-1 min-w-0 text-[12px] text-[#333] bg-white border border-[#ccc] rounded px-1.5 py-0.5 outline-none focus:border-[#999] transition-colors"
+                    onBlur={() => saveSpotField(project.id)}
+                    placeholder="Client"
+                    className="flex-1 min-w-0 rounded border border-[#ccc] bg-white px-1.5 py-0.5 text-[13px] font-medium text-[#1A1A1A] outline-none transition-colors focus:border-[#999]"
+                  />
+                </div>
+              ) : canEditNames && !readOnly && directorId && savingId !== project.id ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startEditing(project.id, "brand", project.brand ?? "");
+                  }}
+                  className="group/client -ml-0.5 flex max-w-full items-center gap-1.5 rounded-sm px-0.5 py-0.5 text-left transition-colors hover:bg-[#F5F4F0] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#999]"
+                  aria-label={`Edit client for ${project.title}`}
+                  title="Edit client"
+                >
+                  <span
+                    className={`min-w-0 truncate text-[13px] font-medium transition-colors group-hover/client:text-[#1A1A1A] ${
+                      project.brand ? "text-[#1A1A1A]" : "text-[#aaa]"
+                    }`}
+                  >
+                    {project.brand || "Add client"}
+                  </span>
+                  <Pencil
+                    size={10}
+                    className="flex-shrink-0 text-[#aaa] opacity-60 transition-opacity group-hover/client:opacity-100"
+                  />
+                </button>
+              ) : project.brand || (savingId === project.id && savingField === "brand") ? (
+                <p className="truncate text-[13px] font-medium text-[#1A1A1A]">
+                  {savingId === project.id && savingField === "brand" ? "Saving..." : project.brand}
+                </p>
+              ) : null}
+
+              {editingId === project.id && editingField === "title" ? (
+                <div className="mt-0.5 flex items-center gap-1">
+                  <input
+                    ref={editInputRef}
+                    type="text"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") saveSpotField(project.id);
+                      if (e.key === "Escape") cancelEditing();
+                    }}
+                    onBlur={() => saveSpotField(project.id)}
+                    placeholder="Title"
+                    className="flex-1 min-w-0 rounded border border-[#ccc] bg-white px-1.5 py-0.5 text-[12px] text-[#333] outline-none transition-colors focus:border-[#999]"
                   />
                 </div>
               ) : (
@@ -610,10 +666,10 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      startEditing(project.id, project.title);
+                      startEditing(project.id, "title", project.title);
                     }}
                     className={`group/title -ml-0.5 flex max-w-full items-center gap-1.5 rounded-sm px-0.5 py-0.5 text-left transition-colors hover:bg-[#F5F4F0] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#999] ${
-                      project.brand ? "mt-0.5" : ""
+                      project.brand || (!readOnly && directorId) ? "mt-0.5" : ""
                     }`}
                     aria-label={`Edit title for ${project.title}`}
                     title="Edit spot title"
@@ -629,10 +685,10 @@ export function DirectorSpots({ projects, directorId, heroProjectId, readOnly, c
                 ) : (
                   <p
                     className={`text-[12px] truncate ${project.brand ? "mt-0.5" : ""} ${
-                      savingId === project.id ? "text-[#aaa]" : "text-[#777]"
+                      savingId === project.id && savingField === "title" ? "text-[#aaa]" : "text-[#777]"
                     }`}
                   >
-                    {savingId === project.id ? "Saving..." : project.title}
+                    {savingId === project.id && savingField === "title" ? "Saving..." : project.title}
                   </p>
                 )
               )}
