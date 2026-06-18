@@ -30,11 +30,51 @@ export function DirectorsList({ directors }: DirectorsListProps) {
   const router = useRouter();
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [exiting, setExiting] = useState<{ slug: string; url: string } | null>(
+    null,
+  );
   const imageRef = useRef<HTMLImageElement>(null);
   const previewFrameRef = useRef<HTMLDivElement>(null);
+  // Track the previously-rendered director so a director→director switch can
+  // dissolve the outgoing still over the incoming frame (a "film cut").
+  const prevSlugRef = useRef<string | null>(null);
+  const prevStillRef = useRef<string | null>(null);
+  const exitTimerRef = useRef<number | null>(null);
 
   const activeDirector =
     directors.find((director) => director.slug === activeSlug) ?? null;
+
+  // Detect a real director→director change and arm the dissolving still.
+  // Skips first-hover (no previous), leave (no next), and missing outgoing
+  // still (fallback tile has nothing to fade).
+  useEffect(() => {
+    const nextSlug = activeDirector?.slug ?? null;
+    const prevSlug = prevSlugRef.current;
+    const prevStill = prevStillRef.current;
+    if (prevSlug && nextSlug && prevSlug !== nextSlug && prevStill) {
+      setExiting({ slug: prevSlug, url: prevStill });
+    }
+    prevSlugRef.current = nextSlug;
+    prevStillRef.current = activeDirector?.stillUrl ?? null;
+  }, [activeDirector?.slug, activeDirector?.stillUrl]);
+
+  // Clear the dissolving still once the fade completes (>= 280ms animation).
+  useEffect(() => {
+    if (!exiting) return;
+    if (exitTimerRef.current !== null) {
+      window.clearTimeout(exitTimerRef.current);
+    }
+    exitTimerRef.current = window.setTimeout(() => {
+      setExiting(null);
+      exitTimerRef.current = null;
+    }, 300);
+    return () => {
+      if (exitTimerRef.current !== null) {
+        window.clearTimeout(exitTimerRef.current);
+        exitTimerRef.current = null;
+      }
+    };
+  }, [exiting]);
 
   useEffect(() => {
     setImageLoaded(false);
@@ -62,6 +102,9 @@ export function DirectorsList({ directors }: DirectorsListProps) {
     }
 
     event.preventDefault();
+
+    // Never let a decorative dissolve overlap the morph handoff.
+    setExiting(null);
 
     if (activeSlug !== director.slug) {
       setActiveSlug(director.slug);
@@ -103,7 +146,7 @@ export function DirectorsList({ directors }: DirectorsListProps) {
 
   return (
     <section
-      className="ff-directors-list"
+      className={`ff-directors-list${activeSlug ? " has-active" : ""}`}
       aria-labelledby="directors-list-heading"
       onMouseLeave={() => setActiveSlug(null)}
     >
@@ -201,6 +244,19 @@ export function DirectorsList({ directors }: DirectorsListProps) {
                     preload="none"
                   />
                 )}
+              {exiting && (
+                // Decorative outgoing still — dissolves to reveal the incoming
+                // frame. Rendered LAST so the morph's querySelector("img")
+                // keeps returning the incoming poster. No ref / no morph attrs.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={exiting.slug}
+                  src={exiting.url}
+                  alt=""
+                  aria-hidden="true"
+                  className="ff-directors-list__exit-still"
+                />
+              )}
             </div>
           ) : activeDirector ? (
             <div
@@ -211,6 +267,16 @@ export function DirectorsList({ directors }: DirectorsListProps) {
               <div className="ff-media-fallback">
                 <span>{activeDirector.name}</span>
               </div>
+              {exiting && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={exiting.slug}
+                  src={exiting.url}
+                  alt=""
+                  aria-hidden="true"
+                  className="ff-directors-list__exit-still"
+                />
+              )}
             </div>
           ) : null}
         </aside>

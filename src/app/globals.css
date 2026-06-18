@@ -2909,8 +2909,18 @@ mux-player {
     transform: translate3d(0, 0, 0);
   }
 
-  .ff-directors-list__link.is-active {
-    opacity: 0.5;
+  /* Spotlight: dim non-active names only while a selection exists. */
+  .ff-directors-list.has-active .ff-directors-list__link:not(.is-active) {
+    opacity: 0.4;
+  }
+
+  /* Active name leads — full opacity + slight push. Must beat the
+     :hover/:focus-visible dim below. */
+  .ff-directors-list.has-active .ff-directors-list__link.is-active,
+  .ff-directors-list.has-active .ff-directors-list__link.is-active:hover,
+  .ff-directors-list.has-active .ff-directors-list__link.is-active:focus-visible {
+    opacity: 1;
+    transform: translateX(0.5rem);
   }
 
   .ff-directors-list__link {
@@ -2927,12 +2937,27 @@ mux-player {
     line-height: 1.1;
     letter-spacing: 0;
     color: var(--ff-color-ink);
-    transition: opacity 300ms ease;
+    transition:
+      opacity var(--dur-quick) var(--ff-ease-out),
+      transform var(--dur-quick) var(--ff-ease-out);
   }
 
   .ff-directors-list__link:hover,
   .ff-directors-list__link:focus-visible {
     opacity: 0.5;
+  }
+
+  /* Outgoing still dissolves over the incoming frame (a soft film cut).
+     280ms matches the frame opacity reveal so it reads as one dissolve. */
+  .ff-directors-list__exit-still {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+    pointer-events: none;
+    animation: ffDirectorsExitStill 280ms var(--ff-ease-out) forwards;
   }
 
   @media (max-width: 991px) {
@@ -2946,6 +2971,22 @@ mux-player {
       opacity: 1;
       transform: none;
       transition: none;
+    }
+
+    .ff-directors-list__exit-still {
+      display: none;
+    }
+
+    .ff-directors-list__link {
+      transition: none;
+    }
+
+    /* Match the :hover/:focus-visible variants so the reset wins on
+       specificity even when the active link is also hovered/focused. */
+    .ff-directors-list.has-active .ff-directors-list__link.is-active,
+    .ff-directors-list.has-active .ff-directors-list__link.is-active:hover,
+    .ff-directors-list.has-active .ff-directors-list__link.is-active:focus-visible {
+      transform: none;
     }
   }
 
@@ -2988,6 +3029,15 @@ mux-player {
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes ffDirectorsExitStill {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
