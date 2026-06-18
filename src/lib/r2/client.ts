@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectsCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export const R2_CONFIGURED = Boolean(
@@ -49,6 +49,36 @@ export async function getDownloadUrl(key: string, expiresIn = 3600, responseCont
     ...(responseContentDisposition && { ResponseContentDisposition: responseContentDisposition }),
   });
   return getSignedUrl(r2, command, { expiresIn });
+}
+
+function isMissingObjectError(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const candidate = error as { name?: string; $metadata?: { httpStatusCode?: number } };
+  return (
+    candidate.$metadata?.httpStatusCode === 404 ||
+    candidate.name === "NotFound" ||
+    candidate.name === "NoSuchKey"
+  );
+}
+
+/**
+ * Check whether an R2 object exists before handing out a signed URL.
+ */
+export async function objectExists(key: string) {
+  if (!R2_CONFIGURED) return false;
+
+  try {
+    await r2.send(
+      new HeadObjectCommand({
+        Bucket: R2_BUCKET,
+        Key: key,
+      }),
+    );
+    return true;
+  } catch (error) {
+    if (isMissingObjectError(error)) return false;
+    throw error;
+  }
 }
 
 /**

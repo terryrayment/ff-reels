@@ -1,4 +1,4 @@
-import { getDownloadUrl } from "@/lib/r2/client";
+import { getDownloadUrl, objectExists } from "@/lib/r2/client";
 import { getMux } from "@/lib/mux/client";
 
 type DownloadableProject = {
@@ -197,7 +197,7 @@ export async function resolveProjectDownload(
   project: DownloadableProject,
   downloadFilename?: string,
 ): Promise<DownloadResolution> {
-  if (project.r2Key) {
+  if (project.r2Key && await objectExists(project.r2Key)) {
     const ext = project.originalFilename?.split(".").pop() ?? "mp4";
     const disposition = downloadFilename
       ? `attachment; filename="${downloadFilename}"`
