@@ -59,6 +59,7 @@ export async function middleware(req: NextRequest) {
   // requiring the dedicated subdomain to be DNS-configured.
   const VANITY_PATH_REWRITES: Record<string, string> = {
     "/versant": "/pitch/versant",
+    "/healthcare": "/pitch/healthcare",
     // Founder outreach pitch pages (configs in src/lib/pitch/companies.ts)
     "/hadrian": "/pitch/hadrian",
     "/shield-ai": "/pitch/shield-ai",

@@ -11,7 +11,7 @@ import { PITCH_SLUGS } from "@/lib/pitch/companies";
  * email link-scanner bots (which don't run JS) are filtered out.
  */
 
-const VALID_SLUGS = new Set([...PITCH_SLUGS, "versant"]);
+const VALID_SLUGS = new Set([...PITCH_SLUGS, "versant", "healthcare"]);
 
 export async function POST(req: NextRequest) {
   try {
