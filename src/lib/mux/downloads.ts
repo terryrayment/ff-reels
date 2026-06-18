@@ -221,8 +221,20 @@ export async function resolveProjectDownload(
   try {
     const mux = getMux();
     const asset = await mux.video.assets.retrieve(project.muxAssetId);
+    const files = asset.static_renditions?.files ?? [];
+    const readyFile = chooseBestReadyFile(files);
 
-    if (asset.master?.status === "ready" && asset.master.url) {
+    if (downloadFilename && readyFile) {
+      return {
+        status: "ready",
+        source: "mux",
+        url: buildMuxStaticUrl(project.muxPlaybackId, readyFile.name, downloadFilename),
+        extension: "mp4",
+        muxFilename: readyFile.name,
+      };
+    }
+
+    if (!downloadFilename && asset.master?.status === "ready" && asset.master.url) {
       return {
         status: "ready",
         source: "mux-master",
@@ -239,7 +251,7 @@ export async function resolveProjectDownload(
       if (shouldRefreshMaster) {
         const masterEnabled = await requestMasterAccess(project.muxAssetId);
         requestedMaster = !!masterEnabled;
-        if (masterEnabled?.master?.status === "ready" && masterEnabled.master.url) {
+        if (masterEnabled?.master?.status === "ready" && masterEnabled.master.url && !downloadFilename) {
           return {
             status: "ready",
             source: "mux-master",
@@ -251,9 +263,6 @@ export async function resolveProjectDownload(
       }
     }
 
-    const files = asset.static_renditions?.files ?? [];
-
-    const readyFile = chooseBestReadyFile(files);
     if (readyFile) {
       return {
         status: "ready",
