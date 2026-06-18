@@ -200,8 +200,10 @@ export function SourceVideoReel({
               alt=""
               aria-hidden="true"
               data-marketing-poster-layer
-              className={`ff-media-fill pointer-events-none object-cover transition-opacity duration-200 ease-out ${
-                showVideo || !posterReady ? "opacity-0" : "opacity-100"
+              className={`ff-media-fill pointer-events-none object-cover transition-[opacity,filter] duration-300 ease-out motion-reduce:transition-none ${
+                showVideo || !posterReady
+                  ? "opacity-0 blur-[6px] motion-reduce:blur-0"
+                  : "opacity-100 blur-0"
               }`}
               loading="eager"
               fetchPriority="high"
@@ -212,8 +214,8 @@ export function SourceVideoReel({
           <video
             ref={videoRef}
             key={projectId}
-            className={`h-full w-full object-cover transition-opacity duration-200 ease-out ${
-              showVideo ? "opacity-100" : "opacity-0"
+            className={`h-full w-full object-cover transition-[opacity,filter] duration-500 ease-out motion-reduce:transition-none ${
+              showVideo ? "opacity-100 blur-0" : "opacity-0 blur-[8px] motion-reduce:blur-0"
             }`}
             src={sourceVideoUrl}
             poster={displayPosterUrl ?? undefined}

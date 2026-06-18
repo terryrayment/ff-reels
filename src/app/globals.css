@@ -2541,8 +2541,23 @@ mux-player {
       opacity 260ms var(--ff-ease-out);
   }
 
+  /* Rack-focus load-in: framed images resolve from a soft blur to sharp as
+     they load (a focus-pull). Scoped to .ff-media-frame so the About photo
+     loop (.ff-media-image, no frame, never gets .is-loaded) is untouched.
+     The transition is redeclared here (more specific than the base
+     .ff-media-image) to add filter without dropping the transform/opacity
+     reveal. */
+  .ff-media-frame .ff-media-image {
+    filter: blur(12px);
+    transition:
+      transform var(--dur-slow) var(--ease-reveal),
+      opacity 260ms var(--ff-ease-out),
+      filter 700ms var(--ease-reveal);
+  }
+
   .ff-media-frame .ff-media-image.is-loaded {
     opacity: 1;
+    filter: blur(0);
   }
 
   .ff-media-frame .ff-media-image:not(.is-loaded) {
@@ -2696,6 +2711,8 @@ mux-player {
     .ff-media-frame .ff-media-image,
     .ff-media-frame .ff-media-image:not(.is-loaded) {
       opacity: 1;
+      filter: none;
+      transition: none;
     }
 
     .ff-mobile-menu,

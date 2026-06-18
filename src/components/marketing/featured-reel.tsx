@@ -108,8 +108,10 @@ export function FeaturedReel({
               alt=""
               aria-hidden="true"
               data-marketing-poster-layer
-              className={`ff-media-fill pointer-events-none object-cover transition-opacity duration-200 ease-out ${
-                showMux || !posterReady ? "opacity-0" : "opacity-100"
+              className={`ff-media-fill pointer-events-none object-cover transition-[opacity,filter] duration-300 ease-out motion-reduce:transition-none ${
+                showMux || !posterReady
+                  ? "opacity-0 blur-[6px] motion-reduce:blur-0"
+                  : "opacity-100 blur-0"
               }`}
               loading="eager"
               fetchPriority="high"
@@ -126,8 +128,8 @@ export function FeaturedReel({
             muted
             playsInline
             preload={shouldPlay ? "auto" : "metadata"}
-            className={`transition-opacity duration-200 ease-out ${
-              showMux ? "opacity-100" : "opacity-0"
+            className={`transition-[opacity,filter] duration-500 ease-out motion-reduce:transition-none ${
+              showMux ? "opacity-100 blur-0" : "opacity-0 blur-[8px] motion-reduce:blur-0"
             }`}
           />
         </div>
