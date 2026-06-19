@@ -400,7 +400,7 @@ function HealthcareHero({
               <h1 className="versant-display max-w-none text-[clamp(2rem,8.5vw,6rem)] font-medium leading-[0.98] tracking-[-0.044em] text-white sm:max-w-[18ch] lg:max-w-[14ch]">
                 Friends &amp; Family{" "}
                 <span className="font-light tracking-[-0.018em] text-white/72">
-                  for healthcare
+                  healthcare
                 </span>
               </h1>
               <p className="mt-5 max-w-[39rem] text-[clamp(18px,1.75vw,26px)] leading-[1.22] tracking-[-0.024em] text-white/70">
