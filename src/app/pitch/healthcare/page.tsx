@@ -393,9 +393,6 @@ function HealthcareHero({
                 Friends &amp; Family
               </span>
             </a>
-            <p className="max-w-[21rem] text-right text-white/62 sm:max-w-none">
-              A Friends &amp; Family pitch for healthcare teams
-            </p>
           </div>
 
           <div className="relative z-10 mt-[clamp(2rem,5.5vh,4rem)] grid gap-8 lg:grid-cols-[minmax(0,0.58fr)_minmax(22rem,0.42fr)] lg:items-center">
