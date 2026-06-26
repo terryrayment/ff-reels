@@ -82,14 +82,28 @@ export function AddSpotsModal({
     setTimeout(() => searchRef.current?.focus(), 100);
   }, [open, directorId]);
 
-  // Available projects = published ones not already in the reel
+  // Available projects = published ones not already in the reel,
+  // sorted A–Z by client (brand). Spots with no client fall to the
+  // bottom; within a client, break ties by title.
   const availableProjects = useMemo(() => {
+    const norm = (s: string) => s.replace(/^[^a-z0-9]+/i, "").toLowerCase();
     return projects
       .filter((p) => p.isPublished && !existingProjectIds.includes(p.id))
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+      .sort((a, b) => {
+        const aHas = !!a.brand?.trim();
+        const bHas = !!b.brand?.trim();
+        if (aHas !== bHas) return aHas ? -1 : 1; // brandless spots last
+        const byBrand = norm(a.brand || "").localeCompare(
+          norm(b.brand || ""),
+          undefined,
+          { numeric: true, sensitivity: "base" }
+        );
+        if (byBrand !== 0) return byBrand;
+        return norm(a.title).localeCompare(norm(b.title), undefined, {
+          numeric: true,
+          sensitivity: "base",
+        });
+      });
   }, [projects, existingProjectIds]);
 
   // Filter by search query
