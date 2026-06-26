@@ -76,7 +76,7 @@ function SortableSpot({
       {/* Drag handle */}
       <button
         type="button"
-        className="text-[#ddd] hover:text-[#999] transition-colors cursor-grab active:cursor-grabbing touch-none flex-shrink-0"
+        className="text-[#1A1A1A] transition-colors cursor-grab active:cursor-grabbing touch-none flex-shrink-0"
         {...attributes}
         {...listeners}
       >
