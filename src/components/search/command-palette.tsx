@@ -206,7 +206,15 @@ export function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleInputKey}
             placeholder="Search spots, directors, reels, contacts…"
-            className="w-full py-3.5 text-[14px] text-[#111] placeholder:text-[#AAA9A2] outline-none bg-transparent"
+            // Stop password managers (1Password / LastPass / Dashlane) from
+            // attaching their overlay UI to this search field.
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            data-1p-ignore="true"
+            data-lpignore="true"
+            data-form-type="other"
+            className="w-full py-3.5 text-[14px] text-[#111] placeholder:text-[#AAA9A2] outline-none bg-transparent border-0"
           />
           {loading && (
             <span className="w-3.5 h-3.5 border-2 border-[#ccc] border-t-[#666] rounded-full animate-spin flex-shrink-0" />
@@ -225,9 +233,26 @@ export function CommandPalette() {
           )}
 
           {query.trim().length < 2 && (
-            <p className="px-4 py-8 text-center text-[12px] text-[#bbb]">
-              Search the entire library — every spot, director, reel, and contact.
-            </p>
+            <div className="px-3 py-3">
+              <p className="px-3 pb-2 text-[10px] uppercase tracking-[0.12em] text-[#bbb]">
+                Search across
+              </p>
+              {[
+                { Icon: Film, label: "Spots", hint: "title, brand, agency" },
+                { Icon: Users, label: "Directors", hint: "name" },
+                { Icon: Clapperboard, label: "Reels", hint: "title or client" },
+                { Icon: AtSign, label: "Contacts", hint: "name, email, company" },
+              ].map(({ Icon, label, hint }) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-3 px-3 py-2 text-[13px]"
+                >
+                  <Icon size={14} className="text-[#bbb] flex-shrink-0" />
+                  <span className="text-[#444] font-medium">{label}</span>
+                  <span className="text-[#aaa]">— {hint}</span>
+                </div>
+              ))}
+            </div>
           )}
 
           {results.spots.length > 0 && (
