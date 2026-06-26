@@ -117,14 +117,15 @@ function SortableSpot({
         {formatDuration(item.duration)}
       </span>
 
-      {/* Remove button */}
+      {/* Remove button — always visible, clear red hover */}
       <button
         type="button"
         onClick={() => onRemove(item.id)}
-        className="text-[#ddd] hover:text-red-400 transition-colors flex-shrink-0 p-1 -mr-1"
+        className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full border border-[#E5E4DF] text-[#888] hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-colors"
         title="Remove from reel"
+        aria-label={`Remove ${item.title} from reel`}
       >
-        <X size={14} />
+        <X size={15} />
       </button>
     </div>
   );
@@ -219,13 +220,13 @@ export function ReelSpotList({
         </SortableContext>
       </DndContext>
 
-      {/* Add Spots button */}
+      {/* Add Spots button — solid, primary affordance */}
       <button
         type="button"
         onClick={() => setShowAddModal(true)}
-        className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] text-[#999] hover:text-[#1A1A1A] border border-dashed border-[#E8E7E3] hover:border-[#ccc] transition-all duration-200 hover:bg-[#F7F6F3]/50"
+        className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[13px] font-semibold bg-[#1A1A1A] text-white hover:bg-black transition-colors shadow-sm"
       >
-        <Plus size={14} />
+        <Plus size={16} strokeWidth={2.5} />
         Add Spots
       </button>
 
