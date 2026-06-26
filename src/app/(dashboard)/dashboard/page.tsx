@@ -8,6 +8,8 @@ import { ArrowRight, Flame, Trophy, Eye, TrendingUp } from "lucide-react";
 import { ComposeUpdate } from "@/components/dashboard/compose-update";
 import { SignalFeed } from "@/components/dashboard/signal-feed";
 import { MyActivityToggle } from "@/components/dashboard/my-activity-toggle";
+import { LivingGreeting } from "@/components/dashboard/living-greeting";
+import { getWelcomeHeadline } from "@/lib/dashboard/welcome-headline";
 
 export default async function DashboardPage({
   searchParams,
@@ -317,6 +319,13 @@ export default async function DashboardPage({
         : "Sales Rep";
   const currentUserName = session.user.name || "";
 
+  // Living greeting — time-aware hello + one prioritized live headline
+  const headline = await getWelcomeHeadline({ userId, role: session.user.role });
+  const firstName =
+    session.user.name?.trim().split(/\s+/)[0] ||
+    session.user.email?.split("@")[0] ||
+    "there";
+
   // Group recent views by director+recipient to deduplicate
   const groupedViews: {
     key: string;
@@ -364,16 +373,11 @@ export default async function DashboardPage({
     <div>
       {/* Header */}
       <div className="flex items-start justify-between mb-6 md:mb-8 gap-4">
-        <div className="min-w-0">
-          <h1 className="text-[42px] md:text-[60px] font-semibold tracking-tight text-[#111] leading-[0.98]">
-            Dashboard
-          </h1>
-          <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-[#777]">
-            {session.user.name || session.user.email}
-            <span className="mx-2 text-[#B8B7B0]">/</span>
-            {roleLabel}
-          </p>
-        </div>
+        <LivingGreeting
+          firstName={firstName}
+          headline={headline}
+          roleLabel={roleLabel}
+        />
         <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
           <MyActivityToggle />
           <Link
