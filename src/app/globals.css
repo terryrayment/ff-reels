@@ -2989,6 +2989,23 @@ mux-player {
     gap: 0.5rem;
   }
 
+  /* Neighbour ease-apart: hovering a row nudges the rows above and below it
+     away (transform-only — the list never reflows). :has() handles the
+     previous sibling; degrades to next-sibling-only if unsupported. */
+  .ff-directors-list__item {
+    transition: transform var(--dur-quick) var(--ff-ease-out);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ff-directors-list__item:hover + .ff-directors-list__item {
+      transform: translateY(0.2rem);
+    }
+
+    .ff-directors-list__item:has(+ .ff-directors-list__item:hover) {
+      transform: translateY(-0.2rem);
+    }
+  }
+
   .ff-directors-list__preview {
     display: none;
     position: sticky;
