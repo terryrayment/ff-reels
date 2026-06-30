@@ -157,7 +157,7 @@ export function DirectorsList({ directors }: DirectorsListProps) {
         <div className="ff-directors-list__spacer" aria-hidden="true" />
         <nav aria-label="Director roster" className="ff-directors-list__nav">
           <ul className="ff-directors-list__list">
-            {directors.map((director, i) => {
+            {directors.map((director) => {
               const isActive = activeSlug === director.slug;
               return (
                 <li
@@ -178,9 +178,6 @@ export function DirectorsList({ directors }: DirectorsListProps) {
                     prefetch={!director.playProjectId}
                     data-director-slug={director.slug}
                   >
-                    <span className="ff-directors-list__index" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
                     <span
                       data-marketing-director-name-source
                       className="ff-directors-list__name"
