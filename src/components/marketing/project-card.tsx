@@ -163,7 +163,7 @@ export function ProjectCard({
           </div>
         )}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 ff-card-caption">
         {project.brand ? (
           <>
             <p className="ff-display-card ff-card-client leading-[1.05]">
@@ -179,7 +179,14 @@ export function ProjectCard({
           </p>
         )}
         {metaLine && (
-          <p className="ff-display-card ff-card-director mt-2">{metaLine}</p>
+          <p className="ff-display-card ff-card-director mt-2">
+            {metaLine}
+            {href && (
+              <span className="ff-card-arrow" aria-hidden="true">
+                →
+              </span>
+            )}
+          </p>
         )}
         {tags && tags.length > 0 && (
           <div className="ff-card-tag-row">

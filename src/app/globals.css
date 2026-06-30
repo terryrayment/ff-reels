@@ -2663,6 +2663,41 @@ mux-player {
       opacity 240ms var(--ff-ease-out);
   }
 
+  /* Caption eases up + a "View" arrow slides in on hover (in-card layout
+     shift; transform-only, so neighbours never reflow). */
+  .ff-card-caption {
+    transition: transform var(--dur-medium) var(--ff-ease-out);
+  }
+
+  .ff-card-arrow {
+    display: inline-block;
+    margin-left: 0.45rem;
+    opacity: 0;
+    transform: translateX(-0.35rem);
+    transition:
+      opacity var(--dur-quick) var(--ff-ease-out),
+      transform var(--dur-quick) var(--ff-ease-out);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ff-fluid-card:hover .ff-card-caption,
+    .ff-fluid-card:focus-visible .ff-card-caption {
+      transform: translateY(-3px);
+    }
+  }
+
+  .ff-fluid-card:hover .ff-card-arrow,
+  .ff-fluid-card:focus-visible .ff-card-arrow {
+    opacity: 0.85;
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ff-card-arrow {
+      transition: none;
+    }
+  }
+
   .ff-fluid-card [data-marketing-media-frame] {
     transition:
       clip-path var(--dur-slow) var(--ease-reveal),
