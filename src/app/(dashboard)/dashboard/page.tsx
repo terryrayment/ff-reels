@@ -10,6 +10,7 @@ import { SignalFeed } from "@/components/dashboard/signal-feed";
 import { MyActivityToggle } from "@/components/dashboard/my-activity-toggle";
 import { LivingGreeting } from "@/components/dashboard/living-greeting";
 import { getWelcomeHeadline } from "@/lib/dashboard/welcome-headline";
+import { MetricTile, type MetricDelta } from "@/components/dashboard/metric-tile";
 
 export default async function DashboardPage({
   searchParams,
@@ -198,12 +199,13 @@ export default async function DashboardPage({
 
     const countByReel: Record<
       string,
-      { count: number; title: string; director: string }
+      { id: string; count: number; title: string; director: string }
     > = {};
     for (const v of weeklyViews) {
       const rid = v.screeningLink.reelId;
       if (!countByReel[rid]) {
         countByReel[rid] = {
+          id: rid,
           count: 0,
           title: v.screeningLink.reel.title,
           director: v.screeningLink.reel.director.name,
@@ -212,7 +214,7 @@ export default async function DashboardPage({
       countByReel[rid].count++;
     }
 
-    let best: { count: number; title: string; director: string } | null = null;
+    let best: { id: string; count: number; title: string; director: string } | null = null;
     for (const key of Object.keys(countByReel)) {
       if (!best || countByReel[key].count > best.count) {
         best = countByReel[key];
@@ -259,6 +261,62 @@ export default async function DashboardPage({
     .slice(0, 6);
 
   const weeklyTotalSeconds = weeklyWatchTime._sum.totalDuration || 0;
+
+  // Week-over-week deltas + 7-day view sparkline (smart metric tiles).
+  // Compare this-week-so-far against the SAME elapsed point last week, so a
+  // Monday-morning login doesn't show a misleading drop vs a full prior week.
+  const prevWeekStart = new Date(startOfWeek);
+  prevWeekStart.setDate(prevWeekStart.getDate() - 7);
+  const weekElapsedMs = Date.now() - startOfWeek.getTime();
+  const prevWeekComparableEnd = new Date(prevWeekStart.getTime() + weekElapsedMs);
+  const sparkStart = new Date();
+  sparkStart.setHours(0, 0, 0, 0);
+  sparkStart.setDate(sparkStart.getDate() - 6); // 7 daily buckets incl. today
+
+  const [prevWeekViews, prevWeekWatchAgg, prevWeekReels, sparkRows] =
+    await Promise.all([
+      prisma.reelView.count({
+        where: { startedAt: { gte: prevWeekStart, lt: prevWeekComparableEnd }, ...viewOwnerFilter },
+      }),
+      prisma.reelView.aggregate({
+        where: {
+          startedAt: { gte: prevWeekStart, lt: prevWeekComparableEnd },
+          totalDuration: { not: null },
+          ...viewOwnerFilter,
+        },
+        _sum: { totalDuration: true },
+      }),
+      prisma.reel.count({
+        where: { createdAt: { gte: prevWeekStart, lt: prevWeekComparableEnd }, ...reelOwnerFilter },
+      }),
+      prisma.reelView.findMany({
+        where: { startedAt: { gte: sparkStart }, ...viewOwnerFilter },
+        select: { startedAt: true },
+      }),
+    ]);
+
+  const pctDelta = (cur: number, prev: number): MetricDelta | null => {
+    if (prev === 0 && cur === 0) return null;
+    if (prev === 0) return { text: "new", dir: "up" };
+    const pct = Math.round(((cur - prev) / prev) * 100);
+    if (pct === 0) return { text: "0%", dir: "flat" };
+    return { text: `${Math.abs(pct)}%`, dir: pct > 0 ? "up" : "down" };
+  };
+
+  const viewsDelta = pctDelta(weeklyViewCount, prevWeekViews);
+  const watchDelta = pctDelta(
+    weeklyTotalSeconds,
+    prevWeekWatchAgg._sum.totalDuration || 0
+  );
+  const reelsDelta = pctDelta(weeklyNewReels, prevWeekReels);
+
+  const sparkViews: number[] = Array(7).fill(0);
+  const dayMs = 24 * 60 * 60 * 1000;
+  for (const v of sparkRows) {
+    const idx = Math.floor((v.startedAt.getTime() - sparkStart.getTime()) / dayMs);
+    if (idx >= 0 && idx < 7) sparkViews[idx]++;
+  }
+
   const signalUpdates = updates.map((u) => {
     const reactionCounts = u.reactions.reduce<Record<string, number>>(
       (counts, reaction) => {
@@ -395,33 +453,44 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {/* Intelligence strip */}
+      {/* Intelligence strip \u2014 clickable tiles with week-over-week deltas,
+          a views sparkline, and a live pulse when clients are watching now */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 mb-5 md:mb-7">
-        {[
-          { label: "Live views", value: hotRightNow.length, detail: "last 30m" },
-          { label: "Recent client activity", value: groupedViews.length, detail: "latest views" },
-          { label: "Active links", value: linkCount, detail: "available now" },
-          {
-            label: "Top reel",
-            value: weeklyBestReel ? weeklyBestReel.count : "\u2014",
-            detail: weeklyBestReel ? weeklyBestReel.director : "no views yet",
-          },
-          {
-            label: "Weekly watch",
-            value: weeklyTotalSeconds > 0 ? formatDuration(weeklyTotalSeconds) : "\u2014",
-            detail: "total time",
-          },
-        ].map((item) => (
-          <div key={item.label} className="metric-tile">
-            <p className="text-[9px] uppercase tracking-[0.14em] text-[#777] font-semibold">
-              {item.label}
-            </p>
-            <p className="mt-2 text-[24px] md:text-[28px] font-semibold tracking-tight tabular-nums text-[#111] leading-none">
-              {item.value}
-            </p>
-            <p className="mt-2 text-[11px] text-[#777] truncate">{item.detail}</p>
-          </div>
-        ))}
+        <MetricTile
+          label="Live now"
+          value={hotRightNow.length}
+          detail={hotRightNow.length > 0 ? "watching now" : "last 30m"}
+          href="/analytics"
+          live
+        />
+        <MetricTile
+          label="Views this week"
+          value={weeklyViewCount}
+          detail="vs last week"
+          href="/analytics"
+          delta={viewsDelta}
+          spark={sparkViews}
+        />
+        <MetricTile
+          label="Watch time"
+          value={weeklyTotalSeconds > 0 ? formatDuration(weeklyTotalSeconds) : "\u2014"}
+          detail="this week"
+          href="/analytics"
+          delta={watchDelta}
+        />
+        <MetricTile
+          label="New reels"
+          value={weeklyNewReels}
+          detail="this week"
+          href="/reels"
+          delta={reelsDelta}
+        />
+        <MetricTile
+          label="Top reel"
+          value={weeklyBestReel ? weeklyBestReel.count : "\u2014"}
+          detail={weeklyBestReel ? weeklyBestReel.director : "no views yet"}
+          href={weeklyBestReel ? `/analytics/reel/${weeklyBestReel.id}` : "/analytics"}
+        />
       </div>
 
       {/* Hot Right Now — compact inline */}
@@ -478,55 +547,22 @@ export default async function DashboardPage({
         />
       </div>
 
-      {/* Unified Stats Card — weekly metrics | roster counts */}
-      <div className="data-card px-5 md:px-7 py-5 md:py-6 mb-5 md:mb-7">
-        <div className="flex flex-col md:flex-row md:items-stretch gap-5 md:gap-0">
-          <div className="flex-1 min-w-0">
-            <p className="section-header mb-4">This week</p>
-            <div className="grid grid-cols-3 gap-4 md:max-w-xl">
-              {[
-                { label: "Views", value: weeklyViewCount },
-                {
-                  label: "Watch time",
-                  value: weeklyTotalSeconds > 0 ? formatDuration(weeklyTotalSeconds) : "\u2014",
-                },
-                { label: "New reels", value: weeklyNewReels },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-[26px] md:text-[32px] font-semibold tracking-tight tabular-nums text-[#111] leading-none">
-                    {stat.value}
-                  </p>
-                  <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-[#777] font-semibold">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-            {weeklyBestReel && (
-              <p className="mt-4 text-[12px] text-[#666]">
-                <span className="text-[#111] font-semibold">{weeklyBestReel.director}</span>
-                {" "}is leading this week with {weeklyBestReel.count} view{weeklyBestReel.count !== 1 ? "s" : ""}.
-              </p>
-            )}
-          </div>
-
-          <div className="h-px md:h-auto md:w-px bg-[#DEDDD7] md:mx-7 flex-shrink-0" />
-
-          <div className="flex-shrink-0 md:min-w-[320px]">
-            <p className="section-header mb-4">Roster</p>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-              {rosterStats.map((stat) => (
-                <Link key={stat.label} href={stat.href} className="group">
-                  <p className="text-[26px] md:text-[32px] font-semibold tracking-tight tabular-nums text-[#111] group-hover:text-black transition-colors leading-none">
-                    {stat.value}
-                  </p>
-                  <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-[#777] group-hover:text-[#111] transition-colors font-semibold">
-                    {stat.label}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </div>
+      {/* Roster — library scale, slim. Active links lives here only; the
+          weekly pulse moved entirely into the tiles above so the same
+          numbers never appear twice on one page. */}
+      <div className="data-card px-5 md:px-7 py-4 mb-5 md:mb-7">
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+          <p className="section-header text-[#444]">Roster</p>
+          {rosterStats.map((stat) => (
+            <Link key={stat.label} href={stat.href} className="group flex items-baseline gap-2">
+              <span className="text-[18px] md:text-[20px] font-semibold tabular-nums text-[#111] group-hover:text-black transition-colors leading-none">
+                {stat.value}
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.14em] text-[#777] group-hover:text-[#111] transition-colors font-semibold">
+                {stat.label}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
 
