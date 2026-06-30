@@ -2972,6 +2972,7 @@ mux-player {
   }
 
   .ff-directors-list__link {
+    position: relative;
     display: inline-block;
     border-bottom: none;
     text-decoration: none;
@@ -2993,6 +2994,49 @@ mux-player {
   .ff-directors-list__link:hover,
   .ff-directors-list__link:focus-visible {
     opacity: 0.5;
+  }
+
+  /* Reel index in the left gutter — slides in for the active name (layout
+     shift), riding the gap opened by the active name's translateX. */
+  .ff-directors-list__index {
+    position: absolute;
+    right: calc(100% + 0.6rem);
+    top: 0.3em;
+    font-family: var(--ff-font-mono);
+    font-size: 0.78rem;
+    letter-spacing: var(--ff-track-label);
+    color: var(--ff-site-accent, var(--ff-color-ink));
+    opacity: 0;
+    transform: translateX(0.4rem);
+    transition:
+      opacity var(--dur-quick) var(--ff-ease-out),
+      transform var(--dur-quick) var(--ff-ease-out);
+    pointer-events: none;
+  }
+
+  .ff-directors-list.has-active
+    .ff-directors-list__link.is-active
+    .ff-directors-list__index {
+    opacity: 0.85;
+    transform: translateX(0);
+  }
+
+  /* Per-letter lift on the active name — a small staggered wave. The inline
+     per-letter transition-delay makes it ripple in and fall back out. */
+  .ff-directors-list__name-visual {
+    display: inline-block;
+  }
+
+  .ff-directors-list__char {
+    display: inline-block;
+    transition: transform 300ms var(--ff-ease-out);
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ff-directors-list__link.is-active .ff-directors-list__char {
+      transform: translateY(-0.16em);
+    }
   }
 
   /* Outgoing still dissolves over the incoming frame (a soft film cut).
@@ -3026,6 +3070,10 @@ mux-player {
     }
 
     .ff-directors-list__link {
+      transition: none;
+    }
+
+    .ff-directors-list__index {
       transition: none;
     }
 
