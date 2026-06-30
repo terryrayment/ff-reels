@@ -2021,6 +2021,37 @@ mux-player {
     font-variation-settings: normal;
   }
 
+  /* Text roll/flip for links (see RollText). The label rolls up and out while
+     an identical copy rolls into place. Fires on hover/focus of the nearest
+     <a>/<button>; reduced-motion keeps it static. */
+  .ff-roll {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .ff-roll__line {
+    display: block;
+    transition: transform 460ms var(--ff-ease-out);
+  }
+
+  .ff-roll__line + .ff-roll__line {
+    position: absolute;
+    left: 0;
+    top: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    a:hover .ff-roll__line,
+    a:focus-visible .ff-roll__line,
+    button:hover .ff-roll__line,
+    button:focus-visible .ff-roll__line {
+      transform: translateY(-100%);
+    }
+  }
+
   .ff-imprint-nav-item {
     position: relative;
   }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { RollText } from "@/components/marketing/roll-text";
 
 const SOCIALS = [
   { label: "Instagram", href: "https://instagram.com/friendsandfamily.tv" },
@@ -31,7 +32,7 @@ export function MarketingFooter() {
                   rel="noopener noreferrer"
                   className="ff-meta transition-colors hover:text-ff-ink"
                 >
-                  {s.label}
+                  <RollText text={s.label} />
                 </a>
               </li>
             ))}
@@ -42,7 +43,7 @@ export function MarketingFooter() {
               href="/site/contact"
               className="ff-meta transition-colors hover:text-ff-ink"
             >
-              Get in touch
+              <RollText text="Get in touch" />
             </Link>
             <p className="ff-meta text-ff-faint">
               &copy; {new Date().getFullYear()} Friends &amp; Family

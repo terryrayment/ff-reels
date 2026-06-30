@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MARKETING_PARTNERS } from "@/components/marketing/partner-portal";
 import { ImprintNavHoverStrip } from "@/components/marketing/imprint-nav-hover-strip";
+import { RollText } from "@/components/marketing/roll-text";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -72,7 +73,7 @@ function PartnerNavLink({
         className={linkClass}
         aria-describedby={`imprint-nav-tip-${partnerId}`}
       >
-        {label}
+        <RollText text={label} />
       </Link>
       <ImprintNavHoverStrip
         id={`imprint-nav-tip-${partnerId}`}
@@ -192,7 +193,7 @@ export function MarketingNav() {
                           : "text-ff-muted hover:text-ff-ink",
                     )}
                   >
-                    {item.label}
+                    <RollText text={item.label} />
                   </Link>
                 </li>
               );
