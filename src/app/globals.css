@@ -1837,6 +1837,30 @@ mux-player {
     overflow-wrap: anywhere;
   }
 
+  /* Headings breathe on hover — a subtle weight + tracking bump. Weight axis
+     only (the wdth axis isn't loaded site-wide), kept at the base wdth so
+     nothing jumps. Excludes card/director titles (own hover / RevealText). */
+  @media (prefers-reduced-motion: no-preference) {
+    .ff-display-hero,
+    .ff-display-page,
+    .ff-display-section,
+    .ff-display-feature {
+      transition:
+        font-variation-settings 460ms var(--ff-ease-out),
+        letter-spacing 460ms var(--ff-ease-out);
+    }
+
+    .ff-display-hero:hover,
+    .ff-display-page:hover,
+    .ff-display-section:hover,
+    .ff-display-feature:hover {
+      font-variation-settings:
+        "wdth" 86,
+        "wght" 770;
+      letter-spacing: 0.006em;
+    }
+  }
+
   .ff-card-client {
     font-size: var(--ff-type-feature);
     text-transform: uppercase;
