@@ -836,24 +836,7 @@ export function ScreeningCarousel({
           <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30" />
         </div>
 
-        {/* Spot info — top left, shows when playing (offset below logomark) */}
-        <div
-          className={`absolute top-14 left-4 md:top-16 md:left-8 z-10 pointer-events-none transition-opacity duration-500 ${
-            !showInfo ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <h2 className="text-xl font-medium text-white/80 tracking-tight drop-shadow-lg">
-            {currentProject.title}
-          </h2>
-          <p className="text-sm text-white/40 mt-1 drop-shadow-md">
-            {isMultiDirector && (
-              <span className="text-white/50">{currentDirector.name} &middot; </span>
-            )}
-            {[currentProject.brand, currentProject.agency, currentProject.year]
-              .filter(Boolean)
-              .join(" \u00B7 ")}
-          </p>
-        </div>
+        {/* Spot title now renders as a centered caption under the player. */}
 
         {/* Reel identity + actions — moved up top so the thumbnail carousel
             gets the full width of the bottom bar. Counter sits above them. */}
@@ -1019,7 +1002,7 @@ export function ScreeningCarousel({
 
         {/* Video player — cinema-style framing, NOT full-screen */}
         <div
-          className={`w-full h-full flex items-center justify-center px-3 md:px-8 py-6 transition-opacity duration-400 relative z-[1] ${
+          className={`w-full h-full flex flex-col items-center justify-center px-3 md:px-8 py-6 transition-opacity duration-400 relative z-[1] ${
             isTransitioning ? "opacity-0" : "opacity-100"
           }`}
           onTouchStart={handleTouchStart}
@@ -1115,6 +1098,25 @@ export function ScreeningCarousel({
                 <p className="text-xs text-white/15">Processing...</p>
               </div>
             )}
+          </div>
+
+          {/* Spot caption — centered directly under the player */}
+          <div
+            className={`w-full max-w-3xl px-2 mt-4 text-center transition-opacity duration-500 ${
+              !showInfo ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <h2 className="text-xl font-medium text-white/85 tracking-tight drop-shadow-lg">
+              {currentProject.title}
+            </h2>
+            <p className="text-sm text-white/40 mt-1 drop-shadow-md">
+              {isMultiDirector && (
+                <span className="text-white/50">{currentDirector.name} · </span>
+              )}
+              {[currentProject.brand, currentProject.agency, currentProject.year]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
           </div>
         </div>
 
