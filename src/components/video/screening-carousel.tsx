@@ -831,23 +831,16 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* Reel identity — top left, paired with the logomark */}
-        <div className="absolute top-4 left-4 md:top-6 md:left-8 z-10 flex items-center gap-3 pointer-events-none">
-          <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30 flex-shrink-0" />
-          <p className="text-[13px] text-white/85 truncate max-w-[45vw] drop-shadow-lg">
-            <span className="font-medium text-white">{director.name}</span>
-            {brand && <span className="text-white/50"> · {brand}</span>}
-          </p>
-        </div>
-
-        {/* Spot title now renders as a centered caption under the player. */}
-
-        {/* Reel actions — top right (reel identity is paired with the
-            logomark on the left). */}
-        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-20 flex items-center pointer-events-none">
-          <div className="flex items-center gap-1.5 pointer-events-auto">
-          {/* Action buttons */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+        {/* Top bar — reel identity (left) + reel actions (right) on one axis */}
+        <div className="absolute top-4 left-4 right-4 md:top-6 md:left-8 md:right-8 z-20 flex items-center justify-between gap-4 pointer-events-none">
+          <div className="flex items-center gap-3 min-w-0">
+            <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30 flex-shrink-0" />
+            <p className="text-[13px] text-white/85 truncate drop-shadow-lg">
+              <span className="font-medium text-white">{director.name}</span>
+              {brand && <span className="text-white/50"> · {brand}</span>}
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 flex-shrink-0 pointer-events-auto">
             {/* Share button */}
             <button
               onClick={() => openPanel("share")}
@@ -990,8 +983,9 @@ export function ScreeningCarousel({
               </button>
             )}
           </div>
-          </div>
         </div>
+
+        {/* Spot title renders as a centered caption under the player. */}
 
         {/* Video player — cinema-style framing, NOT full-screen */}
         <div
