@@ -1632,7 +1632,7 @@ export function ScreeningCarousel({
           {/* Subtle film-grain texture over the flat panel */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-0 opacity-[0.07]"
+            className="pointer-events-none absolute inset-0 z-20 opacity-[0.07]"
             style={{
               backgroundImage:
                 "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
@@ -1659,14 +1659,14 @@ export function ScreeningCarousel({
 
               {/* ─── Company name — large, airy ─── */}
               <div className="pt-8 pb-16">
-                <h3 className="text-[42px] font-extralight text-white/90 tracking-tight leading-[1.1]">
+                <h3 className="text-[42px] font-light text-white tracking-tight leading-[1.1]">
                   Friends &amp; Family
                 </h3>
               </div>
 
               {/* ─── About — narrative, generous spacing ─── */}
               <div className="pb-16">
-                <p className="text-[15px] text-white/40 leading-[2] font-light">
+                <p className="text-[15px] text-white/55 leading-[2] font-light">
                   Friends &amp; Family is a creative production company developing and producing
                   work across commercial, branded content, music, and entertainment. Founded by
                   industry veteran Scott Kaplan &mdash; the producer behind Old Spice&apos;s
@@ -1676,7 +1676,7 @@ export function ScreeningCarousel({
                   Sant &mdash; the company represents a curated roster of visionary directors
                   who bring intelligence, craft, and distinctive voice to every project.
                 </p>
-                <p className="text-[15px] text-white/40 leading-[2] font-light mt-6">
+                <p className="text-[15px] text-white/55 leading-[2] font-light mt-6">
                   With offices in New York and Los Angeles, Friends &amp; Family partners
                   with the world&apos;s top agencies and brands to create work that is smart,
                   honest, and unforgettable.
