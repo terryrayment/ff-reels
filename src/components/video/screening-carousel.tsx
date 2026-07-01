@@ -201,7 +201,11 @@ export function ScreeningCarousel({
     "bio" | "share" | "company" | "download" | "treatments" | "framegrabs" | "lookbook" | "casestudies" | "shortfilms" | "gallery" | null
   >(null);
   const [showInfo, setShowInfo] = useState(true);
-  const [bgStillIndex, setBgStillIndex] = useState(0);
+  // Ambient backdrop — two persistent buffers that crossfade between stills
+  const [bgSrcA, setBgSrcA] = useState<string | null>(null);
+  const [bgSrcB, setBgSrcB] = useState<string | null>(null);
+  const [bgActiveA, setBgActiveA] = useState(true);
+  const bgIdxRef = useRef(0);
   const [shareCopied, setShareCopied] = useState<string | null>(null);
   const [previewTreatment, setPreviewTreatment] = useState<TreatmentSampleInfo | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
@@ -301,14 +305,28 @@ export function ScreeningCarousel({
     return item.project.thumbnailUrl;
   };
 
-  // Cycle background stills for ambient visual journey
+  // Ambient stills: both buffers stay mounted so they can crossfade. Every 6s
+  // the next still loads into the hidden buffer, then the two swap opacity —
+  // no cut between stills. Both being pre-mounted means the incoming buffer
+  // transitions from 0, so the fade works without relying on rAF timing.
   useEffect(() => {
     if (portfolioStills.length === 0) return;
+    bgIdxRef.current = 0;
+    setBgSrcA(portfolioStills[0].thumbnailUrl);
+    setBgSrcB(portfolioStills[Math.min(1, portfolioStills.length - 1)].thumbnailUrl);
+    setBgActiveA(true);
+    if (portfolioStills.length < 2) return;
     const interval = setInterval(() => {
-      setBgStillIndex((prev) => (prev + 1) % portfolioStills.length);
+      bgIdxRef.current = (bgIdxRef.current + 1) % portfolioStills.length;
+      const next = portfolioStills[bgIdxRef.current].thumbnailUrl;
+      setBgActiveA((activeA) => {
+        if (activeA) setBgSrcB(next);
+        else setBgSrcA(next);
+        return !activeA;
+      });
     }, 6000);
     return () => clearInterval(interval);
-  }, [portfolioStills.length]);
+  }, [portfolioStills]);
 
   // Reset tracking state when spot changes
   const resetTracking = useCallback(() => {
@@ -728,12 +746,6 @@ export function ScreeningCarousel({
     ? [campaignName, agencyName].filter(Boolean).join(" \u00B7 ") || reelTitle
     : reelTitle;
 
-  // Current background still from portfolio
-  const currentBgStill = portfolioStills[bgStillIndex]?.thumbnailUrl;
-  const nextBgStill =
-    portfolioStills[(bgStillIndex + 1) % Math.max(1, portfolioStills.length)]
-      ?.thumbnailUrl;
-
   // Close any panel
   const closePanel = () => {
     setActivePanel(null);
@@ -751,30 +763,31 @@ export function ScreeningCarousel({
     <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
       {/* Main player area — flex-1 fills space, centers video vertically */}
       <div className="flex-1 relative flex items-center justify-center min-h-0">
-        {/* Ambient portfolio stills — behind player. The whole layer stays
-            mounted and fades its opacity on showInfo (so starting playback
-            gently dissolves it instead of hard-cutting), and each still eases
-            in to its faint resting opacity rather than flashing to full. */}
+        {/* Ambient portfolio stills — two persistent layers crossfade between
+            stills (no cut on the 6s cycle), and the whole layer dissolves on
+            showInfo so starting playback fades it out instead of hard-cutting. */}
         {portfolioStills.length > 0 && (
           <div
             className={`absolute inset-0 z-0 transition-opacity duration-[1400ms] ease-in-out ${
               showInfo ? "opacity-100" : "opacity-0"
             }`}
           >
-            {currentBgStill && (
+            {bgSrcA && (
               <img
-                key={`bg-${bgStillIndex}`}
-                src={currentBgStill}
+                src={bgSrcA}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover blur-sm animate-[ambientIn_3s_ease-out_forwards]"
+                className={`absolute inset-0 w-full h-full object-cover blur-sm transition-opacity duration-[2200ms] ease-in-out ${
+                  bgActiveA ? "opacity-[0.08]" : "opacity-0"
+                }`}
               />
             )}
-            {nextBgStill && (
+            {bgSrcB && (
               <img
-                src={nextBgStill}
+                src={bgSrcB}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-0"
-                loading="eager"
+                className={`absolute inset-0 w-full h-full object-cover blur-sm transition-opacity duration-[2200ms] ease-in-out ${
+                  !bgActiveA ? "opacity-[0.08]" : "opacity-0"
+                }`}
               />
             )}
           </div>
