@@ -121,13 +121,9 @@ export default async function ReelsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8 md:mb-10">
         <div className="min-w-0">
-          <p className="section-header mb-3">Shared screening assets</p>
           <h1 className="text-[42px] md:text-[56px] font-semibold tracking-tight text-[#111] leading-none">
             Reels
           </h1>
-          <p className="mt-3 text-[12px] text-[#666]">
-            Build, send, and manage {reelsWithStats.length} reel{reelsWithStats.length !== 1 ? "s" : ""} from one library.
-          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           <ReelsWorkspaceSwitch active="library" />

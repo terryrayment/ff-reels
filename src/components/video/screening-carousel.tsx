@@ -802,11 +802,11 @@ export function ScreeningCarousel({
 
         {/* Title — absolute at bottom of player area, does not affect video centering */}
         <div
-          className={`absolute inset-x-0 bottom-0 z-10 px-4 md:px-8 pb-4 pointer-events-none transition-opacity duration-700 ${
+          className={`absolute inset-x-0 bottom-0 z-10 px-3 md:px-8 pb-4 pointer-events-none transition-opacity duration-700 ${
             showInfo ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-[883px] mx-auto">
             <h1 className="text-2xl md:text-3xl font-light tracking-tight">
               <span className="font-semibold">{director.name}</span>
               {brand && <span className="text-white/60"> for {brand}</span>}
