@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { prepareMarketingCardSourceForTransition } from "@/components/marketing/prepare-marketing-card-source";
 import { startMarketingViewTransition } from "@/components/marketing/view-transition";
+import { ProximityText } from "@/components/marketing/proximity-text";
 
 export type DirectorsListItem = {
   slug: string;
@@ -179,7 +180,7 @@ export function DirectorsList({ directors }: DirectorsListProps) {
                     data-director-slug={director.slug}
                   >
                     <span data-marketing-director-name-source>
-                      {director.name}
+                      <ProximityText text={director.name} />
                     </span>
                   </Link>
                 </li>

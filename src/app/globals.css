@@ -2989,23 +2989,6 @@ mux-player {
     gap: 0.5rem;
   }
 
-  /* Neighbour ease-apart: hovering a row nudges the rows above and below it
-     away (transform-only — the list never reflows). :has() handles the
-     previous sibling; degrades to next-sibling-only if unsupported. */
-  .ff-directors-list__item {
-    transition: transform var(--dur-quick) var(--ff-ease-out);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .ff-directors-list__item:hover + .ff-directors-list__item {
-      transform: translateY(0.2rem);
-    }
-
-    .ff-directors-list__item:has(+ .ff-directors-list__item:hover) {
-      transform: translateY(-0.2rem);
-    }
-  }
-
   .ff-directors-list__preview {
     display: none;
     position: sticky;
@@ -3040,16 +3023,12 @@ mux-player {
 
   /* Active name leads — full opacity + slight push. Must beat the
      :hover/:focus-visible dim below. */
-  /* Active name breathes in place — weight + tracking bump, matching the
-     display-heading hover. No shift, no per-letter motion. */
+  /* Active name stays full-opacity; the cursor-proximity per-letter scale
+     (see ProximityText) is the hover effect. */
   .ff-directors-list.has-active .ff-directors-list__link.is-active,
   .ff-directors-list.has-active .ff-directors-list__link.is-active:hover,
   .ff-directors-list.has-active .ff-directors-list__link.is-active:focus-visible {
     opacity: 1;
-    font-variation-settings:
-      "wdth" 86,
-      "wght" 640;
-    letter-spacing: 0.004em;
   }
 
   .ff-directors-list__link {
@@ -3067,15 +3046,36 @@ mux-player {
     line-height: 1.1;
     letter-spacing: 0;
     color: var(--ff-color-ink);
-    transition:
-      opacity var(--dur-quick) var(--ff-ease-out),
-      font-variation-settings var(--dur-quick) var(--ff-ease-out),
-      letter-spacing var(--dur-quick) var(--ff-ease-out);
+    transition: opacity var(--dur-quick) var(--ff-ease-out);
   }
 
   .ff-directors-list__link:hover,
   .ff-directors-list__link:focus-visible {
     opacity: 0.5;
+  }
+
+  /* Cursor-proximity per-letter scale on the director name (ProximityText).
+     Letters bulge toward the pointer with a radial feather; JS sets the
+     per-letter scale, this transition smooths it as the bulge travels. */
+  .ff-proximity__visual {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .ff-proximity__char {
+    display: inline-block;
+    /* Preserve whitespace so the space between first/last name (a lone space
+       in an inline-block span) isn't trimmed to zero width. */
+    white-space: pre;
+    transition:
+      font-variation-settings 150ms var(--ff-ease-out),
+      font-size 150ms var(--ff-ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ff-proximity__char {
+      transition: none;
+    }
   }
 
   /* Outgoing still dissolves over the incoming frame (a soft film cut).
