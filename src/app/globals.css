@@ -2949,7 +2949,7 @@ mux-player {
   .ff-directors-list {
     position: relative;
     z-index: 2;
-    padding-top: max(12rem, 20vw);
+    padding-top: max(6rem, 10vw);
     padding-bottom: 12rem;
   }
 
