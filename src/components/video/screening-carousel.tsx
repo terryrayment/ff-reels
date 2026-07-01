@@ -855,244 +855,13 @@ export function ScreeningCarousel({
           </p>
         </div>
 
-        {/* Spot counter — top right */}
-        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-10 pointer-events-none">
+        {/* Reel identity + actions — moved up top so the thumbnail carousel
+            gets the full width of the bottom bar. Counter sits above them. */}
+        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-20 flex flex-col items-end gap-2.5 pointer-events-none">
           <span className="text-xs text-white/30 tabular-nums font-medium drop-shadow-lg">
             {currentIndex + 1} / {items.length}
           </span>
-        </div>
-
-        {/* Video player — cinema-style framing, NOT full-screen */}
-        <div
-          className={`w-full h-full flex items-center justify-center px-3 md:px-8 py-6 transition-opacity duration-400 relative z-[1] ${
-            isTransitioning ? "opacity-0" : "opacity-100"
-          }`}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
-            {currentProject.muxPlaybackId ? (
-              <>
-                <MuxPlayer
-                  ref={playerRef}
-                  key={currentProject.id}
-                  playbackId={currentProject.muxPlaybackId}
-                  streamType="on-demand"
-                  autoPlay={currentIndex > 0 ? ("any" as const) : undefined}
-                  minResolution="1080p"
-                  renditionOrder="desc"
-                  metadata={{
-                    video_id: currentProject.id,
-                    video_title: currentProject.title,
-                  }}
-                  primaryColor="#ffffff"
-                  secondaryColor="#0e0e0e"
-                  accentColor="#666666"
-                  style={{ width: "100%", height: "100%" }}
-                  onPlay={handlePlay}
-                  onPause={handlePause}
-                  onTimeUpdate={handleTimeUpdate}
-                  onEnded={handleEnded}
-                  onSeeked={handleSeeked}
-                />
-                {/* Poster overlay — dissolves into the playing video instead of
-                    mux's single-frame poster swap. Clicks pass through to the
-                    player, so tapping the poster starts playback. */}
-                {getThumbUrl(currentItem, "large") && (
-                  <div
-                    aria-hidden
-                    className={`absolute inset-0 z-[2] pointer-events-none transition-opacity duration-700 ease-out ${
-                      posterFaded ? "opacity-0" : "opacity-100"
-                    }`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getThumbUrl(currentItem, "large")!}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                    {/* Play hint — only the first spot, which doesn't autoplay */}
-                    {currentIndex === 0 && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                        <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                          <svg
-                            width="20"
-                            height="24"
-                            viewBox="0 0 20 24"
-                            fill="white"
-                            className="ml-1 opacity-60"
-                          >
-                            <polygon points="0,0 20,12 0,24" />
-                          </svg>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </>
-            ) : currentProject.thumbnailUrl ? (
-              /* No Mux yet — show full-size thumbnail with play overlay */
-              <div className="w-full h-full relative bg-black flex items-center justify-center">
-                <img
-                  src={currentProject.thumbnailUrl}
-                  alt={currentProject.title}
-                  className="max-w-full max-h-full object-contain"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                  <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                    <svg
-                      width="20"
-                      height="24"
-                      viewBox="0 0 20 24"
-                      fill="white"
-                      className="ml-1 opacity-60"
-                    >
-                      <polygon points="0,0 20,12 0,24" />
-                    </svg>
-                  </div>
-                </div>
-                <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/25 uppercase tracking-widest">
-                  Video processing
-                </p>
-              </div>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-black">
-                <p className="text-xs text-white/15">Processing...</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-      </div>
-
-      {/* Floating thumbnail tooltip — rendered outside overflow container */}
-      {hoveredThumb && (
-        <div
-          className="fixed z-50 whitespace-nowrap bg-black/95 px-3 py-1.5 rounded-md text-[10px] text-white/80 pointer-events-none shadow-lg backdrop-blur-sm border border-white/10"
-          style={{
-            left: hoveredThumb.x,
-            top: hoveredThumb.y - 8,
-            transform: "translate(-50%, -100%)",
-          }}
-        >
-          {hoveredThumb.text}
-        </div>
-      )}
-
-      {/* Bottom bar: thumbnails + action buttons */}
-      <div className="relative z-20 border-t border-white/[0.06] bg-[#080808] flex-shrink-0">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-2">
-          {/* Prev arrow */}
-          <button
-            onClick={goToPrev}
-            disabled={currentIndex === 0}
-            className={`flex-shrink-0 p-1.5 rounded-full transition-colors ${
-              currentIndex === 0
-                ? "text-white/10 cursor-default"
-                : "text-white/40 hover:text-white/70 hover:bg-white/10"
-            }`}
-            aria-label="Previous spot"
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          {/* Thumbnail strip */}
-          <div
-            ref={thumbStripRef}
-            className="flex-1 flex items-center gap-2.5 overflow-x-auto py-1 pl-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {items.map((item, i) => {
-              const thumb = getThumbUrl(item);
-              const isActive = i === currentIndex;
-              const isPast = i < currentIndex;
-              const isTransitionPoint = isMultiDirector && directorTransitions.has(i);
-
-              return (
-                <React.Fragment key={item.id}>
-                  {/* Director group separator */}
-                  {isTransitionPoint && (
-                    <div className="flex-shrink-0 w-px h-[88px] bg-white/10 mx-1" />
-                  )}
-                  <button
-                    onClick={() => goToSpot(i)}
-                    onMouseEnter={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const label = (item.project.brand ? `${item.project.brand} · ` : "") + (isMultiDirector ? `${item.project.director.name} · ` : "") + `"${item.project.title}"` + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
-                      setHoveredThumb({ text: label, x: rect.left + rect.width / 2, y: rect.top });
-                    }}
-                    onMouseLeave={() => setHoveredThumb(null)}
-                    title={item.project.title}
-                    className={`flex-shrink-0 group relative transition-all duration-300 rounded-[5px] overflow-hidden ${
-                      isActive
-                        ? "ring-2 ring-white/60 scale-[1.04]"
-                        : isPast
-                          ? "opacity-50 hover:opacity-80"
-                          : "opacity-40 hover:opacity-70"
-                    }`}
-                  >
-                    <div className="w-[156px] h-[88px] bg-white/[0.04] relative">
-                      {thumb ? (
-                        <img
-                          src={thumb}
-                          alt={item.project.title}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-[10px] text-white/15 tabular-nums">
-                            {i + 1}
-                          </span>
-                        </div>
-                      )}
-                      {/* Duration badge */}
-                      {item.project.duration && (
-                        <span className="absolute top-1 right-1 text-[8px] bg-black/60 px-1 py-0.5 rounded text-white/80 tabular-nums">
-                          {formatDuration(item.project.duration)}
-                        </span>
-                      )}
-                      {/* Client + title overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 pb-1.5 pt-4">
-                        {item.project.brand && (
-                          <p className="text-[9px] font-semibold text-white/90 leading-tight truncate uppercase tracking-wide">
-                            {item.project.brand}
-                          </p>
-                        )}
-                        <p className="text-[8px] font-medium text-white/60 leading-tight truncate">
-                          {item.project.title}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Active play indicator */}
-                    {isActive && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-6 h-6 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
-                          <div className="w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[8px] border-l-white/90 ml-0.5" />
-                        </div>
-                      </div>
-                    )}
-                  </button>
-                </React.Fragment>
-              );
-            })}
-          </div>
-
-          {/* Next arrow */}
-          <button
-            onClick={goToNext}
-            disabled={currentIndex >= items.length - 1}
-            className={`flex-shrink-0 p-1.5 rounded-full transition-colors ${
-              currentIndex >= items.length - 1
-                ? "text-white/10 cursor-default"
-                : "text-white/40 hover:text-white/70 hover:bg-white/10"
-            }`}
-            aria-label="Next spot"
-          >
-            <ChevronRight size={20} />
-          </button>
-
+          <div className="flex items-center gap-2 pointer-events-auto">
           {/* Persistent reel title — always visible */}
           <div className="flex-shrink-0 mr-1 hidden md:block">
             <p className="text-[11px] text-white truncate max-w-[200px]">
@@ -1245,6 +1014,240 @@ export function ScreeningCarousel({
               </button>
             )}
           </div>
+          </div>
+        </div>
+
+        {/* Video player — cinema-style framing, NOT full-screen */}
+        <div
+          className={`w-full h-full flex items-center justify-center px-3 md:px-8 py-6 transition-opacity duration-400 relative z-[1] ${
+            isTransitioning ? "opacity-0" : "opacity-100"
+          }`}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
+            {currentProject.muxPlaybackId ? (
+              <>
+                <MuxPlayer
+                  ref={playerRef}
+                  key={currentProject.id}
+                  playbackId={currentProject.muxPlaybackId}
+                  streamType="on-demand"
+                  autoPlay={currentIndex > 0 ? ("any" as const) : undefined}
+                  minResolution="1080p"
+                  renditionOrder="desc"
+                  metadata={{
+                    video_id: currentProject.id,
+                    video_title: currentProject.title,
+                  }}
+                  primaryColor="#ffffff"
+                  secondaryColor="#0e0e0e"
+                  accentColor="#666666"
+                  style={{ width: "100%", height: "100%" }}
+                  onPlay={handlePlay}
+                  onPause={handlePause}
+                  onTimeUpdate={handleTimeUpdate}
+                  onEnded={handleEnded}
+                  onSeeked={handleSeeked}
+                />
+                {/* Poster overlay — dissolves into the playing video instead of
+                    mux's single-frame poster swap. Clicks pass through to the
+                    player, so tapping the poster starts playback. */}
+                {getThumbUrl(currentItem, "large") && (
+                  <div
+                    aria-hidden
+                    className={`absolute inset-0 z-[2] pointer-events-none transition-opacity duration-700 ease-out ${
+                      posterFaded ? "opacity-0" : "opacity-100"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={getThumbUrl(currentItem, "large")!}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Play hint — only the first spot, which doesn't autoplay */}
+                    {currentIndex === 0 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                          <svg
+                            width="20"
+                            height="24"
+                            viewBox="0 0 20 24"
+                            fill="white"
+                            className="ml-1 opacity-60"
+                          >
+                            <polygon points="0,0 20,12 0,24" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : currentProject.thumbnailUrl ? (
+              /* No Mux yet — show full-size thumbnail with play overlay */
+              <div className="w-full h-full relative bg-black flex items-center justify-center">
+                <img
+                  src={currentProject.thumbnailUrl}
+                  alt={currentProject.title}
+                  className="max-w-full max-h-full object-contain"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                    <svg
+                      width="20"
+                      height="24"
+                      viewBox="0 0 20 24"
+                      fill="white"
+                      className="ml-1 opacity-60"
+                    >
+                      <polygon points="0,0 20,12 0,24" />
+                    </svg>
+                  </div>
+                </div>
+                <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/25 uppercase tracking-widest">
+                  Video processing
+                </p>
+              </div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-black">
+                <p className="text-xs text-white/15">Processing...</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
+
+      {/* Floating thumbnail tooltip — rendered outside overflow container */}
+      {hoveredThumb && (
+        <div
+          className="fixed z-50 whitespace-nowrap bg-black/95 px-3 py-1.5 rounded-md text-[10px] text-white/80 pointer-events-none shadow-lg backdrop-blur-sm border border-white/10"
+          style={{
+            left: hoveredThumb.x,
+            top: hoveredThumb.y - 8,
+            transform: "translate(-50%, -100%)",
+          }}
+        >
+          {hoveredThumb.text}
+        </div>
+      )}
+
+      {/* Bottom bar: full-width thumbnail carousel (reel identity + actions
+          moved to the top-right so the carousel owns this whole row) */}
+      <div className="relative z-20 border-t border-white/[0.06] bg-[#080808] flex-shrink-0">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-2">
+          {/* Prev arrow */}
+          <button
+            onClick={goToPrev}
+            disabled={currentIndex === 0}
+            className={`flex-shrink-0 p-1.5 rounded-full transition-colors ${
+              currentIndex === 0
+                ? "text-white/10 cursor-default"
+                : "text-white/40 hover:text-white/70 hover:bg-white/10"
+            }`}
+            aria-label="Previous spot"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          {/* Thumbnail strip */}
+          <div
+            ref={thumbStripRef}
+            className="flex-1 flex items-center gap-2.5 overflow-x-auto py-1 pl-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {items.map((item, i) => {
+              const thumb = getThumbUrl(item);
+              const isActive = i === currentIndex;
+              const isPast = i < currentIndex;
+              const isTransitionPoint = isMultiDirector && directorTransitions.has(i);
+
+              return (
+                <React.Fragment key={item.id}>
+                  {/* Director group separator */}
+                  {isTransitionPoint && (
+                    <div className="flex-shrink-0 w-px h-[88px] bg-white/10 mx-1" />
+                  )}
+                  <button
+                    onClick={() => goToSpot(i)}
+                    onMouseEnter={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const label = (item.project.brand ? `${item.project.brand} · ` : "") + (isMultiDirector ? `${item.project.director.name} · ` : "") + `"${item.project.title}"` + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
+                      setHoveredThumb({ text: label, x: rect.left + rect.width / 2, y: rect.top });
+                    }}
+                    onMouseLeave={() => setHoveredThumb(null)}
+                    title={item.project.title}
+                    className={`flex-shrink-0 group relative transition-all duration-300 rounded-[5px] overflow-hidden ${
+                      isActive
+                        ? "ring-2 ring-white/60 scale-[1.04]"
+                        : isPast
+                          ? "opacity-50 hover:opacity-80"
+                          : "opacity-40 hover:opacity-70"
+                    }`}
+                  >
+                    <div className="w-[156px] h-[88px] bg-white/[0.04] relative">
+                      {thumb ? (
+                        <img
+                          src={thumb}
+                          alt={item.project.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-[10px] text-white/15 tabular-nums">
+                            {i + 1}
+                          </span>
+                        </div>
+                      )}
+                      {/* Duration badge */}
+                      {item.project.duration && (
+                        <span className="absolute top-1 right-1 text-[8px] bg-black/60 px-1 py-0.5 rounded text-white/80 tabular-nums">
+                          {formatDuration(item.project.duration)}
+                        </span>
+                      )}
+                      {/* Client + title overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 pb-1.5 pt-4">
+                        {item.project.brand && (
+                          <p className="text-[9px] font-semibold text-white/90 leading-tight truncate uppercase tracking-wide">
+                            {item.project.brand}
+                          </p>
+                        )}
+                        <p className="text-[8px] font-medium text-white/60 leading-tight truncate">
+                          {item.project.title}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Active play indicator */}
+                    {isActive && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                          <div className="w-0 h-0 border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[8px] border-l-white/90 ml-0.5" />
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                </React.Fragment>
+              );
+            })}
+          </div>
+
+          {/* Next arrow */}
+          <button
+            onClick={goToNext}
+            disabled={currentIndex >= items.length - 1}
+            className={`flex-shrink-0 p-1.5 rounded-full transition-colors ${
+              currentIndex >= items.length - 1
+                ? "text-white/10 cursor-default"
+                : "text-white/40 hover:text-white/70 hover:bg-white/10"
+            }`}
+            aria-label="Next spot"
+          >
+            <ChevronRight size={20} />
+          </button>
         </div>
       </div>
 
