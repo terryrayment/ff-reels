@@ -842,12 +842,9 @@ export function ScreeningCarousel({
 
         {/* Spot title now renders as a centered caption under the player. */}
 
-        {/* Spot counter + reel actions — top right (reel identity is paired
-            with the logomark on the left). */}
-        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-20 flex flex-col items-end gap-2.5 pointer-events-none">
-          <span className="text-xs text-white/30 tabular-nums font-medium drop-shadow-lg">
-            {currentIndex + 1} / {items.length}
-          </span>
+        {/* Reel actions — top right (reel identity is paired with the
+            logomark on the left). */}
+        <div className="absolute top-4 right-4 md:top-6 md:right-8 z-20 flex items-center pointer-events-none">
           <div className="flex items-center gap-1.5 pointer-events-auto">
           {/* Action buttons */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
