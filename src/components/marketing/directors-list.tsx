@@ -178,28 +178,8 @@ export function DirectorsList({ directors }: DirectorsListProps) {
                     prefetch={!director.playProjectId}
                     data-director-slug={director.slug}
                   >
-                    <span
-                      data-marketing-director-name-source
-                      className="ff-directors-list__name"
-                    >
-                      {/* Real name for AT; letters are an aria-hidden visual so
-                          the per-letter lift never affects the morph (the name
-                          overlay is built from the string, not this DOM). */}
-                      <span className="sr-only">{director.name}</span>
-                      <span
-                        aria-hidden="true"
-                        className="ff-directors-list__name-visual"
-                      >
-                        {Array.from(director.name).map((ch, ci) => (
-                          <span
-                            key={ci}
-                            className="ff-directors-list__char"
-                            style={{ transitionDelay: `${ci * 16}ms` }}
-                          >
-                            {ch === " " ? " " : ch}
-                          </span>
-                        ))}
-                      </span>
+                    <span data-marketing-director-name-source>
+                      {director.name}
                     </span>
                   </Link>
                 </li>

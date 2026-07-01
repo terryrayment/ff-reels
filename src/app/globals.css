@@ -3040,11 +3040,16 @@ mux-player {
 
   /* Active name leads — full opacity + slight push. Must beat the
      :hover/:focus-visible dim below. */
+  /* Active name breathes in place — weight + tracking bump, matching the
+     display-heading hover. No shift, no per-letter motion. */
   .ff-directors-list.has-active .ff-directors-list__link.is-active,
   .ff-directors-list.has-active .ff-directors-list__link.is-active:hover,
   .ff-directors-list.has-active .ff-directors-list__link.is-active:focus-visible {
     opacity: 1;
-    transform: translateX(0.5rem);
+    font-variation-settings:
+      "wdth" 86,
+      "wght" 640;
+    letter-spacing: 0.004em;
   }
 
   .ff-directors-list__link {
@@ -3064,30 +3069,13 @@ mux-player {
     color: var(--ff-color-ink);
     transition:
       opacity var(--dur-quick) var(--ff-ease-out),
-      transform var(--dur-quick) var(--ff-ease-out);
+      font-variation-settings var(--dur-quick) var(--ff-ease-out),
+      letter-spacing var(--dur-quick) var(--ff-ease-out);
   }
 
   .ff-directors-list__link:hover,
   .ff-directors-list__link:focus-visible {
     opacity: 0.5;
-  }
-
-  /* Per-letter lift on the active name — a small staggered wave. The inline
-     per-letter transition-delay makes it ripple in and fall back out. */
-  .ff-directors-list__name-visual {
-    display: inline-block;
-  }
-
-  .ff-directors-list__char {
-    display: inline-block;
-    transition: transform 300ms var(--ff-ease-out);
-    will-change: transform;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .ff-directors-list__link.is-active .ff-directors-list__char {
-      transform: translateY(-0.16em);
-    }
   }
 
   /* Outgoing still dissolves over the incoming frame (a soft film cut).
