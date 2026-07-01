@@ -1023,7 +1023,7 @@ export function ScreeningCarousel({
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="w-full max-w-[883px] aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
+          <div className="w-full max-w-[883px] aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/25 relative">
             {currentProject.muxPlaybackId ? (
               <>
                 <MuxPlayer
