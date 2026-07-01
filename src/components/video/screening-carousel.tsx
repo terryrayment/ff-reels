@@ -834,7 +834,15 @@ export function ScreeningCarousel({
         {/* Top bar — reel identity (left) + reel actions (right) on one axis */}
         <div className="absolute top-4 left-4 right-4 md:top-6 md:left-8 md:right-8 z-20 flex items-center justify-between gap-4 pointer-events-none">
           <div className="flex items-center gap-3 min-w-0">
-            <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30 flex-shrink-0" />
+            <a
+              href="https://www.friendsandfamily.tv"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Friends & Family"
+              className="pointer-events-auto flex-shrink-0"
+            >
+              <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30 hover:opacity-60 transition-opacity" />
+            </a>
             <p className="text-[13px] text-white/85 truncate drop-shadow-lg">
               <span className="font-medium text-white">{director.name}</span>
               {brand && <span className="text-white/50"> · {brand}</span>}
