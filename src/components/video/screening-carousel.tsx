@@ -851,7 +851,7 @@ export function ScreeningCarousel({
             {/* Share button */}
             <button
               onClick={() => openPanel("share")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "share"
                   ? "bg-white/10 border-white/20 text-white"
                   : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -864,7 +864,7 @@ export function ScreeningCarousel({
             {/* Bio button — always visible */}
             <button
               onClick={() => openPanel("bio")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "bio"
                   ? "bg-white/10 border-white/20 text-white"
                   : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -877,7 +877,7 @@ export function ScreeningCarousel({
             {/* Download button — hidden in preview mode (no reelId) */}
             {reelId && <button
               onClick={() => openPanel("download")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "download"
                   ? "bg-white/10 border-white/20 text-white"
                   : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -890,7 +890,7 @@ export function ScreeningCarousel({
             {hasFrameGrabs && (
               <button
                 onClick={() => openPanel("framegrabs")}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "framegrabs"
                     ? "bg-white/10 border-white/20 text-white"
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -907,7 +907,7 @@ export function ScreeningCarousel({
             {activeLookbookItems.length > 0 && (
               <button
                 onClick={() => openPanel("lookbook")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "lookbook"
                     ? "bg-white/10 border-white/20 text-white"
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -922,7 +922,7 @@ export function ScreeningCarousel({
             {activeTreatmentSamples.length > 0 && (
               <button
                 onClick={() => openPanel("treatments")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "treatments"
                     ? "bg-white/10 border-white/20 text-white"
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -937,7 +937,7 @@ export function ScreeningCarousel({
             {photoGallery.length > 0 && (
               <button
                 onClick={() => openPanel("gallery")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "gallery"
                     ? "bg-white/10 border-white/20 text-white"
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -951,7 +951,7 @@ export function ScreeningCarousel({
             {/* F&F / About button */}
             <button
               onClick={() => openPanel("company")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                 activePanel === "company"
                   ? "bg-white/10 border-white/20 text-white"
                   : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -964,7 +964,7 @@ export function ScreeningCarousel({
             {activeCaseStudies.length > 0 && (
               <button
                 onClick={() => openPanel("casestudies")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "casestudies"
                     ? "bg-white/10 border-white/20 text-white"
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
@@ -979,7 +979,7 @@ export function ScreeningCarousel({
             {activeShortFilms.length > 0 && (
               <button
                 onClick={() => openPanel("shortfilms")}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full border transition-all text-[9px] uppercase tracking-[0.15em] ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
                   activePanel === "shortfilms"
                     ? "bg-white/10 border-white/20 text-white"
                     : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
