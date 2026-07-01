@@ -995,7 +995,7 @@ export function ScreeningCarousel({
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="w-full max-w-3xl aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
+          <div className="w-full max-w-[883px] aspect-video rounded-lg overflow-hidden shadow-2xl shadow-black/50 relative">
             {currentProject.muxPlaybackId ? (
               <>
                 <MuxPlayer
@@ -1089,7 +1089,7 @@ export function ScreeningCarousel({
 
           {/* Spot caption — centered directly under the player */}
           <div
-            className={`w-full max-w-3xl px-2 mt-4 text-center transition-opacity duration-500 ${
+            className={`w-full max-w-[883px] px-2 mt-4 text-center transition-opacity duration-500 ${
               !showInfo ? "opacity-100" : "opacity-0"
             }`}
           >
