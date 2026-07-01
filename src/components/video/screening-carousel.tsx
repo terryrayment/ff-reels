@@ -1629,8 +1629,17 @@ export function ScreeningCarousel({
           }`}
           style={{ maxHeight: "80vh" }}
         >
+          {/* Subtle film-grain texture over the flat panel */}
           <div
-            className="overflow-y-auto"
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-0 opacity-[0.07]"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            }}
+          />
+          <div
+            className="overflow-y-auto relative z-10"
             style={{ maxHeight: "80vh" }}
           >
             {/* Drag handle */}
@@ -1676,7 +1685,7 @@ export function ScreeningCarousel({
 
               {/* ─── Team — clean, stacked ─── */}
               <div className="pb-16">
-                <p className="text-[11px] text-white/15 uppercase tracking-[0.25em] mb-10">
+                <p className="text-[11px] text-white/45 font-medium uppercase tracking-[0.25em] mb-10">
                   Team
                 </p>
 
@@ -1734,7 +1743,7 @@ export function ScreeningCarousel({
               {/* ─── Directors — minimal list ─── */}
               {rosterHighlights.length > 0 && (
                 <div className="pb-16">
-                  <p className="text-[11px] text-white/15 uppercase tracking-[0.25em] mb-10">
+                  <p className="text-[11px] text-white/45 font-medium uppercase tracking-[0.25em] mb-10">
                     Roster
                   </p>
                   <div className="grid grid-cols-2 gap-x-16 gap-y-4">
@@ -1762,7 +1771,7 @@ export function ScreeningCarousel({
                           )}
                         </div>
                         <div>
-                          <p className="text-[14px] text-white/50 group-hover:text-white/70 transition-colors font-light tracking-tight">
+                          <p className="text-[15px] text-white group-hover:text-white transition-colors font-semibold tracking-tight">
                             {d.name}
                           </p>
                           {d.categories.length > 0 && (
@@ -1779,37 +1788,37 @@ export function ScreeningCarousel({
 
               {/* ─── Sales — inline, understated ─── */}
               <div className="pb-16">
-                <p className="text-[11px] text-white/15 uppercase tracking-[0.25em] mb-10">
+                <p className="text-[11px] text-white/45 font-medium uppercase tracking-[0.25em] mb-10">
                   Sales
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10">
                   <div>
-                    <p className="text-[14px] text-white/50 font-light tracking-tight">West Coast</p>
-                    <p className="text-[12px] text-white/20 mt-2">Uncle Lefty</p>
-                    <a href="mailto:james@unclelefty.com" className="text-[11px] text-white/15 hover:text-white/40 transition-colors block mt-1">
+                    <p className="text-[15px] text-white font-semibold tracking-tight">West Coast</p>
+                    <p className="text-[12px] text-white/75 font-medium mt-2">Uncle Lefty</p>
+                    <a href="mailto:james@unclelefty.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block mt-1">
                       james@unclelefty.com
                     </a>
-                    <a href="mailto:laurel-ann@unclelefty.com" className="text-[11px] text-white/15 hover:text-white/40 transition-colors block">
+                    <a href="mailto:laurel-ann@unclelefty.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block">
                       laurel-ann@unclelefty.com
                     </a>
                   </div>
                   <div>
-                    <p className="text-[14px] text-white/50 font-light tracking-tight">Midwest</p>
-                    <p className="text-[12px] text-white/20 mt-2">CCCo</p>
-                    <a href="mailto:chiara@chiarachung.com" className="text-[11px] text-white/15 hover:text-white/40 transition-colors block mt-1">
+                    <p className="text-[15px] text-white font-semibold tracking-tight">Midwest</p>
+                    <p className="text-[12px] text-white/75 font-medium mt-2">CCCo</p>
+                    <a href="mailto:chiara@chiarachung.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block mt-1">
                       chiara@chiarachung.com
                     </a>
-                    <a href="mailto:gunder@chiarachung.com" className="text-[11px] text-white/15 hover:text-white/40 transition-colors block">
+                    <a href="mailto:gunder@chiarachung.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block">
                       gunder@chiarachung.com
                     </a>
                   </div>
                   <div>
-                    <p className="text-[14px] text-white/50 font-light tracking-tight">East Coast</p>
-                    <p className="text-[12px] text-white/20 mt-2">Talk Shop</p>
-                    <a href="mailto:katie.northy@talk-shop.tv" className="text-[11px] text-white/15 hover:text-white/40 transition-colors block mt-1">
+                    <p className="text-[15px] text-white font-semibold tracking-tight">East Coast</p>
+                    <p className="text-[12px] text-white/75 font-medium mt-2">Talk Shop</p>
+                    <a href="mailto:katie.northy@talk-shop.tv" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block mt-1">
                       katie.northy@talk-shop.tv
                     </a>
-                    <a href="mailto:kenard.jackson@talk-shop.tv" className="text-[11px] text-white/15 hover:text-white/40 transition-colors block">
+                    <a href="mailto:kenard.jackson@talk-shop.tv" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block">
                       kenard.jackson@talk-shop.tv
                     </a>
                   </div>
@@ -1822,7 +1831,7 @@ export function ScreeningCarousel({
                   href="https://www.friendsandfamily.tv"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[13px] text-white/40 hover:text-white/70 transition-colors font-light underline underline-offset-4 decoration-white/10 hover:decoration-white/30"
+                  className="text-[13px] text-white/80 hover:text-white transition-colors font-medium underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
                 >
                   friendsandfamily.tv
                 </a>
