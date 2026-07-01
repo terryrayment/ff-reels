@@ -227,13 +227,9 @@ export default async function AnalyticsPage({
       {/* Header + Date Filter */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-12 gap-4">
         <div className="min-w-0">
-          <p className="section-header mb-3">Engagement intelligence</p>
           <h1 className="text-[42px] md:text-[56px] font-semibold tracking-tight text-[#111] leading-none">
             Analytics
           </h1>
-          <p className="text-[12px] text-[#666] mt-3">
-            All reel activity, ranked by client signal and recency.
-          </p>
         </div>
         <div className="flex flex-col items-start gap-3 md:items-end">
           <div className="flex flex-wrap items-center gap-2.5">

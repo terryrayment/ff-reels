@@ -170,6 +170,23 @@ interface ScreeningCarouselProps {
  * - About F&F company panel
  * - Engagement tracking per spot
  */
+
+// Present a spot title in the editorial quoted style ("Title"), safely:
+// - a clean title gains one pair of quotes
+// - a title that already carries a quote (fully wrapped, or with meaningful
+//   internal/inch/song quotes like `9x16"` or `Lo Moon "Thorns"`) is left as-is
+//   so we never double-wrap or mangle it.
+const isQuoteChar = (c: string | undefined) =>
+  c === '"' || c === "“" || c === "”";
+function displayTitle(raw: string | null | undefined): string {
+  const s = (raw || "").trim();
+  if (!s) return "";
+  const lead = isQuoteChar(s[0]);
+  const trail = isQuoteChar(s[s.length - 1]);
+  if (lead || trail) return s; // already quoted somewhere — leave untouched
+  return `"${s}"`;
+}
+
 export function ScreeningCarousel({
   items,
   director,
@@ -875,16 +892,19 @@ export function ScreeningCarousel({
               Bio
             </button>
 
-            {/* Download button — hidden in preview mode (no reelId) */}
+            {/* Download button — compact icon-only square, matches sibling height.
+                Hidden in preview mode (no reelId). */}
             {reelId && <button
               onClick={() => openPanel("download")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-[4px] border transition-all text-[9px] uppercase tracking-[0.15em] ${
+              aria-label="Download"
+              title="Download"
+              className={`flex items-center justify-center h-8 w-8 flex-shrink-0 rounded-[4px] border transition-all ${
                 activePanel === "download"
                   ? "bg-white/10 border-white/20 text-white"
                   : "bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.06] hover:border-white/[0.12] text-white"
               }`}
             >
-              <Download size={10} />
+              <Download size={12} />
             </button>}
 
             {/* Frame Grabs button — only if any project has frame grabs */}
@@ -1102,7 +1122,7 @@ export function ScreeningCarousel({
             }`}
           >
             <h2 className="text-xl font-medium text-white/85 tracking-tight drop-shadow-lg">
-              {currentProject.title}
+              {displayTitle(currentProject.title)}
             </h2>
             <p className="text-sm text-white/40 mt-1 drop-shadow-md">
               {isMultiDirector && (
@@ -1152,8 +1172,8 @@ export function ScreeningCarousel({
           {/* Thumbnail strip */}
           <div
             ref={thumbStripRef}
-            className="flex-1 flex items-center gap-2.5 overflow-x-auto py-1 pl-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            className="flex-1 flex items-center gap-2.5 overflow-x-auto py-1 px-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none", justifyContent: "safe center" }}
           >
             {items.map((item, i) => {
               const thumb = getThumbUrl(item);
@@ -1171,7 +1191,7 @@ export function ScreeningCarousel({
                     onClick={() => goToSpot(i)}
                     onMouseEnter={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect();
-                      const label = (item.project.brand ? `${item.project.brand} · ` : "") + (isMultiDirector ? `${item.project.director.name} · ` : "") + `"${item.project.title}"` + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
+                      const label = (item.project.brand ? `${item.project.brand} · ` : "") + (isMultiDirector ? `${item.project.director.name} · ` : "") + displayTitle(item.project.title) + (item.project.duration ? ` · ${formatDuration(item.project.duration)}` : "");
                       setHoveredThumb({ text: label, x: rect.left + rect.width / 2, y: rect.top });
                     }}
                     onMouseLeave={() => setHoveredThumb(null)}
@@ -1213,7 +1233,7 @@ export function ScreeningCarousel({
                           </p>
                         )}
                         <p className="text-[8px] font-medium text-white/60 leading-tight truncate">
-                          {item.project.title}
+                          {displayTitle(item.project.title)}
                         </p>
                       </div>
                     </div>
