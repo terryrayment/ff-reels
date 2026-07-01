@@ -3163,6 +3163,18 @@ mux-player {
   }
 }
 
+/* Ambient screening backdrop: ease in to its faint resting opacity and
+   hold there (animation-fill-mode: forwards), instead of ramping to full
+   brightness and then snapping dark when the animation ends. */
+@keyframes ambientIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.08;
+  }
+}
+
 @keyframes ffDirectorsExitStill {
   from {
     opacity: 1;

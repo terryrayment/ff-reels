@@ -751,15 +751,22 @@ export function ScreeningCarousel({
     <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
       {/* Main player area — flex-1 fills space, centers video vertically */}
       <div className="flex-1 relative flex items-center justify-center min-h-0">
-        {/* Ambient portfolio stills — crossfade behind player */}
-        {portfolioStills.length > 0 && showInfo && (
-          <div className="absolute inset-0 z-0">
+        {/* Ambient portfolio stills — behind player. The whole layer stays
+            mounted and fades its opacity on showInfo (so starting playback
+            gently dissolves it instead of hard-cutting), and each still eases
+            in to its faint resting opacity rather than flashing to full. */}
+        {portfolioStills.length > 0 && (
+          <div
+            className={`absolute inset-0 z-0 transition-opacity duration-[1400ms] ease-in-out ${
+              showInfo ? "opacity-100" : "opacity-0"
+            }`}
+          >
             {currentBgStill && (
               <img
                 key={`bg-${bgStillIndex}`}
                 src={currentBgStill}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-[0.07] blur-sm animate-[fadeIn_2s_ease-in-out]"
+                className="absolute inset-0 w-full h-full object-cover blur-sm animate-[ambientIn_3s_ease-out_forwards]"
               />
             )}
             {nextBgStill && (
