@@ -1779,7 +1779,7 @@ export function ScreeningCarousel({
                           )}
                         </div>
                         <div>
-                          <p className="text-[15px] text-white group-hover:text-white transition-colors font-semibold tracking-tight">
+                          <p className="text-[15px] text-white group-hover:text-white transition-colors font-medium tracking-tight">
                             {d.name}
                           </p>
                           {d.categories.length > 0 && (
