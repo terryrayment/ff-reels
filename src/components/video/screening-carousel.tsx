@@ -831,28 +831,24 @@ export function ScreeningCarousel({
           </div>
         </div>
 
-        {/* FF logomark — always visible top left */}
-        <div className="absolute top-4 left-4 md:top-6 md:left-8 z-10 pointer-events-none">
-          <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30" />
+        {/* Reel identity — top left, paired with the logomark */}
+        <div className="absolute top-4 left-4 md:top-6 md:left-8 z-10 flex items-center gap-3 pointer-events-none">
+          <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain invert opacity-30 flex-shrink-0" />
+          <p className="text-[13px] text-white/85 truncate max-w-[45vw] drop-shadow-lg">
+            <span className="font-medium text-white">{director.name}</span>
+            {brand && <span className="text-white/50"> · {brand}</span>}
+          </p>
         </div>
 
         {/* Spot title now renders as a centered caption under the player. */}
 
-        {/* Reel identity + actions — moved up top so the thumbnail carousel
-            gets the full width of the bottom bar. Counter sits above them. */}
+        {/* Spot counter + reel actions — top right (reel identity is paired
+            with the logomark on the left). */}
         <div className="absolute top-4 right-4 md:top-6 md:right-8 z-20 flex flex-col items-end gap-2.5 pointer-events-none">
           <span className="text-xs text-white/30 tabular-nums font-medium drop-shadow-lg">
             {currentIndex + 1} / {items.length}
           </span>
-          <div className="flex items-center gap-2 pointer-events-auto">
-          {/* Persistent reel title — always visible */}
-          <div className="flex-shrink-0 mr-1 hidden md:block">
-            <p className="text-[11px] text-white truncate max-w-[200px]">
-              <span className="font-medium text-white">{director.name}</span>
-              {brand && <span> · {brand}</span>}
-            </p>
-          </div>
-
+          <div className="flex items-center gap-1.5 pointer-events-auto">
           {/* Action buttons */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             {/* Share button */}
