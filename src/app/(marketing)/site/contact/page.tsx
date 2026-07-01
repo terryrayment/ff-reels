@@ -112,7 +112,7 @@ export default function ContactPage() {
             {REPS.map((rep) => (
               <li
                 key={rep.company}
-                className="grid gap-5 border-t border-ff-line-soft py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start lg:py-10"
+                className="grid gap-5 border-t border-ff-line-soft first:border-t-0 py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start lg:py-10"
               >
                 <div>
                   <p className="ff-display-feature">{rep.company}</p>
