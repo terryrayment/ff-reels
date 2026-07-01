@@ -164,6 +164,14 @@ async function testCard(page, baseUrl, listPath, card, index) {
   await gotoSettled(page, `${baseUrl}${listPath}`);
   await page.waitForSelector(`a[href="${card.href}"]`, { timeout: 30000 });
 
+  // Cards now fade in on scroll (opacity via .is-visible); reveal them all so
+  // the click is actionable in headless — mirrors a user having scrolled there.
+  await page.evaluate(() =>
+    document
+      .querySelectorAll(".ff-media-reveal")
+      .forEach((el) => el.classList.add("is-visible")),
+  );
+
   const link = page.locator(`a[href="${card.href}"]`).first();
   await link.scrollIntoViewIfNeeded();
   await page.waitForTimeout(150);

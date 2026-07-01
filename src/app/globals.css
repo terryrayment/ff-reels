@@ -2619,18 +2619,23 @@ mux-player {
     opacity: 0;
   }
 
+  /* Rack-focus reveal: the frame fades in on scroll and its image resolves
+     from soft to sharp (the blur load-in below), in place — no clip wipe and
+     no scale movement. */
   .ff-media-reveal {
-    clip-path: inset(100% 0 0 0);
-    transition: clip-path var(--dur-slow) var(--ease-reveal);
-    will-change: clip-path;
+    opacity: 0;
+    transition: opacity var(--dur-slow) var(--ease-reveal);
+    will-change: opacity;
   }
 
   .ff-media-reveal.is-visible {
-    clip-path: inset(0 0 0 0);
+    opacity: 1;
   }
 
-  .ff-media-reveal.is-visible .ff-media-image {
-    transform: scale(1);
+  /* Kill the pre-reveal zoom so revealed cards resolve in place (non-reveal
+     framed images keep their base scale). */
+  .ff-media-reveal .ff-media-image {
+    transform: none;
   }
 
   .ff-media-fallback {
@@ -2724,7 +2729,7 @@ mux-player {
 
   .ff-fluid-card [data-marketing-media-frame] {
     transition:
-      clip-path var(--dur-slow) var(--ease-reveal),
+      opacity var(--dur-slow) var(--ease-reveal),
       transform 820ms var(--ff-ease-out);
   }
 
@@ -2788,7 +2793,7 @@ mux-player {
 
   @media (prefers-reduced-motion: reduce) {
     .ff-media-reveal {
-      clip-path: inset(0);
+      opacity: 1;
       transition: none;
       will-change: auto;
     }
