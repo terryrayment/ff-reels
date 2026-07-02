@@ -178,10 +178,8 @@ function SmartLinkCard({ update }: { update: Update }) {
 
 function SpotInlinePlayer({
   update,
-  compact = false,
 }: {
   update: Update;
-  compact?: boolean;
 }) {
   const [playing, setPlaying] = useState(false);
   const playbackId = getSpotPlaybackId(update);
@@ -192,9 +190,7 @@ function SpotInlinePlayer({
 
   return (
     <div
-      className={`overflow-hidden bg-[#111] ${
-        compact ? "relative aspect-[16/7]" : "aspect-video max-h-64"
-      }`}
+      className="relative aspect-[16/9] overflow-hidden bg-[#111]"
       onClick={(e) => e.stopPropagation()}
     >
       {playing ? (
@@ -210,7 +206,7 @@ function SpotInlinePlayer({
           primaryColor="#ffffff"
           secondaryColor="#111111"
           accentColor="#777777"
-          style={{ width: "100%", height: "100%", aspectRatio: "16/9" }}
+          style={{ width: "100%", height: "100%" }}
         />
       ) : (
         // Poster facade — a clean thumbnail + play button. The full player is
@@ -471,9 +467,9 @@ export function SignalFeed({
                   className="group/item relative overflow-hidden rounded-xl border border-transparent bg-[#F7F6F3]/70 transition-all duration-300 hover:border-[#DDDCD6] hover:bg-[#F0F0EC]/70"
                 >
                   {spotPlaybackId ? (
-                    <SpotInlinePlayer update={update} compact />
+                    <SpotInlinePlayer update={update} />
                   ) : mediaUrl && (
-                    <div className="relative aspect-[16/7] overflow-hidden bg-[#EAE9E3]">
+                    <div className="relative aspect-[16/9] overflow-hidden bg-[#EAE9E3]">
                       <img
                         src={mediaUrl}
                         alt=""
