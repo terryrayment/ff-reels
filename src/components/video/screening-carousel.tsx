@@ -756,6 +756,20 @@ export function ScreeningCarousel({
     }
   };
 
+  // Escape closes any open panel (takeovers cover the whole screen).
+  // Must run before the early return below \u2014 hooks can't be conditional.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setActivePanel(null);
+        setPreviewTreatment(null);
+        setPlayingPanelVideo(null);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   if (!currentProject) return null;
 
   const subtitle = brand
@@ -774,19 +788,6 @@ export function ScreeningCarousel({
     setPlayingPanelVideo(null);
     setActivePanel((prev) => (prev === panel ? null : panel));
   };
-
-  // Escape closes any open panel (takeovers cover the whole screen)
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setActivePanel(null);
-        setPreviewTreatment(null);
-        setPlayingPanelVideo(null);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
 
   return (
     <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
