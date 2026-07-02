@@ -169,10 +169,12 @@ function SpotCard({
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploadingThumb, setUploadingThumb] = useState(false);
 
-  const thumbSrc = project.muxPlaybackId
-    ? project.thumbnailUrl ||
-      `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`
-    : project.thumbnailUrl || null;
+  const muxThumb = project.muxPlaybackId
+    ? `https://image.mux.com/${project.muxPlaybackId}/thumbnail.jpg?width=480&height=270&fit_mode=smartcrop`
+    : null;
+  // Prefer a custom uploaded thumbnail; fall back to the Mux frame. If the
+  // custom one fails to load (e.g. deleted from storage), onError swaps to Mux.
+  const thumbSrc = project.thumbnailUrl || muxThumb;
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -191,6 +193,10 @@ function SpotCard({
           <img
             src={thumbSrc}
             alt={project.title}
+            onError={(e) => {
+              const img = e.currentTarget;
+              if (muxThumb && img.src !== muxThumb) img.src = muxThumb;
+            }}
             className="w-full h-full object-cover opacity-95 group-hover:opacity-100 transition-opacity duration-300"
             loading="lazy"
           />
@@ -600,13 +606,18 @@ export function UploadManager({ directors }: UploadManagerProps) {
                 </div>
 
                 {/* Queue rows */}
+                <p className="text-[10px] uppercase tracking-[0.12em] text-[#bbb] mb-2">
+                  Spot titles — default to the filename, click to edit
+                </p>
                 <div className="mb-4 rounded-lg border border-[#E8E7E3] divide-y divide-[#F0F0EC] overflow-hidden">
                   {queue.map((item) => (
                     <div key={item.id} className="px-3 py-2.5 bg-white/50">
                       <div className="flex items-center gap-3">
                         <Film size={14} className="text-[#bbb] flex-shrink-0" />
 
-                        {/* Title — editable until the row starts uploading */}
+                        {/* Title — editable until the row starts uploading.
+                            Given a visible box so it reads as an editable field
+                            (defaults to the filename). */}
                         {item.status === "queued" ? (
                           <input
                             type="text"
@@ -614,7 +625,9 @@ export function UploadManager({ directors }: UploadManagerProps) {
                             onChange={(e) =>
                               updateItem(item.id, { title: e.target.value })
                             }
-                            className="flex-1 min-w-0 text-[13px] text-[#1A1A1A] bg-transparent border-b border-transparent hover:border-[#ddd] focus:border-[#999] outline-none transition-colors"
+                            placeholder="Spot title"
+                            aria-label="Spot title"
+                            className="flex-1 min-w-0 text-[13px] text-[#1A1A1A] bg-white border border-[#E8E7E3] rounded px-2 py-1 hover:border-[#ccc] focus:border-[#999] focus:ring-2 focus:ring-[#999]/15 outline-none transition-colors"
                           />
                         ) : (
                           <p className="flex-1 min-w-0 text-[13px] text-[#1A1A1A] truncate">
