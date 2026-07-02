@@ -11,6 +11,7 @@ import {
   Megaphone,
   Pencil,
   Pin,
+  Play,
   Send,
   Trash2,
   UserPlus,
@@ -182,6 +183,7 @@ function SpotInlinePlayer({
   update: Update;
   compact?: boolean;
 }) {
+  const [playing, setPlaying] = useState(false);
   const playbackId = getSpotPlaybackId(update);
   if (!playbackId) return null;
 
@@ -195,19 +197,44 @@ function SpotInlinePlayer({
       }`}
       onClick={(e) => e.stopPropagation()}
     >
-      <MuxPlayer
-        playbackId={playbackId}
-        streamType="on-demand"
-        poster={poster}
-        metadata={{
-          video_id: update.project?.id || update.id,
-          video_title: title,
-        }}
-        primaryColor="#ffffff"
-        secondaryColor="#111111"
-        accentColor="#777777"
-        style={{ width: "100%", height: "100%", aspectRatio: "16/9" }}
-      />
+      {playing ? (
+        <MuxPlayer
+          playbackId={playbackId}
+          streamType="on-demand"
+          autoPlay
+          poster={poster}
+          metadata={{
+            video_id: update.project?.id || update.id,
+            video_title: title,
+          }}
+          primaryColor="#ffffff"
+          secondaryColor="#111111"
+          accentColor="#777777"
+          style={{ width: "100%", height: "100%", aspectRatio: "16/9" }}
+        />
+      ) : (
+        // Poster facade — a clean thumbnail + play button. The full player is
+        // mounted only on click (one on-demand instance, reliable chrome)
+        // instead of auto-mounting a player per feed card.
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          aria-label={`Play ${title}`}
+          className="group/play relative block h-full w-full"
+        >
+          <img
+            src={poster}
+            alt={title}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+          <span className="absolute inset-0 flex items-center justify-center bg-black/15 transition-colors group-hover/play:bg-black/25">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black/55 ring-1 ring-white/25 backdrop-blur-sm transition-transform group-hover/play:scale-105">
+              <Play size={16} className="ml-0.5 text-white" fill="currentColor" />
+            </span>
+          </span>
+        </button>
+      )}
     </div>
   );
 }
