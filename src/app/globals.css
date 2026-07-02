@@ -3197,6 +3197,52 @@ mux-player {
   }
 }
 
+/* ── Screening takeover panels — Division-style printed program ──
+   Full-screen white sheets that slide up over the dark reel (Pretty Bird
+   motion). Children drop in staggered from above (Division reveal). */
+.ff-tk-serif {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.ff-tk-rise {
+  opacity: 0;
+  transform: translateY(-60px);
+  transition:
+    opacity 0.7s cubic-bezier(0.645, 0.045, 0.355, 1),
+    transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.ff-tk-open .ff-tk-rise {
+  opacity: 1;
+  transform: translateY(0);
+}
+.ff-tk-open .ff-tk-rise.ff-tk-d1 { transition-delay: 0.3s; }
+.ff-tk-open .ff-tk-rise.ff-tk-d2 { transition-delay: 0.42s; }
+.ff-tk-open .ff-tk-rise.ff-tk-d3 { transition-delay: 0.54s; }
+.ff-tk-open .ff-tk-rise.ff-tk-d4 { transition-delay: 0.66s; }
+
+/* Division's name→email hover crossfade */
+.ff-tk-swap { position: relative; display: block; }
+.ff-tk-swap .ff-tk-nm {
+  transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.ff-tk-swap .ff-tk-em {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.ff-tk-swap:hover .ff-tk-nm { opacity: 0; }
+.ff-tk-swap:hover .ff-tk-em { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ff-tk-rise {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes ffAboutMicroSettle {
   from {
     opacity: 0;

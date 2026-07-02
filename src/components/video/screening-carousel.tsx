@@ -11,7 +11,6 @@ import {
   ChevronUp,
   X,
   Mail,
-  MessageCircle,
   Copy,
   Check,
   Share2,
@@ -776,6 +775,19 @@ export function ScreeningCarousel({
     setActivePanel((prev) => (prev === panel ? null : panel));
   };
 
+  // Escape closes any open panel (takeovers cover the whole screen)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setActivePanel(null);
+        setPreviewTreatment(null);
+        setPlayingPanelVideo(null);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <div className="h-screen bg-[#0e0e0e] text-white flex flex-col overflow-hidden">
       {/* Main player area — flex-1 fills space, centers video vertically */}
@@ -1286,685 +1298,500 @@ export function ScreeningCarousel({
           onClick={closePanel}
         />
 
-        {/* ─── SHARE PANEL ──────────────────────────────── */}
+        {/* ─── SHARE PANEL — Division-style takeover ─────── */}
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
-            activePanel === "share" ? "translate-y-0" : "translate-y-full"
+          className={`absolute inset-0 bg-white text-[#161616] transition-transform duration-[1000ms] ease-[cubic-bezier(0.4,0,0.2,1)] ff-tk ${
+            activePanel === "share" ? "translate-y-0 ff-tk-open" : "translate-y-full"
           }`}
-          style={{ maxHeight: "65vh" }}
         >
-          <div
-            className="max-w-xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
-            style={{ maxHeight: "65vh" }}
-          >
-            {/* Drag handle */}
-            <div className="flex justify-center mb-6">
-              <div className="w-10 h-1 rounded-full bg-white/10" />
+          <div className="h-full overflow-y-auto overflow-x-hidden">
+            <div className="flex items-center justify-between px-5 pt-6 md:px-10">
+              <span className="text-[10px] uppercase tracking-[0.03em]">
+                Share &mdash; {director.name}
+                {brand ? ` for ${brand}` : ""}
+              </span>
+              <button
+                onClick={closePanel}
+                className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+              >
+                <X size={11} />
+                Close
+              </button>
             </div>
 
-            {/* Close */}
-            <button
-              onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
-            >
-              <X size={16} className="text-white/30" />
-            </button>
-
-            <h3 className="text-[10px] text-white/20 uppercase tracking-[0.2em] mb-6">
-              Share this reel
-            </h3>
-
-            {/* Share the full reel */}
-            <div className="mb-8">
-              <p className="text-[13px] text-white/60 mb-1">
-                {director.name}
-                {brand ? ` \u2014 ${reelTitle}` : ""}
+            <div className="px-5 md:px-10 pt-10 w-full">
+              <p className="ff-tk-rise text-[9px] uppercase tracking-[0.03em] text-[#999] mb-5">
+                Screening link · {items.length} spot{items.length !== 1 ? "s" : ""}
+                {agencyName ? ` · ${agencyName}` : ""}
+                {campaignName ? ` · ${campaignName}` : ""}
               </p>
-              <p className="text-[11px] text-white/25 mb-5">
-                {items.length} spot{items.length !== 1 ? "s" : ""}
-                {agencyName ? ` \u00B7 ${agencyName}` : ""}
-                {campaignName ? ` \u00B7 ${campaignName}` : ""}
+              <p className="ff-tk-rise ff-tk-d1 ff-tk-serif text-[21px] md:text-[27px] leading-[1.5] tracking-[0.01em] max-w-[1080px]">
+                <span className="font-bold">Pass it along.</span>{" "}
+                Send the full reel or just the spot you&apos;re watching.
               </p>
+            </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                {/* Email the reel */}
+            <div className="ff-tk-rise ff-tk-d2 flex flex-col md:flex-row gap-3 md:gap-0 mx-5 md:mx-10 mt-8 md:mt-10 border-b border-[#eee] pb-3">
+              <button
+                onClick={handleCopyReelLink}
+                className="flex-1 flex items-center gap-2.5 text-left text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+              >
+                <span className="w-[22px] h-[22px] rounded-full border border-[#161616] inline-flex items-center justify-center flex-shrink-0">
+                  {shareCopied === "reel" ? <Check size={9} /> : <Copy size={9} />}
+                </span>
+                {shareCopied === "reel" ? "Copied!" : "Copy for Slack"}
+                <em className="not-italic text-[#999]">formatted with context</em>
+              </button>
+              {typeof navigator !== "undefined" && "share" in navigator && (
+                <button
+                  onClick={handleNativeShare}
+                  className="flex-1 flex items-center gap-2.5 text-left text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+                >
+                  <span className="w-[22px] h-[22px] rounded-full border border-[#161616] inline-flex items-center justify-center flex-shrink-0">
+                    <ExternalLink size={9} />
+                  </span>
+                  More Options
+                  <em className="not-italic text-[#999]">AirDrop, WhatsApp&hellip;</em>
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-8 md:gap-11 px-5 md:px-10 pt-8 pb-16">
+              <div className="ff-tk-rise ff-tk-d3 md:w-[22%] min-w-0">
+                <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
+                  Full Reel
+                </h3>
                 <button
                   onClick={handleShareEmail}
-                  className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
+                  className="ff-tk-serif block text-left text-[19px] font-bold leading-[1.55] tracking-[0.01em] hover:opacity-60 transition-opacity"
                 >
-                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
-                    <Mail size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
-                      Email Reel
-                    </p>
-                    <p className="text-[10px] text-white/20">
-                      Pre-written with context
-                    </p>
-                  </div>
+                  Email Reel
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] font-normal mt-0.5">
+                    Pre-written with context
+                  </span>
                 </button>
-
-                {/* Text the reel */}
                 <button
                   onClick={handleShareText}
-                  className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
+                  className="ff-tk-serif block text-left text-[19px] font-bold leading-[1.55] tracking-[0.01em] hover:opacity-60 transition-opacity mt-2.5"
                 >
-                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
-                    <MessageCircle size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
-                      Text / iMessage
-                    </p>
-                    <p className="text-[10px] text-white/20">Quick send</p>
-                  </div>
+                  Text / iMessage
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] font-normal mt-0.5">
+                    Quick send
+                  </span>
                 </button>
-
-                {/* Copy reel link with context */}
-                <button
-                  onClick={handleCopyReelLink}
-                  className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
-                >
-                  <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
-                    {shareCopied === "reel" ? (
-                      <Check size={14} className="text-emerald-400" />
-                    ) : (
-                      <Copy size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
-                    )}
-                  </div>
-                  <div className="text-left">
-                    <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
-                      {shareCopied === "reel" ? "Copied!" : "Copy for Slack"}
-                    </p>
-                    <p className="text-[10px] text-white/20">
-                      Formatted with context
-                    </p>
-                  </div>
-                </button>
-
-                {/* Native share (mobile) */}
-                {typeof navigator !== "undefined" && "share" in navigator && (
-                  <button
-                    onClick={handleNativeShare}
-                    className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all group"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
-                      <ExternalLink size={14} className="text-white/40 group-hover:text-white/60 transition-colors" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-[12px] text-white/60 group-hover:text-white/80 transition-colors">
-                        More Options
-                      </p>
-                      <p className="text-[10px] text-white/20">
-                        AirDrop, WhatsApp...
-                      </p>
-                    </div>
-                  </button>
-                )}
               </div>
-            </div>
 
-            {/* Share the current spot specifically */}
-            <div className="border-t border-white/5 pt-6">
-              <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                Recommend this spot specifically
-              </p>
-              <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-white/[0.03]">
-                {getThumbUrl(currentItem) && (
-                  <img
-                    src={getThumbUrl(currentItem)!}
-                    alt=""
-                    className="w-16 h-9 rounded object-cover flex-shrink-0"
-                  />
-                )}
-                <div className="min-w-0">
-                  <p className="text-[12px] text-white/50 truncate">
-                    {currentProject.title}
-                  </p>
-                  <p className="text-[10px] text-white/20 truncate">
-                    {[
-                      currentProject.brand,
-                      currentProject.agency,
-                      currentProject.year,
-                    ]
-                      .filter(Boolean)
-                      .join(" \u00B7 ")}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-3">
+              <div className="ff-tk-rise ff-tk-d3 md:w-[26%] min-w-0">
+                <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2 truncate">
+                  This Spot &mdash; {displayTitle(currentProject.title)}
+                </h3>
                 <button
                   onClick={handleShareEmailSpot}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                  className="ff-tk-serif block text-left text-[19px] font-bold leading-[1.55] tracking-[0.01em] hover:opacity-60 transition-opacity"
                 >
-                  <Mail size={12} />
-                  Email this spot
+                  Email Spot
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] font-normal mt-0.5">
+                    Links straight to this spot
+                  </span>
                 </button>
                 <button
                   onClick={handleCopySpotLink}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] hover:border-white/[0.12] transition-all text-[11px] text-white/40 hover:text-white/60"
+                  className="ff-tk-serif block text-left text-[19px] font-bold leading-[1.55] tracking-[0.01em] hover:opacity-60 transition-opacity mt-2.5"
                 >
-                  {shareCopied === "spot" ? (
-                    <Check size={12} className="text-emerald-400" />
-                  ) : (
-                    <Copy size={12} />
-                  )}
-                  {shareCopied === "spot" ? "Copied!" : "Copy spot link"}
+                  {shareCopied === "spot" ? "Copied!" : "Copy Spot Link"}
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] font-normal mt-0.5">
+                    Starts playback here
+                  </span>
                 </button>
+              </div>
+
+              <div className="ff-tk-rise ff-tk-d4 md:w-[30%] min-w-0">
+                <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
+                  Now Playing
+                </h3>
+                {getThumbUrl(currentItem) && (
+                  <img
+                    src={getThumbUrl(currentItem)!}
+                    alt={currentProject.title}
+                    className="w-[210px] aspect-video object-cover border border-[#eee] grayscale contrast-[1.05] hover:grayscale-0 transition-all duration-300"
+                  />
+                )}
+                <p className="ff-tk-serif text-[15px] font-bold mt-2">
+                  {displayTitle(currentProject.title)}
+                </p>
+                <p className="text-[9px] uppercase tracking-[0.03em] text-[#999] mt-0.5">
+                  {[currentProject.brand, currentProject.agency, currentProject.year]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ─── BIO PANEL ──────────────────────────────── */}
+        {/* ─── BIO PANEL — Division-style takeover ─────── */}
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
-            activePanel === "bio" ? "translate-y-0" : "translate-y-full"
+          className={`absolute inset-0 bg-white text-[#161616] transition-transform duration-[1000ms] ease-[cubic-bezier(0.4,0,0.2,1)] ff-tk ${
+            activePanel === "bio" ? "translate-y-0 ff-tk-open" : "translate-y-full"
           }`}
-          style={{ maxHeight: "70vh" }}
         >
-          <div
-            className="max-w-2xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
-            style={{ maxHeight: "70vh" }}
-          >
-            {/* Drag handle */}
-            <div className="flex justify-center mb-6">
-              <div className="w-10 h-1 rounded-full bg-white/10" />
+          <div className="h-full overflow-y-auto overflow-x-hidden pb-16">
+            <div className="flex items-center justify-between px-5 pt-6 md:px-10">
+              <span className="text-[10px] uppercase tracking-[0.03em]">
+                Biography &mdash; {allDirectors.map((d) => d.name).join(" & ")}
+              </span>
+              <button
+                onClick={closePanel}
+                className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+              >
+                <X size={11} />
+                Close
+              </button>
             </div>
 
-            {/* Close */}
-            <button
-              onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
-            >
-              <X size={16} className="text-white/30" />
-            </button>
-
-            {/* Director(s) — one block per director, stacked for co-director reels */}
             {allDirectors.map((d, idx) => {
               const dBrands = directorsData?.[d.id]?.clientBrands ?? (idx === 0 ? clientBrands : []);
+              const bioText =
+                d.bio && d.bio.trimStart().startsWith(d.name)
+                  ? d.bio.trimStart().slice(d.name.length).trimStart()
+                  : d.bio;
               return (
                 <div key={d.id}>
-                  {/* Divider between directors */}
                   {idx > 0 && (
-                    <div className="flex items-center gap-3 my-8">
-                      <div className="flex-1 border-t border-white/5" />
-                      <span className="text-[10px] text-white/15 uppercase tracking-[0.2em]">&amp;</span>
-                      <div className="flex-1 border-t border-white/5" />
-                    </div>
+                    <div className="border-t border-[#eee] mx-5 md:mx-10 mt-2 mb-4" />
                   )}
 
-                  {/* Director header */}
-                  <div className="flex items-start gap-6 mb-8">
-                    {d.headshotUrl && (
-                      <img
-                        src={d.headshotUrl}
-                        alt={d.name}
-                        className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-1 ring-white/10"
-                      />
-                    )}
-                    <div>
-                      <h3 className="text-xl font-light text-white/90 tracking-tight">
-                        {d.name}
-                      </h3>
-                      <p className="text-[10px] text-white/20 uppercase tracking-[0.2em] mt-1">
-                        Director
-                      </p>
-                      {d.websiteUrl && (
-                        <a
-                          href={d.websiteUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-[10px] text-white/30 hover:text-white/60 transition-colors mt-2"
-                        >
-                          <Globe size={10} />
-                          {d.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Bio */}
-                  {d.bio && (
-                    <div className="mb-8">
-                      <p className="text-[13px] text-white/50 leading-[1.8] whitespace-pre-line">
-                        {d.bio}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Client List */}
-                  {dBrands.length > 0 && (
-                    <div className="border-t border-white/5 pt-6 mb-8">
-                      <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                        Client List
-                      </p>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-                        {dBrands.map((brand) => (
-                          <span key={brand} className="text-[12px] text-white/30">
-                            {brand}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Statement */}
-                  {d.statement && (
-                    <div className="border-t border-white/5 pt-6 mb-8">
-                      <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-4">
-                        Statement
-                      </p>
-                      <p className="text-[13px] text-white/35 leading-[1.8] italic whitespace-pre-line">
+                  <div className="px-5 md:px-10 pt-10 w-full">
+                    <p className="ff-tk-rise text-[9px] uppercase tracking-[0.03em] text-[#999] mb-5">
+                      Director · Friends &amp; Family
+                    </p>
+                    <p className="ff-tk-rise ff-tk-d1 ff-tk-serif text-[21px] md:text-[26px] leading-[1.55] tracking-[0.01em] max-w-[1080px] whitespace-pre-line">
+                      <span className="font-bold">{d.name}</span>
+                      {bioText ? <> {bioText}</> : null}
+                    </p>
+                    {d.statement && (
+                      <p className="ff-tk-rise ff-tk-d1 ff-tk-serif italic text-[15px] text-[#999] leading-[1.8] mt-5 max-w-[720px] whitespace-pre-line">
                         {d.statement}
                       </p>
+                    )}
+                  </div>
+
+                  {d.websiteUrl && (
+                    <div className="ff-tk-rise ff-tk-d2 flex mx-5 md:mx-10 mt-8 md:mt-10 border-b border-[#eee] pb-3">
+                      <a
+                        href={d.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+                      >
+                        <span className="w-[22px] h-[22px] rounded-full border border-[#161616] inline-flex items-center justify-center flex-shrink-0">
+                          <Globe size={9} />
+                        </span>
+                        {d.websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                      </a>
+                    </div>
+                  )}
+
+                  {(dBrands.length > 0 || d.headshotUrl) && (
+                    <div className="flex flex-col md:flex-row gap-8 md:gap-11 px-5 md:px-10 pt-8">
+                      {dBrands.length > 0 && (
+                        <div className="ff-tk-rise ff-tk-d3 md:w-[58%] min-w-0">
+                          <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
+                            Client List
+                          </h3>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-1">
+                            {dBrands.map((b) => (
+                              <span
+                                key={b}
+                                className="ff-tk-serif text-[16px] leading-[1.6] tracking-[0.01em]"
+                              >
+                                {b}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {d.headshotUrl && (
+                        <div className="ff-tk-rise ff-tk-d4 md:w-[26%] min-w-0">
+                          <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
+                            Headshot
+                          </h3>
+                          <img
+                            src={d.headshotUrl}
+                            alt={d.name}
+                            className="w-[132px] aspect-[4/5] object-cover border border-[#eee] grayscale contrast-[1.05] hover:grayscale-0 transition-all duration-300"
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               );
             })}
-
-            {/* Downloadable reel gallery */}
-            <div className="border-t border-white/5 pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-[10px] text-white/15 uppercase tracking-[0.2em]">
-                  This Reel
-                </p>
-                {reelId && <button
-                  onClick={handleDownloadAll}
-                  disabled={!items.some((i) => i.project.muxPlaybackId) || zipping}
-                  className="flex items-center gap-1.5 text-[10px] text-white/25 hover:text-white/50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  {zipping
-                    ? <div className="w-2.5 h-2.5 border border-white/20 border-t-white/50 rounded-full animate-spin" />
-                    : <Download size={10} />
-                  }
-                  {zipping ? "Preparing ZIP…" : "Download All"}
-                </button>}
-              </div>
-              {/* Error toast */}
-              {downloadError && (
-                <div className="mb-3 flex items-center justify-between gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
-                  <p className="text-[11px] text-red-400">{downloadError}</p>
-                  <button onClick={() => setDownloadError(null)} className="text-red-400/60 hover:text-red-400 flex-shrink-0">
-                    <X size={12} />
-                  </button>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {items.map((item, i) => {
-                  const thumb = getThumbUrl(item, "large");
-                  const canDownload = !!item.project.muxPlaybackId;
-                  const isDownloading = downloadingIds.has(item.project.id);
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => (canDownload && reelId) ? handleDownloadSpot(item) : goToSpot(i)}
-                      disabled={isDownloading}
-                      className="group relative aspect-video rounded-md overflow-hidden bg-white/[0.04] disabled:cursor-wait"
-                    >
-                      {thumb ? (
-                        <img
-                          src={thumb}
-                          alt={item.project.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <span className="text-[10px] text-white/15">{i + 1}</span>
-                        </div>
-                      )}
-                      {/* Hover overlay with download cue */}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-200 flex items-center justify-center">
-                        {canDownload && !isDownloading && (
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                            <Download size={18} className="text-white/80" />
-                          </div>
-                        )}
-                        {isDownloading && (
-                          <div className="w-4 h-4 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
-                        )}
-                      </div>
-                      {/* Title bar at bottom */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 pb-1.5 pt-4">
-                        <p className="text-[10px] text-white/70 truncate leading-tight">
-                          {item.project.title}
-                        </p>
-                        <p className="text-[8px] text-white/30 truncate">
-                          {item.project.brand || "\u2014"}
-                        </p>
-                      </div>
-                      {/* Download badge */}
-                      {canDownload && !isDownloading && (
-                        <div className="absolute top-1.5 right-1.5">
-                          <Download size={10} className="text-white/25" />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* ─── ABOUT F&F PANEL — buck.co-inspired minimal ────────── */}
+        {/* ─── ABOUT F&F PANEL — Division-style takeover ─── */}
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#0a0a0a] border-t border-white/[0.06] rounded-t-[20px] transition-transform duration-500 ease-out ${
-            activePanel === "company" ? "translate-y-0" : "translate-y-full"
+          className={`absolute inset-0 bg-white text-[#161616] transition-transform duration-[1000ms] ease-[cubic-bezier(0.4,0,0.2,1)] ff-tk ${
+            activePanel === "company" ? "translate-y-0 ff-tk-open" : "translate-y-full"
           }`}
-          style={{ maxHeight: "80vh" }}
         >
-          {/* Subtle film-grain texture over the flat panel */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-20 opacity-[0.07]"
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-            }}
-          />
-          <div
-            className="overflow-y-auto relative z-10"
-            style={{ maxHeight: "80vh" }}
-          >
-            {/* Drag handle */}
-            <div className="flex justify-center pt-4 pb-2 sticky top-0 z-10 bg-[#0a0a0a]">
-              <div className="w-10 h-1 rounded-full bg-white/10" />
+          <div className="h-full overflow-y-auto overflow-x-hidden">
+            <div className="flex items-center justify-between px-5 pt-6 md:px-10">
+              <span className="text-[10px] uppercase tracking-[0.03em]">
+                Friends &amp; Family &mdash; About
+              </span>
+              <button
+                onClick={closePanel}
+                className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+              >
+                <X size={11} />
+                Close
+              </button>
             </div>
 
-            {/* Close */}
-            <button
-              onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors z-10"
-            >
-              <X size={16} className="text-white/30" />
-            </button>
+            <div className="px-5 md:px-10 pt-10 w-full">
+              <p className="ff-tk-rise text-[9px] uppercase tracking-[0.03em] text-[#999] mb-5">
+                Creative Production Company · New York &amp; Los Angeles
+              </p>
+              <p className="ff-tk-rise ff-tk-d1 ff-tk-serif text-[21px] md:text-[27px] leading-[1.5] tracking-[0.01em] max-w-[1080px]">
+                <span className="font-bold">Friends &amp; Family</span>{" "}
+                is a creative production company developing and producing work across
+                commercial, branded content, music, and entertainment &mdash; founded by
+                Scott Kaplan, the producer behind Old Spice&apos;s Emmy-winning &ldquo;The
+                Man Your Man Could Smell Like&rdquo; and Apple&apos;s iconic iPod
+                campaigns, and home to a curated roster of visionary directors.
+              </p>
+            </div>
 
-            <div className="max-w-2xl mx-auto px-10 pb-16">
+            <div className="ff-tk-rise ff-tk-d2 flex flex-col md:flex-row gap-3 md:gap-0 mx-5 md:mx-10 mt-8 md:mt-10 border-b border-[#eee] pb-3">
+              <a
+                href="https://www.friendsandfamily.tv"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center gap-2.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+              >
+                <span className="w-[22px] h-[22px] rounded-full border border-[#161616] inline-flex items-center justify-center flex-shrink-0">
+                  <ExternalLink size={9} />
+                </span>
+                friendsandfamily.tv
+              </a>
+              <a
+                href="mailto:scott@friendsandfamily.tv"
+                className="flex-1 flex items-center gap-2.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+              >
+                <span className="w-[22px] h-[22px] rounded-full border border-[#161616] inline-flex items-center justify-center flex-shrink-0">
+                  <Mail size={9} />
+                </span>
+                General Inquiries
+                <em className="not-italic text-[#999] normal-case">scott@friendsandfamily.tv</em>
+              </a>
+            </div>
 
-              {/* ─── Company name — large, airy ─── */}
-              <div className="pt-8 pb-16">
-                <h3 className="text-[42px] font-light text-white tracking-tight leading-[1.1]">
-                  Friends &amp; Family
-                </h3>
-              </div>
-
-              {/* ─── About — narrative, generous spacing ─── */}
-              <div className="pb-16">
-                <p className="text-[15px] text-white/55 leading-[2] font-light">
-                  Friends &amp; Family is a creative production company developing and producing
-                  work across commercial, branded content, music, and entertainment. Founded by
-                  industry veteran Scott Kaplan &mdash; the producer behind Old Spice&apos;s
-                  Emmy-winning, Cannes Grand Prix &amp; D&amp;AD Black Pencil &ldquo;The Man Your
-                  Man Could Smell Like,&rdquo; Apple&apos;s iconic iPod campaigns, and
-                  collaborations with directors including Tom Kuntz, Mark Romanek, and Gus Van
-                  Sant &mdash; the company represents a curated roster of visionary directors
-                  who bring intelligence, craft, and distinctive voice to every project.
-                </p>
-                <p className="text-[15px] text-white/55 leading-[2] font-light mt-6">
-                  With offices in New York and Los Angeles, Friends &amp; Family partners
-                  with the world&apos;s top agencies and brands to create work that is smart,
-                  honest, and unforgettable.
-                </p>
-              </div>
-
-              {/* ─── Team — clean, stacked ─── */}
-              <div className="pb-16">
-                <p className="text-[11px] text-white/45 font-medium uppercase tracking-[0.25em] mb-10">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-11 px-5 md:px-10 pt-8 pb-16">
+              {/* Team — name swaps to email on hover (Division) */}
+              <div className="ff-tk-rise ff-tk-d3 md:w-[24%] min-w-0">
+                <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
                   Team
-                </p>
-
-                <div className="space-y-10">
-                  <div>
-                    <p className="text-[17px] text-white/70 font-light tracking-tight">Scott Kaplan</p>
-                    <p className="text-[12px] text-white/25 mt-1">Managing Director / EP</p>
-                    <p className="text-[13px] text-white/30 leading-[1.9] mt-3 font-light">
-                      A 25-year advertising production veteran and the creative engine behind
-                      Friends &amp; Family. Scott has produced landmark campaigns for Tom Kuntz,
-                      Mark Romanek, Gus Van Sant, Noam Murro, and Malcolm Venville. His
-                      credits include Old Spice&apos;s &ldquo;The Man Your Man Could Smell
-                      Like&rdquo; (Emmy, Cannes Grand Prix, D&amp;AD Black Pencil), Apple&apos;s
-                      iPod series featuring Paul McCartney, Eminem, and Bob Dylan, and work
-                      for Nike, Google, and Coca-Cola.
-                    </p>
-                    <a href="mailto:scott@friendsandfamily.tv" className="text-[12px] text-white/20 hover:text-white/50 transition-colors mt-2 inline-block">
-                      scott@friendsandfamily.tv
-                    </a>
-                  </div>
-
-                  <div>
-                    <p className="text-[17px] text-white/70 font-light tracking-tight">Jed Herold</p>
-                    <p className="text-[12px] text-white/25 mt-1">Executive Producer</p>
-                    <p className="text-[13px] text-white/30 leading-[1.9] mt-3 font-light">
-                      An integrated executive producer and project management leader with
-                      20+ years across video, digital, social, and print production. Jed has
-                      held senior roles at BBDO, McCann, Grey, and Johannes Leonardo, bringing
-                      deep agency-side insight to every production. He leads client partnerships
-                      and draws on one of the widest collaborator networks in the business.
-                    </p>
-                    <a href="mailto:jed@friendsandfamily.tv" className="text-[12px] text-white/20 hover:text-white/50 transition-colors mt-2 inline-block">
-                      jed@friendsandfamily.tv
-                    </a>
-                  </div>
-
-                  <div>
-                    <p className="text-[17px] text-white/70 font-light tracking-tight">Alana Hearn</p>
-                    <p className="text-[12px] text-white/25 mt-1">Executive Producer</p>
-                    <p className="text-[13px] text-white/30 leading-[1.9] mt-3 font-light">
-                      Alana began her production career at Lighthouse alongside legendary
-                      photographer Peter Lindbergh before rising to EP at Identity and
-                      Triptent, where she led content production for major brand campaigns.
-                      Her client roster spans Nike, Pepsi, Samsung, L&apos;Or&eacute;al,
-                      and Maybelline, with expertise across commercial, fashion, and
-                      branded entertainment.
-                    </p>
-                    <a href="mailto:alana@friendsandfamily.tv" className="text-[12px] text-white/20 hover:text-white/50 transition-colors mt-2 inline-block">
-                      alana@friendsandfamily.tv
-                    </a>
-                  </div>
-                </div>
+                </h3>
+                <a href="mailto:scott@friendsandfamily.tv" className="ff-tk-swap">
+                  <span className="ff-tk-nm ff-tk-serif block text-[19px] font-bold leading-[1.55] tracking-[0.01em]">
+                    Scott Kaplan
+                  </span>
+                  <span className="ff-tk-em text-[10px] uppercase tracking-[0.03em]">
+                    scott@friendsandfamily.tv
+                  </span>
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] mt-0.5">
+                    Managing Director / EP
+                  </span>
+                </a>
+                <a href="mailto:jed@friendsandfamily.tv" className="ff-tk-swap mt-2.5">
+                  <span className="ff-tk-nm ff-tk-serif block text-[19px] font-bold leading-[1.55] tracking-[0.01em]">
+                    Jed Herold
+                  </span>
+                  <span className="ff-tk-em text-[10px] uppercase tracking-[0.03em]">
+                    jed@friendsandfamily.tv
+                  </span>
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] mt-0.5">
+                    Executive Producer
+                  </span>
+                </a>
+                <a href="mailto:alana@friendsandfamily.tv" className="ff-tk-swap mt-2.5">
+                  <span className="ff-tk-nm ff-tk-serif block text-[19px] font-bold leading-[1.55] tracking-[0.01em]">
+                    Alana Hearn
+                  </span>
+                  <span className="ff-tk-em text-[10px] uppercase tracking-[0.03em]">
+                    alana@friendsandfamily.tv
+                  </span>
+                  <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] mt-0.5">
+                    Executive Producer
+                  </span>
+                </a>
               </div>
 
-              {/* ─── Directors — minimal list ─── */}
+              {/* Sales — regions, all emails kept clickable */}
+              <div className="ff-tk-rise ff-tk-d3 md:w-[28%] min-w-0">
+                <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
+                  Sales &mdash; West Coast
+                </h3>
+                <p className="ff-tk-serif text-[19px] font-bold leading-[1.55] tracking-[0.01em]">
+                  Uncle Lefty
+                </p>
+                <a href="mailto:james@unclelefty.com" className="block text-[10px] uppercase tracking-[0.03em] text-[#161616] hover:opacity-45 transition-opacity mt-0.5">
+                  james@unclelefty.com
+                </a>
+                <a href="mailto:laurel-ann@unclelefty.com" className="block text-[10px] uppercase tracking-[0.03em] text-[#161616] hover:opacity-45 transition-opacity">
+                  laurel-ann@unclelefty.com
+                </a>
+
+                <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2 mt-6">
+                  Sales &mdash; Midwest
+                </h3>
+                <p className="ff-tk-serif text-[19px] font-bold leading-[1.55] tracking-[0.01em]">
+                  CCCo
+                </p>
+                <a href="mailto:chiara@chiarachung.com" className="block text-[10px] uppercase tracking-[0.03em] text-[#161616] hover:opacity-45 transition-opacity mt-0.5">
+                  chiara@chiarachung.com
+                </a>
+                <a href="mailto:gunder@chiarachung.com" className="block text-[10px] uppercase tracking-[0.03em] text-[#161616] hover:opacity-45 transition-opacity">
+                  gunder@chiarachung.com
+                </a>
+
+                <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2 mt-6">
+                  Sales &mdash; East Coast
+                </h3>
+                <p className="ff-tk-serif text-[19px] font-bold leading-[1.55] tracking-[0.01em]">
+                  Talk Shop
+                </p>
+                <a href="mailto:katie.northy@talk-shop.tv" className="block text-[10px] uppercase tracking-[0.03em] text-[#161616] hover:opacity-45 transition-opacity mt-0.5">
+                  katie.northy@talk-shop.tv
+                </a>
+                <a href="mailto:kenard.jackson@talk-shop.tv" className="block text-[10px] uppercase tracking-[0.03em] text-[#161616] hover:opacity-45 transition-opacity">
+                  kenard.jackson@talk-shop.tv
+                </a>
+              </div>
+
+              {/* Roster — serif name index */}
               {rosterHighlights.length > 0 && (
-                <div className="pb-16">
-                  <p className="text-[11px] text-white/45 font-medium uppercase tracking-[0.25em] mb-10">
+                <div className="ff-tk-rise ff-tk-d4 md:w-[30%] min-w-0">
+                  <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
                     Roster
-                  </p>
-                  <div className="grid grid-cols-2 gap-x-16 gap-y-4">
+                  </h3>
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-1">
                     {rosterHighlights.map((d) => (
                       <a
                         key={d.id}
                         href={`${FF_DIRECTOR_URL}/${d.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-4 group cursor-pointer"
+                        className="ff-tk-serif text-[16px] leading-[1.6] tracking-[0.01em] hover:opacity-60 transition-opacity"
                       >
-                        <div className="w-10 h-10 rounded-full overflow-hidden bg-white/[0.04] flex-shrink-0">
-                          {d.headshotUrl ? (
-                            <img
-                              src={d.headshotUrl}
-                              alt={d.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <span className="text-[13px] text-white/15 font-light">
-                                {d.name.charAt(0)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <p className="text-[15px] text-white group-hover:text-white transition-colors font-medium tracking-tight">
-                            {d.name}
-                          </p>
-                          {d.categories.length > 0 && (
-                            <p className="text-[10px] text-white/15 mt-0.5">
-                              {d.categories.slice(0, 2).join(" \u00B7 ")}
-                            </p>
-                          )}
-                        </div>
+                        {d.name}
                       </a>
                     ))}
                   </div>
                 </div>
               )}
-
-              {/* ─── Sales — inline, understated ─── */}
-              <div className="pb-16">
-                <p className="text-[11px] text-white/45 font-medium uppercase tracking-[0.25em] mb-10">
-                  Sales
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-10">
-                  <div>
-                    <p className="text-[15px] text-white font-semibold tracking-tight">West Coast</p>
-                    <p className="text-[12px] text-white/75 font-medium mt-2">Uncle Lefty</p>
-                    <a href="mailto:james@unclelefty.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block mt-1">
-                      james@unclelefty.com
-                    </a>
-                    <a href="mailto:laurel-ann@unclelefty.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block">
-                      laurel-ann@unclelefty.com
-                    </a>
-                  </div>
-                  <div>
-                    <p className="text-[15px] text-white font-semibold tracking-tight">Midwest</p>
-                    <p className="text-[12px] text-white/75 font-medium mt-2">CCCo</p>
-                    <a href="mailto:chiara@chiarachung.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block mt-1">
-                      chiara@chiarachung.com
-                    </a>
-                    <a href="mailto:gunder@chiarachung.com" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block">
-                      gunder@chiarachung.com
-                    </a>
-                  </div>
-                  <div>
-                    <p className="text-[15px] text-white font-semibold tracking-tight">East Coast</p>
-                    <p className="text-[12px] text-white/75 font-medium mt-2">Talk Shop</p>
-                    <a href="mailto:katie.northy@talk-shop.tv" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block mt-1">
-                      katie.northy@talk-shop.tv
-                    </a>
-                    <a href="mailto:kenard.jackson@talk-shop.tv" className="text-[12px] text-white/55 hover:text-white/85 transition-colors block">
-                      kenard.jackson@talk-shop.tv
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* ─── Contact — quiet, confident ─── */}
-              <div className="flex items-center gap-6 pb-4">
-                <a
-                  href="https://www.friendsandfamily.tv"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[13px] text-white/80 hover:text-white transition-colors font-medium underline underline-offset-4 decoration-white/20 hover:decoration-white/50"
-                >
-                  friendsandfamily.tv
-                </a>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* ─── DOWNLOAD PANEL ──────────────────────────── */}
+        {/* ─── DOWNLOAD PANEL — Division-style takeover ──── */}
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-[#111] border-t border-white/10 rounded-t-2xl transition-transform duration-500 ease-out ${
-            activePanel === "download" ? "translate-y-0" : "translate-y-full"
+          className={`absolute inset-0 bg-white text-[#161616] transition-transform duration-[1000ms] ease-[cubic-bezier(0.4,0,0.2,1)] ff-tk ${
+            activePanel === "download" ? "translate-y-0 ff-tk-open" : "translate-y-full"
           }`}
-          style={{ maxHeight: "65vh" }}
         >
-          <div
-            className="max-w-xl mx-auto px-4 py-6 md:px-8 md:py-8 overflow-y-auto"
-            style={{ maxHeight: "65vh" }}
-          >
-            {/* Drag handle */}
-            <div className="flex justify-center mb-6">
-              <div className="w-10 h-1 rounded-full bg-white/10" />
+          <div className="h-full overflow-y-auto overflow-x-hidden">
+            <div className="flex items-center justify-between px-5 pt-6 md:px-10">
+              <span className="text-[10px] uppercase tracking-[0.03em]">
+                Download &mdash; {director.name}
+                {brand ? ` for ${brand}` : ""}
+              </span>
+              <button
+                onClick={closePanel}
+                className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
+              >
+                <X size={11} />
+                Close
+              </button>
             </div>
 
-            {/* Close */}
-            <button
-              onClick={closePanel}
-              className="absolute top-4 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
-            >
-              <X size={16} className="text-white/30" />
-            </button>
+            <div className="px-5 md:px-10 pt-10 w-full">
+              <p className="ff-tk-rise text-[9px] uppercase tracking-[0.03em] text-[#999] mb-5">
+                {items.filter((i) => i.project.muxPlaybackId).length} of {items.length} spot
+                {items.length !== 1 ? "s" : ""} available · MP4
+              </p>
+              <p className="ff-tk-rise ff-tk-d1 ff-tk-serif text-[21px] md:text-[27px] leading-[1.5] tracking-[0.01em] max-w-[1080px]">
+                <span className="font-bold">Take it with you.</span>{" "}
+                Every spot in this reel &mdash; single files below, or the full
+                package in one archive.
+              </p>
+            </div>
 
-            <h3 className="text-[10px] text-white/20 uppercase tracking-[0.2em] mb-6">
-              Download
-            </h3>
-
-            {/* Download All Spots — always visible */}
-            <button
-              onClick={handleDownloadAll}
-              disabled={!items.some((i) => i.project.muxPlaybackId) || zipping}
-              className="w-full flex items-center gap-4 px-5 py-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] hover:border-white/[0.15] transition-all group mb-6 disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
-                {zipping
-                  ? <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
-                  : <Download size={16} className="text-white/50 group-hover:text-white/70 transition-colors" />
-                }
-              </div>
-              <div className="text-left">
-                <p className="text-[14px] text-white/70 group-hover:text-white/90 transition-colors font-medium">
-                  {zipping ? "Preparing ZIP…" : "Download All Spots"}
-                </p>
-                <p className="text-[11px] text-white/25">
-                  {items.filter((i) => i.project.muxPlaybackId).length} of {items.length} videos as MP4
-                </p>
-              </div>
-            </button>
+            <div className="ff-tk-rise ff-tk-d2 flex mx-5 md:mx-10 mt-8 md:mt-10 border-b border-[#eee] pb-3">
+              <button
+                onClick={handleDownloadAll}
+                disabled={!items.some((i) => i.project.muxPlaybackId) || zipping}
+                className="flex items-center gap-2.5 text-left text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <span className="w-[22px] h-[22px] rounded-full border border-[#161616] inline-flex items-center justify-center flex-shrink-0">
+                  {zipping ? (
+                    <span className="w-2.5 h-2.5 border border-[#161616]/30 border-t-[#161616] rounded-full animate-spin" />
+                  ) : (
+                    <Download size={9} />
+                  )}
+                </span>
+                {zipping ? "Preparing ZIP…" : "Download All"}
+                <em className="not-italic text-[#999]">
+                  {items.filter((i) => i.project.muxPlaybackId).length} videos · ZIP
+                </em>
+              </button>
+            </div>
 
             {downloadError && (
-              <div className="mb-3 flex items-center justify-between gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
-                <p className="text-[11px] text-red-400">{downloadError}</p>
-                <button onClick={() => setDownloadError(null)} className="text-red-400/60 hover:text-red-400 flex-shrink-0">
+              <div className="mx-5 md:mx-10 mt-4 flex items-center justify-between gap-2 border border-red-200 bg-red-50 px-3 py-2">
+                <p className="text-[11px] text-red-600">{downloadError}</p>
+                <button onClick={() => setDownloadError(null)} className="text-red-400 hover:text-red-600 flex-shrink-0">
                   <X size={12} />
                 </button>
               </div>
             )}
 
-            {/* Individual spots */}
-            <p className="text-[10px] text-white/15 uppercase tracking-[0.2em] mb-3">
-              Individual spots
-            </p>
-            <div className="space-y-2">
-              {items.map((item, i) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleDownloadSpot(item)}
-                  disabled={!item.project.muxPlaybackId}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-white/[0.10] transition-all group disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  {getThumbUrl(item) && (
-                    <img
-                      src={getThumbUrl(item)!}
-                      alt=""
-                      className="w-14 h-8 rounded object-cover flex-shrink-0"
-                    />
-                  )}
-                  <div className="flex-1 text-left min-w-0">
-                    <p className="text-[12px] text-white/50 group-hover:text-white/70 transition-colors truncate">
-                      {item.project.title}
-                    </p>
-                    <p className="text-[10px] text-white/20 truncate">
-                      {[item.project.brand, item.project.agency]
-                        .filter(Boolean)
-                        .join(" \u00B7 ") || "\u2014"}
-                    </p>
-                  </div>
-                  <span className="text-[10px] text-white/15 tabular-nums flex-shrink-0 mr-1">
-                    {i + 1}
-                  </span>
-                  <Download
-                    size={12}
-                    className="text-white/20 group-hover:text-white/50 transition-colors flex-shrink-0"
-                  />
-                </button>
-              ))}
+            <div className="ff-tk-rise ff-tk-d3 px-5 md:px-10 pt-8 pb-16">
+              <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-3">
+                Individual Spots
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-11 gap-y-5">
+                {items.map((item) => {
+                  const canDownload = !!item.project.muxPlaybackId;
+                  const isDownloading = downloadingIds.has(item.project.id);
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleDownloadSpot(item)}
+                      disabled={!canDownload || isDownloading}
+                      className="ff-tk-swap text-left disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <span className="ff-tk-nm ff-tk-serif block text-[19px] font-bold leading-[1.55] tracking-[0.01em] truncate">
+                        {displayTitle(item.project.title)}
+                      </span>
+                      <span className="ff-tk-em text-[10px] uppercase tracking-[0.03em]">
+                        {isDownloading ? "Preparing…" : "Download ↓"}
+                      </span>
+                      <span className="block font-sans text-[9px] uppercase tracking-[0.03em] text-[#999] mt-0.5 truncate">
+                        {[item.project.brand, item.project.agency]
+                          .filter(Boolean)
+                          .join(" · ") || "—"}
+                        {item.project.duration
+                          ? ` · ${formatDuration(item.project.duration)}`
+                          : ""}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
