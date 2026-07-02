@@ -1307,10 +1307,7 @@ export function ScreeningCarousel({
         >
           <div className="h-full overflow-y-auto overflow-x-hidden">
             <div className="flex items-center justify-between px-5 pt-6 md:px-10">
-              <span className="text-[10px] uppercase tracking-[0.03em]">
-                Share &mdash; {director.name}
-                {brand ? ` for ${brand}` : ""}
-              </span>
+              <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain" />
               <button
                 onClick={closePanel}
                 className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
@@ -1438,9 +1435,7 @@ export function ScreeningCarousel({
         >
           <div className="h-full overflow-y-auto overflow-x-hidden pb-16">
             <div className="flex items-center justify-between px-5 pt-6 md:px-10">
-              <span className="text-[10px] uppercase tracking-[0.03em]">
-                Biography &mdash; {allDirectors.map((d) => d.name).join(" & ")}
-              </span>
+              <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain" />
               <button
                 onClick={closePanel}
                 className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
@@ -1463,9 +1458,6 @@ export function ScreeningCarousel({
                   )}
 
                   <div className="px-5 md:px-10 pt-10 w-full">
-                    <p className="ff-tk-rise text-[9px] uppercase tracking-[0.03em] text-[#999] mb-5">
-                      Director · Friends &amp; Family
-                    </p>
                     <p className="ff-tk-rise ff-tk-d1 ff-tk-serif text-[21px] md:text-[26px] leading-[1.55] tracking-[0.01em] max-w-[1080px] whitespace-pre-line">
                       <span className="font-bold">{d.name}</span>
                       {bioText ? <> {bioText}</> : null}
@@ -1514,9 +1506,6 @@ export function ScreeningCarousel({
                       )}
                       {d.headshotUrl && (
                         <div className="ff-tk-rise ff-tk-d4 md:w-[26%] min-w-0">
-                          <h3 className="text-[9px] uppercase tracking-[0.03em] text-[#999] mb-2">
-                            Headshot
-                          </h3>
                           <img
                             src={d.headshotUrl}
                             alt={d.name}
@@ -1540,9 +1529,7 @@ export function ScreeningCarousel({
         >
           <div className="h-full overflow-y-auto overflow-x-hidden">
             <div className="flex items-center justify-between px-5 pt-6 md:px-10">
-              <span className="text-[10px] uppercase tracking-[0.03em]">
-                Friends &amp; Family &mdash; About
-              </span>
+              <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain" />
               <button
                 onClick={closePanel}
                 className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
@@ -1706,10 +1693,7 @@ export function ScreeningCarousel({
         >
           <div className="h-full overflow-y-auto overflow-x-hidden">
             <div className="flex items-center justify-between px-5 pt-6 md:px-10">
-              <span className="text-[10px] uppercase tracking-[0.03em]">
-                Download &mdash; {director.name}
-                {brand ? ` for ${brand}` : ""}
-              </span>
+              <img src="/logo.svg" alt="Friends & Family" className="w-6 h-6 object-contain" />
               <button
                 onClick={closePanel}
                 className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.03em] hover:opacity-45 transition-opacity"
